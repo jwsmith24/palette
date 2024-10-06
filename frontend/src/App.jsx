@@ -1,5 +1,6 @@
 import './App.css'
 import ClassBasedComponent from './class_comp_example'
+import PropTypes from 'prop-types'
 
 function App() {
   
@@ -7,7 +8,7 @@ function App() {
     <>
       <div className="App">
       <ClassBasedComponent title = "Class Based Component 1 (This was set using properties)"/>
-      <FunctionBasedComponent1 text="property 1" num= {3}/>
+      <FunctionBasedComponent1 text="property 1" num= {3453}/>
       <FunctionBasedComponent1 text="property 1"/>
       <FunctionBasedComponent2 text="property 2"/>
       </div>
@@ -34,6 +35,10 @@ FunctionBasedComponent1.defaultProps = {
   text: "default", 
   num: -1
 
+}
+
+FunctionBasedComponent1.propTypes = {
+  num: PropTypes.number
 }
 
 
