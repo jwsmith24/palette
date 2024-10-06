@@ -1,14 +1,19 @@
 import React from "react"
-class Component1 extends React.Component{
+class ClassBasedComponent extends React.Component{
+
+  constructor(props) {
+    super(props);
+  }
+
     render() {
         return (
             <>
               <div>
-              <h1>Example Component 1</h1>
+              <h1>{this.props.title}</h1>
               <p>information...</p>
               </div>
             </>
           )
     }
 }
-export default Component1
+export default ClassBasedComponent
