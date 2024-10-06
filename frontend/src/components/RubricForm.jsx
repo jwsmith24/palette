@@ -3,56 +3,47 @@ export default function RubricForm() {
 
 
     return (
-        <form className={"w-full"}>
-            <div className={"flex flex-row w-full justify-between items-center"}>
-                {/* Asurite Block Input */}
-                <div className={"flex-1 mr-4"}>
-                    <label htmlFor="asurite" className={"bg-black"}>Asurite:</label>
+
+        <div className={"w-full border border-red-400 grid justify-center items-center"}>
+            <form className={'grid gap-1'}>
+                <div id={"header"} className={"border-red-400 border grid grid-flow-col auto-cols-fr gap-4 justify-around"}>
+                    <p>Asurite id</p>
+                    <p>Criterion</p>
+                    <p>Rating Stars</p>
+                    <p>Comments</p>
+                </div>
+                <div>
                     <input
                         type="text"
-                        id="asurite"
-                        name="asurite"
-                        className={"w-full border border-violet-300 p-2"}
-                        placeholder="Enter Asurite"
+                        placeholder={"asurite_id1"}
+                        required
+                        className={"border border-gray-100 rounded"}
                     />
-                </div>
-
-                {/* Column 1 (c1) Input */}
-                <div className={"flex-1 mr-4"}>
-                    <label htmlFor="c1">C1:</label>
                     <input
                         type="text"
-                        id="c1"
-                        name="c1"
-                        className={"w-full border border-gray-300 p-2"}
-                        placeholder="C1"
+                        placeholder={"asurite_id1"}
+                        required
+                        className={"border border-gray-100 rounded"}
                     />
-                </div>
-
-                {/* Column 2 (c2) Input */}
-                <div className={"flex-1 mr-4"}>
-                    <label htmlFor="c2">C2:</label>
                     <input
                         type="text"
-                        id="c2"
-                        name="c2"
-                        className={"w-full border border-gray-300 p-2"}
-                        placeholder="C2"
+                        placeholder={"asurite_id1"}
+                        required
+                        className={"border border-gray-100 rounded"}
                     />
+                    <input
+                        type="text"
+                        placeholder={"asurite_id1"}
+                        required
+                        className={"border border-gray-100 rounded"}
+                    />
+                </div>
+                <div>
+                    <input type="text"/>
                 </div>
 
-                {/* Comments Input */}
-                <div className={"flex-1"}>
-                    <label htmlFor="comments">Comments:</label>
-                    <textarea
-                        id="comments"
-                        name="comments"
-                        className={"w-full border border-gray-300 p-2"}
-                        placeholder="Add comments"
-                    />
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
 
     )
 }
