@@ -17,10 +17,10 @@ export default function Home() {
     }
 
     return (
-        <div className={"h-screen w-dvw grid grid-rows-[auto_1fr_auto] grid-cols-1"}>
+        <div className={"h-screen w-dvw bg-gray-800 grid grid-rows-[auto_1fr_auto] grid-cols-1"}>
             <div className={"bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8"}
             ></div>
-            <div className={" text-white bg-gray-800 grid h-full items-center justify-center content-center"}>
+            <div className={" text-white grid h-full items-center justify-center content-center"}>
 
                 <h1 className={"text-center font-sans font-bold text-5xl"}>Welcome to Palette</h1>
                 <div className={"flex justify-center p-2 gap-3 text-black font-bold"}>
@@ -35,13 +35,13 @@ export default function Home() {
                     </button>
                 </div>
                 <div id="info">
-                    <p className={"text-xl"}>Create the perfect Rubric and improve your project grading
+                    <p className={"text-xl"}>Create the perfect Canvas rubric and improve the project grading
                         experience.</p>
                 </div>
 
 
             </div>
-            <div className={"bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8"}></div>
+
         </div>
     )
 }
