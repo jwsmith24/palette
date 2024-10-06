@@ -9,10 +9,10 @@ function App() {
     <>
       <div className="App">
       <ClassBasedComponent title = "Class Based Component 1 (This was set using properties)"/>
-      <FunctionBasedComponent1 text="property 1" num= {3453}/>
-      <FunctionBasedComponent1 text="property 1"/>
-      <FunctionBasedComponent2 text="property 2"/>
-      <StatePractce/>
+      <FunctionBasedComponent1 text="Property 1" num= {3453}/>
+      <FunctionBasedComponent1 text="Property 1"/>
+      <FunctionBasedComponent2 text="Property 2"/>
+      <StateUpdater/>
       </div>
       
     </>
@@ -49,7 +49,7 @@ FunctionBasedComponent1.propTypes = {
 
 //properties accepted this allows mutability
 function FunctionBasedComponent2({text, num}) {
-  text = "property 2 (mutable)"
+  text = "Property 2 (mutable)"
   return (
     <>
       <div>
@@ -62,12 +62,12 @@ function FunctionBasedComponent2({text, num}) {
   )
 }
 
-function StatePractce() {
+function StateUpdater() {
   const [title, setTitle] = useState("")
   const [counter, setCounter] = useState(0)
 
   const updateTitleClicked = () => {
-    setTitle("NEW TITLE WOHOOO! (refresh the page to reset to blank)");
+    setTitle("NEW TITLE WOHOOO!");
   };
 
   const updateCounterClicked = () => {
@@ -79,11 +79,29 @@ function StatePractce() {
     <>
       <div>
         <h1>State Practice</h1>
-        <p>Title: {title} </p>
-        <p>Counter: {counter} </p>
-        <button onClick={updateTitleClicked}>Update Title</button>
-        <button onClick={updateCounterClicked}>Update Counter</button>
+        <h2>State Updater/Sender</h2>
+        <p>This component updates and stores the state of the title and counter variables and sends them to the reciever component below as props to be rendered.</p>
         <hr></hr>
+        <StateReciever title = {title} counter = {counter}/>
+        <button onClick={updateTitleClicked}>Update Title</button>
+        <button onClick={updateCounterClicked}>Update Count</button>
+        <hr></hr>
+      </div>
+      
+    </>
+  )
+}
+
+
+function StateReciever(props) {
+
+  return (
+    <>
+      <div>
+        <h2>State Reciever</h2>
+        <p>Refresh the page to reset the state on the properties below.</p>
+        <p>Title: {props.title} </p>
+        <p>Count: {props.counter} </p>
       </div>
       
     </>
