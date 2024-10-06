@@ -1,13 +1,34 @@
 import {useState} from "react";
+import {render} from "react-dom";
 
 export default function RubricBuilder() {
 
-    const [ratingCount, setRatingCount] = useState();
+    const [ratingCount, setRatingCount] = useState(1);
 
     const handleRatingCountChange = (event) => {
         console.log(event.target.value)
         setRatingCount(event.target.value);
+        renderRatingInputs();
     };
+
+    const renderRatingInputs = () => {
+        const inputs = [];
+        for (let i = 0; i < ratingCount; i++) {
+            inputs.push(
+                <div key={i} className={"grid"}>
+                    <label htmlFor={`ratingDesc${i}}`}>Rating {i + 1} Description</label>
+                    <textarea
+                        name={`ratingDesc${i}}`}
+                        id={`ratingDesc${i}}`}
+                        rows="4"
+                        placeholder={"Describe the standards to earn the rating."}
+                        className={"rounded-md text-gray-600 border-2 border-gray-300 hover:bg-gray-200 shadow-sm focus:outline-none"}
+                    ></textarea>
+                </div>
+            )
+        }
+        return inputs;
+    }
     return (
         <div className={"h-screen w-screen bg-gray-800 text-white font-sans"}>
             <form className={"grid p-8 w-1/2 g-3"}>
@@ -29,7 +50,8 @@ export default function RubricBuilder() {
                        required
                 />
                 <div>
-                    <h2 className={""}># of Rating Options</h2>
+                    {}
+                    <h2 className={""}>Rating Options</h2>
                     <select
                         className={"text-black rounded-b"}
                         name="ratingCount"
@@ -42,16 +64,7 @@ export default function RubricBuilder() {
                         <option value="3">3</option>
                         <option value="4">4</option>
                     </select>
-                    <div className={"grid"}>
-                        <label htmlFor="ratingDesc">Rating 1 Description</label>
-                        <textarea
-                            name="ratingDesc"
-                            id="ratingDesc"
-                            rows="4"
-                            className={"rounded-md text-gray-600 border-2 border-gray-300 hover:bg-gray-200 shadow-sm focus:outline-none"}
-                        ></textarea>
-
-                    </div>
+                    <div>{renderRatingInputs()}</div>
 
 
                 </div>
