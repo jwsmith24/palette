@@ -1,18 +1,23 @@
-import { useState } from "react";
+import {
+  ChangeEvent,
+  MouseEvent as ReactMouseEvent,
+  ReactElement,
+  useState,
+} from "react";
 import Rubric from "../Rubric";
 import Criteria from "../Criteria";
 
-export default function RubricBuilder() {
-  const [rubric, setRubric] = useState(new Rubric("Test"));
+export default function RubricBuilder(): ReactElement {
+  const [rubric, setRubric] = useState<Rubric>(new Rubric("Test"));
 
-  const handleRubricTitleChange = (event) => {
+  const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = { ...rubric };
     newRubric.setTitle(event.target.value);
     setRubric(newRubric);
     console.log(rubric);
   };
 
-  const addCriteria = (event) => {
+  const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newCriteria = new Criteria();
     const newRubric = { ...rubric };
@@ -20,7 +25,10 @@ export default function RubricBuilder() {
     setRubric(newRubric);
   };
 
-  const handleCriteriaTitleChange = (event, index) => {
+  const handleCriteriaTitleChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
     const newRubric = { ...rubric };
     const criteria = newRubric.getCriterion(index);
     criteria.setTitle(event.target.value);
@@ -28,8 +36,10 @@ export default function RubricBuilder() {
     setRubric(newRubric);
   };
 
-  // Function to handle changes in the number of rating options for a specific criterion
-  const handleRatingCountChange = (event, index) => {
+  const handleRatingCountChange = (
+    event: ChangeEvent<HTMLSelectElement>,
+    index: number,
+  ) => {
     const newRatingCount = Number(event.target.value);
     const newRubric = { ...rubric };
     const criteria = newRubric.getCriterion(index);
@@ -38,8 +48,7 @@ export default function RubricBuilder() {
     setRubric(newRubric);
   };
 
-  // Function to render criteria inputs dynamically
-  const renderCriteriaInput = (criterion, index) => (
+  const renderCriteriaInput = (criterion: Criteria, index: number) => (
     <div key={index} className="border p-4 mb-4">
       <label htmlFor={`criteria${index}Title`}>Criteria {index + 1}</label>
       <input
@@ -69,12 +78,13 @@ export default function RubricBuilder() {
         </select>
       </div>
 
-      <div className="mt-4">{renderRatingInputs(criterion, index)}</div>
+      <div className="mt-4">
+        {renderRatingInputs(criterion.ratingCount, index)}
+      </div>
     </div>
   );
 
-  // Function to render rating inputs dynamically based on the count
-  const renderRatingInputs = (ratingCount, criteriaIndex) => {
+  const renderRatingInputs = (ratingCount: number, criteriaIndex: number) => {
     const inputs = [];
     for (let i = 0; i < ratingCount; i++) {
       inputs.push(
@@ -96,7 +106,7 @@ export default function RubricBuilder() {
           <textarea
             name={`ratingDesc${criteriaIndex}-${i}`}
             id={`ratingDesc${criteriaIndex}-${i}`}
-            rows="4"
+            rows={4}
             placeholder="Describe the standards to earn this rating."
             className="rounded-md text-gray-600 border-2 border-gray-300 hover:bg-gray-200 shadow-sm focus:outline-none"
           ></textarea>
@@ -130,7 +140,7 @@ export default function RubricBuilder() {
         </button>
 
         <div className="mt-4">
-          {rubric.criteria.map((criterion, index) =>
+          {rubric.criteria.map((criterion: Criteria, index: number) =>
             renderCriteriaInput(criterion, index),
           )}
         </div>
