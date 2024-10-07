@@ -11,7 +11,7 @@ export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric("Test"));
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = { ...rubric };
+    const newRubric = rubric;
     newRubric.setTitle(event.target.value);
     setRubric(newRubric);
     console.log(rubric);
@@ -20,7 +20,7 @@ export default function RubricBuilder(): ReactElement {
   const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newCriteria = new Criteria();
-    const newRubric = { ...rubric };
+    const newRubric = rubric;
     newRubric.addCriterion(newCriteria);
     setRubric(newRubric);
   };
@@ -29,7 +29,7 @@ export default function RubricBuilder(): ReactElement {
     event: ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
-    const newRubric = { ...rubric };
+    const newRubric = rubric;
     const criteria = newRubric.getCriterion(index);
     criteria.setTitle(event.target.value);
     newRubric.updateCriterion(index, criteria);
@@ -41,7 +41,7 @@ export default function RubricBuilder(): ReactElement {
     index: number,
   ) => {
     const newRatingCount = Number(event.target.value);
-    const newRubric = { ...rubric };
+    const newRubric = rubric;
     const criteria = newRubric.getCriterion(index);
     criteria.setRatingCount(newRatingCount);
     newRubric.updateCriterion(index, criteria);

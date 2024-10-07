@@ -25,4 +25,8 @@ export default class Criteria {
   setRatingCount(count: number) {
     this.ratingCount = count;
   }
+
+  setTitle(title: string) {
+    this.title = title;
+  }
 }
