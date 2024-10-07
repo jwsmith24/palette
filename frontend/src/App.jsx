@@ -1,12 +1,13 @@
 import React from 'react';
-import './App.css'; // Ensure you have your CSS file for styling
+import CanvasCourses from './components/CanvasCourses'; // Adjust the path if necessary
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Accessing Courses</h1>
-      <p>Please wait while we load your course data...</p>
-    </div>
+    <>
+      <h1>My Canvas Integration App</h1>
+      <CanvasCourses />
+    </>
   );
 }
 
