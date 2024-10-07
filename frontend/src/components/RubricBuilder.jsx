@@ -1,49 +1,60 @@
 import { useState } from "react";
+import Rubric from "../Rubric";
+import Criteria from "../Criteria";
 
 export default function RubricBuilder() {
-  // Array to hold criteria with rating counts
-  const [criteria, setCriteria] = useState([]);
+  const [rubric, setRubric] = useState(new Rubric("Test"));
 
-  function showCriteria(event) {
-    event.preventDefault();
-    console.log(criteria);
-  }
+  const handleRubricTitleChange = (event) => {
+    const newRubric = { ...rubric };
+    newRubric.setTitle(event.target.value);
+    setRubric(newRubric);
+    console.log(rubric);
+  };
 
-  const handleRubricTitleChange = (event, index) => {};
-  // Increment criteria count and add a new criterion with default ratingCount = 1
-  const incrementCriteriaCount = (event) => {
+  const addCriteria = (event) => {
     event.preventDefault();
-    setCriteria([...criteria, { ratingCount: 1 }]); // Add a new criterion with 1 rating option
+    const newCriteria = new Criteria();
+    const newRubric = { ...rubric };
+    newRubric.addCriterion(newCriteria);
+    setRubric(newRubric);
+  };
+
+  const handleCriteriaTitleChange = (event, index) => {
+    const newRubric = { ...rubric };
+    const criteria = newRubric.getCriterion(index);
+    criteria.setTitle(event.target.value);
+    newRubric.updateCriterion(index, criteria);
+    setRubric(newRubric);
   };
 
   // Function to handle changes in the number of rating options for a specific criterion
   const handleRatingCountChange = (event, index) => {
     const newRatingCount = Number(event.target.value);
-    const updatedCriteria = [...criteria];
-    updatedCriteria[index].ratingCount = newRatingCount;
-    setCriteria(updatedCriteria); // Update the criteria array with new rating count
+    const newRubric = { ...rubric };
+    const criteria = newRubric.getCriterion(index);
+    criteria.setRatingCount(newRatingCount);
+    newRubric.updateCriterion(index, criteria);
+    setRubric(newRubric);
   };
 
   // Function to render criteria inputs dynamically
   const renderCriteriaInput = (criterion, index) => (
     <div key={index} className="border p-4 mb-4">
-      <div className={"grid"}>
-        <label htmlFor={`criteria${index}Title`} className={"font-bold mb-4"}>
-          Criteria {index + 1}
-        </label>
-        <textarea
-          name={`criteria${index}Title`}
-          id={`criteria${index}Title`}
-          placeholder="Criteria Description"
-          className="rounded p-1 mb-2 text-gray-600 hover:bg-gray-200"
-          required
-          rows={4}
-        />
-      </div>
+      <label htmlFor={`criteria${index}Title`}>Criteria {index + 1}</label>
+      <input
+        name={`criteria${index}Title`}
+        id={`criteria${index}Title`}
+        type="text"
+        placeholder="Criteria Description"
+        className="rounded p-1 mb-2 hover:bg-gray-200"
+        value={criterion.title}
+        onChange={(event) => handleCriteriaTitleChange(event, index)}
+        required
+      />
 
-      {/* Dropdown to select the number of rating options */}
-      <div className="mt-2 flex content-between gap-4">
-        <h2>Number of Rating Options</h2>
+      <div className="mt-2">
+        <h2 className="font-bold">Number of Rating Options</h2>
         <select
           className="text-black rounded-b"
           name={`ratingCount${index}`}
@@ -58,10 +69,7 @@ export default function RubricBuilder() {
         </select>
       </div>
 
-      {/* Render the rating input fields based on the selected rating count */}
-      <div className="mt-4">
-        {renderRatingInputs(criterion.ratingCount, index)}
-      </div>
+      <div className="mt-4">{renderRatingInputs(criterion, index)}</div>
     </div>
   );
 
@@ -102,6 +110,7 @@ export default function RubricBuilder() {
     <div className="h-max min-h-dvh w-dvw bg-gray-800 text-white font-sans">
       <form className="grid p-8 w-1/2 g-3">
         <h1 className="font-bold text-3xl mb-4">Create a new rubric</h1>
+
         <label htmlFor="rubricTitle">Rubric Title</label>
         <input
           type="text"
@@ -109,23 +118,22 @@ export default function RubricBuilder() {
           className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0"
           name="rubricTitle"
           id="rubricTitle"
+          value={rubric.title}
           onChange={handleRubricTitleChange}
         />
-        {/* Render criteria inputs dynamically */}
-        <div className="mt-4">
-          {criteria.map((criterion, index) =>
-            renderCriteriaInput(criterion, index),
-          )}
-        </div>
 
-        {/* Button to add new criteria */}
         <button
-          className="justify-self-end bg-orange-500 rounded-md px-2 font-bold hover:opacity-80 active:opacity-70"
-          onClick={incrementCriteriaCount}
+          className="justify-self-start bg-orange-500 rounded-md px-2 font-bold hover:opacity-80 active:opacity-70"
+          onClick={addCriteria}
         >
           Add Criteria
         </button>
-        <button onClick={showCriteria}>Show Criteria</button>
+
+        <div className="mt-4">
+          {rubric.criteria.map((criterion, index) =>
+            renderCriteriaInput(criterion, index),
+          )}
+        </div>
       </form>
     </div>
   );

@@ -1,4 +1,4 @@
-class Criteria {
+export default class Criteria {
   constructor(title = "", ratingCount = 1) {
     this.title = title;
     this.ratingCount = ratingCount;
@@ -16,5 +16,9 @@ class Criteria {
     }
     // Return the array of rating objects
     return ratingsArray;
+  }
+
+  setRatingCount(count) {
+    this.ratingCount = count;
   }
 }
