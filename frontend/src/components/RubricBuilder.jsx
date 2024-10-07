@@ -1,8 +1,15 @@
 import { useState } from "react";
 
 export default function RubricBuilder() {
-  const [criteria, setCriteria] = useState([]); // Array to hold criteria with rating counts
+  // Array to hold criteria with rating counts
+  const [criteria, setCriteria] = useState([]);
 
+  function showCriteria(event) {
+    event.preventDefault();
+    console.log(criteria);
+  }
+
+  const handleRubricTitleChange = (event, index) => {};
   // Increment criteria count and add a new criterion with default ratingCount = 1
   const incrementCriteriaCount = (event) => {
     event.preventDefault();
@@ -21,12 +28,14 @@ export default function RubricBuilder() {
   const renderCriteriaInput = (criterion, index) => (
     <div key={index} className="border p-4 mb-4">
       <div className={"grid"}>
-        <label htmlFor={`criteria${index}Title`}>Criteria {index + 1}</label>
+        <label htmlFor={`criteria${index}Title`} className={"font-bold mb-4"}>
+          Criteria {index + 1}
+        </label>
         <textarea
           name={`criteria${index}Title`}
           id={`criteria${index}Title`}
           placeholder="Criteria Description"
-          className="rounded p-1 mb-2 hover:bg-gray-200"
+          className="rounded p-1 mb-2 text-gray-600 hover:bg-gray-200"
           required
           rows={4}
         />
@@ -61,7 +70,7 @@ export default function RubricBuilder() {
     const inputs = [];
     for (let i = 0; i < ratingCount; i++) {
       inputs.push(
-        <div key={i} className="grid m-2 rounded">
+        <div key={i} className="grid rounded">
           <h3>Rating Option {i + 1}</h3>
           <label htmlFor={`points${criteriaIndex}-${i}`}>Points</label>
           <input
@@ -100,6 +109,7 @@ export default function RubricBuilder() {
           className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0"
           name="rubricTitle"
           id="rubricTitle"
+          onChange={handleRubricTitleChange}
         />
         {/* Render criteria inputs dynamically */}
         <div className="mt-4">
@@ -115,6 +125,7 @@ export default function RubricBuilder() {
         >
           Add Criteria
         </button>
+        <button onClick={showCriteria}>Show Criteria</button>
       </form>
     </div>
   );
