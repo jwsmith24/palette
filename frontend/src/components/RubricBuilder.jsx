@@ -93,7 +93,6 @@ export default function RubricBuilder() {
     <div className="h-max min-h-dvh w-dvw bg-gray-800 text-white font-sans">
       <form className="grid p-8 w-1/2 g-3">
         <h1 className="font-bold text-3xl mb-4">Create a new rubric</h1>
-
         <label htmlFor="rubricTitle">Rubric Title</label>
         <input
           type="text"
@@ -102,21 +101,20 @@ export default function RubricBuilder() {
           name="rubricTitle"
           id="rubricTitle"
         />
-
-        {/* Button to add new criteria */}
-        <button
-          className="justify-self-start bg-orange-500 rounded-md px-2 font-bold hover:opacity-80 active:opacity-70"
-          onClick={incrementCriteriaCount}
-        >
-          Add Criteria
-        </button>
-
         {/* Render criteria inputs dynamically */}
         <div className="mt-4">
           {criteria.map((criterion, index) =>
             renderCriteriaInput(criterion, index),
           )}
         </div>
+
+        {/* Button to add new criteria */}
+        <button
+          className="justify-self-end bg-orange-500 rounded-md px-2 font-bold hover:opacity-80 active:opacity-70"
+          onClick={incrementCriteriaCount}
+        >
+          Add Criteria
+        </button>
       </form>
     </div>
   );
