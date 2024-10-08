@@ -8,7 +8,7 @@ import Rubric from "../Rubric";
 import Criteria from "../Criteria";
 
 export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(() => new Rubric("Test"));
+  const [rubric, setRubric] = useState<Rubric>(() => new Rubric());
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = new Rubric(event.target.value); // create new instance of rubric
@@ -127,7 +127,7 @@ export default function RubricBuilder(): ReactElement {
         <input
           type="text"
           placeholder="Task: Description"
-          className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0"
+          className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600"
           name="rubricTitle"
           id="rubricTitle"
           value={rubric.title}
