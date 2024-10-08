@@ -10,10 +10,6 @@ export default class Rubric {
     console.log(this);
   }
 
-  setTitle(title: string): void {
-    this.title = title;
-  }
-
   addCriterion(criteria: Criteria): void {
     this.criteria.push(criteria);
   }

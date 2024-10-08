@@ -8,19 +8,19 @@ import Rubric from "../Rubric";
 import Criteria from "../Criteria";
 
 export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(new Rubric("Test"));
+  const [rubric, setRubric] = useState<Rubric>(() => new Rubric("Test"));
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = rubric;
-    newRubric.setTitle(event.target.value);
-    setRubric(newRubric);
-    console.log(rubric);
+    const newRubric = new Rubric(event.target.value); // create new instance of rubric
+    newRubric.criteria = [...rubric.criteria]; // copy criteria array over
+    setRubric(newRubric); // calling the set method in useState will trigger a re-render (as long as state has changed)
   };
 
   const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     const newCriteria = new Criteria();
-    const newRubric = rubric;
+    const newRubric = new Rubric(rubric.title);
+    newRubric.criteria = [...rubric.criteria];
     newRubric.addCriterion(newCriteria);
     setRubric(newRubric);
   };
@@ -29,7 +29,8 @@ export default function RubricBuilder(): ReactElement {
     event: ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
-    const newRubric = rubric;
+    const newRubric = new Rubric(rubric.title);
+    newRubric.criteria = [...rubric.criteria];
     const criteria = newRubric.getCriterion(index);
     criteria.setTitle(event.target.value);
     newRubric.updateCriterion(index, criteria);
@@ -41,7 +42,8 @@ export default function RubricBuilder(): ReactElement {
     index: number,
   ) => {
     const newRatingCount = Number(event.target.value);
-    const newRubric = rubric;
+    const newRubric = new Rubric(rubric.title);
+    newRubric.criteria = [...rubric.criteria];
     const criteria = newRubric.getCriterion(index);
     criteria.setRatingCount(newRatingCount);
     newRubric.updateCriterion(index, criteria);
