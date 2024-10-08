@@ -125,27 +125,26 @@ export default function RubricBuilder(): ReactElement {
 
         <label htmlFor="rubricTitle">Rubric Title</label>
         <input
-          type="text"
-          placeholder="Task: Description"
-          className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600"
-          name="rubricTitle"
-          id="rubricTitle"
-          value={rubric.title}
-          onChange={handleRubricTitleChange}
+            type="text"
+            placeholder="Task: Description"
+            className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600"
+            name="rubricTitle"
+            id="rubricTitle"
+            value={rubric.title}
+            onChange={handleRubricTitleChange}
         />
-
-        <button
-          className="justify-self-start bg-orange-500 rounded-md px-2 font-bold hover:opacity-80 active:opacity-70"
-          onClick={addCriteria}
-        >
-          Add Criteria
-        </button>
 
         <div className="mt-4">
           {rubric.criteria.map((criterion: Criteria, index: number) =>
-            renderCriteriaInput(criterion, index),
+              renderCriteriaInput(criterion, index),
           )}
         </div>
+        <button
+            className="justify-self-end bg-orange-500 rounded-md px-2 font-bold hover:opacity-80 active:opacity-70"
+            onClick={addCriteria}
+        >
+          Add Criteria
+        </button>
       </form>
     </div>
   );
