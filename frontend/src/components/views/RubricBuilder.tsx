@@ -28,8 +28,8 @@ export default function RubricBuilder(): ReactElement {
   };
 
   return (
-    <div className="h-max min-h-dvh w-dvw bg-gray-800 text-white font-sans">
-      <form className="grid p-8 w-1/2 g-3">
+    <div className="h-max min-h-dvh w-dvw  bg-gray-800 text-white font-sans">
+      <form className="grid p-8 w-1/2 g-3 max-w-2xl">
         <h1 className="font-bold text-3xl mb-4">Create a new rubric</h1>
 
         <label htmlFor="rubricTitle" className={"mb-2"}>
@@ -38,7 +38,7 @@ export default function RubricBuilder(): ReactElement {
         <input
           type="text"
           placeholder="Task: Description"
-          className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600"
+          className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600 "
           name="rubricTitle"
           id="rubricTitle"
           value={rubric.title}

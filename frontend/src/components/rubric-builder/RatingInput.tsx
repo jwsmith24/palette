@@ -5,7 +5,7 @@ interface RatingProps {
   criteriaIndex: number;
 }
 
-//todo link in actual rating point and title values
+//todo link in actual rating point and title values, add remove button to widget
 export default function RatingInput({
   ratingCount,
   criteriaIndex,
