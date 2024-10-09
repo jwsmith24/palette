@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 
 import "./index.css";
 import Home from "./components/views/Home.tsx";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RubricBuilder from "./components/views/RubricBuilder.tsx";
 
 createRoot(document.getElementById("root")!).render(

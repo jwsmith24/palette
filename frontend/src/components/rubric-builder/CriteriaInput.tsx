@@ -11,8 +11,8 @@ import Rubric from "../../Rubric.ts";
 interface CriteriaInputProps {
   criterion: Criteria;
   index: number;
-  rubric: Rubric; // Add rubric prop
-  setRubric: (rubric: Rubric) => void; // Add setRubric prop
+  rubric: Rubric;
+  setRubric: (rubric: Rubric) => void;
 }
 
 const CriteriaInput = ({
@@ -21,12 +21,16 @@ const CriteriaInput = ({
   rubric,
   setRubric,
 }: CriteriaInputProps): ReactElement => {
-  const handleCriteriaSave = (event: ReactMouseEvent) => {
+  const handleSaveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault();
+    criterion.toggleActive();
+    const newRubric = new Rubric(rubric.title);
+    newRubric.criteria = [...rubric.criteria];
+    setRubric(newRubric);
     alert("Criteria saved!");
   };
 
-  const handleCriteriaRemove = (event: ReactMouseEvent) => {
+  const handleRemoveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault();
     alert("Criteria removed!");
   };
@@ -40,10 +44,10 @@ const CriteriaInput = ({
     const criteria = newRubric.getCriterion(index);
     criteria.setTitle(event.target.value);
     newRubric.updateCriterion(index, criteria);
-    setRubric(newRubric); // Use the passed setRubric function
+    setRubric(newRubric);
   };
 
-  const handleRatingCountChange = (
+  const handleCriteriaRatingCountChange = (
     event: ChangeEvent<HTMLSelectElement>,
     index: number,
   ) => {
@@ -53,7 +57,7 @@ const CriteriaInput = ({
     const criteria = newRubric.getCriterion(index);
     criteria.setRatingCount(newRatingCount);
     newRubric.updateCriterion(index, criteria);
-    setRubric(newRubric); // Use the passed setRubric function
+    setRubric(newRubric);
   };
 
   return (
@@ -79,7 +83,7 @@ const CriteriaInput = ({
           name={`ratingCount${index}`}
           id={`ratingCount${index}`}
           value={criterion.ratingCount}
-          onChange={(event) => handleRatingCountChange(event, index)}
+          onChange={(event) => handleCriteriaRatingCountChange(event, index)}
         >
           <option value="1">1</option>
           <option value="2">2</option>
@@ -105,7 +109,7 @@ const CriteriaInput = ({
               "bg-gray-500 rounded-md px-2 font-bold hover:bg-green-500 opacity-80" +
               " active:opacity-70"
             }
-            onClick={handleCriteriaSave}
+            onClick={handleSaveCriteria}
           >
             Save
           </button>
@@ -114,7 +118,7 @@ const CriteriaInput = ({
               "bg-gray-500 rounded-md px-2 font-bold hover:bg-red-500 opacity-80" +
               " active:opacity-70"
             }
-            onClick={handleCriteriaRemove}
+            onClick={handleRemoveCriteria}
           >
             Remove
           </button>

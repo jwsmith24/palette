@@ -6,8 +6,8 @@ import {
 } from "react";
 import Rubric from "../../Rubric.ts";
 import Criteria from "../../Criteria.ts";
-import RatingInput from "../rubric-builder/RatingInput.tsx";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
+import CriteriaWidget from "../CriteriaWidget.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(() => new Rubric());
@@ -15,7 +15,7 @@ export default function RubricBuilder(): ReactElement {
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = new Rubric(event.target.value); // create new instance of rubric
     newRubric.criteria = [...rubric.criteria]; // copy criteria array over
-    setRubric(newRubric); // calling the set method in useState will trigger a re-render (as long as state has changed)
+    setRubric(newRubric); // calling the set method in useState will trigger a re-render (only if state has changed)
   };
 
   const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -46,15 +46,25 @@ export default function RubricBuilder(): ReactElement {
         />
 
         <div className="mt-2">
-          {rubric.criteria.map((criterion: Criteria, index: number) => (
-            <CriteriaInput
-              key={index}
-              criterion={criterion}
-              index={index}
-              rubric={rubric} // Pass rubric down
-              setRubric={setRubric} // Pass setRubric down
-            />
-          ))}
+          {rubric.criteria.map((criterion: Criteria, index: number) =>
+            criterion.active ? (
+              <CriteriaInput
+                key={index}
+                criterion={criterion}
+                index={index}
+                rubric={rubric}
+                setRubric={setRubric}
+              />
+            ) : (
+              <CriteriaWidget
+                key={index}
+                criterion={criterion}
+                index={index}
+                rubric={rubric}
+                setRubric={setRubric}
+              />
+            ),
+          )}
         </div>
         <button
           className="mt-2 justify-self-end bg-gray-500 rounded-md px-2 font-bold hover:bg-violet-500 opacity-80 active:opacity-70"

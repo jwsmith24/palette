@@ -4,6 +4,8 @@ interface RatingProps {
   ratingCount: number;
   criteriaIndex: number;
 }
+
+//todo link in actual rating point and title values
 export default function RatingInput({
   ratingCount,
   criteriaIndex,
