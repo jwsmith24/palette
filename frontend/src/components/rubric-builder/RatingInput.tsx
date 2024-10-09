@@ -1,9 +1,13 @@
 import { ReactElement } from "react";
 
-export default function RatingInput(
-  ratingCount: number,
-  criteriaIndex: number,
-): ReactElement {
+interface RatingProps {
+  ratingCount: number;
+  criteriaIndex: number;
+}
+export default function RatingInput({
+  ratingCount,
+  criteriaIndex,
+}: RatingProps): ReactElement {
   const inputs = []; // have to return elements in an array because the count is dynamic
   for (let i = 0; i < ratingCount; i++) {
     inputs.push(
