@@ -2,11 +2,13 @@ export default class Criteria {
     title: string;
     ratingCount: number;
     ratings;
+    active: boolean; // used to toggle widget vs edit view
 
     constructor(title = "", ratingCount = 1) {
         this.title = title;
         this.ratingCount = ratingCount;
         this.ratings = this.initializeRatings(ratingCount);
+        this.active = false;
     }
 
     initializeRatings(ratingCount: number) {

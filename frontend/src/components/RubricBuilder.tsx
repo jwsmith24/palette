@@ -46,21 +46,21 @@ export default function RubricBuilder(): ReactElement {
     };
 
     const renderCriteriaInput = (criterion: Criteria, index: number) => (
-        <div key={index} className="border p-4 mb-4">
-            <label htmlFor={`criteria${index}Title`}>Criteria {index + 1}</label>
+        <div key={index} className="border p-4 gap-2 grid">
+            <label htmlFor={`criteria${index}Title`} className={"mr-2"}>Criteria {index + 1}</label>
             <input
                 name={`criteria${index}Title`}
                 id={`criteria${index}Title`}
                 type="text"
                 placeholder="Criteria Description"
-                className="rounded p-1 mb-2 hover:bg-gray-200"
+                className="rounded p-1 mb-2 hover:bg-gray-200 text-gray-600"
                 value={criterion.title}
                 onChange={(event) => handleCriteriaTitleChange(event, index)}
                 required
             />
 
-            <div className="mt-2">
-                <h2 className="font-bold">Number of Rating Options</h2>
+            <div>
+                <h2 className="font-bold mb-2">Number of Rating Options</h2>
                 <select
                     className="text-black rounded-b"
                     name={`ratingCount${index}`}
@@ -75,7 +75,7 @@ export default function RubricBuilder(): ReactElement {
                 </select>
             </div>
 
-            <div className="mt-4">
+            <div>
                 {renderRatingInputs(criterion.ratingCount, index)}
             </div>
         </div>
@@ -85,7 +85,7 @@ export default function RubricBuilder(): ReactElement {
         const inputs = [];
         for (let i = 0; i < ratingCount; i++) {
             inputs.push(
-                <div key={i} className="grid rounded">
+                <div key={i} className="grid rounded gap-2">
                     <h3>Rating Option {i + 1}</h3>
                     <label htmlFor={`points${criteriaIndex}-${i}`}>Points</label>
                     <input
@@ -103,7 +103,7 @@ export default function RubricBuilder(): ReactElement {
                     <textarea
                         name={`ratingDesc${criteriaIndex}-${i}`}
                         id={`ratingDesc${criteriaIndex}-${i}`}
-                        rows={4}
+                        rows={2}
                         placeholder="Describe the standards to earn this rating."
                         className="rounded-md text-gray-600 border-2 border-gray-300 hover:bg-gray-200 shadow-sm focus:outline-none"
                     ></textarea>
@@ -118,7 +118,7 @@ export default function RubricBuilder(): ReactElement {
             <form className="grid p-8 w-1/2 g-3">
                 <h1 className="font-bold text-3xl mb-4">Create a new rubric</h1>
 
-                <label htmlFor="rubricTitle">Rubric Title</label>
+                <label htmlFor="rubricTitle" className={"mb-2"}>Rubric Title</label>
                 <input
                     type="text"
                     placeholder="Task: Description"
@@ -129,7 +129,7 @@ export default function RubricBuilder(): ReactElement {
                     onChange={handleRubricTitleChange}
                 />
 
-                <div className="mt-4">
+                <div className="mt-2">
                     {rubric.criteria.map((criterion: Criteria, index: number) =>
                         renderCriteriaInput(criterion, index),
                     )}
