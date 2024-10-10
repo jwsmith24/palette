@@ -1,18 +1,29 @@
+/*
+Currently have to go to the console and accept creating a temporary 
+demo server that will allow you to bypass CORS policy
+
+To create your own token go to your personal canvas and 
+go to Account then settings.  Scroll down till you see an 
+Approved Integrations and create your own token to access 
+your account information.
+*/
+
 import React, { useEffect, useState } from 'react';
 
 const CanvasCourses = () => {
-  const [courses, setCourses] = useState([]);
+  const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Replace this with your actual Canvas API token
-  const token = ''; 
+  // Replace these with your actual Canvas API details
+  const token = ''; // Replace with your actual access token
   const domain = 'https://canvas.asu.edu';
   const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+  const courseId = 15760; //Course ID found in URL
 
-const fetchCourses = async () => {
+  const fetchCourse = async () => {
     try {
-      const response = await fetch(`${corsProxy}${domain}/api/v1/courses`, {
+      const response = await fetch(`${corsProxy}${domain}/api/v1/courses/${courseId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -25,7 +36,7 @@ const fetchCourses = async () => {
       }
 
       const data = await response.json();
-      setCourses(data);
+      setCourse(data);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -34,11 +45,11 @@ const fetchCourses = async () => {
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchCourse();
   }, []);
 
   if (loading) {
-    return <div>Loading courses...</div>;
+    return <div>Loading course...</div>;
   }
 
   if (error) {
@@ -47,16 +58,19 @@ const fetchCourses = async () => {
 
   return (
     <div>
-      <h1>Courses</h1>
-      <ul>
-        {courses.map(course => (
-          <li key={course.id}>
-            {course.name} (Code: {course.course_code})
-          </li>
-        ))}
-      </ul>
+      <h1>Course Details</h1>
+      {course ? (
+        <div>
+          <p>ID: {course.id}</p>
+          <p>Name: {course.name}</p>
+          <p>Code: {course.course_code}</p>
+        </div>
+      ) : (
+        <p>No course found.</p>
+      )}
     </div>
   );
 };
+
 
 export default CanvasCourses;
