@@ -6,12 +6,4 @@ export default class Rating {
     this.points = points;
     this.description = description;
   }
-
-  setPoints(points: number) {
-    this.points = points;
-  }
-
-  setDescription(description: string) {
-    this.description = description;
-  }
 }

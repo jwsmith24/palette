@@ -28,12 +28,31 @@ export default function RubricBuilder(): ReactElement {
     setCriteria((prevCriteria) => [...prevCriteria, new Criteria()]); // add new criteria to array
   };
 
+  const toggleEditView = (index: number) => {
+    setCriteria((prevCriteria) => {
+      const updatedCriteria = [...prevCriteria];
+      updatedCriteria[index].toggleEditView();
+      return updatedCriteria;
+    });
+  };
+
+  // render either the edit or widget view
   const renderCriteria = () => {
     return criteria.map((criterion: Criteria, index: number) =>
       criterion.editView ? (
-        <CriteriaInput key={index} criterion={criterion} index={index} />
+        <CriteriaInput
+          key={index}
+          criterion={criterion}
+          index={index}
+          toggleEditView={toggleEditView}
+        />
       ) : (
-        <CriteriaWidget key={index} criterion={criterion} index={index} />
+        <CriteriaWidget
+          key={index}
+          criterion={criterion}
+          index={index}
+          toggleEditView={toggleEditView}
+        />
       ),
     );
   };

@@ -15,20 +15,22 @@ import Rating from "../../Rating.ts";
 const CriteriaInput = ({
   criterion,
   index,
+  toggleEditView,
 }: CriteriaDisplayProps): ReactElement => {
   // Local state to manage form input and keep display updated prior to saving
   const [title, setTitle] = useState(criterion.title);
   const [ratings, setRatings] = useState(criterion.ratings);
-  const [ratingCount, setRatingCount] = useState(criterion.ratingCount);
+  const [ratingCount, setRatingCount] = useState(criterion.ratings.length);
 
   // Update the criterion object with the current state values on save.
   const handleSaveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault(); // stop form reload
     criterion.setTitle(title); // save title
     criterion.setRatings(ratings); // save ratings
-    criterion.toggleEditView(); // render widget view on save
+    setRatings(criterion.ratings); // update state to render display
+    toggleEditView(index); // render widget view on save
     alert("Criteria saved!"); // todo debug
-    console.log(criterion); // todo debug
+    console.log(criterion);
   };
 
   // called when user clicks "remove" on a criterion
@@ -43,6 +45,13 @@ const CriteriaInput = ({
     setTitle(event.target.value); // !! only updates local state !!
   };
 
+  // callback to be used in Rating input component to update rating state here
+  const updateRating = (index: number, updatedRating: Rating) => {
+    const newRatings = [...ratings];
+    newRatings[index] = updatedRating;
+    setRatings(newRatings); // trigger re-render
+  };
+
   // called whenever the user changes the amount of ratings to render the appropriate inputs
   const handleRatingCountChange = (event: ChangeEvent<HTMLSelectElement>) => {
     let count = Number(event.target.value);
@@ -54,7 +63,6 @@ const CriteriaInput = ({
     } else {
       ratings.splice(count); // trims off excess rating objects
     }
-
     setRatingCount(Number(event.target.value)); // !! only updates local state !!
   };
 
@@ -67,6 +75,7 @@ const CriteriaInput = ({
           key={`rating-${index}-${i}`}
           entry={criterion.ratings[i]}
           ratingIndex={i}
+          onChange={updateRating} // callback function to update state here in child component
         />,
       );
     }
@@ -74,7 +83,7 @@ const CriteriaInput = ({
   };
 
   return (
-    <div key={index} className="border p-4 gap-2 grid">
+    <div key={index} className="rounded p-4 border-2 gap-2 grid">
       <label htmlFor={`criteria${index}`} className={"mr-2"}>
         Criteria {index + 1}
       </label>

@@ -12,8 +12,6 @@ CriteriaWidget is a simplified view of a given criteria that has already been sa
 const CriteriaWidget = ({
   criterion,
   index,
-  rubric,
-  setRubric,
 }: CriteriaDisplayProps): ReactElement => {
   return (
     <div className="border p-4 mb-2">

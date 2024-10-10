@@ -2,13 +2,11 @@ import Rating from "./Rating.ts";
 
 export default class Criteria {
   title: string;
-  ratingCount: number;
   ratings: Rating[];
   editView: boolean; // used to toggle widget vs edit view
 
   constructor(title = "") {
     this.title = title;
-    this.ratingCount = 1;
     this.ratings = [new Rating()];
     this.editView = true;
   }
