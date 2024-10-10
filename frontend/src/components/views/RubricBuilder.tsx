@@ -8,27 +8,34 @@ import {
   ReactElement,
   useState,
 } from "react";
-import Rubric from "../../Rubric.ts";
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import CriteriaWidget from "../rubric-builder/CriteriaWidget.tsx";
 
 export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(() => new Rubric()); // initialize state with a new Rubric object
+  const [title, setTitle] = useState<string>(""); // initialize title field with empty string;
+  const [criteria, setCriteria] = useState<Criteria[]>([]); // initialize criteria with empty array
 
+  //todo: add a save rubric function
+  // Handle rubric title change
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = new Rubric(event.target.value); // create new instance of rubric
-    newRubric.criteria = [...rubric.criteria]; // copy criteria array over
-    setRubric(newRubric); // calling the set method in useState will trigger a re-render (only if state has changed)
+    setTitle(event.target.value);
   };
 
+  // Handle adding new criteria
   const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    event.preventDefault(); // prevent page reload/form submitting
-    const newCriteria = new Criteria();
-    const newRubric = new Rubric(rubric.title); // deep copy active rubric
-    newRubric.criteria = [...rubric.criteria];
-    newRubric.addCriterion(newCriteria);
-    setRubric(newRubric); // triggers rubric re-render with the new criteria
+    event.preventDefault();
+    setCriteria((prevCriteria) => [...prevCriteria, new Criteria()]); // add new criteria to array
+  };
+
+  const renderCriteria = () => {
+    return criteria.map((criterion: Criteria, index: number) =>
+      criterion.editView ? (
+        <CriteriaInput key={index} criterion={criterion} index={index} />
+      ) : (
+        <CriteriaWidget key={index} criterion={criterion} index={index} />
+      ),
+    );
   };
 
   return (
@@ -45,32 +52,13 @@ export default function RubricBuilder(): ReactElement {
           className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600 "
           name="rubricTitle"
           id="rubricTitle"
-          value={rubric.title}
+          value={title}
           onChange={handleRubricTitleChange}
         />
 
-        <div className="mt-2">
-          {rubric.criteria.map((criterion: Criteria, index: number) =>
-            criterion.editView ? (
-              <CriteriaInput
-                key={index}
-                criterion={criterion}
-                index={index}
-                rubric={rubric}
-                setRubric={setRubric}
-              />
-            ) : (
-              <CriteriaWidget
-                key={index}
-                criterion={criterion}
-                index={index}
-                rubric={rubric}
-                setRubric={setRubric}
-              />
-            ),
-          )}
-        </div>
+        <div className="mt-2">{renderCriteria()}</div>
         <button
+          type={"button"}
           className="mt-2 justify-self-end bg-gray-500 rounded-md px-2 font-bold hover:bg-violet-500 opacity-80 active:opacity-70"
           onClick={addCriteria}
         >

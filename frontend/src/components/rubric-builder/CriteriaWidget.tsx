@@ -1,5 +1,8 @@
 import { ReactElement } from "react";
-import { CriteriaDisplayProps } from "../../interfaces/CriteriaDisplayProps.ts";
+import { CriteriaDisplayProps } from "../../interfaces/CriteriaDisplayProps.ts"; /*
+CriteriaWidget is a simplified view of a given criteria that has already been saved to improve readability while the
+ user is working on filling out other criteria or just wants a quick overview of what criteria make up a rubric.
+ */
 
 /*
 CriteriaWidget is a simplified view of a given criteria that has already been saved to improve readability while the

@@ -7,7 +7,6 @@ export default class Rubric {
   constructor(title = "") {
     this.title = title;
     this.criteria = [];
-    console.log(this);
   }
 
   addCriterion(criteria: Criteria): void {

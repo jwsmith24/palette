@@ -1,31 +1,21 @@
+import Rating from "./Rating.ts";
+
 export default class Criteria {
   title: string;
   ratingCount: number;
-  ratings;
+  ratings: Rating[];
   editView: boolean; // used to toggle widget vs edit view
 
-  constructor(title = "", ratingCount = 1) {
+  constructor(title = "") {
     this.title = title;
-    this.ratingCount = ratingCount;
-    this.ratings = this.initializeRatings(ratingCount);
+    this.ratingCount = 1;
+    this.ratings = [new Rating()];
     this.editView = true;
   }
 
-  // builds the array of rating options for a given Criteria object
-  initializeRatings(ratingCount: number) {
-    const ratingsArray = [];
-    for (let i = 0; i < ratingCount; i++) {
-      ratingsArray.push({
-        points: 0,
-        description: "",
-      });
-    }
-
-    return ratingsArray;
-  }
-
-  setRatingCount(count: number) {
-    this.ratingCount = count;
+  // saves new ratings array
+  setRatings(ratings: Rating[]) {
+    this.ratings = ratings;
   }
 
   setTitle(title: string) {
