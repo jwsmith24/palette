@@ -2,11 +2,12 @@ import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Home(): ReactElement {
-  const options: string[] = ["red", "yellow", "green", "blue", "purple"];
-  const [color, setColor] = useState("red");
+  const options: string[] = ["red", "yellow", "green", "blue", "purple"]; // color pool for the button hover effect
+  const [color, setColor] = useState("red"); // state hook for the button hover effect
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // enables programmatic client-side routing
 
+  // used to determine a color at random from the pool for the button hover effect
   function randomColor(): string {
     let max = options.length;
     let randomInt = Math.floor(Math.random() * max);
@@ -17,6 +18,8 @@ export default function Home(): ReactElement {
     setColor(randomColor());
   };
 
+  //todo - placeholder. Eventually we'll implement the login/authentication logic from here but for now it just
+  // routes to the rubric builder view.
   const handleLogin = () => {
     navigate("/rubric-builder");
   };

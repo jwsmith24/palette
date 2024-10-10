@@ -1,11 +1,7 @@
 import { ReactElement } from "react";
+import { RatingProps } from "../../interfaces/RatingProps.ts";
 
-interface RatingProps {
-  ratingCount: number;
-  criteriaIndex: number;
-}
-
-//todo link in actual rating point and title values, add remove button to widget
+//todo work in progress - link in actual rating point and title values, add remove button to widget
 export default function RatingInput({
   ratingCount,
   criteriaIndex,

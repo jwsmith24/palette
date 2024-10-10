@@ -1,40 +1,39 @@
-// CriteriaInput.tsx
+/* CriteriaInput.tsx
+React component where the user can add/edit information for a given criterion. Displayed when a criterion is in
+ "edit" view. (The CriteriaWidget component is rendered when a criterion is in "widget" view)
+ */
 import {
   ChangeEvent,
   MouseEvent as ReactMouseEvent,
   ReactElement,
 } from "react";
-import Criteria from "../../Criteria.ts";
 import RatingInput from "./RatingInput.tsx";
 import Rubric from "../../Rubric.ts";
-
-interface CriteriaInputProps {
-  criterion: Criteria;
-  index: number;
-  rubric: Rubric;
-  setRubric: (rubric: Rubric) => void;
-}
+import { CriteriaDisplayProps } from "../../interfaces/CriteriaDisplayProps.ts";
 
 const CriteriaInput = ({
   criterion,
   index,
   rubric,
   setRubric,
-}: CriteriaInputProps): ReactElement => {
+}: CriteriaDisplayProps): ReactElement => {
   const handleSaveCriteria = (event: ReactMouseEvent) => {
-    event.preventDefault();
-    criterion.toggleActive();
-    const newRubric = new Rubric(rubric.title);
-    newRubric.criteria = [...rubric.criteria];
-    setRubric(newRubric);
-    alert("Criteria saved!");
+    event.preventDefault(); // prevent button from submitting the form
+    criterion.toggleEditView(); // render widget view on save
+    const newRubric = new Rubric(rubric.title); // React requires a deep copy to trigger a re-render
+    newRubric.criteria = [...rubric.criteria]; // deep copy part two
+    setRubric(newRubric); // passing a completely new ref to the useState hook will now re-render the display and
+    // show the widget instead of the edit view.
+    alert("Criteria saved!"); // for debug - will remove
   };
 
+  // called when user clicks "remove" on a criterion
   const handleRemoveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault();
-    alert("Criteria removed!");
+    alert("Criteria removed!"); // debug - will remove
   };
 
+  // called whenever the user hits a key within the Criteria Title input to keep the display updated
   const handleCriteriaTitleChange = (
     event: ChangeEvent<HTMLInputElement>,
     index: number,
@@ -47,6 +46,7 @@ const CriteriaInput = ({
     setRubric(newRubric);
   };
 
+  // called whenever the user changes the amount of ratings to render the appropriate inputs
   const handleCriteriaRatingCountChange = (
     event: ChangeEvent<HTMLSelectElement>,
     index: number,

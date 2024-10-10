@@ -1,3 +1,7 @@
+/*
+Main view for the Rubric Builder feature.
+ */
+
 import {
   ChangeEvent,
   MouseEvent as ReactMouseEvent,
@@ -7,10 +11,10 @@ import {
 import Rubric from "../../Rubric.ts";
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
-import CriteriaWidget from "../CriteriaWidget.tsx";
+import CriteriaWidget from "../rubric-builder/CriteriaWidget.tsx";
 
 export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(() => new Rubric());
+  const [rubric, setRubric] = useState<Rubric>(() => new Rubric()); // initialize state with a new Rubric object
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = new Rubric(event.target.value); // create new instance of rubric
@@ -19,12 +23,12 @@ export default function RubricBuilder(): ReactElement {
   };
 
   const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+    event.preventDefault(); // prevent page reload/form submitting
     const newCriteria = new Criteria();
-    const newRubric = new Rubric(rubric.title);
+    const newRubric = new Rubric(rubric.title); // deep copy active rubric
     newRubric.criteria = [...rubric.criteria];
     newRubric.addCriterion(newCriteria);
-    setRubric(newRubric);
+    setRubric(newRubric); // triggers rubric re-render with the new criteria
   };
 
   return (
@@ -47,7 +51,7 @@ export default function RubricBuilder(): ReactElement {
 
         <div className="mt-2">
           {rubric.criteria.map((criterion: Criteria, index: number) =>
-            criterion.active ? (
+            criterion.editView ? (
               <CriteriaInput
                 key={index}
                 criterion={criterion}
