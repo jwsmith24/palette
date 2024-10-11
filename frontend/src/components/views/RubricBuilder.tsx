@@ -38,7 +38,6 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = [...rubric.criteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
-    console.log(rubric);
   };
 
   // render either the edit or widget view
