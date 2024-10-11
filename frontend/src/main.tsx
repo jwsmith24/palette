@@ -8,7 +8,7 @@ import "./index.css";
 import Home from "./components/views/Home.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RubricBuilder from "./components/views/RubricBuilder.tsx";
-import TestApp from "./components/views/TestApp.tsx";
+import TestApp from "./components/views/TestApp.tsx"; // Defined a "root" div in index.html that we pull in here and then call the React render method.
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
 createRoot(document.getElementById("root")!).render(

@@ -33,6 +33,13 @@ export default function RubricBuilder(): ReactElement {
     setRubric({ ...rubric, criteria: newCriteria });
   };
 
+  const handleRemoveCriterion = (index: number) => {
+    const newCriteria = [...rubric.criteria];
+    newCriteria.splice(index, 1); // remove the target criterion
+    console.log(newCriteria);
+    setRubric({ ...rubric, criteria: newCriteria });
+  };
+
   // update criterion at given index
   const handleCriteriaUpdate = (index: number, criterion: Criteria) => {
     const newCriteria = [...rubric.criteria]; // copy criteria to new array
@@ -45,10 +52,11 @@ export default function RubricBuilder(): ReactElement {
     return rubric.criteria.map((criterion: Criteria, index: number) =>
       criterion.editView ? (
         <CriteriaInput
-          key={index}
+          key={criterion.id}
           index={index}
           criterion={criterion}
           handleCriteriaUpdate={handleCriteriaUpdate}
+          removeCriterion={handleRemoveCriterion}
         />
       ) : (
         <CriteriaWidget key={index} criterion={criterion} index={index} />

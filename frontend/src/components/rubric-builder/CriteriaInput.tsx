@@ -16,10 +16,12 @@ export default function CriteriaInput({
   index,
   criterion,
   handleCriteriaUpdate,
+  removeCriterion,
 }: {
   index: number;
   criterion: Criteria;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
+  removeCriterion: (index: number) => void;
 }): ReactElement {
   // State for form inputs (initial values set to what's in the object for edit case)
   const [title, setTitle] = useState(criterion.title);
@@ -29,6 +31,7 @@ export default function CriteriaInput({
   // todo tbd
   const handleRemoveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault();
+    removeCriterion(index);
     alert("Criteria removed!"); // debug - will remove
   };
 
