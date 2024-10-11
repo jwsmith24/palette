@@ -34,6 +34,7 @@ export default function CriteriaInput({
 
   // update display
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     const newTitle = event.target.value;
     setTitle(newTitle); // !! only updates input value !!
     const newCriteria = { ...criterion, title: newTitle };
@@ -52,10 +53,20 @@ export default function CriteriaInput({
     let count = Number(event.target.value);
 
     // add new Rating objects if count increases
-    const newRatings = []; // start fresh for case: remove option
-    for (let i = 0; i < count; i++) {
-      newRatings.push(new Rating());
+    let newRatings: Rating[];
+
+    if (count < ratings.length) {
+      // shrink array if count decreases
+      newRatings = ratings.slice(0, count);
+    } else {
+      // copy over existing ratings
+      newRatings = [...ratings];
+      // add new rating objects from last rating to new count
+      for (let i = ratings.length; i < count; i++) {
+        newRatings.push(new Rating());
+      }
     }
+
     setRatings(newRatings);
     const newCriteria = { ...criterion, ratings: newRatings };
     handleCriteriaUpdate(index, newCriteria);
@@ -63,7 +74,6 @@ export default function CriteriaInput({
 
   // displays rating input components based on local rating state (not Criteria.ratingCount)
   const renderRatingInputs = () => {
-    console.log(ratings);
     return ratings.map((rating: Rating, index: number) => {
       return (
         <RatingInput
@@ -116,14 +126,6 @@ export default function CriteriaInput({
         {/*Here (and in other event handlers) we just pass a function reference so that it doesn't execute
          immediately, but rather when the event is triggered. In this case, when the user clicks save. */}
         <div id={"criterionOptButtons"} className={"flex gap-2"}>
-          <button
-            className={
-              "bg-gray-500 rounded-md px-2 font-bold hover:bg-green-500 opacity-80" +
-              " active:opacity-70"
-            }
-          >
-            Save - tbr
-          </button>
           <button
             className={
               "bg-gray-500 rounded-md px-2 font-bold hover:bg-red-500 opacity-80" +
