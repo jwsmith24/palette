@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement, useEffect, useState } from "react";
+import { ChangeEvent, ReactElement, useState } from "react";
 import Rating from "../../Rating.ts";
 /*
 RatingInput component maps a criterion's array of ratings to the display.
