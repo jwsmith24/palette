@@ -32,7 +32,6 @@ export default function CriteriaInput({
   const handleRemoveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault();
     removeCriterion(index);
-    alert("Criteria removed!"); // debug - will remove
   };
 
   // update display
