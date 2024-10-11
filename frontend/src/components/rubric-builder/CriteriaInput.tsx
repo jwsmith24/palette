@@ -15,19 +15,20 @@ import Criteria from "../../Criteria.ts";
 export default function CriteriaInput({
   index,
   criterion,
-  handleUpdateCriteria,
+  handleAddCriteria,
   handleCriteriaUpdate,
   removeCriterion,
 }: {
   index: number;
   criterion: Criteria;
-  handleUpdateCriteria: () => void;
+  handleAddCriteria: () => void;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
 }): ReactElement {
   // State for form inputs (initial values set to what's in the object for edit case)
   const [title, setTitle] = useState(criterion.title);
   const [ratings, setRatings] = useState(criterion.ratings);
+  const [active, setActive] = useState(true); // track whether criteria card is in edit view or widget view
 
   // called when user clicks "remove" on a criterion
   // todo tbd
@@ -92,9 +93,16 @@ export default function CriteriaInput({
 
   const handleAddCriteriaButton = (event: ReactMouseEvent) => {
     event.preventDefault();
-    handleUpdateCriteria();
+    setActive(false);
+    handleAddCriteria();
   };
-  return (
+
+  const changeCriteriaView = () => {
+    setActive(true);
+  };
+
+  // function render the criteria in edit mode
+  const renderEditView = () => (
     <div
       key={criterion.id}
       className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 w-full mb-4"
@@ -165,4 +173,34 @@ export default function CriteriaInput({
       </div>
     </div>
   );
+
+  // function to render the criteria as a widget
+  const renderWidgetView = () => {
+    return (
+      <div className="border p-4 mb-2" onClick={changeCriteriaView}>
+        <div id={"widgetInfo"} className={"flex justify-between"}>
+          <p className="font-bold">{title || `Criteria ${index + 1}`}</p>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1.5 5.5a.5.5 0 0 1 .707 0L8 11.293l5.793-5.793a.5.5 0 0 1 .707.707l-6 6a.5.5 0 0 1-.707 0l-6-6a.5.5 0 0 1 0-.707z"
+            />
+          </svg>
+        </div>
+      </div>
+    );
+  };
+
+  // render edit or widget view based on active state
+  if (active) {
+    return <>{renderEditView()}</>;
+  } else {
+    return <>{renderWidgetView()}</>;
+  }
 }

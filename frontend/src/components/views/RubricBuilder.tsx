@@ -2,32 +2,21 @@
 Main view for the Rubric Builder feature.
  */
 
-import {
-  ChangeEvent,
-  MouseEvent as ReactMouseEvent,
-  ReactElement,
-  useState,
-} from "react";
+import { ChangeEvent, ReactElement, useState } from "react";
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
-import CriteriaWidget from "../rubric-builder/CriteriaWidget.tsx";
 import Rubric from "../../Rubric.ts";
 
 export default function RubricBuilder(): ReactElement {
-  // active rubric state
-  const [rubric, setRubric] = useState(new Rubric());
+  const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
+  const [title, setTitle] = useState<string>(""); // track state for rubric title input
 
-  // input state
-  const [title, setTitle] = useState<string>(""); // initialize title field with empty string;
-
-  //todo: add a save rubric function
-  // Handle rubric title change
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
   // update rubric state with new list of criteria
-  const handleUpdateCriteria = () => {
+  const handleAddCriteria = () => {
     const newCriteria = [...rubric.criteria, new Criteria()];
     setRubric({ ...rubric, criteria: newCriteria });
   };
@@ -48,20 +37,16 @@ export default function RubricBuilder(): ReactElement {
 
   // render either the edit or widget view
   const renderCriteria = () => {
-    return rubric.criteria.map((criterion: Criteria, index: number) =>
-      criterion.editView ? (
-        <CriteriaInput
-          key={criterion.id}
-          index={index}
-          criterion={criterion}
-          handleUpdateCriteria={handleUpdateCriteria}
-          handleCriteriaUpdate={handleCriterionUpdate}
-          removeCriterion={handleRemoveCriterion}
-        />
-      ) : (
-        <CriteriaWidget key={index} criterion={criterion} index={index} />
-      ),
-    );
+    return rubric.criteria.map((criterion: Criteria, index: number) => (
+      <CriteriaInput
+        key={criterion.id}
+        index={index}
+        criterion={criterion}
+        handleAddCriteria={handleAddCriteria}
+        handleCriteriaUpdate={handleCriterionUpdate}
+        removeCriterion={handleRemoveCriterion}
+      />
+    ));
   };
 
   return (
@@ -72,7 +57,10 @@ export default function RubricBuilder(): ReactElement {
         }
       ></div>
       <form className="grid p-8 w-1/2 g-3 max-w-2xl">
-        <h1 className="font-bold text-5xl mb-4">Create a new rubric</h1>
+        <h1 className="font-bold text-5xl mb-2">Create a new rubric for</h1>
+        <h2 className={"font-medium italic text-3xl mb-4"}>
+          {title || "critiquing bird noises"}
+        </h2>
 
         <label htmlFor="rubricTitle" className={"mb-2"}>
           Rubric Title
