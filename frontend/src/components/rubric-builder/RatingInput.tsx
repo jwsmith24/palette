@@ -1,38 +1,35 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from "react";
-import { RatingInputProps } from "../../interfaces/RatingInputProps.ts";
+import Rating from "../../Rating.ts";
 /*
 RatingInput component maps a criterion's array of ratings to the display.
  */
 //todo work in progress - link in actual rating point and title values, add remove button to widget
 export default function RatingInput({
   ratingIndex,
-  entry, // pass criterion.ratings[index] to keep it short
-  onChange, // callback to handle rating changes
-}: RatingInputProps): ReactElement {
-  const [ratingValue, setRatingValue] = useState(entry.points); // initialize with saved point value.
-  const [ratingDescription, setRatingDescription] = useState(entry.description);
-
-  // Effect to synchronize state when entry prop changes
-  useEffect(() => {
-    setRatingValue(entry.points);
-    setRatingDescription(entry.description);
-  }, [entry]);
+  rating, // pass criterion.ratings[index] to keep it short
+  updateRating, // callback to handle rating changes
+}: {
+  ratingIndex: number;
+  rating: Rating;
+  updateRating: (index: number, updatedRating: Rating) => void;
+}): ReactElement {
+  const [ratingValue, setRatingValue] = useState(rating.points); // initialize with saved point value.
+  const [ratingDescription, setRatingDescription] = useState(
+    rating.description,
+  );
 
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newPointValue = Number(event.target.value);
-    setRatingValue(newPointValue);
-    onChange(ratingIndex, {
-      ...entry,
-      points: newPointValue,
-      description: ratingDescription,
-    }); // Use updated points
+    setRatingValue(newPointValue); // update input value
+    const newRating = { ...rating, points: newPointValue };
+    updateRating(ratingIndex, newRating);
   };
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const newDescription = event.target.value;
     setRatingDescription(newDescription);
-    onChange(ratingIndex, {
-      ...entry,
+    updateRating(ratingIndex, {
+      ...rating,
       points: ratingValue,
       description: newDescription,
     }); // Use updated description

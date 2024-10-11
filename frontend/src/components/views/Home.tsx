@@ -24,6 +24,10 @@ export default function Home(): ReactElement {
     navigate("/rubric-builder");
   };
 
+  const handleSignUp = () => {
+    navigate("/sandbox");
+  };
+
   return (
     <div
       className={
@@ -55,6 +59,7 @@ export default function Home(): ReactElement {
             className={
               "text-white bg-gray-600 rounded pl-3 pr-3 hover:opacity-70 active:opacity-60 transition duration-400 ease-in-out transform hover:scale-110"
             }
+            onClick={handleSignUp}
           >
             Sign Up
           </button>

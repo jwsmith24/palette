@@ -11,10 +11,14 @@ import {
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import CriteriaWidget from "../rubric-builder/CriteriaWidget.tsx";
+import Rubric from "../../Rubric.ts";
 
 export default function RubricBuilder(): ReactElement {
+  // active rubric state
+  const [rubric, setRubric] = useState(new Rubric());
+
+  // input state
   const [title, setTitle] = useState<string>(""); // initialize title field with empty string;
-  const [criteria, setCriteria] = useState<Criteria[]>([]); // initialize criteria with empty array
 
   //todo: add a save rubric function
   // Handle rubric title change
@@ -25,34 +29,30 @@ export default function RubricBuilder(): ReactElement {
   // Handle adding new criteria
   const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setCriteria((prevCriteria) => [...prevCriteria, new Criteria()]); // add new criteria to array
+    const newCriteria = [...rubric.criteria, new Criteria()];
+    setRubric({ ...rubric, criteria: newCriteria });
   };
 
-  const toggleEditView = (index: number) => {
-    setCriteria((prevCriteria) => {
-      const updatedCriteria = [...prevCriteria];
-      updatedCriteria[index].toggleEditView();
-      return updatedCriteria;
-    });
+  // update criterion at given index
+  const handleCriteriaUpdate = (index: number, criterion: Criteria) => {
+    const newCriteria = [...rubric.criteria]; // copy criteria to new array
+    newCriteria[index] = criterion; // update the criterion with changes;
+    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
+    console.log(rubric);
   };
 
   // render either the edit or widget view
   const renderCriteria = () => {
-    return criteria.map((criterion: Criteria, index: number) =>
+    return rubric.criteria.map((criterion: Criteria, index: number) =>
       criterion.editView ? (
         <CriteriaInput
           key={index}
-          criterion={criterion}
           index={index}
-          toggleEditView={toggleEditView}
+          criterion={criterion}
+          handleCriteriaUpdate={handleCriteriaUpdate}
         />
       ) : (
-        <CriteriaWidget
-          key={index}
-          criterion={criterion}
-          index={index}
-          toggleEditView={toggleEditView}
-        />
+        <CriteriaWidget key={index} criterion={criterion} index={index} />
       ),
     );
   };

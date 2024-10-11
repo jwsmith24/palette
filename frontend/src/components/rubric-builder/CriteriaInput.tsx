@@ -9,29 +9,21 @@ import {
   useState,
 } from "react";
 import RatingInput from "./RatingInput.tsx";
-import { CriteriaDisplayProps } from "../../interfaces/CriteriaDisplayProps.ts";
 import Rating from "../../Rating.ts";
+import Criteria from "../../Criteria.ts";
 
-const CriteriaInput = ({
-  criterion,
+export default function CriteriaInput({
   index,
-  toggleEditView,
-}: CriteriaDisplayProps): ReactElement => {
-  // Local state to manage form input and keep display updated prior to saving
+  criterion,
+  handleCriteriaUpdate,
+}: {
+  index: number;
+  criterion: Criteria;
+  handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
+}): ReactElement {
+  // State for form inputs (initial values set to what's in the object for edit case)
   const [title, setTitle] = useState(criterion.title);
   const [ratings, setRatings] = useState(criterion.ratings);
-  const [ratingCount, setRatingCount] = useState(criterion.ratings.length);
-
-  // Update the criterion object with the current state values on save.
-  const handleSaveCriteria = (event: ReactMouseEvent) => {
-    event.preventDefault(); // stop form reload
-    criterion.setTitle(title); // save title
-    criterion.setRatings(ratings); // save ratings
-    setRatings(criterion.ratings); // update state to render display
-    toggleEditView(index); // render widget view on save
-    alert("Criteria saved!"); // todo debug
-    console.log(criterion);
-  };
 
   // called when user clicks "remove" on a criterion
   // todo tbd
@@ -40,50 +32,52 @@ const CriteriaInput = ({
     alert("Criteria removed!"); // debug - will remove
   };
 
-  // called whenever the user hits a key within the Criteria Title input to keep the display updated
+  // update display
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value); // !! only updates local state !!
+    const newTitle = event.target.value;
+    setTitle(newTitle); // !! only updates input value !!
+    const newCriteria = { ...criterion, title: newTitle };
+    handleCriteriaUpdate(index, newCriteria);
   };
 
   // callback to be used in Rating input component to update rating state here
   const updateRating = (index: number, updatedRating: Rating) => {
     const newRatings = [...ratings];
-    newRatings[index] = updatedRating;
+    newRatings[index] = updatedRating; // updating target rating with new info
     setRatings(newRatings); // trigger re-render
   };
 
   // called whenever the user changes the amount of ratings to render the appropriate inputs
   const handleRatingCountChange = (event: ChangeEvent<HTMLSelectElement>) => {
     let count = Number(event.target.value);
-    if (ratings.length < count) {
-      // add new Rating objects if count increases
-      for (let i = ratings.length; i < count; i++) {
-        ratings.push(new Rating());
-      }
-    } else {
-      ratings.splice(count); // trims off excess rating objects
+
+    // add new Rating objects if count increases
+    const newRatings = []; // start fresh for case: remove option
+    for (let i = 0; i < count; i++) {
+      newRatings.push(new Rating());
     }
-    setRatingCount(Number(event.target.value)); // !! only updates local state !!
+    setRatings(newRatings);
+    const newCriteria = { ...criterion, ratings: newRatings };
+    handleCriteriaUpdate(index, newCriteria);
   };
 
-  // displays rating input components based on ratingCount state (not Criteria.ratingCount)
+  // displays rating input components based on local rating state (not Criteria.ratingCount)
   const renderRatingInputs = () => {
-    const ratingInputs = [];
-    for (let i = 0; i < ratingCount; i++) {
-      ratingInputs.push(
+    console.log(ratings);
+    return ratings.map((rating: Rating, index: number) => {
+      return (
         <RatingInput
-          key={`rating-${index}-${i}`}
-          entry={criterion.ratings[i]}
-          ratingIndex={i}
-          onChange={updateRating} // callback function to update state here in child component
-        />,
+          key={rating.id}
+          rating={rating}
+          ratingIndex={index}
+          updateRating={updateRating} // callback function to update state here in child component
+        />
       );
-    }
-    return ratingInputs;
+    });
   };
 
   return (
-    <div key={index} className="rounded p-4 border-2 gap-2 grid">
+    <div key={criterion.id} className="rounded p-4 border-2 gap-2 grid">
       <label htmlFor={`criteria${index}`} className={"mr-2"}>
         Criteria {index + 1}
       </label>
@@ -102,7 +96,7 @@ const CriteriaInput = ({
       <select
         id={`ratingCount${index}`}
         className="text-black rounded-b"
-        value={ratingCount}
+        value={ratings.length}
         onChange={handleRatingCountChange}
       >
         <option value="1">1</option>
@@ -127,9 +121,8 @@ const CriteriaInput = ({
               "bg-gray-500 rounded-md px-2 font-bold hover:bg-green-500 opacity-80" +
               " active:opacity-70"
             }
-            onClick={handleSaveCriteria}
           >
-            Save
+            Save - tbr
           </button>
           <button
             className={
@@ -144,6 +137,4 @@ const CriteriaInput = ({
       </div>
     </div>
   );
-};
-
-export default CriteriaInput;
+}
