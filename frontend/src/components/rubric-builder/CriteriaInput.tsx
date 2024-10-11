@@ -15,11 +15,13 @@ import Criteria from "../../Criteria.ts";
 export default function CriteriaInput({
   index,
   criterion,
+  handleUpdateCriteria,
   handleCriteriaUpdate,
   removeCriterion,
 }: {
   index: number;
   criterion: Criteria;
+  handleUpdateCriteria: () => void;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
 }): ReactElement {
@@ -88,34 +90,53 @@ export default function CriteriaInput({
     });
   };
 
+  const handleAddCriteriaButton = (event: ReactMouseEvent) => {
+    event.preventDefault();
+    handleUpdateCriteria();
+  };
   return (
-    <div key={criterion.id} className="rounded p-4 border-2 gap-2 grid">
-      <label htmlFor={`criteria${index}`} className={"mr-2"}>
+    <div
+      key={criterion.id}
+      className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 w-full mb-4"
+    >
+      <label
+        htmlFor={`criteria${index}`}
+        className={"mb-2 text-xl font-semibold text-gray-900"}
+      >
         Criteria {index + 1}
       </label>
-      <input
-        id={`criteria${index}`}
-        type="text"
-        placeholder="Criteria Description"
-        className="rounded p-1 mb-2 hover:bg-gray-200 text-gray-600"
-        value={title}
-        onChange={(event) => handleTitleChange(event)}
-        required
-      />
-      <label htmlFor={`ratingCount${index}`} className="font-bold mb-2">
-        Number of Rating Options
-      </label>
-      <select
-        id={`ratingCount${index}`}
-        className="text-black rounded-b"
-        value={ratings.length}
-        onChange={handleRatingCountChange}
+      <div
+        id={`${criterion.id}content`}
+        className={
+          "text-gray-700 grid text-sm md:text-base leading-relaxed mb-4"
+        }
       >
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
+        <input
+          id={`criteria${index}`}
+          type="text"
+          placeholder="Enter criteria description..."
+          className={
+            "rounded mb-2 p-2 hover:bg-gray-100 border-2 border-gray-300 focus:border-blue-500"
+          }
+          value={title}
+          onChange={handleTitleChange}
+          required
+        />
+        <label htmlFor={`ratingCount${index}`}>Number of Rating Options</label>
+        <select
+          id={`ratingCount${index}`}
+          value={ratings.length}
+          className={
+            "rounded p-2 hover:bg-gray-100 border-2 border-gray-300 w-1/3"
+          }
+          onChange={handleRatingCountChange}
+        >
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
 
       {/* Calling the function instead of passing a ref like the others because we want the function to execute
        immediately and return the JSX to display */}
@@ -129,13 +150,16 @@ export default function CriteriaInput({
          immediately, but rather when the event is triggered. In this case, when the user clicks save. */}
         <div id={"criterionOptButtons"} className={"flex gap-2"}>
           <button
-            className={
-              "bg-gray-500 rounded-md px-2 font-bold hover:bg-red-500 opacity-80" +
-              " active:opacity-70"
-            }
+            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-200 ease-in-out"
             onClick={handleRemoveCriteria}
           >
             Remove
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200 ease-in-out"
+            onClick={handleAddCriteriaButton}
+          >
+            Add
           </button>
         </div>
       </div>

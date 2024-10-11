@@ -7,7 +7,7 @@ export default class Rubric {
 
   constructor(title = "") {
     this.title = title;
-    this.criteria = [];
+    this.criteria = [new Criteria()];
     this.id = crypto.randomUUID();
   }
 }

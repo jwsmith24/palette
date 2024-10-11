@@ -35,14 +35,18 @@ export default function RatingInput({
     }); // Use updated description
   };
   return (
-    <div className="grid rounded gap-2">
-      <h3>Rating Option {ratingIndex + 1}</h3>
+    <div className="grid text-gray-700">
+      <h3 className={"font-semibold text-gray-900"}>
+        Rating Option {ratingIndex + 1}
+      </h3>
       <label htmlFor={`points${ratingIndex}label`}>Points</label>
       <input
         type="number"
         name={`points${ratingIndex}input`}
         id={`points${ratingIndex}input`}
-        className="w-1/6 text-gray-600 rounded focus:outline-0"
+        className={
+          "rounded p-2 hover:bg-gray-100 border-2 border-gray-300 focus:border-blue-500 resize-none w-1/3"
+        }
         value={ratingValue}
         min={0}
         max={100}
@@ -53,10 +57,12 @@ export default function RatingInput({
       <textarea
         name={`ratingDesc${ratingIndex}text`}
         id={`ratingDesc$${ratingIndex}text`}
-        rows={2}
+        rows={4}
         value={ratingDescription}
-        placeholder={"Describe how to earn the rating."}
-        className="rounded-md text-gray-600 border-2 border-gray-300 hover:bg-gray-200 shadow-sm focus:outline-none"
+        placeholder={"Describe how to earn the rating..."}
+        className={
+          "rounded mb-2 p-2 hover:bg-gray-100 border-2 border-gray-300 focus:border-blue-500 resize-none"
+        }
         onChange={handleDescriptionChange}
       ></textarea>
     </div>

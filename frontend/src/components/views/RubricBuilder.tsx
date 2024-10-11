@@ -26,9 +26,8 @@ export default function RubricBuilder(): ReactElement {
     setTitle(event.target.value);
   };
 
-  // Handle adding new criteria
-  const addCriteria = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  // update rubric state with new list of criteria
+  const handleUpdateCriteria = () => {
     const newCriteria = [...rubric.criteria, new Criteria()];
     setRubric({ ...rubric, criteria: newCriteria });
   };
@@ -41,7 +40,7 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // update criterion at given index
-  const handleCriteriaUpdate = (index: number, criterion: Criteria) => {
+  const handleCriterionUpdate = (index: number, criterion: Criteria) => {
     const newCriteria = [...rubric.criteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
@@ -55,7 +54,8 @@ export default function RubricBuilder(): ReactElement {
           key={criterion.id}
           index={index}
           criterion={criterion}
-          handleCriteriaUpdate={handleCriteriaUpdate}
+          handleUpdateCriteria={handleUpdateCriteria}
+          handleCriteriaUpdate={handleCriterionUpdate}
           removeCriterion={handleRemoveCriterion}
         />
       ) : (
@@ -65,9 +65,14 @@ export default function RubricBuilder(): ReactElement {
   };
 
   return (
-    <div className="h-max min-h-dvh w-dvw  bg-gray-800 text-white font-sans">
+    <div className="min-h-dvh w-dvw  bg-gray-800 text-white font-sans">
+      <div
+        className={
+          "bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8"
+        }
+      ></div>
       <form className="grid p-8 w-1/2 g-3 max-w-2xl">
-        <h1 className="font-bold text-3xl mb-4">Create a new rubric</h1>
+        <h1 className="font-bold text-5xl mb-4">Create a new rubric</h1>
 
         <label htmlFor="rubricTitle" className={"mb-2"}>
           Rubric Title
@@ -83,13 +88,6 @@ export default function RubricBuilder(): ReactElement {
         />
 
         <div className="mt-2">{renderCriteria()}</div>
-        <button
-          type={"button"}
-          className="mt-2 justify-self-end bg-gray-500 rounded-md px-2 font-bold hover:bg-violet-500 opacity-80 active:opacity-70"
-          onClick={addCriteria}
-        >
-          Add Criteria
-        </button>
       </form>
     </div>
   );
