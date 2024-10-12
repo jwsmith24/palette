@@ -1,206 +1,171 @@
-/* CriteriaInput.tsx
-React component where the user can add/edit information for a given criterion. Displayed when a criterion is in
- "edit" view. (The CriteriaWidget component is rendered when a criterion is in "widget" view)
- */
-import {
-  ChangeEvent,
+import React, {
   MouseEvent as ReactMouseEvent,
   ReactElement,
+  useEffect,
+  useRef,
   useState,
 } from "react";
-import RatingInput from "./RatingInput.tsx";
 import Rating from "../../Rating.ts";
 import Criteria from "../../Criteria.ts";
 
 export default function CriteriaInput({
   index,
   criterion,
-  handleAddCriteria,
   handleCriteriaUpdate,
   removeCriterion,
 }: {
   index: number;
   criterion: Criteria;
-  handleAddCriteria: () => void;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
 }): ReactElement {
-  // State for form inputs (initial values set to what's in the object for edit case)
-  const [title, setTitle] = useState(criterion.title);
-  const [ratings, setRatings] = useState(criterion.ratings);
-  const [active, setActive] = useState(true); // track whether criteria card is in edit view or widget view
+  const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
+  const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
 
-  // called when user clicks "remove" on a criterion
-  // todo tbd
-  const handleRemoveCriteria = (event: ReactMouseEvent) => {
+  useEffect(() => {
+    // Find the rating with the maximum points when the component mounts or ratings change
+    const maxRating = ratings.reduce(
+      (max, current) => (current.points > max.points ? current : max),
+      ratings[0],
+    );
+    setMaxPoints(maxRating.points);
+  }, [ratings]);
+
+  const handleRemoveCriteriaButton = (
+    event: ReactMouseEvent,
+    index: number,
+  ) => {
     event.preventDefault();
     removeCriterion(index);
   };
 
-  // update display
-  const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  // Full rating object is passed instead of using Partial<Rating>
+  const handleRatingChange = (ratingIndex: number, updatedRating: Rating) => {
+    const updatedRatings = ratings.map((rating, index) =>
+      index === ratingIndex ? updatedRating : rating,
+    );
+    setRatings(updatedRatings);
+    criterion.ratings = updatedRatings;
+    handleCriteriaUpdate(index, criterion);
+  };
+
+  const handleRemoveRating = (
+    event: ReactMouseEvent<HTMLButtonElement>,
+    ratingIndex: number,
+  ) => {
     event.preventDefault();
-    const newTitle = event.target.value;
-    setTitle(newTitle); // !! only updates input value !!
-    const newCriteria = { ...criterion, title: newTitle };
-    handleCriteriaUpdate(index, newCriteria);
+    const updatedRatings = ratings.filter((_, i) => i !== ratingIndex);
+    setRatings(updatedRatings);
+    criterion.ratings = updatedRatings;
+    handleCriteriaUpdate(index, criterion);
   };
 
-  // callback to be used in Rating input component to update rating state here
-  const updateRating = (index: number, updatedRating: Rating) => {
-    const newRatings = [...ratings];
-    newRatings[index] = updatedRating; // updating target rating with new info
-    setRatings(newRatings); // trigger re-render
-  };
-
-  // called whenever the user changes the amount of ratings to render the appropriate inputs
-  const handleRatingCountChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    let count = Number(event.target.value);
-
-    // add new Rating objects if count increases
-    let newRatings: Rating[];
-
-    if (count < ratings.length) {
-      // shrink array if count decreases
-      newRatings = ratings.slice(0, count);
-    } else {
-      // copy over existing ratings
-      newRatings = [...ratings];
-      // add new rating objects from last rating to new count
-      for (let i = ratings.length; i < count; i++) {
-        newRatings.push(new Rating());
-      }
-    }
-
-    setRatings(newRatings);
-    const newCriteria = { ...criterion, ratings: newRatings };
-    handleCriteriaUpdate(index, newCriteria);
-  };
-
-  // displays rating input components based on local rating state (not Criteria.ratingCount)
-  const renderRatingInputs = () => {
-    return ratings.map((rating: Rating, index: number) => {
+  const renderRatingOptions = () => {
+    return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
-        <RatingInput
+        <div
           key={rating.id}
-          rating={rating}
-          ratingIndex={index}
-          updateRating={updateRating} // callback function to update state here in child component
-        />
+          className={"grid grid-rows-1 grid-col-3 grid-flow-col gap-2 w-full"}
+        >
+          <input
+            type="number"
+            value={rating.points}
+            onChange={(event) => {
+              event.preventDefault();
+              handleRatingChange(
+                ratingIndex,
+                new Rating(Number(event.target.value), rating.description),
+              );
+            }}
+            className={`font-bold rounded-lg  text-black border w-10`}
+            min="0"
+            required
+          />
+          <input
+            type="text"
+            className={"rounded p-2 text-gray-500"}
+            placeholder={rating.description || "Enter rating description..."}
+            onChange={(event) => {
+              event.preventDefault();
+              handleRatingChange(
+                ratingIndex,
+                new Rating(rating.points, event.target.value),
+              );
+            }}
+          />
+          <button
+            className={
+              "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100" +
+              " hover:text-white"
+            }
+            tabIndex={-1}
+            onClick={(event) => {
+              handleRemoveRating(event, ratingIndex);
+            }}
+          >
+            -
+          </button>
+        </div>
       );
     });
   };
 
-  const handleAddCriteriaButton = (event: ReactMouseEvent) => {
+  const handleAddRating = (
+    event: ReactMouseEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
     event.preventDefault();
-    setActive(false);
-    handleAddCriteria();
+    const newRating = new Rating();
+    const updatedRatings = [...ratings, newRating];
+    setRatings(updatedRatings);
+    criterion.ratings = updatedRatings;
+    handleCriteriaUpdate(index, criterion);
   };
 
-  const changeCriteriaView = () => {
-    setActive(true);
-  };
-
-  // function render the criteria in edit mode
-  const renderEditView = () => (
-    <div
-      key={criterion.id}
-      className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 w-full mb-4"
-    >
-      <label
-        htmlFor={`criteria${index}`}
-        className={"mb-2 text-xl font-semibold text-gray-900"}
-      >
-        Criteria {index + 1}
-      </label>
-      <div
-        id={`${criterion.id}content`}
-        className={
-          "text-gray-700 grid text-sm md:text-base leading-relaxed mb-4"
-        }
-      >
-        <input
-          id={`criteria${index}`}
-          type="text"
-          placeholder="Enter criteria description..."
-          className={
-            "rounded mb-2 p-2 hover:bg-gray-100 border-2 border-gray-300 focus:border-blue-500"
-          }
-          value={title}
-          onChange={handleTitleChange}
-          required
-        />
-        <label htmlFor={`ratingCount${index}`}>Number of Rating Options</label>
-        <select
-          id={`ratingCount${index}`}
-          value={ratings.length}
-          className={
-            "rounded p-2 hover:bg-gray-100 border-2 border-gray-300 w-1/3"
-          }
-          onChange={handleRatingCountChange}
-        >
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
-      </div>
-
-      {/* Calling the function instead of passing a ref like the others because we want the function to execute
-       immediately and return the JSX to display */}
-      <div id={"ratingOptionsView"}>{renderRatingInputs()}</div>
-
-      <div
-        id={"criteriaOptions"}
-        className={"grid grid-rows-1 auto-cols-auto grid-flow-col justify-end"}
-      >
-        {/*Here (and in other event handlers) we just pass a function reference so that it doesn't execute
-         immediately, but rather when the event is triggered. In this case, when the user clicks save. */}
-        <div id={"criterionOptButtons"} className={"flex gap-2"}>
-          <button
-            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-red-500 transition duration-200 ease-in-out"
-            onClick={handleRemoveCriteria}
-          >
-            Remove
-          </button>
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200 ease-in-out"
-            onClick={handleAddCriteriaButton}
-          >
-            Add
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // function to render the criteria as a widget
-  const renderWidgetView = () => {
+  const renderEditableView = () => {
     return (
-      <div className="border p-4 mb-2" onClick={changeCriteriaView}>
-        <div id={"widgetInfo"} className={"flex justify-between"}>
-          <p className="font-bold">{title || `Criteria ${index + 1}`}</p>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M1.5 5.5a.5.5 0 0 1 .707 0L8 11.293l5.793-5.793a.5.5 0 0 1 .707.707l-6 6a.5.5 0 0 1-.707 0l-6-6a.5.5 0 0 1 0-.707z"
+      <div className="grid grid-rows-[auto,auto] border border-white p-4 gap-4 rounded-md w-full">
+        <div className="grid grid-cols-2 gap-4 items-center">
+          <div className={"grid self-baseline"}>
+            <input
+              type="text"
+              placeholder={`Criteria ${index + 1} Title...`}
+              className={"rounded p-2 text-gray-500"}
             />
-          </svg>
+            <p className={"text-2xl font-bold mt-4"}>Max Points: {maxPoints}</p>
+          </div>
+
+          <div className={"grid gap-2"}>{renderRatingOptions()}</div>
+          <div className={"flex gap-3 justify-self-start"}>
+            <button
+              onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
+                handleRemoveCriteriaButton(event, index)
+              }
+              className={
+                " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
+                " hover:bg-red-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-red-500"
+              }
+            >
+              Remove
+            </button>
+          </div>
+
+          <button
+            className={
+              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
+              " justify-self-end hover:bg-blue-500 hover:text-white hover:scale-105 focus:outline-0" +
+              " focus:bg-blue-500"
+            }
+            onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
+              handleAddRating(event, index)
+            }
+          >
+            Add Rating
+          </button>
         </div>
       </div>
     );
   };
 
-  // render edit or widget view based on active state
-  if (active) {
-    return <>{renderEditView()}</>;
-  } else {
-    return <>{renderWidgetView()}</>;
-  }
+  return <>{renderEditableView()}</>;
 }
