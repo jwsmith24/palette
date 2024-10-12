@@ -65,7 +65,7 @@ export default function RubricBuilder(): ReactElement {
     <div className="min-h-dvh w-dvw  bg-gray-800 text-white font-sans">
       <div
         className={
-          "bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8"
+          "bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8 sticky top-0"
         }
       ></div>
       <form className="grid p-8 w-1/2 g-3 max-w-2xl">
