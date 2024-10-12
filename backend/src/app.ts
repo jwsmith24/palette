@@ -7,7 +7,7 @@ const PORT = 3000;
 
 // test route
 app.get("/", (req: Request, res: Response) => {
-  res.send("hi from express featuring typescript");
+  res.send("Hi from the future backend of Palette!!!!!! (via express)");
 });
 
 // start the server
