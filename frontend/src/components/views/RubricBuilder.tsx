@@ -49,6 +49,18 @@ export default function RubricBuilder(): ReactElement {
     ));
   };
 
+  const fakeRubrics = [
+    "critiquing bird noises",
+    "building a dungeon crawler",
+    "figuring out what gRPC is",
+    "canceling AWS before it charges your card",
+    "SELECTing everything",
+  ];
+
+  const selectPlaceHolder = () => {
+    return fakeRubrics[Math.floor(Math.random() * fakeRubrics.length)];
+  };
+
   return (
     <div className="min-h-dvh w-dvw  bg-gray-800 text-white font-sans">
       <div
@@ -59,7 +71,7 @@ export default function RubricBuilder(): ReactElement {
       <form className="grid p-8 w-1/2 g-3 max-w-2xl">
         <h1 className="font-bold text-5xl mb-2">Create a new rubric for</h1>
         <h2 className={"font-medium italic text-3xl mb-4"}>
-          {title || "critiquing bird noises"}
+          {title || selectPlaceHolder()}
         </h2>
 
         <label htmlFor="rubricTitle" className={"mb-2"}>
