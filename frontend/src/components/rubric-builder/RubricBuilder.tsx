@@ -68,7 +68,7 @@ export default function RubricBuilder(): ReactElement {
           "bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8 sticky top-0"
         }
       ></div>
-      <form className="grid p-8 w-1/2 g-3 max-w-2xl">
+      <form className="grid p-8 w-1/2 g-3">
         <h1 className="font-bold text-5xl mb-2">Create a new rubric for</h1>
         <h2 className={"font-medium italic text-3xl mb-4"}>
           {title || selectPlaceHolder()}

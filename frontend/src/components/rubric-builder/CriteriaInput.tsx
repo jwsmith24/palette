@@ -2,7 +2,7 @@
 React component where the user can add/edit information for a given criterion. Displayed when a criterion is in
  "edit" view. (The CriteriaWidget component is rendered when a criterion is in "widget" view)
  */
-import {
+import React, {
   ChangeEvent,
   MouseEvent as ReactMouseEvent,
   ReactElement,
@@ -173,30 +173,7 @@ export default function CriteriaInput({
     </div>
   );
 
-  // function to render the criteria as a widget
-  const renderWidgetView = () => {
-    return (
-      <div className="border p-4 mb-2" onClick={changeCriteriaView}>
-        <div id={"widgetInfo"} className={"flex justify-between"}>
-          <p className="font-bold">{title || `Criteria ${index + 1}`}</p>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M1.5 5.5a.5.5 0 0 1 .707 0L8 11.293l5.793-5.793a.5.5 0 0 1 .707.707l-6 6a.5.5 0 0 1-.707 0l-6-6a.5.5 0 0 1 0-.707z"
-            />
-          </svg>
-        </div>
-      </div>
-    );
-  };
-
-  const [activeRating, setActiveRating] = useState(0);
+  const [activeRating, setActiveRating] = useState(-1);
   const [description, setDescription] = useState(ratings[0].description);
 
   const handleRatingClick = (event: ReactMouseEvent, index: number) => {
@@ -218,41 +195,62 @@ export default function CriteriaInput({
     return criterion.ratings.map((rating: Rating, index: number) => {
       const colorClass = colorClasses[index] || colorClasses[3];
 
+      // local state to manage edit mode
+      const [isEditing, setIsEditing] = useState(true);
+      const [inputValue, setInputValue] = useState(rating.points);
+
+      const handleDoubleClick = () => {
+        setIsEditing(true); // toggle edit mode on double click
+        setActiveRating(index);
+      };
+
+      const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setInputValue(Number(event.target.value));
+      };
+
+      const handleInputBlur = () => {
+        setIsEditing(false); // exit edit mode on blur (element loses focus due to clicking or tabbing out)
+        // handleRatingCountChange()
+      };
+
+      // makes sure change takes place when user hits enter too
+      const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+          handleInputBlur();
+        }
+      };
+
       return (
-        <button
-          className={`transition-all hover:scale-105 ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black hover:${colorClass} active:opacity-70 ${
-            activeRating === index
-              ? `${colorClass} text-white scale-105`
-              : "bg-gray-200"
-          }`}
-          key={rating.id}
-          onClick={(event) => handleRatingClick(event, index)}
-        >
-          {rating.points === 1
-            ? `${rating.points} point`
-            : `${rating.points} points`}
-        </button>
+        <div key={rating.id} className="flex justify-items-start">
+          {isEditing ? (
+            <input
+              type="number"
+              value={inputValue}
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
+              onKeyUp={handleKeyPress}
+              className={`transition-all ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black border w-10`}
+              min="0"
+              required
+            />
+          ) : (
+            <button
+              className={`transition-all hover:scale-105 ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black hover:${colorClass} active:opacity-70 ${
+                activeRating === index
+                  ? `${colorClass} text-white scale-105`
+                  : "bg-gray-200"
+              }`}
+              onDoubleClick={handleDoubleClick}
+              type={"button"}
+            >
+              {rating.points === 1
+                ? `${rating.points} point`
+                : `${rating.points} points`}
+            </button>
+          )}
+        </div>
       );
     });
-  };
-  // function to render the criteria as a widget
-  const renderTestWidgetView = () => {
-    return (
-      // Criterion widget
-      <div
-        className={
-          "grid grid-rows-2 border border-white w-full p-4 gap-2 rounded-md"
-        }
-      >
-        {/*Top Row*/}
-        <div className={"flex gap-2 justify-between"}>
-          <p>{criterion.title}</p>
-          <div className={"flex gap-3"}>{renderRatingButtons()}</div>
-        </div>
-        {/*Bottom Row*/}
-        <div>{description}</div>
-      </div>
-    );
   };
 
   const renderEditableView = () => {
@@ -260,30 +258,25 @@ export default function CriteriaInput({
       // Criterion widget
       <div
         className={
-          "grid grid-rows-2 border border-white w-full p-4 gap-2 rounded-md"
+          "grid grid-rows-2 border border-white p-4 gap-2 rounded-md w-1/2"
         }
       >
         {/*Top Row*/}
-        <div className={"flex gap-2 justify-between"}>
+        <div className={"grid grid-flow-col gap-2"}>
           <input
             type={"text"}
             placeholder={`Criteria ${index + 1} Title...`}
-            className={"rounded p-2 text-gray-500"}
+            className={"rounded p-2 text-gray-500 w-fit"}
           />
 
-          <div className={"flex gap-3"}>{renderRatingButtons()}</div>
+          <div className={"flex gap-2"}>{renderRatingButtons()}</div>
         </div>
         {/*Bottom Row*/}
-        <div>{description}</div>
+        <div>
+          <p>{description}</p>
+        </div>
       </div>
     );
   };
   return <>{renderEditableView()}</>;
-
-  // render edit or widget view based on active state
-  // if (active) {
-  //   return <>{renderEditView()}</>;
-  // } else {
-  //   return <>{renderWidgetView()}</>;
-  // }
 }
