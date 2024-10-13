@@ -3,7 +3,6 @@ React component where the user can add/edit information for a given criterion. D
  "edit" view. (The CriteriaWidget component is rendered when a criterion is in "widget" view)
  */
 import React, {
-  ChangeEvent,
   MouseEvent as ReactMouseEvent,
   ReactElement,
   useState,
@@ -26,11 +25,6 @@ export default function CriteriaInput({
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
 
-  const handleAddCriteriaButton = (event: ReactMouseEvent) => {
-    event.preventDefault();
-    handleAddCriteria();
-  };
-
   const handleRemoveCriteriaButton = (
     event: ReactMouseEvent,
     index: number,
@@ -47,6 +41,17 @@ export default function CriteriaInput({
     const updatedRatings = ratings.map((rating, index) =>
       index === ratingIndex ? { ...rating, ...updatedRating } : rating,
     );
+    setRatings(updatedRatings);
+    const updatedCriterion = { ...criterion, ratings: updatedRatings };
+    handleCriteriaUpdate(index, updatedCriterion);
+  };
+
+  const handleRemoveRating = (
+    event: ReactMouseEvent<HTMLButtonElement>,
+    ratingIndex: number,
+  ) => {
+    event.preventDefault();
+    const updatedRatings = ratings.filter((_, i) => i !== ratingIndex);
     setRatings(updatedRatings);
     const updatedCriterion = { ...criterion, ratings: updatedRatings };
     handleCriteriaUpdate(index, updatedCriterion);
@@ -83,6 +88,9 @@ export default function CriteriaInput({
               "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100 hover:text-white"
             }
             tabIndex={-1}
+            onClick={(event) => {
+              handleRemoveRating(event, index);
+            }}
           >
             -
           </button>
@@ -91,11 +99,21 @@ export default function CriteriaInput({
     });
   };
 
+  const handleAddRating = (
+    event: ReactMouseEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    event.preventDefault();
+    const updatedRatings = [...ratings, new Rating()];
+    setRatings(updatedRatings);
+    const updatedCriterion = { ...criterion, ratings: updatedRatings };
+    handleCriteriaUpdate(index, updatedCriterion);
+  };
+
   const renderEditableView = () => {
     return (
       // Criterion widget
       <div className="grid grid-rows-[auto,auto] border border-white p-4 gap-4 rounded-md w-full">
-        {/* Input Row */}
         <div className="grid grid-cols-2 gap-4 items-center">
           <div className={"grid self-baseline"}>
             <input
@@ -108,20 +126,39 @@ export default function CriteriaInput({
 
           <div className="grid gap-2">{renderRatingOptions()}</div>
           <div className={"flex gap-3 justify-self-start"}>
-            <button onClick={handleAddCriteriaButton}>Add</button>
             <button
               onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleRemoveCriteriaButton(event, index)
+              }
+              className={
+                " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
+                " hover:bg-red-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-red-500"
               }
             >
               Remove
             </button>
           </div>
 
-          <button>add rating option</button>
+          <button
+            className={
+              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
+              " justify-self-end hover:bg-blue-500 hover:text-white hover:scale-105 focus:outline-0" +
+              " focus:bg-blue-500"
+            }
+            onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
+              handleAddRating(event, index)
+            }
+          >
+            Add Rating
+          </button>
         </div>
       </div>
     );
   };
-  return <>{renderEditableView()}</>;
+
+  const renderWidgetView = () => {
+    return <></>;
+  };
+
+  return <>{criterion.editable ? renderEditableView() : renderWidgetView()} </>;
 }

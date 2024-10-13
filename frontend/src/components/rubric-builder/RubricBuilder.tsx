@@ -56,13 +56,10 @@ export default function RubricBuilder(): ReactElement {
     "canceling AWS before it charges your card",
     "SELECTing everything",
   ];
-
   const selectPlaceHolder = () => {
     return fakeRubrics[Math.floor(Math.random() * fakeRubrics.length)];
   };
-
   const [placeholder, setPlaceholder] = useState("");
-
   // This effect runs once when the component mounts and then only if the title field changes to keep it from
   // going all crazy when a re-render occurs
   useEffect(() => {
@@ -99,7 +96,7 @@ export default function RubricBuilder(): ReactElement {
         />
 
         {/* Criteria Section */}
-        <div className="mt-4 grid gap-4">{renderCriteria()}</div>
+        <div className="mt-4 grid gap-6">{renderCriteria()}</div>
       </form>
     </div>
   );
