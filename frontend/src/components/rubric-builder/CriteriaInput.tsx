@@ -183,71 +183,48 @@ export default function CriteriaInput({
   };
 
   // pre-define css color class so they're not purged and can be used for dynamic rendering
-  const colorClasses = [
-    "bg-blue-500 hover:bg-blue-500",
-    "bg-green-500 hover:bg-green-500",
-    "bg-yellow-500 hover:bg-yellow-500",
-    "bg-gray-500 hover:bg-gray-500",
-  ];
+  // const colorClasses = [
+  //   "bg-blue-500 hover:bg-blue-500",
+  //   "bg-green-500 hover:bg-green-500",
+  //   "bg-yellow-500 hover:bg-yellow-500",
+  //   "bg-gray-500 hover:bg-gray-500",
+  // ];
 
   // renders number of buttons == number of ratings in the array. uses their set color
-  const renderRatingButtons = () => {
+  const renderRatingOptions = () => {
     return criterion.ratings.map((rating: Rating, index: number) => {
-      const colorClass = colorClasses[index] || colorClasses[3];
+      // const colorClass = colorClasses[index] || colorClasses[3];
 
-      // local state to manage edit mode
-      const [isEditing, setIsEditing] = useState(true);
       const [inputValue, setInputValue] = useState(rating.points);
-
-      const handleDoubleClick = () => {
-        setIsEditing(true); // toggle edit mode on double click
-        setActiveRating(index);
-      };
 
       const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setInputValue(Number(event.target.value));
       };
 
-      const handleInputBlur = () => {
-        setIsEditing(false); // exit edit mode on blur (element loses focus due to clicking or tabbing out)
-        // handleRatingCountChange()
-      };
-
-      // makes sure change takes place when user hits enter too
-      const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") {
-          handleInputBlur();
-        }
-      };
-
       return (
-        <div key={rating.id} className="flex justify-items-start">
-          {isEditing ? (
-            <input
-              type="number"
-              value={inputValue}
-              onChange={handleInputChange}
-              onBlur={handleInputBlur}
-              onKeyUp={handleKeyPress}
-              className={`transition-all ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black border w-10`}
-              min="0"
-              required
-            />
-          ) : (
-            <button
-              className={`transition-all hover:scale-105 ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black hover:${colorClass} active:opacity-70 ${
-                activeRating === index
-                  ? `${colorClass} text-white scale-105`
-                  : "bg-gray-200"
-              }`}
-              onDoubleClick={handleDoubleClick}
-              type={"button"}
-            >
-              {rating.points === 1
-                ? `${rating.points} point`
-                : `${rating.points} points`}
-            </button>
-          )}
+        <div key={rating.id} className="flex gap-2">
+          <input
+            type="number"
+            value={inputValue}
+            onChange={handleInputChange}
+            className={`transition-all ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black border w-10`}
+            min="0"
+            required
+          />
+          <input
+            type="text"
+            className={"rounded p-2 text-gray-500 w-full"}
+            placeholder={rating.description || "Enter rating description..."}
+          />
+          {/*ensure remove button is not tabbable*/}
+          <button
+            className={
+              "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100 hover:text-white"
+            }
+            tabIndex={-1}
+          >
+            -
+          </button>
         </div>
       );
     });
@@ -256,24 +233,21 @@ export default function CriteriaInput({
   const renderEditableView = () => {
     return (
       // Criterion widget
-      <div
-        className={
-          "grid grid-rows-2 border border-white p-4 gap-2 rounded-md w-1/2"
-        }
-      >
-        {/*Top Row*/}
-        <div className={"grid grid-flow-col gap-2"}>
-          <input
-            type={"text"}
-            placeholder={`Criteria ${index + 1} Title...`}
-            className={"rounded p-2 text-gray-500 w-fit"}
-          />
+      <div className="grid grid-rows-[auto,auto] border border-white p-4 gap-4 rounded-md w-full">
+        {/* Input Row */}
+        <div className="grid grid-cols-2 gap-4 items-center">
+          <div className={"grid self-baseline"}>
+            <input
+              type="text"
+              placeholder={`Criteria ${index + 1} Title...`}
+              className={"rounded p-2 text-gray-500 w-full"}
+            />
+            <p>Max Points</p>
+          </div>
 
-          <div className={"flex gap-2"}>{renderRatingButtons()}</div>
-        </div>
-        {/*Bottom Row*/}
-        <div>
-          <p>{description}</p>
+          <div className="grid gap-2">{renderRatingOptions()}</div>
+          <button>add criteria</button>
+          <button>add rating option</button>
         </div>
       </div>
     );

@@ -62,32 +62,34 @@ export default function RubricBuilder(): ReactElement {
   };
 
   return (
-    <div className="min-h-dvh w-dvw  bg-gray-800 text-white font-sans">
-      <div
-        className={
-          "bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8 sticky top-0"
-        }
-      ></div>
-      <form className="grid p-8 w-1/2 g-3">
+    <div className="min-h-screen w-screen bg-gray-800 text-white font-sans">
+      {/* Sticky Header with Gradient */}
+      <div className="bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8 sticky top-0"></div>
+
+      {/* Form Section */}
+      <form className="grid p-8 w-full max-w-2xl mx-auto gap-4">
+        {/* Main Heading */}
         <h1 className="font-bold text-5xl mb-2">Create a new rubric for</h1>
-        <h2 className={"font-medium italic text-3xl mb-4"}>
+        <h2 className="font-medium italic text-3xl mb-4">
           {title || selectPlaceHolder()}
         </h2>
 
-        <label htmlFor="rubricTitle" className={"mb-2"}>
+        {/* Rubric Title Input */}
+        <label htmlFor="rubricTitle" className="mb-2">
           Rubric Title
         </label>
         <input
           type="text"
           placeholder="Task: Description"
-          className="rounded p-1 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600 "
+          className="rounded p-2 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600 w-full"
           name="rubricTitle"
           id="rubricTitle"
           value={title}
           onChange={handleRubricTitleChange}
         />
 
-        <div className="mt-2 grid gap-4">{renderCriteria()}</div>
+        {/* Criteria Section */}
+        <div className="mt-4 grid gap-4">{renderCriteria()}</div>
       </form>
     </div>
   );
