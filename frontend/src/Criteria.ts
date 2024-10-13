@@ -10,7 +10,8 @@ export default class Criteria {
     this.ratings = [
       new Rating(5, "Good explanation provided", "blue"),
       new Rating(3, "Partially correct", "green"),
-      new Rating(0, "No/Wrong answer provided", "red"),
+      new Rating(1, "No/Wrong answer provided", "orange"),
+      new Rating(),
     ];
     this.id = crypto.randomUUID();
   }

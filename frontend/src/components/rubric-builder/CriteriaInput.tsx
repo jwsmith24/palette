@@ -31,7 +31,6 @@ export default function CriteriaInput({
   const [active, setActive] = useState(true); // track whether criteria card is in edit view or widget view
 
   // called when user clicks "remove" on a criterion
-  // todo tbd
   const handleRemoveCriteria = (event: ReactMouseEvent) => {
     event.preventDefault();
     removeCriterion(index);
@@ -206,21 +205,35 @@ export default function CriteriaInput({
     setDescription(ratings[index].description);
   };
 
-  // renders buttons == number of ratings in the array. uses their set color
+  // pre-define css color class so they're not purged and can be used for dynamic rendering
+  const colorClasses = [
+    "bg-blue-500 hover:bg-blue-500",
+    "bg-green-500 hover:bg-green-500",
+    "bg-yellow-500 hover:bg-yellow-500",
+    "bg-gray-500 hover:bg-gray-500",
+  ];
+
+  // renders number of buttons == number of ratings in the array. uses their set color
   const renderRatingButtons = () => {
-    return criterion.ratings.map((rating: Rating, index: number) => (
-      <button
-        className={`transition-all hover:scale-105 ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black hover:bg-${rating.color}-500 active:opacity-70 ${
-          activeRating === index
-            ? `bg-${rating.color}-500 text-white scale-105`
-            : "bg-gray-200"
-        }`}
-        key={rating.id}
-        onClick={(event) => handleRatingClick(event, index)}
-      >
-        {`${rating.points} points`}
-      </button>
-    ));
+    return criterion.ratings.map((rating: Rating, index: number) => {
+      const colorClass = colorClasses[index] || colorClasses[3];
+
+      return (
+        <button
+          className={`transition-all hover:scale-105 ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black hover:${colorClass} active:opacity-70 ${
+            activeRating === index
+              ? `${colorClass} text-white scale-105`
+              : "bg-gray-200"
+          }`}
+          key={rating.id}
+          onClick={(event) => handleRatingClick(event, index)}
+        >
+          {rating.points === 1
+            ? `${rating.points} point`
+            : `${rating.points} points`}
+        </button>
+      );
+    });
   };
   // function to render the criteria as a widget
   const renderTestWidgetView = () => {
@@ -234,7 +247,6 @@ export default function CriteriaInput({
         {/*Top Row*/}
         <div className={"flex gap-2 justify-between"}>
           <p>{criterion.title}</p>
-          <p>Max Points</p>
           <div className={"flex gap-3"}>{renderRatingButtons()}</div>
         </div>
         {/*Bottom Row*/}
@@ -242,7 +254,31 @@ export default function CriteriaInput({
       </div>
     );
   };
-  return <>{renderTestWidgetView()}</>;
+
+  const renderEditableView = () => {
+    return (
+      // Criterion widget
+      <div
+        className={
+          "grid grid-rows-2 border border-white w-full p-4 gap-2 rounded-md"
+        }
+      >
+        {/*Top Row*/}
+        <div className={"flex gap-2 justify-between"}>
+          <input
+            type={"text"}
+            placeholder={`Criteria ${index + 1} Title...`}
+            className={"rounded p-2 text-gray-500"}
+          />
+
+          <div className={"flex gap-3"}>{renderRatingButtons()}</div>
+        </div>
+        {/*Bottom Row*/}
+        <div>{description}</div>
+      </div>
+    );
+  };
+  return <>{renderEditableView()}</>;
 
   // render edit or widget view based on active state
   // if (active) {
