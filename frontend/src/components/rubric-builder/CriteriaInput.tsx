@@ -197,10 +197,57 @@ export default function CriteriaInput({
     );
   };
 
+  const [activeRating, setActiveRating] = useState(0);
+  const [description, setDescription] = useState(ratings[0].description);
+
+  const handleRatingClick = (event: ReactMouseEvent, index: number) => {
+    event.preventDefault();
+    setActiveRating(index);
+    setDescription(ratings[index].description);
+  };
+
+  // renders buttons == number of ratings in the array. uses their set color
+  const renderRatingButtons = () => {
+    return criterion.ratings.map((rating: Rating, index: number) => (
+      <button
+        className={`transition-all hover:scale-105 ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black hover:bg-${rating.color}-500 active:opacity-70 ${
+          activeRating === index
+            ? `bg-${rating.color}-500 text-white scale-105`
+            : "bg-gray-200"
+        }`}
+        key={rating.id}
+        onClick={(event) => handleRatingClick(event, index)}
+      >
+        {`${rating.points} points`}
+      </button>
+    ));
+  };
+  // function to render the criteria as a widget
+  const renderTestWidgetView = () => {
+    return (
+      // Criterion widget
+      <div
+        className={
+          "grid grid-rows-2 border border-white w-full p-4 gap-2 rounded-md"
+        }
+      >
+        {/*Top Row*/}
+        <div className={"flex gap-2 justify-between"}>
+          <p>{criterion.title}</p>
+          <p>Max Points</p>
+          <div className={"flex gap-3"}>{renderRatingButtons()}</div>
+        </div>
+        {/*Bottom Row*/}
+        <div>{description}</div>
+      </div>
+    );
+  };
+  return <>{renderTestWidgetView()}</>;
+
   // render edit or widget view based on active state
-  if (active) {
-    return <>{renderEditView()}</>;
-  } else {
-    return <>{renderWidgetView()}</>;
-  }
+  // if (active) {
+  //   return <>{renderEditView()}</>;
+  // } else {
+  //   return <>{renderWidgetView()}</>;
+  // }
 }

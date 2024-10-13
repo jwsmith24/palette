@@ -87,7 +87,7 @@ export default function RubricBuilder(): ReactElement {
           onChange={handleRubricTitleChange}
         />
 
-        <div className="mt-2">{renderCriteria()}</div>
+        <div className="mt-2 grid gap-4">{renderCriteria()}</div>
       </form>
     </div>
   );
