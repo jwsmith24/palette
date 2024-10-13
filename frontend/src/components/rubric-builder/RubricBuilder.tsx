@@ -2,7 +2,7 @@
 Main view for the Rubric Builder feature.
  */
 
-import { ChangeEvent, ReactElement, useState } from "react";
+import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
@@ -61,6 +61,16 @@ export default function RubricBuilder(): ReactElement {
     return fakeRubrics[Math.floor(Math.random() * fakeRubrics.length)];
   };
 
+  const [placeholder, setPlaceholder] = useState("");
+
+  // This effect runs once when the component mounts and then only if the title field changes to keep it from
+  // going all crazy when a re-render occurs
+  useEffect(() => {
+    if (!title) {
+      setPlaceholder(selectPlaceHolder());
+    }
+  }, [title]);
+
   return (
     <div className="min-h-screen w-screen bg-gray-800 text-white font-sans">
       {/* Sticky Header with Gradient */}
@@ -71,7 +81,7 @@ export default function RubricBuilder(): ReactElement {
         {/* Main Heading */}
         <h1 className="font-bold text-5xl mb-2">Create a new rubric for</h1>
         <h2 className="font-medium italic text-3xl mb-4">
-          {title || selectPlaceHolder()}
+          {title || placeholder}
         </h2>
 
         {/* Rubric Title Input */}
