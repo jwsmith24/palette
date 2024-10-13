@@ -1,11 +1,8 @@
-/* CriteriaInput.tsx
-React component where the user can add/edit information for a given criterion. Displayed when a criterion is in
- "edit" view. (The CriteriaWidget component is rendered when a criterion is in "widget" view)
- */
 import React, {
   MouseEvent as ReactMouseEvent,
   ReactElement,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import Rating from "../../Rating.ts";
@@ -42,17 +39,14 @@ export default function CriteriaInput({
     removeCriterion(index);
   };
 
-  // implements Partial which allows the Rating properties to be temporarily optional
-  const handleRatingChange = (
-    ratingIndex: number,
-    updatedRating: Partial<Rating>,
-  ) => {
+  // Full rating object is passed instead of using Partial<Rating>
+  const handleRatingChange = (ratingIndex: number, updatedRating: Rating) => {
     const updatedRatings = ratings.map((rating, index) =>
-      index === ratingIndex ? { ...rating, ...updatedRating } : rating,
+      index === ratingIndex ? updatedRating : rating,
     );
     setRatings(updatedRatings);
-    const updatedCriterion = { ...criterion, ratings: updatedRatings };
-    handleCriteriaUpdate(index, updatedCriterion);
+    criterion.ratings = updatedRatings;
+    handleCriteriaUpdate(index, criterion);
   };
 
   const handleRemoveRating = (
@@ -62,43 +56,51 @@ export default function CriteriaInput({
     event.preventDefault();
     const updatedRatings = ratings.filter((_, i) => i !== ratingIndex);
     setRatings(updatedRatings);
-    const updatedCriterion = { ...criterion, ratings: updatedRatings };
-    handleCriteriaUpdate(index, updatedCriterion);
+    criterion.ratings = updatedRatings;
+    handleCriteriaUpdate(index, criterion);
   };
 
-  // renders number of buttons == number of ratings in the array. uses their set color
   const renderRatingOptions = () => {
-    return criterion.ratings.map((rating: Rating, index: number) => {
+    return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
-        <div key={rating.id} className="flex gap-2">
+        <div
+          key={rating.id}
+          className={"grid grid-rows-1 grid-col-3 grid-flow-col gap-2 w-full"}
+        >
           <input
             type="number"
             value={rating.points}
             onChange={(event) => {
               event.preventDefault();
-              handleRatingChange(index, { points: Number(event.target.value) });
+              handleRatingChange(
+                ratingIndex,
+                new Rating(Number(event.target.value), rating.description),
+              );
             }}
-            className={`transition-all ease-in-out duration-300 font-bold rounded-lg px-2 py-1 text-black border w-10`}
+            className={`font-bold rounded-lg  text-black border w-10`}
             min="0"
             required
           />
           <input
             type="text"
-            className={"rounded p-2 text-gray-500 w-full"}
+            className={"rounded p-2 text-gray-500"}
             placeholder={rating.description || "Enter rating description..."}
             onChange={(event) => {
               event.preventDefault();
-              handleRatingChange(index, { description: event.target.value });
+              handleRatingChange(
+                ratingIndex,
+                new Rating(rating.points, event.target.value),
+              );
             }}
           />
-          {/*ensure remove button is not tabbable*/}
           <button
             className={
-              "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100 hover:text-white"
+              "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100" +
+              " hover:text-white"
             }
             tabIndex={-1}
             onClick={(event) => {
-              handleRemoveRating(event, index);
+              handleRemoveRating(event, ratingIndex);
             }}
           >
             -
@@ -113,27 +115,27 @@ export default function CriteriaInput({
     index: number,
   ) => {
     event.preventDefault();
-    const updatedRatings = [...ratings, new Rating()];
+    const newRating = new Rating();
+    const updatedRatings = [...ratings, newRating];
     setRatings(updatedRatings);
-    const updatedCriterion = { ...criterion, ratings: updatedRatings };
-    handleCriteriaUpdate(index, updatedCriterion);
+    criterion.ratings = updatedRatings;
+    handleCriteriaUpdate(index, criterion);
   };
 
   const renderEditableView = () => {
     return (
-      // Criterion widget
       <div className="grid grid-rows-[auto,auto] border border-white p-4 gap-4 rounded-md w-full">
         <div className="grid grid-cols-2 gap-4 items-center">
           <div className={"grid self-baseline"}>
             <input
               type="text"
               placeholder={`Criteria ${index + 1} Title...`}
-              className={"rounded p-2 text-gray-500 w-full"}
+              className={"rounded p-2 text-gray-500"}
             />
             <p className={"text-2xl font-bold mt-4"}>Max Points: {maxPoints}</p>
           </div>
 
-          <div className="grid gap-2">{renderRatingOptions()}</div>
+          <div className={"grid gap-2"}>{renderRatingOptions()}</div>
           <div className={"flex gap-3 justify-self-start"}>
             <button
               onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
@@ -165,9 +167,5 @@ export default function CriteriaInput({
     );
   };
 
-  const renderWidgetView = () => {
-    return <></>;
-  };
-
-  return <>{criterion.editable ? renderEditableView() : renderWidgetView()} </>;
+  return <>{renderEditableView()}</>;
 }

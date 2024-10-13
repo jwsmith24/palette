@@ -2,22 +2,58 @@
 Main view for the Rubric Builder feature.
  */
 
-import { ChangeEvent, ReactElement, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  MouseEvent,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
+import Dialog from "./Dialog.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
   const [title, setTitle] = useState<string>(""); // track state for rubric title input
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
+  const openDialog = () => setDialogOpen(true);
+  const closeDialog = () => setDialogOpen(false);
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
+  useEffect(() => {
+    calculateTotalPoints();
+  }, [rubric]);
+
+  // send the Rubric object to the server with the latest state values
+  const handleSaveRubric = (event: MouseEvent) => {
+    event.preventDefault();
+    const jsonString = JSON.stringify(rubric, null, 2);
+
+    //   placeholder: open dialog with json
+    openDialog();
+  };
+
+  const calculateTotalPoints = () => {
+    const total: number = rubric.criteria.reduce(
+      (sum: number, criterion: Criteria) => {
+        return sum + criterion.getMaxPoints();
+      },
+      0,
+    ); // Initialize sum as 0
+    setTotalPoints(total); // Update state with the total points
+  };
 
   // update rubric state with new list of criteria
-  const handleAddCriteria = () => {
+  const handleAddCriteria = (event: MouseEvent) => {
+    event.preventDefault();
     const newCriteria = [...rubric.criteria, new Criteria()];
+    // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
   };
 
@@ -25,6 +61,7 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = [...rubric.criteria];
     newCriteria.splice(index, 1); // remove the target criterion
     console.log(newCriteria);
+    // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
   };
 
@@ -32,6 +69,7 @@ export default function RubricBuilder(): ReactElement {
   const handleCriterionUpdate = (index: number, criterion: Criteria) => {
     const newCriteria = [...rubric.criteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
+    // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
   };
 
@@ -42,7 +80,6 @@ export default function RubricBuilder(): ReactElement {
         key={criterion.id}
         index={index}
         criterion={criterion}
-        handleAddCriteria={handleAddCriteria}
         handleCriteriaUpdate={handleCriterionUpdate}
         removeCriterion={handleRemoveCriterion}
       />
@@ -80,6 +117,9 @@ export default function RubricBuilder(): ReactElement {
         <h2 className="font-medium italic text-3xl mb-4">
           {title || placeholder}
         </h2>
+        <h2 className={"justify-self-end text-2xl font-extrabold"}>
+          {totalPoints} Points
+        </h2>
 
         {/* Rubric Title Input */}
         <label htmlFor="rubricTitle" className="mb-2">
@@ -97,7 +137,38 @@ export default function RubricBuilder(): ReactElement {
 
         {/* Criteria Section */}
         <div className="mt-4 grid gap-6">{renderCriteria()}</div>
+
+        {/*Buttons*/}
+        <div className={"grid gap-3"}>
+          <button
+            className={
+              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
+              " hover:bg-blue-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-blue-500"
+            }
+            onClick={handleAddCriteria}
+          >
+            Add Criteria
+          </button>
+          <button
+            className={
+              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
+              " hover:bg-green-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-green-500"
+            }
+            onClick={handleSaveRubric}
+          >
+            Save Rubric
+          </button>
+        </div>
       </form>
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={closeDialog}
+        title={"Sending Rubric!"}
+      >
+        <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
+          {JSON.stringify(rubric, null, 2)}
+        </pre>
+      </Dialog>
     </div>
   );
 }
