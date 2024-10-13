@@ -5,6 +5,7 @@ React component where the user can add/edit information for a given criterion. D
 import React, {
   MouseEvent as ReactMouseEvent,
   ReactElement,
+  useEffect,
   useState,
 } from "react";
 import Rating from "../../Rating.ts";
@@ -13,17 +14,25 @@ import Criteria from "../../Criteria.ts";
 export default function CriteriaInput({
   index,
   criterion,
-  handleAddCriteria,
   handleCriteriaUpdate,
   removeCriterion,
 }: {
   index: number;
   criterion: Criteria;
-  handleAddCriteria: () => void;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
+  const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
+
+  useEffect(() => {
+    // Find the rating with the maximum points when the component mounts or ratings change
+    const maxRating = ratings.reduce(
+      (max, current) => (current.points > max.points ? current : max),
+      ratings[0],
+    );
+    setMaxPoints(maxRating.points);
+  }, [ratings]);
 
   const handleRemoveCriteriaButton = (
     event: ReactMouseEvent,
@@ -121,7 +130,7 @@ export default function CriteriaInput({
               placeholder={`Criteria ${index + 1} Title...`}
               className={"rounded p-2 text-gray-500 w-full"}
             />
-            <p>Max Points</p>
+            <p className={"text-2xl font-bold mt-4"}>Max Points: {maxPoints}</p>
           </div>
 
           <div className="grid gap-2">{renderRatingOptions()}</div>
