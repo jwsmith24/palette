@@ -6,13 +6,21 @@ import { ChangeEvent, ReactElement, useState } from "react";
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
+import CSVUpload from "./CSVUpload.tsx"; 
+
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
   const [title, setTitle] = useState<string>(""); // track state for rubric title input
+  const [rubricData, setRubricData] = useState<string[]>([]); // Store CSV data here
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
+  };
+
+  // Update state with the new CSV data
+  const handleRubricDataChange = (data: string[]) => {
+    setRubricData(data); 
   };
 
   // update rubric state with new list of criteria
@@ -74,6 +82,19 @@ export default function RubricBuilder(): ReactElement {
           value={title}
           onChange={handleRubricTitleChange}
         />
+        {/* CSV Upload Section */}
+        <CSVUpload onDataChange={handleRubricDataChange} /> 
+
+        {rubricData.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Uploaded Rubric Data</h2>
+            <ul>
+              {rubricData.map((row, index) => (
+                <li key={index} className="border-b py-2">{row}</li>
+              ))}
+            </ul>
+          </div>
+        )}        
 
         <div className="mt-2">{renderCriteria()}</div>
       </form>
