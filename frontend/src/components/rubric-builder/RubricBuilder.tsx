@@ -13,12 +13,14 @@ import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
 import Dialog from "../util/Dialog.tsx";
+import CSVUpload from "../home/CSVUpload.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
   const [title, setTitle] = useState<string>(""); // track state for rubric title input
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
+  const [rubricData, setRubricData] = useState<string[]>([]); // Store CSV data here
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
@@ -37,6 +39,11 @@ export default function RubricBuilder(): ReactElement {
 
     //   placeholder: open dialog with json
     openDialog();
+  };
+
+  // Update state with the new CSV data
+  const handleRubricDataChange = (data: string[]) => {
+    setRubricData(data);
   };
 
   const calculateTotalPoints = () => {
@@ -134,6 +141,21 @@ export default function RubricBuilder(): ReactElement {
           value={title}
           onChange={handleRubricTitleChange}
         />
+        {/* CSV Upload Section */}
+        <CSVUpload onDataChange={handleRubricDataChange} />
+
+        {rubricData.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold">Uploaded Rubric Data</h2>
+            <ul>
+              {rubricData.map((row, index) => (
+                <li key={index} className="border-b py-2">
+                  {row}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Criteria Section */}
         <div className="mt-4 grid gap-6">{renderCriteria()}</div>
