@@ -13,7 +13,7 @@ import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
 import Dialog from "../util/Dialog.tsx";
-import CSVUpload from "../home/CSVUpload.tsx";
+import CSVUpload from "../util/CSVUpload.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric

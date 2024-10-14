@@ -2,7 +2,6 @@ import React, {
   MouseEvent as ReactMouseEvent,
   ReactElement,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import Rating from "../../Rating.ts";
