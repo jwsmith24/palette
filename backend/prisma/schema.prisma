@@ -11,10 +11,10 @@ generator client {
 }
 
 model User {
-  id      Int      @id @default(autoincrement()) // make sure each user has a unique id
-  email   String   @unique
-  name    String?
-  rubrics Rubric[] // one-to-many with Rubric
+  id    Int     @id @default(autoincrement()) // make sure each user has a unique id
+  email String  @unique
+  name  String?
+  //rubrics Rubric[] // one-to-many with Rubric
 }
 
 model Rubric {
@@ -22,6 +22,6 @@ model Rubric {
   title       String
   description String? // optional description
   criteria    Json // use json type to store criteria
-  userId      Int // foreign key for the user that created the rubric
-  createdBy   User    @relation(fields: [userId], references: [id]) // define the relation to User
+  //userId      Int // foreign key for the user that created the rubric
+  //createdBy   User?   @relation(fields: [userId], references: [id]) // define the relation to User
 }

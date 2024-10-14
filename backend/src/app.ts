@@ -1,10 +1,13 @@
 // main entry point for backend application
-
 import express, { Response, Request } from "express";
-import userRouter from "./routes/userRouter";
+import userRouter from "./routes/userRouter.js";
+import rubricRouter from "./routes/rubricRouter.js"; // !! required js extension !!
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
+
+app.use(cors()); // enable CORS for all routes
 
 // middleware to parse any json requests
 app.use(express.json());
@@ -16,6 +19,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // use the user router for all /users routes
 app.use(userRouter);
+app.use(rubricRouter);
 
 // start the server
 app.listen(PORT, () => {
