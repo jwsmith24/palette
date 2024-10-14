@@ -37,8 +37,6 @@ export default function RubricBuilder(): ReactElement {
   // send the Rubric object to the server with the latest state values
   const handleSaveRubric = (event: MouseEvent) => {
     event.preventDefault();
-    const jsonString = JSON.stringify(rubric, null, 2);
-
     //   placeholder: open dialog with json
     openDialog();
   };
@@ -95,25 +93,6 @@ export default function RubricBuilder(): ReactElement {
     ));
   };
 
-  const fakeRubrics = [
-    "critiquing bird noises",
-    "building a dungeon crawler",
-    "figuring out what gRPC is",
-    "canceling AWS before it charges your card",
-    "SELECTing everything",
-  ];
-  const selectPlaceHolder = () => {
-    return fakeRubrics[Math.floor(Math.random() * fakeRubrics.length)];
-  };
-  const [placeholder, setPlaceholder] = useState("");
-  // This effect runs once when the component mounts and then only if the title field changes to keep it from
-  // going all crazy when a re-render occurs
-  useEffect(() => {
-    if (!title) {
-      setPlaceholder(selectPlaceHolder());
-    }
-  }, [title]);
-
   return (
     <div className="min-h-screen flex flex-col justify-between w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       {/* Sticky Header with Gradient */}
@@ -123,11 +102,8 @@ export default function RubricBuilder(): ReactElement {
       <form className="grid p-10 w-full max-w-3xl mx-auto gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
-          Create a new rubric for
+          Create a new rubric
         </h1>
-        <h2 className="font-medium italic text-3xl mb-6 text-center">
-          {title || placeholder}
-        </h2>
 
         {/* Rubric Total Points */}
         <h2 className="justify-self-end text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
@@ -138,7 +114,10 @@ export default function RubricBuilder(): ReactElement {
         <input
           type="text"
           placeholder="Rubric title"
-          className="rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 w-full text-xl"
+          className={
+            "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
+            " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
+          }
           name="rubricTitle"
           id="rubricTitle"
           value={title}
