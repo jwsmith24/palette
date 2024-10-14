@@ -115,41 +115,44 @@ export default function RubricBuilder(): ReactElement {
   }, [title]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-between w-screen bg-gray-800 text-white font-sans">
+    <div className="min-h-screen flex flex-col justify-between w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       {/* Sticky Header with Gradient */}
       <Header />
 
       {/* Form Section */}
-      <form className="grid p-8 w-full max-w-2xl mx-auto gap-4">
+      <form className="grid p-10 w-full max-w-3xl mx-auto gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
-        <h1 className="font-bold text-5xl mb-2">Create a new rubric for</h1>
-        <h2 className="font-medium italic text-3xl mb-4">
+        <h1 className="font-extrabold text-5xl mb-2 text-center">
+          Create a new rubric for
+        </h1>
+        <h2 className="font-medium italic text-3xl mb-6 text-center">
           {title || placeholder}
         </h2>
-        <h2 className={"justify-self-end text-2xl font-extrabold"}>
+
+        {/* Rubric Total Points */}
+        <h2 className="justify-self-end text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
           {totalPoints} Points
         </h2>
 
         {/* Rubric Title Input */}
-        <label htmlFor="rubricTitle" className="mb-2">
-          Rubric Title
-        </label>
         <input
           type="text"
-          placeholder="Task: Description"
-          className="rounded p-2 mb-2 hover:bg-gray-200 focus:outline-0 text-gray-600 w-full"
+          placeholder="Rubric title"
+          className="rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 w-full text-xl"
           name="rubricTitle"
           id="rubricTitle"
           value={title}
           onChange={handleRubricTitleChange}
         />
+
         {/* CSV Upload Section */}
         <CSVUpload onDataChange={handleRubricDataChange} />
 
+        {/* Uploaded Rubric Data */}
         {rubricData.length > 0 && (
-          <div className="mt-4">
-            <h2 className="text-xl font-semibold">Uploaded Rubric Data</h2>
-            <ul>
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-2">Uploaded Rubric Data</h2>
+            <ul className="bg-gray-100 rounded-lg p-4 text-black">
               {rubricData.map((row, index) => (
                 <li key={index} className="border-b py-2">
                   {row}
@@ -160,30 +163,28 @@ export default function RubricBuilder(): ReactElement {
         )}
 
         {/* Criteria Section */}
-        <div className="mt-4 grid gap-6">{renderCriteria()}</div>
+        <div className="mt-6 grid gap-6">{renderCriteria()}</div>
 
-        {/*Buttons*/}
-        <div className={"grid gap-3"}>
+        {/* Buttons */}
+        <div className="grid gap-4 mt-6">
           <button
-            className={
-              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
-              " hover:bg-blue-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-blue-500"
-            }
+            className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
+                     hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={handleAddCriteria}
           >
             Add Criteria
           </button>
           <button
-            className={
-              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
-              " hover:bg-green-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-green-500"
-            }
+            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
+                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
             onClick={handleSaveRubric}
           >
             Save Rubric
           </button>
         </div>
       </form>
+
+      {/* Dialog */}
       <Dialog
         isOpen={isDialogOpen}
         onClose={closeDialog}
@@ -193,7 +194,8 @@ export default function RubricBuilder(): ReactElement {
           {JSON.stringify(rubric, null, 2)}
         </pre>
       </Dialog>
-      {/* Sticky Header with Gradient */}
+
+      {/* Sticky Footer with Gradient */}
       <Footer />
     </div>
   );
