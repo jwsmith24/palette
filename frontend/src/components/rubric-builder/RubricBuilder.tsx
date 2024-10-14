@@ -12,7 +12,7 @@ import {
 import Criteria from "../../Criteria.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
-import Dialog from "./Dialog.tsx";
+import Dialog from "../util/Dialog.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
