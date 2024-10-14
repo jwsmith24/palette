@@ -11,7 +11,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
   const handleCsvUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const fileExtension = file.name.split('.').pop();
+      const fileExtension = file.name.split(".").pop();
 
       if (fileExtension === "csv") {
         const reader = new FileReader();
@@ -35,7 +35,10 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
           const workbook = XLSX.read(data, { type: "array" });
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
-          const jsonData: (string | number)[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          const jsonData: (string | number)[][] = XLSX.utils.sheet_to_json(
+            worksheet,
+            { header: 1 },
+          );
 
           const dataArray = jsonData.map((row) => row.join(" | ")); // Join the elements of each row with " | "
           onDataChange(dataArray); // Call the onDataChange prop with the parsed data
@@ -54,7 +57,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
 
   const parseCsv = (text: string): string[] => {
     const rows = text.split("\n");
-    return rows.map((row) => row.split(",").join(" | ")); // Change this logic as needed for your use case
+    return rows.map((row) => row.split(",").join(" | "));
   };
 
   return (
