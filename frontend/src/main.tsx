@@ -5,9 +5,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import "./index.css";
-import Home from "./components/views/Home.tsx";
+import Home from "./components/home/Home.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import RubricBuilder from "./components/views/RubricBuilder.tsx";
+import RubricBuilder from "./components/rubric-builder/RubricBuilder.tsx";
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
 createRoot(document.getElementById("root")!).render(
