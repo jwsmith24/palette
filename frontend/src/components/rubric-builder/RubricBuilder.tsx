@@ -35,7 +35,6 @@ export default function RubricBuilder(): ReactElement {
   // send the Rubric object to the server with the latest state values
   const handleSaveRubric = (event: MouseEvent) => {
     event.preventDefault();
-    const jsonString = JSON.stringify(rubric, null, 2);
 
     //   placeholder: open dialog with json
     openDialog();

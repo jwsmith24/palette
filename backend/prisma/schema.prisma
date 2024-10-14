@@ -20,8 +20,8 @@ model User {
 model Rubric {
   id          Int     @id @default(autoincrement())
   title       String
-  description String?
-  criteria    String
+  description String? // optional description
+  criteria    Json // use json type to store criteria
   userId      Int // foreign key for the user that created the rubric
   createdBy   User    @relation(fields: [userId], references: [id]) // define the relation to User
 }
