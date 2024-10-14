@@ -6,7 +6,6 @@ export default class Rubric {
   criteria: Criteria[];
   id?: number;
 
-  // update Criteria constructor to be compatible with importing prisma model
   constructor(
     title = "",
     description = "",
@@ -14,8 +13,13 @@ export default class Rubric {
     id?: number,
   ) {
     this.title = title;
-    this.criteria = [new Criteria()];
+
+    if (!criteria) {
+      this.criteria = [new Criteria()]; // adds new criteria array if empty
+    } else {
+      this.criteria = criteria;
+    }
     this.id = id; // use db-managed unique IDs
-    this.description = "";
+    this.description = description;
   }
 }
