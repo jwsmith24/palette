@@ -14,6 +14,8 @@ import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
 import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "../util/CSVUpload.tsx";
+import Header from "../util/Header.tsx";
+import Footer from "../util/Footer.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
@@ -113,9 +115,9 @@ export default function RubricBuilder(): ReactElement {
   }, [title]);
 
   return (
-    <div className="min-h-screen w-screen bg-gray-800 text-white font-sans">
+    <div className="min-h-screen flex flex-col justify-between w-screen bg-gray-800 text-white font-sans">
       {/* Sticky Header with Gradient */}
-      <div className="bg-gradient-to-r from-red-500 via-green-500 to-purple-500 h-8 sticky top-0"></div>
+      <Header />
 
       {/* Form Section */}
       <form className="grid p-8 w-full max-w-2xl mx-auto gap-4">
@@ -191,6 +193,8 @@ export default function RubricBuilder(): ReactElement {
           {JSON.stringify(rubric, null, 2)}
         </pre>
       </Dialog>
+      {/* Sticky Header with Gradient */}
+      <Footer />
     </div>
   );
 }
