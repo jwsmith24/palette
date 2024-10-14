@@ -5,13 +5,12 @@ import { PrismaClient } from "@prisma/client";
 const router = express.Router();
 const prisma = new PrismaClient();
 
-//todo: define rubrics routes after building model in prisma
-
 router.post("/rubrics", async (req: Request, res: Response) => {
   const { title, description, criteria } = req.body;
 
   try {
     const newRubric = await prisma.rubric.create({
+      // @ts-ignore
       data: {
         title,
         description,
