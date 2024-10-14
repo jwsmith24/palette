@@ -25,7 +25,7 @@ export default function Home(): ReactElement {
   };
 
   const handleSignUp = () => {
-    navigate("/sandbox");
+    navigate("/signup");
   };
 
   return (
