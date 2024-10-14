@@ -1,6 +1,7 @@
 // main entry point for backend application
 
 import express, { Response, Request } from "express";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
 const PORT = 3000;

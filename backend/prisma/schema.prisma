@@ -1,0 +1,27 @@
+// Prisma schema file
+
+// Specifies the datasource to use
+datasource db {
+  provider = "postgresql" // Specify the database type (e.g., "postgresql", "mysql", "sqlite", etc.)
+  url      = env("DATABASE_URL") // Reference the connection string from your environment variables
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id      Int      @id @default(autoincrement()) // make sure each user has a unique id
+  email   String   @unique
+  name    String?
+  rubrics Rubric[] // one-to-many with Rubric
+}
+
+model Rubric {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  criteria    String
+  userId      Int // foreign key for the user that created the rubric
+  createdBy   User    @relation(fields: [userId], references: [id]) // define the relation to User
+}
