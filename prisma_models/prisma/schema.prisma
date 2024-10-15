@@ -12,3 +12,67 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Rubric {
+  id                           Int               @id @default(autoincrement())
+  title                        String            @db.VarChar(255)
+  context_id                   Int
+  context_type                 String
+  points_possible              Int
+  reuasable                    Boolean
+  read_only                    Boolean
+  free_form_criterion_comments Boolean
+  hide_score_total             Boolean
+  createdAt                    DateTime          @default(now())
+  updatedAt                    DateTime          @updatedAt
+  content                      String?
+  published                    Boolean           @default(false)
+  authorId                     Int
+  Criterion                    RubricCriterion[]
+}
+
+model RubricCriterion {
+  id                  Int            @id @default(autoincrement())
+  description         String         @db.VarChar(255)
+  long_description    String         @db.VarChar(510)
+  points              Int
+  criterion_use_range Int
+  ratings             RubricRating[]
+  Rubric              Rubric         @relation(fields: [rubric_id], references: [id])
+  rubric_id           Int
+}
+
+model RubricRating {
+  id                  Int             @id @default(autoincrement())
+  description         String          @db.VarChar(255)
+  long_description    String          @db.VarChar(510)
+  points              Int
+  criterion_use_range Int
+  criterion           RubricCriterion @relation(fields: [criterion_id], references: [id])
+  criterion_id        Int
+}
+
+model RubricAssessment {
+  id                    Int    @id @default(autoincrement())
+  rubric_id             Int
+  rubric_association_id Int
+  score                 Int
+  artifact_type         String
+  artifact_id           Int
+  artifact_attempt      Int
+  assessment_type       String
+  assessor_id           Int
+}
+
+model RubricAssociation {
+  id                   Int     @id @default(autoincrement())
+  rubric_id            Int
+  association_id       Int
+  association_type     String
+  use_for_grading      Boolean
+  summary_data         String
+  purpose              String
+  hide_score_total     Boolean
+  hide_points          Boolean
+  hide_outcome_results Boolean
+}
