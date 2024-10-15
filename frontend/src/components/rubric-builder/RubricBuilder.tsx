@@ -12,7 +12,7 @@ import {
 
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Dialog from "../util/Dialog.tsx";
-import CSVUpload from "../util/CSVUpload.tsx";
+import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
 import { Rubric } from "../../models/types/rubric.ts";

@@ -92,8 +92,7 @@ export default function CriteriaInput({
     index: number,
   ) => {
     event.preventDefault();
-    const newRating = createRating();
-    const updatedRatings = [...ratings, newRating];
+    const updatedRatings = [...ratings, createRating()];
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
     handleCriteriaUpdate(index, criterion);
@@ -101,40 +100,36 @@ export default function CriteriaInput({
 
   const renderCriteriaView = () => {
     return (
-      <div className="grid grid-rows-[auto,auto] border border-white p-4 gap-4 rounded-md w-full">
-        <div className="grid grid-cols-2 gap-4 items-center">
+      <div className="grid grid-rows-[auto,auto] border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
+        <div className="grid grid-cols-2 gap-4 items-start">
           <div className={"grid self-baseline"}>
             <input
               type="text"
               placeholder={`Criteria ${index + 1} Title...`}
-              className={"rounded p-2 text-gray-500"}
+              className="rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-800"
               value={criteriaTitle}
               onChange={handleCriterionTitleChange}
             />
-            <p className={"text-2xl font-bold mt-4"}>Max Points: {maxPoints}</p>
+            <p className="text-xl font-semibold mt-2 text-gray-200">
+              Max Points: {maxPoints}
+            </p>
           </div>
 
           <div className={"grid gap-2"}>{renderRatingOptions()}</div>
+
           <div className={"flex gap-3 justify-self-start"}>
             <button
               onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleRemoveCriteriaButton(event, index)
               }
-              className={
-                " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
-                " hover:bg-red-500 hover:text-white hover:scale-105 focus:outline-0 focus:bg-red-500"
-              }
+              className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4 py-2 hover:bg-red-700 focus:outline-none"
             >
               Remove
             </button>
           </div>
 
           <button
-            className={
-              " transition-all ease-in-out duration-300 bg-gray-200 text-black font-bold rounded-lg px-2" +
-              " justify-self-end hover:bg-blue-500 hover:text-white hover:scale-105 focus:outline-0" +
-              " focus:bg-blue-500"
-            }
+            className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4 py-2 justify-self-end hover:bg-violet-700 focus:outline-none"
             onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
               handleAddRating(event, index)
             }

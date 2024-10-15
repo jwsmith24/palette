@@ -61,15 +61,15 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
   };
 
   return (
-    <div className="border border-gray-300 p-4 rounded-lg shadow-md bg-gray-200">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">
-        In a rush? Upload a .CSV or .XLSX File
+    <div className="border border-gray-700 p-6 rounded-lg shadow-xl bg-gray-700">
+      <h2 className="text-2xl font-bold text-gray-200 mb-4">
+        Import CSV or XLSX
       </h2>
       <input
         type="file"
         accept=".csv,.xlsx"
         onChange={handleCsvUpload}
-        className="mt-4 mb-4 border border-gray-300 rounded-lg p-2 text-gray-700 hover:bg-gray-300 transition duration-300 cursor-pointer"
+        className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
       />
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </div>

@@ -45,13 +45,13 @@ export default function RatingInput({
         type="number"
         value={ratingValue} // use local state for value
         onChange={handlePointChange} // properly handle points change
-        className={`font-bold rounded-lg text-black border w-10`}
+        className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 w-16 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         min="0"
         required
       />
       <input
         type="text"
-        className={"rounded p-2 text-gray-500"}
+        className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         placeholder="Enter rating description..."
         value={ratingDescription} // use local state for value
         onChange={handleDescriptionChange} // properly handle description change
