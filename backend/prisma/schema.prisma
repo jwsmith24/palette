@@ -2,26 +2,74 @@
 
 // Specifies the datasource to use
 datasource db {
-  provider = "postgresql" // Specify the database type (e.g., "postgresql", "mysql", "sqlite", etc.)
-  url      = env("DATABASE_URL") // Reference the connection string from your environment variables
+  provider = "postgresql" // Use postgres
+  url      = env("DATABASE_URL") // connection string stored in local .env file
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id    Int     @id @default(autoincrement()) // make sure each user has a unique id
-  email String  @unique
-  name  String?
-  //rubrics Rubric[] // one-to-many with Rubric
+model Rubric {
+  id                           Int               @id @default(autoincrement())
+  title                        String            @db.VarChar(255)
+  context_id                   Int
+  context_type                 String
+  points_possible              Int
+  reuasable                    Boolean
+  read_only                    Boolean
+  free_form_criterion_comments Boolean
+  hide_score_total             Boolean
+  createdAt                    DateTime          @default(now())
+  updatedAt                    DateTime          @updatedAt
+  content                      String?
+  published                    Boolean           @default(false)
+  authorId                     Int
+  Criterion                    RubricCriterion[]
 }
 
-model Rubric {
-  id          Int     @id @default(autoincrement())
-  title       String
-  description String? // optional description
-  criteria    Json // use json type to store criteria
-  //userId      Int // foreign key for the user that created the rubric
-  //createdBy   User?   @relation(fields: [userId], references: [id]) // define the relation to User
+model RubricCriterion {
+  id                  Int            @id @default(autoincrement())
+  description         String         @db.VarChar(255)
+  long_description    String         @db.VarChar(510)
+  points              Int
+  criterion_use_range Int
+  ratings             RubricRating[]
+  Rubric              Rubric         @relation(fields: [rubric_id], references: [id])
+  rubric_id           Int
+}
+
+model RubricRating {
+  id                  Int             @id @default(autoincrement())
+  description         String          @db.VarChar(255)
+  long_description    String          @db.VarChar(510)
+  points              Int
+  criterion_use_range Int
+  criterion           RubricCriterion @relation(fields: [criterion_id], references: [id])
+  criterion_id        Int
+}
+
+model RubricAssessment {
+  id                    Int    @id @default(autoincrement())
+  rubric_id             Int
+  rubric_association_id Int
+  score                 Int
+  artifact_type         String
+  artifact_id           Int
+  artifact_attempt      Int
+  assessment_type       String
+  assessor_id           Int
+}
+
+model RubricAssociation {
+  id                   Int     @id @default(autoincrement())
+  rubric_id            Int
+  association_id       Int
+  association_type     String
+  use_for_grading      Boolean
+  summary_data         String
+  purpose              String
+  hide_score_total     Boolean
+  hide_points          Boolean
+  hide_outcome_results Boolean
 }
