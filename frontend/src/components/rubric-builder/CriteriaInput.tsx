@@ -9,6 +9,7 @@ import React, {
 import { Criteria } from "../../models/types/criteria.ts";
 import { Rating } from "../../models/types/rating.ts";
 import createRating from "../../models/Rating.ts";
+import RatingInput from "./RatingInput.tsx";
 
 export default function CriteriaInput({
   index,
@@ -42,6 +43,8 @@ export default function CriteriaInput({
 
   const handleCriterionTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCriteriaTitle(event.target.value);
+    const newCriterion = { ...criterion, title: criteriaTitle };
+    handleCriteriaUpdate(index, newCriterion);
   };
 
   const handleRemoveCriteriaButton = (
@@ -52,7 +55,7 @@ export default function CriteriaInput({
     removeCriterion(index);
   };
 
-  // Full rating object is passed instead of using Partial<Rating>
+  // Update criterion when ratings change.
   const handleRatingChange = (ratingIndex: number, updatedRating: Rating) => {
     const updatedRatings = ratings.map((rating, index) =>
       index === ratingIndex ? updatedRating : rating,
@@ -62,11 +65,8 @@ export default function CriteriaInput({
     handleCriteriaUpdate(index, criterion);
   };
 
-  const handleRemoveRating = (
-    event: ReactMouseEvent<HTMLButtonElement>,
-    ratingIndex: number,
-  ) => {
-    event.preventDefault();
+  // Update criterion when a rating is removed
+  const handleRemoveRating = (ratingIndex: number) => {
     const updatedRatings = ratings.filter((_, i) => i !== ratingIndex);
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
@@ -76,49 +76,12 @@ export default function CriteriaInput({
   const renderRatingOptions = () => {
     return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
-        <div
-          key={rating.id}
-          className={"grid grid-rows-1 grid-col-3 grid-flow-col gap-2 w-full"}
-        >
-          <input
-            type="number"
-            value={rating.points}
-            onChange={(event) => {
-              event.preventDefault();
-              handleRatingChange(
-                ratingIndex,
-                createRating(Number(event.target.value), rating.description),
-              );
-            }}
-            className={`font-bold rounded-lg  text-black border w-10`}
-            min="0"
-            required
-          />
-          <input
-            type="text"
-            className={"rounded p-2 text-gray-500"}
-            placeholder={rating.description || "Enter rating description..."}
-            onChange={(event) => {
-              event.preventDefault();
-              handleRatingChange(
-                ratingIndex,
-                createRating(rating.points, event.target.value),
-              );
-            }}
-          />
-          <button
-            className={
-              "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100" +
-              " hover:text-white"
-            }
-            tabIndex={-1}
-            onClick={(event) => {
-              handleRemoveRating(event, ratingIndex);
-            }}
-          >
-            -
-          </button>
-        </div>
+        <RatingInput
+          ratingIndex={ratingIndex}
+          rating={rating}
+          handleRatingChange={handleRatingChange}
+          handleRemoveRating={handleRemoveRating}
+        />
       );
     });
   };
