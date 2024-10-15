@@ -127,7 +127,7 @@ export default function RubricBuilder(): ReactElement {
       <Header />
 
       {/* Form Section */}
-      <form className="grid p-10 w-full max-w-3xl mx-auto gap-6 bg-gray-800 shadow-lg rounded-lg">
+      <form className="grid p-10 w-full max-h-[80vh] max-w-3xl mx-auto gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
           Create a new rubric
@@ -170,7 +170,9 @@ export default function RubricBuilder(): ReactElement {
         )}
 
         {/* Criteria Section */}
-        <div className="mt-6 grid gap-6">{renderCriteria()}</div>
+        <div className="mt-6 grid gap-6 max-h-[25vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+          {renderCriteria()}
+        </div>
 
         {/* Buttons */}
         <div className="grid gap-4 mt-6">
