@@ -2,21 +2,24 @@ import Criteria from "./Criteria";
 
 export default class Rubric {
   title: string;
+  description?: string;
   criteria: Criteria[];
-  id: string;
+  id?: number;
 
-  constructor(title = "") {
+  constructor(
+    title = "",
+    description = "",
+    criteria: Criteria[] = [],
+    id?: number,
+  ) {
     this.title = title;
-    this.criteria = [new Criteria("2.3.4 Deliverable Answer")];
-    this.id = crypto.randomUUID();
-  }
 
-  // Method to convert the instance to a JSON object
-  toJSON() {
-    return {
-      title: this.title,
-      criteria: this.criteria.map((criterion) => criterion.toJSON()), // Ensure Criteria class has a toJSON method
-      id: this.id,
-    };
+    if (!criteria) {
+      this.criteria = [new Criteria()]; // adds new criteria array if empty
+    } else {
+      this.criteria = criteria;
+    }
+    this.id = id; // use db-managed unique IDs
+    this.description = description;
   }
 }

@@ -35,10 +35,31 @@ export default function RubricBuilder(): ReactElement {
   // send the Rubric object to the server with the latest state values
   const handleSaveRubric = (event: MouseEvent) => {
     event.preventDefault();
-    const jsonString = JSON.stringify(rubric, null, 2);
-
+    console.log(submitRubric(rubric));
     //   placeholder: open dialog with json
     openDialog();
+  };
+
+  // function to send rubric to the server
+  const submitRubric = async (rubric: Rubric) => {
+    try {
+      const res = await fetch("http://localhost:3000/rubrics", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rubric),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log("Rubric saved!", data);
+      } else {
+        console.error("Error connecting to server");
+      }
+    } catch (error) {
+      console.error(error); // update error message with more deets
+    }
   };
 
   // Update state with the new CSV data

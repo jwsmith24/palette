@@ -28,13 +28,4 @@ export default class Criteria {
 
     return maxRating.points; // Return the maximum points value
   }
-
-  // Method to convert the instance to a JSON object
-  toJSON() {
-    return {
-      title: this.title,
-      ratings: this.ratings.map((rating) => rating.toJSON()), // Ensure Rating class has a toJSON method
-      id: this.id,
-    };
-  }
 }
