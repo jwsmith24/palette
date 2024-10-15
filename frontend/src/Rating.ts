@@ -8,13 +8,4 @@ export default class Rating {
     this.description = description;
     this.id = crypto.randomUUID();
   }
-
-  // Method to convert the instance to a JSON object
-  toJSON() {
-    return {
-      points: this.points,
-      description: this.description,
-      id: this.id,
-    };
-  }
 }
