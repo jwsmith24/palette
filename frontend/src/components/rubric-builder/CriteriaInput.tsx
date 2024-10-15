@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   MouseEvent as ReactMouseEvent,
   ReactElement,
   useEffect,
@@ -20,6 +21,7 @@ export default function CriteriaInput({
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
+  const [criteriaTitle, setCriteriaTitle] = useState(criterion.title || "");
 
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
@@ -29,6 +31,10 @@ export default function CriteriaInput({
     );
     setMaxPoints(maxRating.points);
   }, [ratings]);
+
+  const handleCriterionTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCriteriaTitle(event.target.value);
+  };
 
   const handleRemoveCriteriaButton = (
     event: ReactMouseEvent,
@@ -121,7 +127,7 @@ export default function CriteriaInput({
     handleCriteriaUpdate(index, criterion);
   };
 
-  const renderEditableView = () => {
+  const renderCriteriaView = () => {
     return (
       <div className="grid grid-rows-[auto,auto] border border-white p-4 gap-4 rounded-md w-full">
         <div className="grid grid-cols-2 gap-4 items-center">
@@ -130,6 +136,8 @@ export default function CriteriaInput({
               type="text"
               placeholder={`Criteria ${index + 1} Title...`}
               className={"rounded p-2 text-gray-500"}
+              value={criteriaTitle}
+              onChange={handleCriterionTitleChange}
             />
             <p className={"text-2xl font-bold mt-4"}>Max Points: {maxPoints}</p>
           </div>
@@ -166,5 +174,5 @@ export default function CriteriaInput({
     );
   };
 
-  return <>{renderEditableView()}</>;
+  return <>{renderCriteriaView()}</>;
 }
