@@ -5,8 +5,10 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import Rating from "../../Rating.ts";
-import Criteria from "../../Criteria.ts";
+
+import { Criteria } from "../../models/types/criteria.ts";
+import { Rating } from "../../models/types/rating.ts";
+import createRating from "../../models/Rating.ts";
 
 export default function CriteriaInput({
   index,
@@ -25,11 +27,17 @@ export default function CriteriaInput({
 
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
-    const maxRating = ratings.reduce(
-      (max, current) => (current.points > max.points ? current : max),
-      ratings[0],
-    );
-    setMaxPoints(maxRating.points);
+
+    if (ratings[0]) {
+      // make sure ratings array isn't empty before checking
+      const maxRating = ratings.reduce(
+        (max, current) => (current.points > max.points ? current : max),
+        ratings[0],
+      );
+      maxRating.points ? setMaxPoints(maxRating.points) : setMaxPoints(0);
+    } else {
+      setMaxPoints(0);
+    }
   }, [ratings]);
 
   const handleCriterionTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +87,7 @@ export default function CriteriaInput({
               event.preventDefault();
               handleRatingChange(
                 ratingIndex,
-                new Rating(Number(event.target.value), rating.description),
+                createRating(Number(event.target.value), rating.description),
               );
             }}
             className={`font-bold rounded-lg  text-black border w-10`}
@@ -94,7 +102,7 @@ export default function CriteriaInput({
               event.preventDefault();
               handleRatingChange(
                 ratingIndex,
-                new Rating(rating.points, event.target.value),
+                createRating(rating.points, event.target.value),
               );
             }}
           />
@@ -120,7 +128,7 @@ export default function CriteriaInput({
     index: number,
   ) => {
     event.preventDefault();
-    const newRating = new Rating();
+    const newRating = createRating();
     const updatedRatings = [...ratings, newRating];
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;

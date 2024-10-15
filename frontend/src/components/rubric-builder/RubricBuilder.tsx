@@ -9,19 +9,22 @@ import {
   useEffect,
   useState,
 } from "react";
-import Criteria from "../../Criteria.ts";
+
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
-import Rubric from "../../Rubric.ts";
 import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "../util/CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
+import { Rubric } from "../../models/types/rubric.ts";
+import createRubric from "../../models/Rubric.ts";
+import { Criteria } from "../../models/types/criteria.ts";
+import createCriterion from "../../models/Criteria.ts";
 
 export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
+  const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [rubricData, setRubricData] = useState<string[]>([]); // Store CSV data here
+  const [fileData, setFileData] = useState<string[]>([]);
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
@@ -68,7 +71,7 @@ export default function RubricBuilder(): ReactElement {
 
   // Update state with the new CSV data
   const handleImportFile = (data: string[]) => {
-    setRubricData(data);
+    setFileData(data);
   };
 
   // function to iterate through each criterion and sum total max points for entire rubric
@@ -85,7 +88,7 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.criteria, new Criteria()];
+    const newCriteria = [...rubric.criteria, createCriterion()];
     // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
   };
@@ -153,11 +156,11 @@ export default function RubricBuilder(): ReactElement {
         <CSVUpload onDataChange={handleImportFile} />
 
         {/* Uploaded Rubric Data */}
-        {rubricData.length > 0 && (
+        {fileData.length > 0 && (
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-2">Uploaded Rubric Data</h2>
             <ul className="bg-gray-100 rounded-lg p-4 text-black">
-              {rubricData.map((row, index) => (
+              {fileData.map((row, index) => (
                 <li key={index} className="border-b py-2">
                   {row}
                 </li>
