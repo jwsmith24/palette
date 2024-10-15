@@ -77,6 +77,7 @@ export default function CriteriaInput({
     return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
         <RatingInput
+          key={rating.id}
           ratingIndex={ratingIndex}
           rating={rating}
           handleRatingChange={handleRatingChange}
