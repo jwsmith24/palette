@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import * as XLSX from 'xlsx'; // Import the xlsx library
+import * as XLSX from "xlsx"; // Import the xlsx library
 
 interface CsvUploadProps {
   onDataChange: (data: string[]) => void; // Handles Data Changes
