@@ -8,16 +8,21 @@ import {RubricAssociation} from "./Rubric";
 
 
 /**
- * This type represents the request body for creating a new Rubric.
+ * This type is a return type for the following API requests:
+ * 1. Create a new Rubric
+ * 2. Update a single Rubric
+ * 3. Get a single Rubric
  */
-// Interface for the Create Rubric request
-// A RubricObjectHash object represents a response from the Rubric API for
-// creating a single rubric and update a single rubric requests
 interface RubricObjectHash {
     rubric: Rubric;
     rubric_association: RubricAssociation;
 }
 
+/**
+ * This type represents the request body for creating a new Rubric.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics.create
+ */
 export interface CreateRubricRequest {
     id: number; // The ID of the rubric
     rubric_association_id: number; // The ID of the object associated with the rubric
@@ -39,12 +44,27 @@ export interface CreateRubricRequest {
     };
 }
 
+/**
+ * This type represents the response body for creating a new Rubric.
+ * It is a type alias for the RubricObjectHash interface.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics.create
+ */
 export type CreateRubricResponse = RubricObjectHash;
 
+/**
+ * This type represents the request body for creating a new Rubric.
+ * The request body must contain all required fields. (i.e. no optional fields).
+ * Note: The necessity of all fields being present may be subject to change.
+ */
 export type ValidCreateRubricRequest = Required<CreateRubricRequest>;
 
-// Interface for the Update Rubric request
-export interface UpdateRubricRequest {
+/**
+ * This type represents the request body for updating a Rubric.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics.update
+ */
+export interface UpdateSingleRubricRequest {
     id: number; // The ID of the rubric
     rubric_association_id: number; // The ID of the object associated with the rubric
 
@@ -66,61 +86,65 @@ export interface UpdateRubricRequest {
     };
 }
 
-export type UpdateRubricResponse = RubricObjectHash;
+/**
+ * This type represents the response body for updating a Rubric.
+ * It is a type alias for the RubricObjectHash interface.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics.update
+ */
+export type UpdateSingleRubricResponse = RubricObjectHash;
 
-// Request for deleting a Rubric and removing all RubricAssociations.
+/**
+ * This type represents the request body for deleting a Rubric.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics.destroy
+ */
 export interface DeleteSingleRubricRequest {
     course_id: number; // The ID of the course
     id: number; // The ID of the rubric
 }
 
-export interface GetSingleRubricRequest {
-    rubric_id: number
-    course_id: number
-    params?: "assessments"
-        | "graded_assessments" | "peer_assessments"
-        | "associations" | "assignment_associations"
-        | "course_associations" | "account_associations";
-    style?: "full" | "comments_only";
+export interface BaseRubricRequest {
+    id: number; // The ID of the rubric
+    params?: RelatedRubricRecord[]; // include the specified related records in the response
+    style?: "full" | "comments_only"; // the style of the rubric (applicable only if params include "assessments")
 }
 
-// Interface for the UpdateSingleRubricRequest
-export interface UpdateSingleRubricRequest {
-    rubric_id: number; // The ID of the rubric
-    rubric_association_id: number; // The ID of the object with which the rubric is associated
-
+/**
+ * This type represents the request body for updating a Rubric.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics_api.show
+ */
+export interface GetSingleCourseRubricRequest extends BaseRubricRequest {
+    type: 'course';
     course_id: number; // The ID of the course
-
-    // The rubric object
-    rubric: {
-        title: string; // The title of the rubric
-        free_form_criterion_comments: boolean; // Whether custom comments can be written in the ratings field
-        skip_updating_points_possible: boolean; // Whether to update the points possible
-        criteria: { [key: number]: RubricCriterion }; // An indexed hash of RubricCriteria objects
-    };
-
-    // The rubric_association object
-    rubric_association: {
-        association_id: number; // The ID of the object this rubric is associated with
-        association_type: RubricAssociationType // The type of object this rubric is associated with
-        use_for_grading: boolean; // Whether the associated rubric is used for grade calculation
-        hide_score_total: boolean; // Whether the score total is displayed within the rubric
-        purpose: RubricAssociationPurpose // The purpose of the association
-    };
 }
 
-export type UpdateSingleRubricResponse = RubricObjectHash;
+export interface GetSingleAccountRubricRequest extends BaseRubricRequest {
+    type: 'account';
+    account_id: number; // The ID of the account
+}
 
+export type GetSingleRubricRequest = GetSingleAccountRubricRequest | GetSingleCourseRubricRequest;
+
+/**
+ * This type represents the allowable values for the params field in the GetSingleRubricRequest type.
+ *
+ * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics_api.show
+ */
+export type RelatedRubricRecord = "assessments" | "graded_assessments"
+    | "peer_assessments" | "associations" | "assignment_associations"
+    | "course_associations" | "account_associations";
 
 /**
  * Deletes a Rubric and removes all RubricAssociations.
- * @param request the request object
+ * @param req the request object
  */
-export function deleteSingleRubric(request: DeleteSingleRubricRequest): Promise<Rubric> {
-    const url = `/api/v1/courses/${request.course_id}/rubrics/${request.id}`;
+export function deleteSingleRubric(req: DeleteSingleRubricRequest): Promise<Rubric> {
+    const url = `/api/v1/courses/${req.course_id}/rubrics/${req.id}`;
     return fetch(url, {
         method: "DELETE",
-    }).then(response => response.json());
+    }).then(res => res.json());
 }
 
 
@@ -131,41 +155,48 @@ function listRubrics(account_id: number) {
 
 /**
  * Gets a rubric with the given course_id and id.
- * @param request
+ * @param req the request object
  */
-function getSingleRubric(request: GetSingleRubricRequest): Promise<Rubric> {
-    if (request.params === undefined && request.style === undefined) {
-        const url = `/api/v1/courses/${request.course_id}/rubrics/${request.rubric_id}`;
-        return fetch(url).then(response => response.json());
+function getSingleRubric(req: GetSingleRubricRequest): Promise<Rubric> {
+    let url: string;
+
+    // determine the URL based on the request type
+    if (req.type === 'course') {
+        url = `/api/v1/courses/${req.course_id}/rubrics/${req.id}`;
+    } else if (req.type === 'account') {
+        url = `/api/v1/accounts/${req.account_id}/rubrics/${req.id}`;
+    } else {
+        throw new Error('Invalid request type');
     }
 
-    let url = `/api/v1/courses/${request.course_id}/rubrics/${request.rubric_id}`;
-    // add the include parameters if it is defined
-    if (request.params !== undefined) {
-        for (const param of request.params) {
-            url += `include[]=${param}&`;
-        }
+    // append the query parameters (if present)
+    const params: string[] = [];
+    if (req.params) {
+        params.push(...req.params.map(param => `include[]=${param}`));
     }
-    // add the style parameter if it is defined (only 1)
-    if (request.style !== undefined) {
-        url += `style=${request.style}`;
+    if (req.style) {
+        params.push(`style=${req.style}`);
     }
 
-    return fetch(url).then(response => response.json());
+    if (params.length > 0) {
+        url += `?${params.join('&')}`;
+    }
+
+    return fetch(url).then(res => res.json());
 }
 
-export function updateSingleRubric(request: UpdateSingleRubricRequest): Promise<UpdateSingleRubricResponse> {
-    const url = `/api/v1/courses/${request.course_id}/rubrics/${request.rubric_id}`;
+export function updateSingleRubric(req: UpdateSingleRubricRequest, courseId: number): Promise<UpdateSingleRubricResponse> {
+    const url = `/api/v1/courses/${courseId}/rubrics/${req.id}`;
     return fetch(url, {
         method: "PUT",
-        body: JSON.stringify(request),
-    }).then(response => response.json());
+        body: JSON.stringify(req),
+    }).then(res => res.json());
 }
 
-export function createSingleRubric(course_id: number, request: CreateRubricRequest): Promise<CreateRubricResponse> {
-    const url = `/api/v1/courses/${course_id}/rubrics`;
+export function createSingleRubric(courseId: number, req: CreateRubricRequest): Promise<CreateRubricResponse> {
+    const url = `/api/v1/courses/${courseId}/rubrics`;
     return fetch(url, {
         method: "POST",
-        body: JSON.stringify(request),
-    }).then(response => response.json());
+        body: JSON.stringify(req),
+    }).then(res => res.json());
 }
