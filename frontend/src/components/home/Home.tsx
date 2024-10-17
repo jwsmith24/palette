@@ -46,8 +46,7 @@ export default function Home(): ReactElement {
 
         {/* Subtitle */}
         <p className="text-xl text-gray-400 mb-8 max-w-lg">
-          Create the perfect Canvas rubric and improve the project grading
-          experience.
+          Improve the Canvas project grading experience with the perfect rubric.
         </p>
 
         {/* Action Buttons */}

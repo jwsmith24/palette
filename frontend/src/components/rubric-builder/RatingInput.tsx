@@ -1,72 +1,71 @@
-import { ChangeEvent, ReactElement, useState } from "react";
-import Rating from "../../Rating.ts"; /*
-RatingInput component maps a criterion's array of ratings to the display.
- */
-/*
-RatingInput component maps a criterion's array of ratings to the display.
- */
-//todo work in progress - link in actual rating point and title values, add remove button to widget
+import React, { ChangeEvent, ReactElement, useState } from "react";
+import { Rating } from "../../models/types/rating.ts";
+
 export default function RatingInput({
   ratingIndex,
   rating, // pass criterion.ratings[index] to keep it short
-  updateRating, // callback to handle rating changes
+  handleRatingChange, // callback to handle rating changes
+  handleRemoveRating, // callback to handle rating removal
 }: {
   ratingIndex: number;
   rating: Rating;
-  updateRating: (index: number, updatedRating: Rating) => void;
+  handleRatingChange: (index: number, updatedRating: Rating) => void;
+  handleRemoveRating: (ratingIndex: number) => void;
 }): ReactElement {
-  const [ratingValue, setRatingValue] = useState(rating.points); // initialize with saved point value.
+  const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or
+  // default to 0.
   const [ratingDescription, setRatingDescription] = useState(
-    rating.description,
+    rating.description || "",
   );
 
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newPointValue = Number(event.target.value);
-    setRatingValue(newPointValue); // update input value
+    setRatingValue(newPointValue); // update input value in state
     const newRating = { ...rating, points: newPointValue };
-    updateRating(ratingIndex, newRating);
+    handleRatingChange(ratingIndex, newRating); // trigger parent update
   };
 
-  const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newDescription = event.target.value;
-    setRatingDescription(newDescription);
-    updateRating(ratingIndex, {
-      ...rating,
-      points: ratingValue,
-      description: newDescription,
-    }); // Use updated description
+    setRatingDescription(newDescription); // update input value in state
+    const newRating = { ...rating, description: newDescription };
+    handleRatingChange(ratingIndex, newRating); // trigger parent update
   };
+
+  const handleRemoveRatingPress = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    handleRemoveRating(ratingIndex); // trigger removal
+  };
+
   return (
-    <div className="grid text-gray-700">
-      <h3 className={"font-semibold text-gray-900"}>
-        Rating Option {ratingIndex + 1}
-      </h3>
-      <label htmlFor={`points${ratingIndex}label`}>Points</label>
+    <div className={"grid grid-rows-1 grid-col-3 grid-flow-col gap-2 w-full"}>
       <input
         type="number"
-        name={`points${ratingIndex}input`}
-        id={`points${ratingIndex}input`}
-        className={
-          "rounded p-2 hover:bg-gray-100 border-2 border-gray-300 focus:border-blue-500 resize-none w-1/3"
-        }
-        value={ratingValue}
-        min={0}
-        max={100}
-        step={0.2} // Increments count by .2 when using the slider
-        onChange={handlePointChange}
+        value={ratingValue} // use local state for value
+        onChange={handlePointChange} // properly handle points change
+        className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 w-16 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        min="0"
+        required
       />
-      <label htmlFor={`ratingDesc${ratingIndex}text`}>Rating Description</label>
-      <textarea
-        name={`ratingDesc${ratingIndex}text`}
-        id={`ratingDesc$${ratingIndex}text`}
-        rows={4}
-        value={ratingDescription}
-        placeholder={"Describe how to earn the rating..."}
+      <input
+        type="text"
+        className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter rating description..."
+        value={ratingDescription} // use local state for value
+        onChange={handleDescriptionChange} // properly handle description change
+      />
+      <button
         className={
-          "rounded mb-2 p-2 hover:bg-gray-100 border-2 border-gray-300 focus:border-blue-500 resize-none"
+          "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100" +
+          " hover:text-white"
         }
-        onChange={handleDescriptionChange}
-      ></textarea>
+        tabIndex={-1}
+        onClick={handleRemoveRatingPress} // properly handle the remove button
+      >
+        -
+      </button>
     </div>
   );
 }
