@@ -135,7 +135,7 @@ export default function RubricBuilder(): ReactElement {
 
         {/* Rubric Total Points */}
         <h2 className="justify-self-end text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-          {totalPoints} Points
+          {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
         </h2>
 
         {/* Rubric Title Input */}
