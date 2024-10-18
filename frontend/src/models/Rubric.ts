@@ -10,7 +10,7 @@ export default function createRubric(
 ): Rubric {
   return {
     title,
-    criteria,
+    rubricCriteria: criteria,
     description,
     id,
   };

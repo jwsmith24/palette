@@ -15,10 +15,10 @@ import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import { Rubric } from "../../models/types/rubric.ts";
-import createRubric from "../../models/Rubric.ts";
-import { Criteria } from "../../models/types/criteria.ts";
-import createCriterion from "../../models/Criteria.ts";
+import { Rubric } from "../../models/types/rubric";
+import createRubric from "../../models/Rubric";
+import { Criteria } from "../../models/types/criteria";
+import createCriterion from "../../models/Criteria";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -62,7 +62,17 @@ export default function RubricBuilder(): ReactElement {
         const data = await res.json();
         console.log("Rubric saved!", data);
       } else {
-        console.error("Error connecting to server");
+        const errorResult = await res.json();
+        if (res.status === 400) {
+          // Display validation errors
+          const errors = errorResult.errors;
+          errors.forEach((error: { param: any; msg: any }) => {
+            console.log(`Field: ${error.param}, Message: ${error.msg}`);
+          });
+        } else {
+          // Handle other errors
+          console.error("An error occurred:", errorResult.error);
+        }
       }
     } catch (error) {
       console.error(error); // update error message with more deets
@@ -76,9 +86,9 @@ export default function RubricBuilder(): ReactElement {
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
-    const total: number = rubric.criteria.reduce(
+    const total: number = rubric.rubricCriteria.reduce(
       (sum: number, criterion: Criteria) => {
-        return sum + criterion.getMaxPoints();
+        return sum + criterion.points;
       },
       0,
     ); // Initialize sum as 0
@@ -88,29 +98,29 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.criteria, createCriterion()];
+    const newCriteria = [...rubric.rubricCriteria, createCriterion()];
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria });
+    setRubric({ ...rubric, rubricCriteria: newCriteria });
   };
 
   const handleRemoveCriterion = (index: number) => {
-    const newCriteria = [...rubric.criteria];
+    const newCriteria = [...rubric.rubricCriteria];
     newCriteria.splice(index, 1); // remove the target criterion from the array
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria });
+    setRubric({ ...rubric, rubricCriteria: newCriteria });
   };
 
   // update criterion at given index
   const handleUpdateCriterion = (index: number, criterion: Criteria) => {
-    const newCriteria = [...rubric.criteria]; // copy criteria to new array
+    const newCriteria = [...rubric.rubricCriteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
+    setRubric({ ...rubric, rubricCriteria: newCriteria }); // update rubric to have new criteria
   };
 
   // render criterion card for each criterion in the array
   const renderCriteria = () => {
-    return rubric.criteria.map((criterion: Criteria, index: number) => (
+    return rubric.rubricCriteria.map((criterion: Criteria, index: number) => (
       <CriteriaInput
         key={criterion.id}
         index={index}
