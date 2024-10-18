@@ -1,5 +1,5 @@
 // Router for all /rubrics requests
-import express, { Response, Request } from "express";
+import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { body, validationResult } from "express-validator";
 // @ts-ignore
