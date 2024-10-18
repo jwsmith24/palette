@@ -33,10 +33,9 @@ const validateRubric = [
 ];
 
 router.post(
-  "/rubrics",
+  "/",
   validateRubric,
   asyncHandler(async (req: Request, res: Response) => {
-    console.log("got: ", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
@@ -66,12 +65,39 @@ router.post(
   }),
 );
 
+// fetch a specific rubric by ID
+router.get(
+  "/:id",
+  asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.log(`trying to fetch rubric with id=${id}`);
+    const rubric = await prisma.rubric.findUnique({
+      where: { id: Number(id) },
+      include: {
+        rubricCriteria: {
+          include: {
+            ratings: true,
+          },
+        },
+      },
+    });
+
+    console.log("found ", rubric);
+
+    // Check if the rubric was found
+    if (!rubric) {
+      res.status(404).send({ error: "Rubric not found" });
+    }
+
+    res.status(200).send(rubric); // Send the found rubric back
+  }),
+);
+
 // fetch all rubrics from the database
 router.get(
-  "/rubrics",
+  "/",
   asyncHandler(async (req: Request, res: Response) => {
-    console.log("got", req.body);
-
+    console.log("GET /api/rubrics called"); // Add this line
     // gets all rubrics with their criteria and ratings
     const rubrics = await prisma.rubric.findMany({
       include: {
@@ -87,13 +113,13 @@ router.get(
 );
 
 // update an existing rubric
+
 router.put(
-  "/rubrics/:id",
+  "/:id",
   validateRubric,
   asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
     const { title, rubricCriteria } = req.body;
-
     const updatedRubric = await prisma.rubric.update({
       where: { id: Number(id) },
       data: {
@@ -120,7 +146,7 @@ router.put(
 
 // delete an existing rubric
 router.delete(
-  "/rubrics/:id",
+  "/:id",
   asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
 
