@@ -24,4 +24,12 @@ router.post("/rubrics", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/rubrics", async (req: Request, res: Response) => {
+  res
+    .status(200)
+    .json({
+      message: "nice! you've hit the rubrics endpoint of the backend :)",
+    });
+});
+
 export default router;

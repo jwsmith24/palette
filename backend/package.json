@@ -16,7 +16,8 @@
     "@prisma/client": "^5.20.0",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "prisma": "^5.20.0"
+    "prisma": "^5.20.0",
+    "url": "^0.11.4"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
