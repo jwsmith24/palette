@@ -23,8 +23,14 @@ app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
+// logging middleware function
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // API routes
-app.use(rubricRouter);
+app.use("/api/rubrics", rubricRouter);
 
 /* Defer to client-side routing.
 
