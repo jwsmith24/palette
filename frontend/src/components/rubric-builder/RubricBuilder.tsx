@@ -127,7 +127,7 @@ export default function RubricBuilder(): ReactElement {
       <Header />
 
       {/* Form Section */}
-      <form className="grid p-10 w-full max-h-[80vh] max-w-3xl mx-auto gap-6 bg-gray-800 shadow-lg rounded-lg">
+      <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
           Create a new rubric
