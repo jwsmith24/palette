@@ -6,15 +6,16 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 router.post("/rubrics", async (req: Request, res: Response) => {
-  const { title, description, criteria } = req.body;
+  const { title, rubricCriteria } = req.body;
 
   try {
     const newRubric = await prisma.rubric.create({
-      // @ts-ignore
       data: {
         title,
-        description,
-        criteria,
+        rubricCriteria: {
+          // creates the criterion objects in the database and defines the relationships in the same transaction
+          create: rubricCriteria,
+        },
       },
     });
     res.status(201).json(newRubric);
@@ -24,10 +25,17 @@ router.post("/rubrics", async (req: Request, res: Response) => {
   }
 });
 
+// fetch all rubrics from the database
 router.get("/rubrics", async (req: Request, res: Response) => {
-  res.status(200).json({
-    message: "nice! you've hit the rubrics endpoint of the backend!",
-  });
+  console.log("got", req.body);
+
+  try {
+    const rubrics = await prisma.rubric.findMany(); // gets all rubrics
+    res.status(200).json(rubrics); // Send list of all rubrics
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get rubrics." });
+    console.log(error);
+  }
 });
 
 export default router;
