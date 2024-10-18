@@ -1,6 +1,5 @@
 // main entry point for backend application
-import express, { Response, Request } from "express";
-import userRouter from "./routes/userRouter.js";
+import express, { Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js"; // !! required js extension !!
 import cors from "cors";
 import path from "path";
@@ -25,7 +24,6 @@ app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 // API routes
-app.use(userRouter);
 app.use(rubricRouter);
 
 /* Defer to client-side routing.
