@@ -13,29 +13,31 @@ generator client {
 model Rubric {
   id                           Int               @id @default(autoincrement())
   title                        String            @db.VarChar(255)
-  context_id                   Int
-  context_type                 String
-  points_possible              Int
-  reuasable                    Boolean
-  read_only                    Boolean
-  free_form_criterion_comments Boolean
-  hide_score_total             Boolean
+  context_id                   Int?
+  context_type                 String?
+  points_possible              Int               @default(0)
+  reusable                     Boolean?
+  read_only                    Boolean?
+  free_form_criterion_comments Boolean?
+  hide_score_total             Boolean?
   createdAt                    DateTime          @default(now())
-  updatedAt                    DateTime          @updatedAt
+  updatedAt                    DateTime          @default(now()) @updatedAt
   content                      String?
   published                    Boolean           @default(false)
-  authorId                     Int
-  Criterion                    RubricCriterion[]
+  authorId                     Int?
+  rubricCriteria               RubricCriterion[]
+
+  @@unique([title, authorId]) // make sure each author doesn't have duplicate rubric titles
 }
 
 model RubricCriterion {
   id                  Int            @id @default(autoincrement())
   description         String         @db.VarChar(255)
   long_description    String         @db.VarChar(510)
-  points              Int
-  criterion_use_range Int
+  points              Int            @default(0)
+  criterion_use_range Int?
   ratings             RubricRating[]
-  Rubric              Rubric         @relation(fields: [rubric_id], references: [id])
+  rubric              Rubric         @relation(fields: [rubric_id], references: [id])
   rubric_id           Int
 }
 
@@ -43,8 +45,8 @@ model RubricRating {
   id                  Int             @id @default(autoincrement())
   description         String          @db.VarChar(255)
   long_description    String          @db.VarChar(510)
-  points              Int
-  criterion_use_range Int
+  points              Int             @default(0)
+  criterion_use_range Int?
   criterion           RubricCriterion @relation(fields: [criterion_id], references: [id])
   criterion_id        Int
 }
