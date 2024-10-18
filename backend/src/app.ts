@@ -29,6 +29,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check route
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "UP" });
+});
+
 // API routes
 app.use("/api/rubrics", rubricRouter);
 
