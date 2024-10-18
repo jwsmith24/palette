@@ -99,7 +99,6 @@ router.get(
 router.get(
   "/",
   asyncHandler(async (req: Request, res: Response) => {
-    console.log("GET /api/rubrics called"); // Add this line
     // gets all rubrics with their criteria and ratings
     const rubrics = await prisma.rubric.findMany({
       include: {
@@ -120,29 +119,43 @@ router.put(
   "/:id",
   validateRubric,
   asyncHandler(async (req: Request, res: Response) => {
-    const { id } = req.params;
     const { title, rubricCriteria } = req.body;
-    const updatedRubric = await prisma.rubric.update({
-      where: { id: Number(id) },
-      data: {
-        title,
-        rubricCriteria: {
-          deleteMany: {}, // Deletes all existing criteria before adding new ones
-          create: rubricCriteria.map((criterion: Criteria) => ({
+
+    if (rubricCriteria && Array.isArray(rubricCriteria)) {
+      // Ensure each criterion has an ID before updating
+      const updateCriteriaData = rubricCriteria.map((criterion) => {
+        if (!criterion.id) {
+          throw new Error("Each criterion must have an id to update");
+        }
+        return {
+          where: { id: criterion.id }, // criterion ID is required to update
+          data: {
             description: criterion.description,
             longDescription: criterion.longDescription,
             points: criterion.points,
-            ratings: {
-              create: criterion.ratings.map((rating: Rating) => ({
-                description: rating.description,
-                points: rating.points,
-              })),
-            },
-          })),
+          },
+        };
+      });
+
+      const updatedRubric = await prisma.rubric.update({
+        where: { id: parseInt(req.params.id, 10) },
+        data: {
+          title: title,
+          rubricCriteria: {
+            update: updateCriteriaData,
+          },
         },
-      },
-    });
-    res.status(200).send(updatedRubric);
+        include: {
+          rubricCriteria: true, // Include criteria in the response
+        },
+      });
+
+      res.json(updatedRubric);
+    } else {
+      res
+        .status(400)
+        .json({ error: "Invalid rubric criteria format or missing criteria" });
+    }
   }),
 );
 
