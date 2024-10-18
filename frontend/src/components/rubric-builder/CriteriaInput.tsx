@@ -24,7 +24,9 @@ export default function CriteriaInput({
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
-  const [criteriaTitle, setCriteriaTitle] = useState(criterion.title || "");
+  const [criteriaDescription, setCriteriaDescription] = useState(
+    criterion.description || "",
+  );
 
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
@@ -36,14 +38,16 @@ export default function CriteriaInput({
         ratings[0],
       );
       maxRating.points ? setMaxPoints(maxRating.points) : setMaxPoints(0);
+      const newCriterion = { ...criterion, points: maxRating.points };
+      handleCriteriaUpdate(index, newCriterion);
     } else {
       setMaxPoints(0);
     }
   }, [ratings]);
 
-  const handleCriterionTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCriteriaTitle(event.target.value);
-    const newCriterion = { ...criterion, title: criteriaTitle };
+  const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCriteriaDescription(event.target.value);
+    const newCriterion = { ...criterion, description: criteriaDescription };
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -105,10 +109,10 @@ export default function CriteriaInput({
           <div className={"grid self-baseline"}>
             <input
               type="text"
-              placeholder={`Criteria ${index + 1} Title...`}
+              placeholder={`Criteria ${index + 1} Description...`}
               className="rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-800"
-              value={criteriaTitle}
-              onChange={handleCriterionTitleChange}
+              value={criteriaDescription}
+              onChange={handleDescriptionChange}
             />
             <p className="text-xl font-semibold mt-2 text-gray-200">
               Max Points: {maxPoints}
