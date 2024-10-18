@@ -3,25 +3,41 @@ import express, { Response, Request } from "express";
 import userRouter from "./routes/userRouter.js";
 import rubricRouter from "./routes/rubricRouter.js"; // !! required js extension !!
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.SERVER_PORT || 3000; // use environment variable, falls back to 3000
 
-app.use(cors()); // enable CORS for all routes
+// CORS config
+const whiteListOrigins = ["http://localhost:3000"];
+const corsOptions = {
+  origin: whiteListOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
 
-// middleware to parse any json requests
-app.use(express.json());
+app.use(cors(corsOptions)); // enable CORS with above configuration
+app.use(express.json()); // middleware to parse json requests
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-// test route
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hi from the future backend of Palette!!!!!! (via express)");
-});
-
-// use the user router for all /users routes
+// API routes
 app.use(userRouter);
 app.use(rubricRouter);
 
-// start the server
+/* Defer to client-side routing.
+
+Wildcard handler that will direct any route not handled by the API to the home page. This lets React Router in resolve
+client-side routes that the backend doesn't know about.
+ */
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
+});
+
+// Start the server and listen on port defined in .env file
 app.listen(PORT, () => {
   console.log(`Server is up on port: ${PORT}`);
 });
