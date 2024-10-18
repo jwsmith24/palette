@@ -5,6 +5,7 @@
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "rootDir": "./src",
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,6 +15,6 @@
     "src"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
   ]
 }

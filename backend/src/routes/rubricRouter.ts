@@ -2,8 +2,10 @@
 import express, { Response, Request } from "express";
 import { PrismaClient } from "@prisma/client";
 import { body, validationResult } from "express-validator";
-import { Criteria } from "../../../frontend/src/models/types/criteria";
-import { Rating } from "../../../frontend/src/models/types/rating";
+// @ts-ignore
+import { Criteria } from "@models/types/criteria";
+// @ts-ignore // ts doesn't like using models from another module but whatever
+import { Rating } from "@models/types/rating";
 import asyncHandler from "express-async-handler";
 
 const router = express.Router();
