@@ -1,10 +1,9 @@
-// CSVUpload.tsx
 import React from "react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 
 interface CSVUploadProps {
-  onDataChange: (data: any) => void;
+  onDataChange: (data: any[]) => void;
 }
 
 const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
@@ -19,7 +18,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
     } else if (fileExtension === "xlsx") {
       parseXLSX(file);
     } else {
-      alert("File not supported. Please upload a CSV or XLSX file.");
+      alert("Unsupported file format. Please upload a CSV or XLSX file.");
     }
   };
 
@@ -27,7 +26,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        console.log("Parsed CSV data:", results.data);
+        console.log("Parsed CSV data:", results.data); // Log parsed CSV data
         onDataChange(results.data); // Pass parsed data to parent
       },
       error: (error) => {
@@ -42,13 +41,13 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
       const data = new Uint8Array(e.target?.result as ArrayBuffer);
       const workbook = XLSX.read(data, { type: "array" });
 
-      // Calls for the first sheet in the excel file
+      // Assuming the first sheet contains the rubric data
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
 
       // Convert the sheet to JSON format
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-      console.log("Parsed XLSX data:", jsonData);
+      console.log("Parsed XLSX data:", jsonData); // Log parsed XLSX data
       onDataChange(jsonData); // Pass parsed data to parent
     };
 

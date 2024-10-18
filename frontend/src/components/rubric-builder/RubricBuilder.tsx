@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import Criteria from "../../Criteria.ts";
+import Rating from "../../Rating.ts";
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Rubric from "../../Rubric.ts";
 import Dialog from "../util/Dialog.tsx";
@@ -27,12 +28,15 @@ export default function RubricBuilder(): ReactElement {
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
+  // Ensure title is updated independently from the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
+    const newTitle = event.target.value;
+    setTitle(newTitle);
+    setRubric((prevRubric) => ({
+      ...prevRubric,
+      title: newTitle,  // Only update the title, don't affect the criteria
+    }));
   };
-  useEffect(() => {
-    calculateTotalPoints();
-  }, [rubric]);
 
   // send the Rubric object to the server with the latest state values
   const handleSaveRubric = (event: MouseEvent) => {
@@ -63,10 +67,37 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  // Update state with the new CSV data
-  const handleRubricDataChange = (data: string[]) => {
-    setRubricData(data);
+  const handleRubricDataChange = (data: any[]) => {
+    const newCriteria = data.map((row) => {
+      const title = row[0]; // The title is in Column A (first column)
+  
+      // Initialize an empty array of ratings
+      const ratings: Rating[] = [];
+  
+      // Iterate through the remaining columns in pairs (B&C, D&E, etc.)
+      for (let i = 1; i < row.length; i += 2) {
+        const points = Number(row[i]); // Ratings (B, D, F, etc.)
+        const description = row[i + 1]; // Reasons (C, E, G, etc.)
+  
+        // If points and description are valid, create a new Rating and add it to the ratings array
+        if (!isNaN(points) && description) {
+          ratings.push(new Rating(points, description));
+        }
+      }
+  
+      // Return a new Criteria object using the factory method and ensure IDs are generated
+      return new Criteria(title);
+    });
+  
+    // Merge the new criteria into the existing rubric
+    setRubric((prevRubric) => ({
+      ...prevRubric,
+      criteria: [...prevRubric.criteria, ...newCriteria],
+    }));
   };
+  
+  
+  
 
   const calculateTotalPoints = () => {
     const total: number = rubric.criteria.reduce(
@@ -149,14 +180,14 @@ export default function RubricBuilder(): ReactElement {
         {/* CSV Upload Section */}
         <CSVUpload onDataChange={handleRubricDataChange} />
 
-        {/* Uploaded Rubric Data */}
+        {/* Uploaded Rubric Data (Optional Preview) */}
         {rubricData.length > 0 && (
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-2">Uploaded Rubric Data</h2>
             <ul className="bg-gray-100 rounded-lg p-4 text-black">
               {rubricData.map((row, index) => (
                 <li key={index} className="border-b py-2">
-                  {row}
+                  {JSON.stringify(row)}
                 </li>
               ))}
             </ul>
