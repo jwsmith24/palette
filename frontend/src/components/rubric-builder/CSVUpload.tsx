@@ -3,9 +3,13 @@ import * as XLSX from "xlsx"; // Import the xlsx library
 
 interface CsvUploadProps {
   onDataChange: (data: string[]) => void; // Handles Data Changes
+  closeImportCard: () => void; // callback to close the import card
 }
 
-const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
+const CsvUpload: React.FC<CsvUploadProps> = ({
+  onDataChange,
+  closeImportCard,
+}) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleCsvUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -53,6 +57,7 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
         setError("Invalid file type. Please upload a .csv or .xlsx file.");
       }
     }
+    closeImportCard();
   };
 
   const parseCsv = (text: string): string[] => {

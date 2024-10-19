@@ -25,6 +25,7 @@ export default function RubricBuilder(): ReactElement {
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [fileData, setFileData] = useState<string[]>([]);
+  const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
@@ -121,22 +122,59 @@ export default function RubricBuilder(): ReactElement {
     ));
   };
 
+  const renderFileImport = () => {
+    if (fileInputActive) {
+      return (
+        <CSVUpload
+          onDataChange={handleImportFile}
+          closeImportCard={handleCloseImportCard}
+        />
+      );
+    }
+  };
+
+  const handleImportFilePress = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!fileInputActive) {
+      setFileInputActive(true);
+    }
+  };
+
+  const handleCloseImportCard = () => {
+    setFileInputActive(false); // hides the import file card
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-between w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       {/* Sticky Header with Gradient */}
       <Header />
 
       {/* Form Section */}
-      <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">
+      <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg h-[95%]">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
           Create a new rubric
         </h1>
 
-        {/* Rubric Total Points */}
-        <h2 className="justify-self-end text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-          {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
-        </h2>
+        <div className={"flex justify-between"}>
+          {/*Import CSV/XLSX File*/}
+          <button
+            className={
+              "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
+              " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
+              " focus:ring-violet-500"
+            }
+            onClick={handleImportFilePress}
+          >
+            Import CSV
+          </button>
+          {/* Rubric Total Points */}
+          <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
+            {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
+          </h2>
+        </div>
+
+        {renderFileImport()}
 
         {/* Rubric Title Input */}
         <input
@@ -151,9 +189,6 @@ export default function RubricBuilder(): ReactElement {
           value={rubric.title}
           onChange={handleRubricTitleChange}
         />
-
-        {/* CSV Upload Section */}
-        <CSVUpload onDataChange={handleImportFile} />
 
         {/* Uploaded Rubric Data */}
         {fileData.length > 0 && (
