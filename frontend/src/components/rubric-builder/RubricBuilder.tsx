@@ -93,7 +93,7 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = [...rubric.criteria, createCriterion()];
     // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
-    setActiveCriterionIndex(activeCriterionIndex + 1);
+    setActiveCriterionIndex(newCriteria.length - 1);
   };
 
   const handleRemoveCriterion = (index: number) => {

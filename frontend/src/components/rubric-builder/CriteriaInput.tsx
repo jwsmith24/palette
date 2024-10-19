@@ -134,7 +134,7 @@ export default function CriteriaInput({
           <div className={"grid self-baseline"}>
             <input
               type="text"
-              placeholder={`Criteria ${index + 1} Title...`}
+              placeholder={`Criteria ${index + 1} Description...`}
               className="rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-800"
               value={criteriaTitle}
               onChange={handleCriterionTitleChange}
