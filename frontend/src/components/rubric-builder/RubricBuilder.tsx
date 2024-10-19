@@ -26,6 +26,7 @@ export default function RubricBuilder(): ReactElement {
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [fileData, setFileData] = useState<string[]>([]);
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
+  const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
@@ -92,6 +93,7 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = [...rubric.criteria, createCriterion()];
     // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
+    setActiveCriterionIndex(activeCriterionIndex + 1);
   };
 
   const handleRemoveCriterion = (index: number) => {
@@ -115,6 +117,7 @@ export default function RubricBuilder(): ReactElement {
       <CriteriaInput
         key={criterion.id}
         index={index}
+        activeCriterionIndex={activeCriterionIndex}
         criterion={criterion}
         handleCriteriaUpdate={handleUpdateCriterion}
         removeCriterion={handleRemoveCriterion}
@@ -145,12 +148,12 @@ export default function RubricBuilder(): ReactElement {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+    <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       {/* Sticky Header with Gradient */}
       <Header />
 
       {/* Form Section */}
-      <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg h-[95%]">
+      <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
           Create a new rubric
@@ -205,7 +208,7 @@ export default function RubricBuilder(): ReactElement {
         )}
 
         {/* Criteria Section */}
-        <div className="mt-6 grid gap-6 max-h-[25vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+        <div className="mt-6 grid gap-3 h-[30vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
           {renderCriteria()}
         </div>
 

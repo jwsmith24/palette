@@ -13,11 +13,13 @@ import RatingInput from "./RatingInput.tsx";
 
 export default function CriteriaInput({
   index,
+  activeCriterionIndex,
   criterion,
   handleCriteriaUpdate,
   removeCriterion,
 }: {
   index: number;
+  activeCriterionIndex: number;
   criterion: Criteria;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
@@ -98,9 +100,27 @@ export default function CriteriaInput({
     handleCriteriaUpdate(index, criterion);
   };
 
-  const renderCriteriaView = () => {
+  const renderCondensedView = () => {
     return (
-      <div className="grid grid-rows-[auto,auto] border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
+      <div className="max-h-12 flex justify-between items-center border border-gray-700 shadow-xl p-6 rounded-lg w-full bg-gray-700">
+        <div className="text-gray-300">
+          <strong>{criteriaTitle}</strong> - Max Points: {maxPoints}
+        </div>
+        <button
+          onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
+            handleRemoveCriteriaButton(event, index)
+          }
+          className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none"
+        >
+          Remove
+        </button>
+      </div>
+    );
+  };
+
+  const renderDetailedView = () => {
+    return (
+      <div className="max-h-[22vh] grid grid-rows-[auto,auto] border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
         <div className="grid grid-cols-2 gap-4 items-start">
           <div className={"grid self-baseline"}>
             <input
@@ -141,5 +161,11 @@ export default function CriteriaInput({
     );
   };
 
-  return <>{renderCriteriaView()}</>;
+  return (
+    <>
+      {activeCriterionIndex === index
+        ? renderDetailedView()
+        : renderCondensedView()}
+    </>
+  );
 }
