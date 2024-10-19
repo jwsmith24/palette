@@ -55,11 +55,16 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
+      <label htmlFor="fileUpload" className="text-white font-semibold mb-2">
+        Import Rubric
+      </label>
       <input
+        id="fileUpload"
         type="file"
         accept=".csv, .xlsx"
         onChange={handleFileChange}
+        className="bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 cursor-pointer"
       />
     </div>
   );
