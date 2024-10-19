@@ -9,37 +9,40 @@ import {
   useEffect,
   useState,
 } from "react";
-import Criteria from "../../Criteria.ts";
-import Rating from "../../Rating.ts";
+
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
-import Rubric from "../../Rubric.ts";
 import Dialog from "../util/Dialog.tsx";
-import CSVUpload from "../util/CSVUpload.tsx";
+import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
+import { Rubric } from "../../models/types/rubric.ts";
+import createRubric from "../../models/Rubric.ts";
+import { Criteria } from "../../models/types/criteria.ts";
+import createCriterion from "../../models/Criteria.ts";
 
 export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(new Rubric()); // track state for whole rubric
-  const [title, setTitle] = useState<string>(""); // track state for rubric title input
+  const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [rubricData, setRubricData] = useState<string[]>([]); // Store CSV data here
+  const [fileData, setFileData] = useState<string[]>([]);
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
   // Ensure title is updated independently from the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newTitle = event.target.value;
-    setTitle(newTitle);
-    setRubric((prevRubric) => ({
-      ...prevRubric,
-      title: newTitle,  // Only update the title, don't affect the criteria
-    }));
+    const newRubric = { ...rubric };
+    newRubric.title = event.target.value;
+    setRubric(newRubric);
   };
 
-  // send the Rubric object to the server with the latest state values
-  const handleSaveRubric = (event: MouseEvent) => {
+  // Effect hook to update total points display on initial mount and anytime the rubric state changes
+  useEffect(() => {
+    calculateTotalPoints();
+  }, [rubric]);
+
+  // Build rubric object with latest state values and send to server
+  const handleSubmitRubric = (event: MouseEvent) => {
     event.preventDefault();
     console.log(submitRubric(rubric));
     openDialog();
@@ -67,37 +70,12 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  const handleRubricDataChange = (data: any[]) => {
-    // Skip the first row (header row)
-    const dataWithoutHeader = data.slice(1);
-  
-    const newCriteria = dataWithoutHeader.map((row) => {
-      const title = row[0]; // The title is in Column A (first column)
-  
-      // Initialize a new Criteria object with just the title
-      const criterion = new Criteria(title);
-  
-      // Iterate through the remaining columns 
-      for (let i = 1; i < row.length; i += 2) {
-        const points = Number(row[i]); // Ratings (B, D, F, etc.)
-        const description = row[i + 1]; // Reasons (C, E, G, etc.)
-  
-        // If points and description are valid, create a new Rating and add it to the ratings array
-        if (!isNaN(points) && description) {
-          const rating = new Rating(points, description);
-          criterion.ratings.push(rating); 
-        }
-      }
-      return criterion; 
-    });
-  
-    setRubric((prevRubric) => ({
-      ...prevRubric,
-      criteria: [...prevRubric.criteria, ...newCriteria],
-    }));
+  // Update state with the new CSV data
+  const handleImportFile = (data: string[]) => {
+    setFileData(data);
   };
-  
 
+  // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
     const total: number = rubric.criteria.reduce(
       (sum: number, criterion: Criteria) => {
@@ -111,35 +89,34 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.criteria, new Criteria()];
+    const newCriteria = [...rubric.criteria, createCriterion()];
     // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
   };
 
   const handleRemoveCriterion = (index: number) => {
     const newCriteria = [...rubric.criteria];
-    newCriteria.splice(index, 1); // remove the target criterion
-    console.log(newCriteria);
+    newCriteria.splice(index, 1); // remove the target criterion from the array
     // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria });
   };
 
   // update criterion at given index
-  const handleCriterionUpdate = (index: number, criterion: Criteria) => {
+  const handleUpdateCriterion = (index: number, criterion: Criteria) => {
     const newCriteria = [...rubric.criteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     // @ts-ignore
     setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
   };
 
-  // render either the edit or widget view
+  // render criterion card for each criterion in the array
   const renderCriteria = () => {
     return rubric.criteria.map((criterion: Criteria, index: number) => (
       <CriteriaInput
         key={criterion.id}
         index={index}
         criterion={criterion}
-        handleCriteriaUpdate={handleCriterionUpdate}
+        handleCriteriaUpdate={handleUpdateCriterion}
         removeCriterion={handleRemoveCriterion}
       />
     ));
@@ -151,7 +128,7 @@ export default function RubricBuilder(): ReactElement {
       <Header />
 
       {/* Form Section */}
-      <form className="grid p-10 w-full max-w-3xl mx-auto gap-6 bg-gray-800 shadow-lg rounded-lg">
+      <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
           Create a new rubric
@@ -159,7 +136,7 @@ export default function RubricBuilder(): ReactElement {
 
         {/* Rubric Total Points */}
         <h2 className="justify-self-end text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-          {totalPoints} Points
+          {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
         </h2>
 
         {/* Rubric Title Input */}
@@ -172,19 +149,19 @@ export default function RubricBuilder(): ReactElement {
           }
           name="rubricTitle"
           id="rubricTitle"
-          value={title}
+          value={rubric.title}
           onChange={handleRubricTitleChange}
         />
 
         {/* CSV Upload Section */}
-        <CSVUpload onDataChange={handleRubricDataChange} />
+        <CSVUpload onDataChange={handleImportFile} />
 
-        {/* Uploaded Rubric Data (Optional Preview) */}
-        {rubricData.length > 0 && (
+        {/* Uploaded Rubric Data */}
+        {fileData.length > 0 && (
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-2">Uploaded Rubric Data</h2>
             <ul className="bg-gray-100 rounded-lg p-4 text-black">
-              {rubricData.map((row, index) => (
+              {fileData.map((row, index) => (
                 <li key={index} className="border-b py-2">
                   {JSON.stringify(row)}
                 </li>
@@ -194,7 +171,9 @@ export default function RubricBuilder(): ReactElement {
         )}
 
         {/* Criteria Section */}
-        <div className="mt-6 grid gap-6">{renderCriteria()}</div>
+        <div className="mt-6 grid gap-6 max-h-[25vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+          {renderCriteria()}
+        </div>
 
         {/* Buttons */}
         <div className="grid gap-4 mt-6">
@@ -208,7 +187,7 @@ export default function RubricBuilder(): ReactElement {
           <button
             className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={handleSaveRubric}
+            onClick={handleSubmitRubric}
           >
             Save Rubric
           </button>
