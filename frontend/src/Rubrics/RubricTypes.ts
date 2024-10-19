@@ -76,17 +76,12 @@ export interface RubricAssociation {
     hide_outcome_results: boolean;           // whether outcome results are hidden
 }
 
-// A RubricObjectHash object represents a response from the Rubric API for
-// creating a single rubric and update a single rubric requests
-interface RubricObjectHash {
-    rubric: Rubric;
-    rubric_association: RubricAssociation;
-}
-
-// A RubricAssociationType is a string representing the type of entity a rubric is associated with
+/**
+ * Type aliases for Rubric associations and assessments
+ */
 export type RubricAssociationType = "Assignment" | "Course" | "Account";
 export type RubricAssociationPurpose = "grading" | "bookmark";
-export type RubricAssessmentType =
-    "grading"
-    | "peer_review"
-    | "provisional_grade";
+export type RubricAssessmentType = "grading" | "peer_review" | "provisional_grade";
+export type RelatedRubricRecord = "assessments" | "graded_assessments"
+    | "peer_assessments" | "associations" | "assignment_associations"
+    | "course_associations" | "account_associations";
