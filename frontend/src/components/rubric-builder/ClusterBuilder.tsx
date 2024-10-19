@@ -15,13 +15,13 @@ import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import { Rubric } from "../../models/types/rubric.ts";
-import createRubric from "../../models/Rubric.ts";
+import { Cluster } from "../../models/types/cluster.ts";
 import { Criteria } from "../../models/types/criteria.ts";
 import createCriterion from "../../models/Criteria.ts";
+import createCluster from "../../models/Cluster.ts";
 
 export default function ClusterBuilder(): ReactElement {
-  const [cluster, setCluster] = useState<Rubric>(createRubric());
+  const [cluster, setCluster] = useState<Cluster>(createCluster());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [fileData, setFileData] = useState<string[]>([]);
@@ -30,9 +30,9 @@ export default function ClusterBuilder(): ReactElement {
   const closeDialog = () => setDialogOpen(false);
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = { ...cluster };
-    newRubric.title = event.target.value;
-    setCluster(newRubric);
+    const newCluster = { ...cluster };
+    newCluster.title = event.target.value;
+    setCluster(newCluster);
   };
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
@@ -48,19 +48,19 @@ export default function ClusterBuilder(): ReactElement {
   };
 
   // function to send rubric to the server
-  const submitRubric = async (rubric: Rubric) => {
+  const submitRubric = async (cluster: Cluster) => {
     try {
       const res = await fetch("http://localhost:3000/rubrics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(rubric),
+        body: JSON.stringify(cluster),
       });
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Rubric saved!", data);
+        console.log("Cluster saved!", data);
       } else {
         console.error("Error connecting to server");
       }
@@ -127,15 +127,15 @@ export default function ClusterBuilder(): ReactElement {
       <Header />
 
         <br/>
-        <h2 className="font-extrabold text-5xl mb-2 text-center">
-          Group common criteria together into a criteria cluster and use them later in your rubrics for faster assembly!
-        </h2>
+        <h1 className="font-extrabold text-2xl mb-2 text-center">
+          Group common criteria together into a Criteria Cluster and use them later in your rubrics for faster assembly!
+        </h1>
 
       {/* Form Section */}
       <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">
         {/* Main Heading */}
         <h1 className="font-extrabold text-5xl mb-2 text-center">
-          Create a new cluster
+          Create a new Cluster
         </h1>
 
         {/* Rubric Total Points */}
@@ -146,7 +146,7 @@ export default function ClusterBuilder(): ReactElement {
         {/* Rubric Title Input */}
         <input
           type="text"
-          placeholder="Rubric title"
+          placeholder="Cluster title"
           className={
             "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
             " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
