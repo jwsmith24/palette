@@ -17,12 +17,14 @@ export default function CriteriaInput({
   criterion,
   handleCriteriaUpdate,
   removeCriterion,
+  setActiveCriterionIndex,
 }: {
   index: number;
   activeCriterionIndex: number;
   criterion: Criteria;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
+  setActiveCriterionIndex: (index: number) => void;
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
@@ -100,9 +102,16 @@ export default function CriteriaInput({
     handleCriteriaUpdate(index, criterion);
   };
 
+  const handleExpandCriterion = () => {
+    setActiveCriterionIndex(index);
+  };
+
   const renderCondensedView = () => {
     return (
-      <div className="max-h-12 flex justify-between items-center border border-gray-700 shadow-xl p-6 rounded-lg w-full bg-gray-700">
+      <div
+        className="hover:bg-gray-500 hover:cursor-pointer max-h-12 flex justify-between items-center border border-gray-700 shadow-xl p-6 rounded-lg w-full bg-gray-700"
+        onClick={handleExpandCriterion}
+      >
         <div className="text-gray-300">
           <strong>{criteriaTitle}</strong> - Max Points: {maxPoints}
         </div>

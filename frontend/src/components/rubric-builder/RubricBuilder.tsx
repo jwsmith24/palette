@@ -121,6 +121,7 @@ export default function RubricBuilder(): ReactElement {
         criterion={criterion}
         handleCriteriaUpdate={handleUpdateCriterion}
         removeCriterion={handleRemoveCriterion}
+        setActiveCriterionIndex={handleToggleActiveCriterion}
       />
     ));
   };
@@ -145,6 +146,10 @@ export default function RubricBuilder(): ReactElement {
 
   const handleCloseImportCard = () => {
     setFileInputActive(false); // hides the import file card
+  };
+
+  const handleToggleActiveCriterion = (index: number) => {
+    setActiveCriterionIndex(index);
   };
 
   return (
