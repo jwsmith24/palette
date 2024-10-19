@@ -46,8 +46,9 @@ export default function CriteriaInput({
   }, [ratings]);
 
   const handleCriterionTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCriteriaTitle(event.target.value);
-    const newCriterion = { ...criterion, title: criteriaTitle };
+    const newTitle = event.target.value;
+    setCriteriaTitle(newTitle);
+    const newCriterion = { ...criterion, title: newTitle };
     handleCriteriaUpdate(index, newCriterion);
   };
 

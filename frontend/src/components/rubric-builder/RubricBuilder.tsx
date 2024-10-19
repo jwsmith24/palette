@@ -111,21 +111,6 @@ export default function RubricBuilder(): ReactElement {
     setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
   };
 
-  // render criterion card for each criterion in the array
-  const renderCriteria = () => {
-    return rubric.criteria.map((criterion: Criteria, index: number) => (
-      <CriteriaInput
-        key={criterion.id}
-        index={index}
-        activeCriterionIndex={activeCriterionIndex}
-        criterion={criterion}
-        handleCriteriaUpdate={handleUpdateCriterion}
-        removeCriterion={handleRemoveCriterion}
-        setActiveCriterionIndex={handleSetActiveCriterion}
-      />
-    ));
-  };
-
   const renderFileImport = () => {
     if (fileInputActive) {
       return (
@@ -152,6 +137,20 @@ export default function RubricBuilder(): ReactElement {
     setActiveCriterionIndex(index);
   };
 
+  // render criterion card for each criterion in the array
+  const renderCriteria = () => {
+    return rubric.criteria.map((criterion: Criteria, index: number) => (
+      <CriteriaInput
+        key={criterion.id}
+        index={index}
+        activeCriterionIndex={activeCriterionIndex}
+        criterion={criterion}
+        handleCriteriaUpdate={handleUpdateCriterion}
+        removeCriterion={handleRemoveCriterion}
+        setActiveCriterionIndex={handleSetActiveCriterion}
+      />
+    ));
+  };
   return (
     <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       {/* Sticky Header with Gradient */}
