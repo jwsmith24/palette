@@ -19,6 +19,12 @@ import { Rubric } from "../../models/types/rubric.ts";
 import createRubric from "../../models/Rubric.ts";
 import { Criteria } from "../../models/types/criteria.ts";
 import createCriterion from "../../models/Criteria.ts";
+import { DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import SortableCriteriaInput from "./SortableCriteriaWrapper.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -137,117 +143,146 @@ export default function RubricBuilder(): ReactElement {
     setActiveCriterionIndex(index);
   };
 
+  // Fires when drag event is over
+  const handleDragEnd = (event: { active: any; over: any }) => {
+    if (event.over) {
+      const oldIndex = rubric.criteria.findIndex(
+        (criterion) => criterion.id === event.active.id,
+      );
+      const newIndex = rubric.criteria.findIndex(
+        (criterion) => criterion.id === event.over.id,
+      );
+
+      const updatedCriteria = [...rubric.criteria];
+      const [movedCriterion] = updatedCriteria.splice(oldIndex, 1);
+      updatedCriteria.splice(newIndex, 0, movedCriterion);
+
+      setRubric({ ...rubric, criteria: updatedCriteria });
+    }
+  };
+
   // render criterion card for each criterion in the array
   const renderCriteria = () => {
-    return rubric.criteria.map((criterion: Criteria, index: number) => (
-      <CriteriaInput
-        key={criterion.id}
-        index={index}
-        activeCriterionIndex={activeCriterionIndex}
-        criterion={criterion}
-        handleCriteriaUpdate={handleUpdateCriterion}
-        removeCriterion={handleRemoveCriterion}
-        setActiveCriterionIndex={handleSetActiveCriterion}
-      />
-    ));
+    return (
+      <SortableContext
+        items={rubric.criteria.map((criterion) => criterion.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {rubric.criteria.map((criterion, index) => (
+          <SortableCriteriaInput
+            key={criterion.id}
+            index={index}
+            activeCriterionIndex={activeCriterionIndex}
+            criterion={criterion}
+            handleCriteriaUpdate={handleUpdateCriterion}
+            removeCriterion={handleRemoveCriterion}
+            setActiveCriterionIndex={setActiveCriterionIndex}
+          />
+        ))}
+      </SortableContext>
+    );
   };
   return (
-    <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
-      {/* Sticky Header with Gradient */}
-      <Header />
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+        {/* Sticky Header with Gradient */}
+        <Header />
 
-      {/* Form Section */}
-      <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
-        {/* Main Heading */}
-        <h1 className="font-extrabold text-5xl mb-2 text-center">
-          Create a new rubric
-        </h1>
+        {/* Form Section */}
+        <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
+          {/* Main Heading */}
+          <h1 className="font-extrabold text-5xl mb-2 text-center">
+            Create a new rubric
+          </h1>
 
-        <div className={"flex justify-between"}>
-          {/*Import CSV/XLSX File*/}
-          <button
-            className={
-              "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
-              " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
-              " focus:ring-violet-500"
-            }
-            onClick={handleImportFilePress}
-          >
-            Import CSV
-          </button>
-          {/* Rubric Total Points */}
-          <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-            {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
-          </h2>
-        </div>
-
-        {renderFileImport()}
-
-        {/* Rubric Title Input */}
-        <input
-          type="text"
-          placeholder="Rubric title"
-          className={
-            "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
-            " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
-          }
-          name="rubricTitle"
-          id="rubricTitle"
-          value={rubric.title}
-          onChange={handleRubricTitleChange}
-        />
-
-        {/* Uploaded Rubric Data */}
-        {fileData.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-2">Uploaded Rubric Data</h2>
-            <ul className="bg-gray-100 rounded-lg p-4 text-black">
-              {fileData.map((row, index) => (
-                <li key={index} className="border-b py-2">
-                  {row}
-                </li>
-              ))}
-            </ul>
+          <div className={"flex justify-between"}>
+            {/*Import CSV/XLSX File*/}
+            <button
+              className={
+                "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
+                " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
+                " focus:ring-violet-500"
+              }
+              onClick={handleImportFilePress}
+            >
+              Import CSV
+            </button>
+            {/* Rubric Total Points */}
+            <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
+              {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
+            </h2>
           </div>
-        )}
 
-        {/* Criteria Section */}
-        <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
-          {renderCriteria()}
-        </div>
+          {renderFileImport()}
 
-        {/* Buttons */}
-        <div className="grid gap-4 mt-6">
-          <button
-            className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
+          {/* Rubric Title Input */}
+          <input
+            type="text"
+            placeholder="Rubric title"
+            className={
+              "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
+              " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
+            }
+            name="rubricTitle"
+            id="rubricTitle"
+            value={rubric.title}
+            onChange={handleRubricTitleChange}
+          />
+
+          {/* Uploaded Rubric Data */}
+          {fileData.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-xl font-semibold mb-2">
+                Uploaded Rubric Data
+              </h2>
+              <ul className="bg-gray-100 rounded-lg p-4 text-black">
+                {fileData.map((row, index) => (
+                  <li key={index} className="border-b py-2">
+                    {row}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Criteria Section */}
+          <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+            {renderCriteria()}
+          </div>
+
+          {/* Buttons */}
+          <div className="grid gap-4 mt-6">
+            <button
+              className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={handleAddCriteria}
-          >
-            Add Criteria
-          </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
+              onClick={handleAddCriteria}
+            >
+              Add Criteria
+            </button>
+            <button
+              className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={handleSubmitRubric}
-          >
-            Save Rubric
-          </button>
-        </div>
-      </form>
+              onClick={handleSubmitRubric}
+            >
+              Save Rubric
+            </button>
+          </div>
+        </form>
 
-      {/* Dialog */}
-      <Dialog
-        isOpen={isDialogOpen}
-        onClose={closeDialog}
-        title={"Sending Rubric!"}
-      >
-        <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
-          {JSON.stringify(rubric, null, 2)}
-        </pre>
-      </Dialog>
+        {/* Dialog */}
+        <Dialog
+          isOpen={isDialogOpen}
+          onClose={closeDialog}
+          title={"Sending Rubric!"}
+        >
+          <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
+            {JSON.stringify(rubric, null, 2)}
+          </pre>
+        </Dialog>
 
-      {/* Sticky Footer with Gradient */}
-      <Footer />
-    </div>
+        {/* Sticky Footer with Gradient */}
+        <Footer />
+      </div>
+    </DndContext>
   );
 }
