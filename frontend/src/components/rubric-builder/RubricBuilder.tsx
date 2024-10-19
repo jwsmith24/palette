@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 
+
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
@@ -19,6 +20,7 @@ import { Rubric } from "../../models/types/rubric.ts";
 import createRubric from "../../models/Rubric.ts";
 import { Criteria } from "../../models/types/criteria.ts";
 import createCriterion from "../../models/Criteria.ts";
+import createRating from "../../models/Rating.ts";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -71,8 +73,35 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // Update state with the new CSV data
-  const handleImportFile = (data: string[]) => {
-    setFileData(data);
+
+  const handleImportFile = (data: any[]) => {
+    // Skip the first row (header row)
+    const dataWithoutHeader = data.slice(1);
+  
+    const newCriteria = dataWithoutHeader.map((row) => {
+      const title = row[0]; // The title is in Column A (first column)
+  
+      // Initialize a new Criteria object using the factory function
+      const criterion = createCriterion(title, "", "", []);
+  
+      // Iterate through the remaining columns 
+      for (let i = 1; i < row.length; i += 2) {
+        const points = Number(row[i]); // Ratings (B, D, F, etc.)
+        const description = row[i + 1]; // Reasons (C, E, G, etc.)
+  
+        // If points and description are valid, create a new Rating and add it to the ratings array
+        if (!isNaN(points) && description) {
+          const rating = createRating(points, description);
+          criterion.ratings.push(rating); 
+        }
+      }
+      return criterion;
+    });
+  
+    setRubric((prevRubric) => ({
+      ...prevRubric,
+      criteria: [...prevRubric.criteria, ...newCriteria],
+    }));
   };
 
   // function to iterate through each criterion and sum total max points for entire rubric

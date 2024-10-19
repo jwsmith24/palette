@@ -2,6 +2,7 @@ import { Criteria } from "./types/criteria.ts";
 import { Rating } from "./types/rating.ts";
 import createRating from "./Rating.ts";
 
+
 // Criterion factory function
 export default function createCriterion(
   title: string = "",
@@ -28,4 +29,7 @@ export default function createCriterion(
       return maxRating.points;
     },
   };
+
+
+
 }
