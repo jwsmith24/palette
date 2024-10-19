@@ -24,9 +24,9 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
 
   const parseCSV = (file: File) => {
     Papa.parse(file, {
-      header: true,
+      header: false,
       complete: (results) => {
-        console.log("Parsed CSV data:", results.data); 
+        console.log("Parsed CSV data:", results.data);
         onDataChange(results.data); // Pass parsed data to parent
       },
       error: (error) => {
