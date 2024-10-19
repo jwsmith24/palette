@@ -120,8 +120,8 @@ export default function CriteriaInput({
 
   const renderDetailedView = () => {
     return (
-      <div className="max-h-[22vh] grid grid-rows-[auto,auto] border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
-        <div className="grid grid-cols-2 gap-4 items-start">
+      <div className=" grid  border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
+        <div className="grid grid-cols-2 gap-4 items-start content-between">
           <div className={"grid self-baseline"}>
             <input
               type="text"
