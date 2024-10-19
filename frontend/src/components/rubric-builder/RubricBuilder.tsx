@@ -68,35 +68,34 @@ export default function RubricBuilder(): ReactElement {
   };
 
   const handleRubricDataChange = (data: any[]) => {
-    const newCriteria = data.map((row) => {
+    // Skip the first row (header row)
+    const dataWithoutHeader = data.slice(1);
+  
+    const newCriteria = dataWithoutHeader.map((row) => {
       const title = row[0]; // The title is in Column A (first column)
   
-      // Initialize an empty array of ratings
-      const ratings: Rating[] = [];
+      // Initialize a new Criteria object with just the title
+      const criterion = new Criteria(title);
   
-      // Iterate through the remaining columns in pairs (B&C, D&E, etc.)
+      // Iterate through the remaining columns 
       for (let i = 1; i < row.length; i += 2) {
         const points = Number(row[i]); // Ratings (B, D, F, etc.)
         const description = row[i + 1]; // Reasons (C, E, G, etc.)
   
         // If points and description are valid, create a new Rating and add it to the ratings array
         if (!isNaN(points) && description) {
-          ratings.push(new Rating(points, description));
+          const rating = new Rating(points, description);
+          criterion.ratings.push(rating); 
         }
       }
-  
-      // Return a new Criteria object using the factory method and ensure IDs are generated
-      return new Criteria(title);
+      return criterion; 
     });
   
-    // Merge the new criteria into the existing rubric
     setRubric((prevRubric) => ({
       ...prevRubric,
       criteria: [...prevRubric.criteria, ...newCriteria],
     }));
   };
-  
-  
   
 
   const calculateTotalPoints = () => {

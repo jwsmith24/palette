@@ -26,7 +26,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        console.log("Parsed CSV data:", results.data); // Log parsed CSV data
+        console.log("Parsed CSV data:", results.data); 
         onDataChange(results.data); // Pass parsed data to parent
       },
       error: (error) => {
@@ -41,7 +41,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
       const data = new Uint8Array(e.target?.result as ArrayBuffer);
       const workbook = XLSX.read(data, { type: "array" });
 
-      // Assuming the first sheet contains the rubric data
+      // First sheet of the rubric data
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
 

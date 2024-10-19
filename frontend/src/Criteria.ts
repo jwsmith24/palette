@@ -28,4 +28,10 @@ export default class Criteria {
 
     return maxRating.points; // Return the maximum points value
   }
+
+  static fromTitleAndRatings(title: string, ratings: Rating[]): Criteria {
+    const criterion = new Criteria(title);
+    criterion.ratings = ratings; // Assign the provided ratings to the criterion
+    return criterion;
+  }
 }
