@@ -32,7 +32,14 @@ export default function CriteriaInput({
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
   const [criteriaTitle, setCriteriaTitle] = useState(criterion.title || "");
-
+  const [isTransitioning, setIsTransitioning] = useState(false); //state to track which items are being removed/added
+  const [isVisible, setIsVisible] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+  useEffect(() => {
+    setIsVisible(true); // Set to visible on mount
+    setIsEntering(true); // Trigger entering transition
+    return () => setIsEntering(false); // Reset on unmount
+  }, []);
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
 
@@ -62,7 +69,10 @@ export default function CriteriaInput({
     console.log("removing the criterion!");
     event.preventDefault();
     event.stopPropagation();
-    removeCriterion(index);
+    setIsTransitioning(true); // start transition
+    setTimeout(() => {
+      removeCriterion(index);
+    }, 300); // removes criterion after the 300ms animation
   };
 
   // Update criterion when ratings change.
@@ -103,10 +113,12 @@ export default function CriteriaInput({
     index: number,
   ) => {
     event.preventDefault();
+    setIsTransitioning(true); // start animation
     const updatedRatings = [...ratings, createRating()];
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
     handleCriteriaUpdate(index, criterion);
+    setIsTransitioning(false); // end animation
   };
 
   const handleExpandCriterion = () => {
@@ -130,21 +142,31 @@ export default function CriteriaInput({
         style={style} // Apply the sortable style
         {...attributes} // Spread the attributes
         {...listeners} // Spread the listeners
-        className="hover:bg-gray-500 hover:cursor-pointer max-h-12 flex justify-between items-center border border-gray-700 shadow-xl p-6 rounded-lg w-full bg-gray-700"
-        onPointerDown={handleExpandCriterion}
+        className={`hover:bg-gray-500 hover:cursor-pointer max-h-12 flex justify-between items-center border border-gray-700 shadow-xl p-6 rounded-lg w-full bg-gray-700
+        }`}
+        onDoubleClick={handleExpandCriterion}
       >
         <div className="text-gray-300">
           <strong>{criteriaTitle}</strong> - Max Points: {maxPoints}
         </div>
-        <button
-          onPointerDown={(
-            event: ReactMouseEvent, // Change to onPointerDown
-          ) => handleRemoveCriteriaButton(event, index)}
-          type={"button"}
-          className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
-        >
-          Remove
-        </button>
+        <div className={"flex gap-3"}>
+          <button
+            onPointerDown={(
+              event: ReactMouseEvent, // Change to onPointerDown
+            ) => handleRemoveCriteriaButton(event, index)}
+            type={"button"}
+            className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
+          >
+            Remove
+          </button>
+          <button
+            onPointerDown={handleExpandCriterion}
+            type={"button"}
+            className="transition-all ease-in-out duration-300 bg-emerald-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-emerald-700 focus:outline-none border-2 border-transparent"
+          >
+            Edit
+          </button>
+        </div>
       </div>
     );
   };
