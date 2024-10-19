@@ -119,7 +119,7 @@ export default function CriteriaInput({
           onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
             handleRemoveCriteriaButton(event, index)
           }
-          className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none"
+          className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
         >
           Remove
         </button>
