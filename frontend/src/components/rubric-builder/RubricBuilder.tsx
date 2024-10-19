@@ -121,7 +121,7 @@ export default function RubricBuilder(): ReactElement {
         criterion={criterion}
         handleCriteriaUpdate={handleUpdateCriterion}
         removeCriterion={handleRemoveCriterion}
-        setActiveCriterionIndex={handleToggleActiveCriterion}
+        setActiveCriterionIndex={handleSetActiveCriterion}
       />
     ));
   };
@@ -148,7 +148,7 @@ export default function RubricBuilder(): ReactElement {
     setFileInputActive(false); // hides the import file card
   };
 
-  const handleToggleActiveCriterion = (index: number) => {
+  const handleSetActiveCriterion = (index: number) => {
     setActiveCriterionIndex(index);
   };
 
@@ -213,7 +213,7 @@ export default function RubricBuilder(): ReactElement {
         )}
 
         {/* Criteria Section */}
-        <div className="mt-6 grid gap-3 h-[30vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+        <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
           {renderCriteria()}
         </div>
 

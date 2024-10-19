@@ -151,14 +151,32 @@ export default function CriteriaInput({
               onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleRemoveCriteriaButton(event, index)
               }
-              className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4 py-2 hover:bg-red-700 focus:outline-none"
+              className={
+                "transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4" +
+                " py-2 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none"
+              }
             >
               Remove
+            </button>
+            <button
+              className={
+                "transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4" +
+                " py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              }
+              onClick={() => {
+                setActiveCriterionIndex(-1); // setting the index to -1 will ensure the current criteria will
+                // condense and another one won't open
+              }}
+            >
+              Collapse
             </button>
           </div>
 
           <button
-            className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4 py-2 justify-self-end hover:bg-violet-700 focus:outline-none"
+            className={
+              "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4" +
+              " py-2 justify-self-end hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:outline-none"
+            }
             onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
               handleAddRating(event, index)
             }
