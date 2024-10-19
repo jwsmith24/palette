@@ -63,6 +63,7 @@ export default function RatingInput({
         }
         tabIndex={-1}
         onClick={handleRemoveRatingPress} // properly handle the remove button
+        type={"button"}
       >
         -
       </button>

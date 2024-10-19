@@ -6,6 +6,9 @@ import React, {
   useState,
 } from "react";
 
+import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
+import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
+
 import { Criteria } from "../../models/types/criteria.ts";
 import { Rating } from "../../models/types/rating.ts";
 import createRating from "../../models/Rating.ts";
@@ -56,7 +59,9 @@ export default function CriteriaInput({
     event: ReactMouseEvent,
     index: number,
   ) => {
+    console.log("removing the criterion!");
     event.preventDefault();
+    event.stopPropagation();
     removeCriterion(index);
   };
 
@@ -72,6 +77,7 @@ export default function CriteriaInput({
 
   // Update criterion when a rating is removed
   const handleRemoveRating = (ratingIndex: number) => {
+    console.log(`removing rating at ${ratingIndex}`);
     const updatedRatings = ratings.filter((_, i) => i !== ratingIndex);
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
@@ -107,19 +113,34 @@ export default function CriteriaInput({
     setActiveCriterionIndex(index);
   };
 
+  // Use the useSortable hook
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: criterion.id,
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   const renderCondensedView = () => {
     return (
       <div
+        ref={setNodeRef} // Set the ref here for the sortable functionality
+        style={style} // Apply the sortable style
+        {...attributes} // Spread the attributes
+        {...listeners} // Spread the listeners
         className="hover:bg-gray-500 hover:cursor-pointer max-h-12 flex justify-between items-center border border-gray-700 shadow-xl p-6 rounded-lg w-full bg-gray-700"
-        onClick={handleExpandCriterion}
+        onPointerDown={handleExpandCriterion}
       >
         <div className="text-gray-300">
           <strong>{criteriaTitle}</strong> - Max Points: {maxPoints}
         </div>
         <button
-          onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
-            handleRemoveCriteriaButton(event, index)
-          }
+          onPointerDown={(
+            event: ReactMouseEvent, // Change to onPointerDown
+          ) => handleRemoveCriteriaButton(event, index)}
+          type={"button"}
           className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
         >
           Remove
@@ -149,13 +170,14 @@ export default function CriteriaInput({
 
           <div className={"flex gap-3 justify-self-start"}>
             <button
-              onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
+              onPointerDown={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleRemoveCriteriaButton(event, index)
               }
               className={
                 "transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4" +
                 " py-2 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none"
               }
+              type={"button"}
             >
               Remove
             </button>
@@ -164,10 +186,11 @@ export default function CriteriaInput({
                 "transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4" +
                 " py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
               }
-              onClick={() => {
+              onPointerDown={() => {
                 setActiveCriterionIndex(-1); // setting the index to -1 will ensure the current criteria will
                 // condense and another one won't open
               }}
+              type={"button"}
             >
               Collapse
             </button>
@@ -181,6 +204,7 @@ export default function CriteriaInput({
             onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
               handleAddRating(event, index)
             }
+            type={"button"}
           >
             Add Rating
           </button>

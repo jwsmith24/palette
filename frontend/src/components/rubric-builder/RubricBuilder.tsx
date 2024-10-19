@@ -24,7 +24,6 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import SortableCriteriaInput from "./SortableCriteriaWrapper.tsx";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -169,7 +168,7 @@ export default function RubricBuilder(): ReactElement {
         strategy={verticalListSortingStrategy}
       >
         {rubric.criteria.map((criterion, index) => (
-          <SortableCriteriaInput
+          <CriteriaInput
             key={criterion.id}
             index={index}
             activeCriterionIndex={activeCriterionIndex}
