@@ -7,9 +7,11 @@ interface CSVUploadProps {
   closeImportCard: () => void; // callback to close the import card
 }
 
-const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange, closeImportCard, }) => {
+const CSVUpload: React.FC<CSVUploadProps> = ({
+  onDataChange,
+  closeImportCard,
+}) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -35,6 +37,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange, closeImportCard, })
         console.error("Error parsing CSV:", error);
       },
     });
+    closeImportCard();
   };
 
   const parseXLSX = (file: File) => {
@@ -51,7 +54,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange, closeImportCard, })
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
       console.log("Parsed XLSX data:", jsonData); // Log parsed XLSX data
       onDataChange(jsonData); // Pass parsed data to parent
-        closeImportCard();
+      closeImportCard();
     };
 
     reader.readAsArrayBuffer(file);
@@ -69,7 +72,6 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange, closeImportCard, })
           onChange={handleFileChange}
           className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
         />
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
         {/* Cancel Button */}
         <button

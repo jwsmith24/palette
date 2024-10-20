@@ -31,19 +31,9 @@ export default function CriteriaInput({
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
-
-  const [criteriaTitle, setCriteriaTitle] = useState(criterion.title || "");
-        const [criteriaDescription, setCriteriaDescription] = useState(
+  const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || "",
   );
-  const [isTransitioning, setIsTransitioning] = useState(false); //state to track which items are being removed/added
-  const [isVisible, setIsVisible] = useState(false);
-  const [isEntering, setIsEntering] = useState(false);
-  useEffect(() => {
-    setIsVisible(true); // Set to visible on mount
-    setIsEntering(true); // Trigger entering transition
-    return () => setIsEntering(false); // Reset on unmount
-  }, []);
 
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
@@ -62,12 +52,11 @@ export default function CriteriaInput({
     }
   }, [ratings]);
 
-
-
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCriteriaDescription(event.target.value);
-    const newCriterion = { ...criterion, description: criteriaDescription };
+    const newDescription = event.target.value;
+    setCriteriaDescription(newDescription);
 
+    const newCriterion = { ...criterion, description: newDescription };
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -78,7 +67,6 @@ export default function CriteriaInput({
     console.log("removing the criterion!");
     event.preventDefault();
     event.stopPropagation();
-    setIsTransitioning(true); // start transition
     setTimeout(() => {
       removeCriterion(index);
     }, 300); // removes criterion after the 300ms animation
@@ -122,12 +110,10 @@ export default function CriteriaInput({
     index: number,
   ) => {
     event.preventDefault();
-    setIsTransitioning(true); // start animation
     const updatedRatings = [...ratings, createRating()];
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
     handleCriteriaUpdate(index, criterion);
-    setIsTransitioning(false); // end animation
   };
 
   const handleExpandCriterion = () => {
@@ -156,7 +142,7 @@ export default function CriteriaInput({
         onDoubleClick={handleExpandCriterion}
       >
         <div className="text-gray-300">
-          <strong>{criteriaTitle}</strong> - Max Points: {maxPoints}
+          <strong>{criteriaDescription}</strong> - Max Points: {maxPoints}
         </div>
         <div className={"flex gap-3"}>
           <button

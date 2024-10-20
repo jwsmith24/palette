@@ -26,19 +26,17 @@ import {
 } from "@dnd-kit/sortable";
 import createRating from "../../models/Rating.ts";
 
-
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [fileData, setFileData] = useState<string[]>([]);
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
-  // Ensure title is updated independently from the rest of the rubric
+  // Ensure title is updated independently of the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = { ...rubric };
     newRubric.title = event.target.value;
@@ -93,16 +91,16 @@ export default function RubricBuilder(): ReactElement {
   const handleImportFile = (data: any[]) => {
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
-
+    console.log(dataWithoutHeader);
     const newCriteria = dataWithoutHeader.map((row) => {
       // ensures title is a string otherwise provides a fallback value
-      const title =
+      const description =
         typeof row[0] === "string"
           ? row[0]
           : "No description yet, add something provocative!";
 
       // Initialize a new Criteria object using the factory function
-      const criterion = createCriterion(title, "", "", []);
+      const criterion = createCriterion(description);
 
       // Iterate through the remaining columns
       for (let i = 1; i < row.length; i += 2) {
@@ -115,12 +113,13 @@ export default function RubricBuilder(): ReactElement {
           criterion.ratings.push(rating);
         }
       }
+
       return criterion;
     });
 
     setRubric((prevRubric) => ({
       ...prevRubric,
-      criteria: [...prevRubric.criteria, ...newCriteria],
+      rubricCriteria: [...prevRubric.rubricCriteria, ...newCriteria],
     }));
   };
 
@@ -142,7 +141,6 @@ export default function RubricBuilder(): ReactElement {
     // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
-
   };
 
   const handleRemoveCriterion = (index: number) => {
@@ -176,44 +174,38 @@ export default function RubricBuilder(): ReactElement {
     if (!fileInputActive) {
       setFileInputActive(true);
     }
-    handleImportFile();
   };
 
   const handleCloseImportCard = () => {
     setFileInputActive(false); // hides the import file card
   };
 
-  const handleSetActiveCriterion = (index: number) => {
-    setActiveCriterionIndex(index);
-  };
-
   // Fires when drag event is over
   const handleDragEnd = (event: { active: any; over: any }) => {
     if (event.over) {
-      const oldIndex = rubric.criteria.findIndex(
+      const oldIndex = rubric.rubricCriteria.findIndex(
         (criterion) => criterion.id === event.active.id,
       );
-      const newIndex = rubric.criteria.findIndex(
+      const newIndex = rubric.rubricCriteria.findIndex(
         (criterion) => criterion.id === event.over.id,
       );
 
-      const updatedCriteria = [...rubric.criteria];
+      const updatedCriteria = [...rubric.rubricCriteria];
       const [movedCriterion] = updatedCriteria.splice(oldIndex, 1);
       updatedCriteria.splice(newIndex, 0, movedCriterion);
 
-      setRubric({ ...rubric, criteria: updatedCriteria });
+      setRubric({ ...rubric, rubricCriteria: updatedCriteria });
     }
   };
 
   // render criterion card for each criterion in the array
   const renderCriteria = () => {
-
     return (
       <SortableContext
-        items={rubric.criteria.map((criterion) => criterion.id)}
+        items={rubric.rubricCriteria.map((criterion) => criterion.id)}
         strategy={verticalListSortingStrategy}
       >
-        {rubric.criteria.map((criterion, index) => (
+        {rubric.rubricCriteria.map((criterion, index) => (
           <CriteriaInput
             key={criterion.id}
             index={index}
@@ -226,7 +218,6 @@ export default function RubricBuilder(): ReactElement {
         ))}
       </SortableContext>
     );
-
   };
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -273,22 +264,6 @@ export default function RubricBuilder(): ReactElement {
             value={rubric.title}
             onChange={handleRubricTitleChange}
           />
-
-          {/* Uploaded Rubric Data */}
-          {fileData.length > 0 && (
-            <div className="mt-6">
-              <h2 className="text-xl font-semibold mb-2">
-                Uploaded Rubric Data
-              </h2>
-              <ul className="bg-gray-100 rounded-lg p-4 text-black">
-                {fileData.map((row, index) => (
-                  <li key={index} className="border-b py-2">
-                    {row}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
 
           {/* Criteria Section */}
           <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
