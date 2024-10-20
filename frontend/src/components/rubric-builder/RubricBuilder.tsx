@@ -29,7 +29,8 @@ import createRating from "../../models/Rating.ts";
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false); // dialog when rubrics send. just for debugging/playing around.
+  // Will delete when user feedback messages are added.
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
@@ -87,36 +88,56 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  // Update state with the new CSV data
+  // Update state with the new CSV/XLSX data
   const handleImportFile = (data: any[]) => {
+    // create a set of current criteria descriptions to optimize duplicate check
+    const existingCriteriaDescriptions = new Set(
+      rubric.rubricCriteria.map((criterion) =>
+        criterion.description.trim().toLowerCase(),
+      ),
+    ); // O(N) to O(1) bby!
+
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
-    console.log(dataWithoutHeader);
-    const newCriteria = dataWithoutHeader.map((row) => {
-      // ensures title is a string otherwise provides a fallback value
-      const description =
-        typeof row[0] === "string"
-          ? row[0]
-          : "No description yet, add something provocative!";
-
-      // Initialize a new Criteria object using the factory function
-      const criterion = createCriterion(description);
-
-      // Iterate through the remaining columns
-      for (let i = 1; i < row.length; i += 2) {
-        const points = Number(row[i]); // Ratings (B, D, F, etc.)
-        const description = row[i + 1];
-
-        // If points and description are valid, create a new Rating and add it to the ratings array
-        if (!isNaN(points) && typeof description === "string") {
-          const rating = createRating(points, description);
-          criterion.ratings.push(rating);
+    console.log(dataWithoutHeader); // to debug
+    // data is a 2D array representing the CSV
+    const newCriteria = dataWithoutHeader
+      .map((row) => {
+        // ensures title is a string otherwise throw out the entry
+        if (typeof row[0] != "string") {
+          console.warn(
+            `Non-string value in criterion description field: ${row[0]}. Throwing out entry.`,
+          );
+          return null;
         }
-      }
+        const criteriaDescription = row[0];
 
-      return criterion;
-    });
+        // check if criterion description already exists to avoid duplicates
+        if (existingCriteriaDescriptions.has(criteriaDescription)) {
+          console.warn(
+            `Duplicate criterion fund: ${criteriaDescription}. Throwing out entry.`,
+          );
+          return null; //skip adding the duplicate criterion
+        }
 
+        // If criterion is unique, initialize a new Criteria object with its factory function
+        const criterion = createCriterion(criteriaDescription);
+
+        // Iterate through the remaining columns
+        for (let i = 1; i < row.length; i += 2) {
+          const points = Number(row[i]); // Ratings (B, D, F, etc.)
+          const description = row[i + 1];
+
+          // If points and description are valid, create a new Rating and add it to the ratings array
+          if (!isNaN(points) && typeof description === "string") {
+            const rating = createRating(points, description);
+            criterion.ratings.push(rating);
+          }
+        }
+        return criterion;
+      })
+      .filter((criterion) => criterion !== null); // remove all null entries (rows that were thrown out)
+    // update rubric state with new criteria list
     setRubric((prevRubric) => ({
       ...prevRubric,
       rubricCriteria: [...prevRubric.rubricCriteria, ...newCriteria],
