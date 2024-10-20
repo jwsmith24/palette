@@ -17,7 +17,7 @@ export default function Home(): ReactElement {
   };
 
   const handleLogin = () => {
-    navigate("/rubric-builder");
+    navigate("/rubrics");
   };
 
   const handleSignUp = () => {

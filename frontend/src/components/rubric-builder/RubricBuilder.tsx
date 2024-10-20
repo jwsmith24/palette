@@ -124,7 +124,7 @@ export default function RubricBuilder(): ReactElement {
   return (
     <div className="min-h-screen flex flex-col justify-between w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       {/* Sticky Header with Gradient */}
-      <Header />
+      <Header/>
 
       {/* Form Section */}
       <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">

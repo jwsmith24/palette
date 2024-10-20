@@ -5,17 +5,14 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 
-const pages = ['Rubrics', 'Clusters'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -29,7 +26,8 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+
+  const handleClosenNavMenu = () => {
     setAnchorElNav(null);
   };
 
@@ -45,65 +43,115 @@ function ResponsiveAppBar() {
     navigate("/rubrics");
   };
 
-    const handleCLustersClicked = () => {
+  const handleClustersClicked = () => {
     navigate("/clusters");
   };
 
+  const handleBuilderClicked = () => {
+    navigate("/rubric-builder");
+  };
+
+
   return (
-    <AppBar position="static">
-        <Toolbar className="bg-gradient-to-r from-red-500 via-green-500 to-purple-500 ">
-          <Button onClick={handleHomeClicked}>
-            <Typography variant="h5" color="success">
-                HOME
-            </Typography>
-          </Button>
-          
+    <nav>
+        <AppBar position="static">
+            <Toolbar className="bg-gradient-to-r from-red-500 via-green-500 to-purple-500 w-screen ">
 
+                    <Box sx={{ justifyContent: 'flex-end' }}>
+                        <Button onClick={handleHomeClicked}>
+                            <Typography variant="h5" color="success">
+                                HOME
+                            </Typography>
+                        </Button>
+                    </Box>
 
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', lg: 'flex', xl:'flex' } }}>
+                        <Button onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                            Rubrics      
+                        </Button>
+                        <Button onClick={handleClustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                            Clusters      
+                        </Button>
+                        <Button onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                            Builder      
+                        </Button>
+                    </Box>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none', xl:'none' } }}>
+                        <Tooltip title="Menu">
+                            <IconButton onClick={handleOpenNavMenu} aria-label="Example" sx={{ display: { xs: 'flex', md: 'none', lg: 'none', xl:'none' } }}>
+                                <FontAwesomeIcon icon={faEllipsisV} />
+                            </IconButton>
+                        </Tooltip>
 
+                        <Menu
+                        sx={{ mt: '45px' }}
+                        id="menu-appbar"
+                        anchorEl={anchorElNav}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElNav)}
+                        onClose={handleClosenNavMenu}
+                        >
+                            <MenuItem onClick={handleClosenNavMenu}>
+                                <Typography sx={{ textAlign: 'center' }} component="a" href="/rubrics">Rubrics</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleClosenNavMenu}>
+                                <Typography sx={{ textAlign: 'center' }} component="a" href="/clusters">Clusters</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleClosenNavMenu}>
+                                <Typography sx={{ textAlign: 'center' }} component="a" href="/rubric-builder">Builder</Typography>
+                            </MenuItem>
+                        </Menu>
+                        
+                    </Box>
+            
+            
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
-              Rubrics      
-            </Button>
-            <Button onClick={handleCLustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
-              Clusters      
-            </Button>
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
+                    <Box sx={{ justifyContent: 'flex-end' }}>
+                        
+                        <Tooltip title="Settings">
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <Avatar alt="User's Name" src="/static/images/avatar/2.jpg" />
+                            </IconButton>
+                        </Tooltip>
+                        
 
+                        <Menu
+                        sx={{ mt: '45px' }}
+                        id="menu-appbar"
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                        >
+                        <MenuItem onClick={handleCloseUserMenu}>
+                                <Typography sx={{ textAlign: 'center' }}>Settings</Typography>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Typography sx={{ textAlign: 'center' }} component="a" href="/">Logout</Typography>
+                            </MenuItem>
+                        </Menu>
+                    </Box>
 
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Cemy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-    </AppBar>
+            </Toolbar>
+        </AppBar>
+    </nav>
+    
   );
 }
 export default ResponsiveAppBar;
