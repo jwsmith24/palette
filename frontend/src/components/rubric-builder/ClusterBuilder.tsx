@@ -1,5 +1,5 @@
 /*
-Main view for the Rubric Builder feature.
+Main view for the Criteria Cluster feature.
  */
 
 import {
