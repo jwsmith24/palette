@@ -10,7 +10,6 @@ import {
   useState,
 } from "react";
 
-
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
@@ -73,31 +72,34 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // Update state with the new CSV data
-
   const handleImportFile = (data: any[]) => {
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
-  
+
     const newCriteria = dataWithoutHeader.map((row) => {
-      const title = row[0]; // The title is in Column A (first column)
-  
+      // ensures title is a string otherwise provides a fallback value
+      const title =
+        typeof row[0] === "string"
+          ? row[0]
+          : "No description yet, add something provocative!";
+
       // Initialize a new Criteria object using the factory function
       const criterion = createCriterion(title, "", "", []);
-  
-      // Iterate through the remaining columns 
+
+      // Iterate through the remaining columns
       for (let i = 1; i < row.length; i += 2) {
         const points = Number(row[i]); // Ratings (B, D, F, etc.)
-        const description = row[i + 1]; // Reasons (C, E, G, etc.)
-  
+        const description = row[i + 1];
+
         // If points and description are valid, create a new Rating and add it to the ratings array
-        if (!isNaN(points) && description) {
+        if (!isNaN(points) && typeof description === "string") {
           const rating = createRating(points, description);
-          criterion.ratings.push(rating); 
+          criterion.ratings.push(rating);
         }
       }
       return criterion;
     });
-  
+
     setRubric((prevRubric) => ({
       ...prevRubric,
       criteria: [...prevRubric.criteria, ...newCriteria],

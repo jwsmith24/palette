@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import * as XLSX from "xlsx";
 
 interface CSVUploadProps {
-  onDataChange: (data: any[]) => void;
+  onDataChange: (data: unknown[]) => void;
 }
 
 const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
@@ -24,7 +24,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
 
   const parseCSV = (file: File) => {
     Papa.parse(file, {
-      header: false,
+      header: false, // keeps the output an array to sync with parsing xlsx files
       complete: (results) => {
         console.log("Parsed CSV data:", results.data);
         onDataChange(results.data); // Pass parsed data to parent
