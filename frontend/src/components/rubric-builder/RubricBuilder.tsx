@@ -25,6 +25,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import createRating from "../../models/Rating.ts";
+import { render } from "react-dom";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -249,8 +250,6 @@ export default function RubricBuilder(): ReactElement {
             </h2>
           </div>
 
-          {renderFileImport()}
-
           {/* Rubric Title Input */}
           <input
             type="text"
@@ -289,7 +288,7 @@ export default function RubricBuilder(): ReactElement {
           </div>
         </form>
 
-        {/* Dialog */}
+        {/* Rubric Sending Dialog */}
         <Dialog
           isOpen={isDialogOpen}
           onClose={closeDialog}
@@ -298,6 +297,16 @@ export default function RubricBuilder(): ReactElement {
           <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
             {JSON.stringify(rubric, null, 2)}
           </pre>
+        </Dialog>
+
+        {/*CSV/XLSX Import Dialog*/}
+        {/*todo: probably need to break this into its own component for styling*/}
+        <Dialog
+          isOpen={fileInputActive}
+          onClose={() => setFileInputActive(false)}
+          title={"THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED"}
+        >
+          {renderFileImport()}
         </Dialog>
 
         {/* Sticky Footer with Gradient */}
