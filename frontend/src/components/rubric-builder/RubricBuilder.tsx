@@ -19,18 +19,24 @@ import { Rubric } from "../../models/types/rubric.ts";
 import createRubric from "../../models/Rubric.ts";
 import { Criteria } from "../../models/types/criteria.ts";
 import createCriterion from "../../models/Criteria.ts";
+import { DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import createRating from "../../models/Rating.ts";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [fileData, setFileData] = useState<string[]>([]);
+  const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
+  const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
-  // Ensure title is updated independently from the rest of the rubric
+  // Ensure title is updated independently of the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = { ...rubric };
     newRubric.title = event.target.value;
@@ -85,16 +91,16 @@ export default function RubricBuilder(): ReactElement {
   const handleImportFile = (data: any[]) => {
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
-
+    console.log(dataWithoutHeader);
     const newCriteria = dataWithoutHeader.map((row) => {
       // ensures title is a string otherwise provides a fallback value
-      const title =
+      const description =
         typeof row[0] === "string"
           ? row[0]
           : "No description yet, add something provocative!";
 
       // Initialize a new Criteria object using the factory function
-      const criterion = createCriterion(title, "", "", []);
+      const criterion = createCriterion(description);
 
       // Iterate through the remaining columns
       for (let i = 1; i < row.length; i += 2) {
@@ -107,12 +113,13 @@ export default function RubricBuilder(): ReactElement {
           criterion.ratings.push(rating);
         }
       }
+
       return criterion;
     });
 
     setRubric((prevRubric) => ({
       ...prevRubric,
-      criteria: [...prevRubric.criteria, ...newCriteria],
+      rubricCriteria: [...prevRubric.rubricCriteria, ...newCriteria],
     }));
   };
 
@@ -133,6 +140,7 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = [...rubric.rubricCriteria, createCriterion()];
     // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
+    setActiveCriterionIndex(newCriteria.length - 1);
   };
 
   const handleRemoveCriterion = (index: number) => {
@@ -150,104 +158,159 @@ export default function RubricBuilder(): ReactElement {
     setRubric({ ...rubric, rubricCriteria: newCriteria }); // update rubric to have new criteria
   };
 
-  // render criterion card for each criterion in the array
-  const renderCriteria = () => {
-    return rubric.rubricCriteria.map((criterion: Criteria, index: number) => (
-      <CriteriaInput
-        key={criterion.id}
-        index={index}
-        criterion={criterion}
-        handleCriteriaUpdate={handleUpdateCriterion}
-        removeCriterion={handleRemoveCriterion}
-      />
-    ));
+  const renderFileImport = () => {
+    if (fileInputActive) {
+      return (
+        <CSVUpload
+          onDataChange={handleImportFile}
+          closeImportCard={handleCloseImportCard}
+        />
+      );
+    }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col justify-between w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
-      {/* Sticky Header with Gradient */}
-      <Header />
+  const handleImportFilePress = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!fileInputActive) {
+      setFileInputActive(true);
+    }
+  };
 
-      {/* Form Section */}
-      <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">
-        {/* Main Heading */}
-        <h1 className="font-extrabold text-5xl mb-2 text-center">
-          Create a new rubric
-        </h1>
+  const handleCloseImportCard = () => {
+    setFileInputActive(false); // hides the import file card
+  };
 
-        {/* Rubric Total Points */}
-        <h2 className="justify-self-end text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-          {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
-        </h2>
+  // Fires when drag event is over
+  const handleDragEnd = (event: { active: any; over: any }) => {
+    if (event.over) {
+      const oldIndex = rubric.rubricCriteria.findIndex(
+        (criterion) => criterion.id === event.active.id,
+      );
+      const newIndex = rubric.rubricCriteria.findIndex(
+        (criterion) => criterion.id === event.over.id,
+      );
 
-        {/* Rubric Title Input */}
-        <input
-          type="text"
-          placeholder="Rubric title"
-          className={
-            "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
-            " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
-          }
-          name="rubricTitle"
-          id="rubricTitle"
-          value={rubric.title}
-          onChange={handleRubricTitleChange}
-        />
+      const updatedCriteria = [...rubric.rubricCriteria];
+      const [movedCriterion] = updatedCriteria.splice(oldIndex, 1);
+      updatedCriteria.splice(newIndex, 0, movedCriterion);
 
-        {/* CSV Upload Section */}
-        <CSVUpload onDataChange={handleImportFile} />
+      setRubric({ ...rubric, rubricCriteria: updatedCriteria });
+    }
+  };
 
-        {/* Uploaded Rubric Data */}
-        {fileData.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-2">Uploaded Rubric Data</h2>
-            <ul className="bg-gray-100 rounded-lg p-4 text-black">
-              {fileData.map((row, index) => (
-                <li key={index} className="border-b py-2">
-                  {JSON.stringify(row)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Criteria Section */}
-        <div className="mt-6 grid gap-6 max-h-[25vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
-          {renderCriteria()}
-        </div>
-
-        {/* Buttons */}
-        <div className="grid gap-4 mt-6">
-          <button
-            className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={handleAddCriteria}
-          >
-            Add Criteria
-          </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={handleSubmitRubric}
-          >
-            Save Rubric
-          </button>
-        </div>
-      </form>
-
-      {/* Dialog */}
-      <Dialog
-        isOpen={isDialogOpen}
-        onClose={closeDialog}
-        title={"Sending Rubric!"}
+  // render criterion card for each criterion in the array
+  const renderCriteria = () => {
+    return (
+      <SortableContext
+        items={rubric.rubricCriteria.map((criterion) => criterion.id)}
+        strategy={verticalListSortingStrategy}
       >
-        <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
-          {JSON.stringify(rubric, null, 2)}
-        </pre>
-      </Dialog>
+        {rubric.rubricCriteria.map((criterion, index) => (
+          <CriteriaInput
+            key={criterion.id}
+            index={index}
+            activeCriterionIndex={activeCriterionIndex}
+            criterion={criterion}
+            handleCriteriaUpdate={handleUpdateCriterion}
+            removeCriterion={handleRemoveCriterion}
+            setActiveCriterionIndex={setActiveCriterionIndex}
+          />
+        ))}
+      </SortableContext>
+    );
+  };
+  return (
+    <DndContext onDragEnd={handleDragEnd}>
+      <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+        {/* Sticky Header with Gradient */}
+        <Header />
+        {/* Form Section */}
+        <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
+          {/* Main Heading */}
+          <h1 className="font-extrabold text-5xl mb-2 text-center">
+            Create a new rubric
+          </h1>
 
-      {/* Sticky Footer with Gradient */}
-      <Footer />
-    </div>
+          <div className={"flex justify-between"}>
+            {/*Import CSV/XLSX File*/}
+            <button
+              className={
+                "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
+                " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
+                " focus:ring-violet-500"
+              }
+              onClick={handleImportFilePress}
+            >
+              Import CSV
+            </button>
+            {/* Rubric Total Points */}
+            <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
+              {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
+            </h2>
+          </div>
+
+          {/* Rubric Title Input */}
+          <input
+            type="text"
+            placeholder="Rubric title"
+            className={
+              "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
+              " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
+            }
+            name="rubricTitle"
+            id="rubricTitle"
+            value={rubric.title}
+            onChange={handleRubricTitleChange}
+          />
+
+          {/* Criteria Section */}
+          <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+            {renderCriteria()}
+          </div>
+
+          {/* Buttons */}
+          <div className="grid gap-4 mt-6">
+            <button
+              className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
+                     hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={handleAddCriteria}
+            >
+              Add Criteria
+            </button>
+            <button
+              className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
+                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
+              onClick={handleSubmitRubric}
+            >
+              Save Rubric
+            </button>
+          </div>
+        </form>
+
+        {/* Rubric Sending Dialog */}
+        <Dialog
+          isOpen={isDialogOpen}
+          onClose={closeDialog}
+          title={"Sending Rubric!"}
+        >
+          <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
+            {JSON.stringify(rubric, null, 2)}
+          </pre>
+        </Dialog>
+
+        {/*CSV/XLSX Import Dialog*/}
+        {/*todo: probably need to break this into its own component for styling*/}
+        <Dialog
+          isOpen={fileInputActive}
+          onClose={() => setFileInputActive(false)}
+          title={"THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED"}
+        >
+          {renderFileImport()}
+        </Dialog>
+
+        {/* Sticky Footer with Gradient */}
+        <Footer />
+      </div>
+    </DndContext>
   );
 }

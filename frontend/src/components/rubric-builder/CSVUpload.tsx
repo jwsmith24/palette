@@ -4,9 +4,13 @@ import * as XLSX from "xlsx";
 
 interface CSVUploadProps {
   onDataChange: (data: unknown[]) => void;
+  closeImportCard: () => void; // callback to close the import card
 }
 
-const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
+const CSVUpload: React.FC<CSVUploadProps> = ({
+  onDataChange,
+  closeImportCard,
+}) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -33,6 +37,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
         console.error("Error parsing CSV:", error);
       },
     });
+    closeImportCard();
   };
 
   const parseXLSX = (file: File) => {
@@ -49,23 +54,33 @@ const CSVUpload: React.FC<CSVUploadProps> = ({ onDataChange }) => {
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
       console.log("Parsed XLSX data:", jsonData); // Log parsed XLSX data
       onDataChange(jsonData); // Pass parsed data to parent
+      closeImportCard();
     };
 
     reader.readAsArrayBuffer(file);
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <label htmlFor="fileUpload" className="text-white font-semibold mb-2">
-        Import Rubric
-      </label>
-      <input
-        id="fileUpload"
-        type="file"
-        accept=".csv, .xlsx"
-        onChange={handleFileChange}
-        className="bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 cursor-pointer"
-      />
+    <div className="border border-gray-700 p-6 rounded-lg shadow-xl bg-gray-700">
+      <h2 className="text-2xl font-bold text-gray-200 mb-4">
+        Import CSV or XLSX
+      </h2>
+      <div className={"flex justify-between items-center"}>
+        <input
+          type="file"
+          accept=".csv,.xlsx"
+          onChange={handleFileChange}
+          className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
+        />
+
+        {/* Cancel Button */}
+        <button
+          onClick={closeImportCard}
+          className="h-10 mt-4 bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };
