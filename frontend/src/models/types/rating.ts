@@ -4,3 +4,5 @@ export interface Rating {
   longDescription: string;
   id: number;
 }
+
+export default Rating;

@@ -15,10 +15,11 @@ import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import { Rubric } from "../../models/types/rubric";
-import createRubric from "../../models/Rubric";
-import { Criteria } from "../../models/types/criteria";
-import createCriterion from "../../models/Criteria";
+import { Rubric } from "../../models/types/rubric.ts";
+import createRubric from "../../models/Rubric.ts";
+import { Criteria } from "../../models/types/criteria.ts";
+import createCriterion from "../../models/Criteria.ts";
+import createRating from "../../models/Rating.ts";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -29,6 +30,7 @@ export default function RubricBuilder(): ReactElement {
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
+  // Ensure title is updated independently from the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = { ...rubric };
     newRubric.title = event.target.value;
@@ -80,8 +82,38 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // Update state with the new CSV data
-  const handleImportFile = (data: string[]) => {
-    setFileData(data);
+  const handleImportFile = (data: any[]) => {
+    // Skip the first row (header row)
+    const dataWithoutHeader = data.slice(1);
+
+    const newCriteria = dataWithoutHeader.map((row) => {
+      // ensures title is a string otherwise provides a fallback value
+      const title =
+        typeof row[0] === "string"
+          ? row[0]
+          : "No description yet, add something provocative!";
+
+      // Initialize a new Criteria object using the factory function
+      const criterion = createCriterion(title, "", "", []);
+
+      // Iterate through the remaining columns
+      for (let i = 1; i < row.length; i += 2) {
+        const points = Number(row[i]); // Ratings (B, D, F, etc.)
+        const description = row[i + 1];
+
+        // If points and description are valid, create a new Rating and add it to the ratings array
+        if (!isNaN(points) && typeof description === "string") {
+          const rating = createRating(points, description);
+          criterion.ratings.push(rating);
+        }
+      }
+      return criterion;
+    });
+
+    setRubric((prevRubric) => ({
+      ...prevRubric,
+      criteria: [...prevRubric.criteria, ...newCriteria],
+    }));
   };
 
   // function to iterate through each criterion and sum total max points for entire rubric
@@ -172,7 +204,7 @@ export default function RubricBuilder(): ReactElement {
             <ul className="bg-gray-100 rounded-lg p-4 text-black">
               {fileData.map((row, index) => (
                 <li key={index} className="border-b py-2">
-                  {row}
+                  {JSON.stringify(row)}
                 </li>
               ))}
             </ul>
