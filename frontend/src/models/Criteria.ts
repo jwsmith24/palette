@@ -5,29 +5,19 @@ import createRating from "./Rating.ts";
 
 // Criterion factory function
 export default function createCriterion(
-  title: string = "",
   description: string = "",
   longDescription: string = "",
+  points: number = 0,
   ratings: Rating[] = [createRating(5), createRating(3), createRating(0)],
   id: number = crypto.getRandomValues(new Uint32Array(1))[0], // default to unique random number if not assigned by
   // the database yet
 ): Criteria {
   return {
-    title,
     ratings,
     description,
     longDescription,
+    points,
     id,
-    getMaxPoints() {
-      if (this.ratings.length === 0) {
-        return 0; // Handle empty ratings array
-      }
-      const maxRating = this.ratings.reduce(
-        (max, current) => (current.points > max.points ? current : max),
-        this.ratings[0],
-      );
-      return maxRating.points;
-    },
   };
 
 
