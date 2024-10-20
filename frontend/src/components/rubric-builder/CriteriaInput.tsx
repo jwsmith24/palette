@@ -31,7 +31,11 @@ export default function CriteriaInput({
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
+
   const [criteriaTitle, setCriteriaTitle] = useState(criterion.title || "");
+        const [criteriaDescription, setCriteriaDescription] = useState(
+    criterion.description || "",
+  );
   const [isTransitioning, setIsTransitioning] = useState(false); //state to track which items are being removed/added
   const [isVisible, setIsVisible] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
@@ -40,6 +44,7 @@ export default function CriteriaInput({
     setIsEntering(true); // Trigger entering transition
     return () => setIsEntering(false); // Reset on unmount
   }, []);
+
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
 
@@ -50,15 +55,19 @@ export default function CriteriaInput({
         ratings[0],
       );
       maxRating.points ? setMaxPoints(maxRating.points) : setMaxPoints(0);
+      const newCriterion = { ...criterion, points: maxRating.points };
+      handleCriteriaUpdate(index, newCriterion);
     } else {
       setMaxPoints(0);
     }
   }, [ratings]);
 
-  const handleCriterionTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newTitle = event.target.value;
-    setCriteriaTitle(newTitle);
-    const newCriterion = { ...criterion, title: newTitle };
+
+
+  const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCriteriaDescription(event.target.value);
+    const newCriterion = { ...criterion, description: criteriaDescription };
+
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -180,8 +189,8 @@ export default function CriteriaInput({
               type="text"
               placeholder={`Criteria ${index + 1} Description...`}
               className="rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-800"
-              value={criteriaTitle}
-              onChange={handleCriterionTitleChange}
+              value={criteriaDescription}
+              onChange={handleDescriptionChange}
             />
             <p className="text-xl font-semibold mt-2 text-gray-200">
               Max Points: {maxPoints}

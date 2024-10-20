@@ -1,10 +1,9 @@
-import { Rating } from "./rating.ts";
+import { Rating } from "./rating";
 
 export interface Criteria {
-  title: string;
   description: string;
   longDescription: string;
   ratings: Rating[];
   id: number;
-  getMaxPoints: () => number;
+  points: number;
 }

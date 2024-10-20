@@ -24,6 +24,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import createRating from "../../models/Rating.ts";
+
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -36,6 +38,7 @@ export default function RubricBuilder(): ReactElement {
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
+  // Ensure title is updated independently from the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newRubric = { ...rubric };
     newRubric.title = event.target.value;
@@ -69,7 +72,17 @@ export default function RubricBuilder(): ReactElement {
         const data = await res.json();
         console.log("Rubric saved!", data);
       } else {
-        console.error("Error connecting to server");
+        const errorResult = await res.json();
+        if (res.status === 400) {
+          // Display validation errors
+          const errors = errorResult.errors;
+          errors.forEach((error: { param: any; msg: any }) => {
+            console.log(`Field: ${error.param}, Message: ${error.msg}`);
+          });
+        } else {
+          // Handle other errors
+          console.error("An error occurred:", errorResult.error);
+        }
       }
     } catch (error) {
       console.error(error); // update error message with more deets
@@ -77,15 +90,45 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // Update state with the new CSV data
-  const handleImportFile = (data: string[]) => {
-    setFileData(data);
+  const handleImportFile = (data: any[]) => {
+    // Skip the first row (header row)
+    const dataWithoutHeader = data.slice(1);
+
+    const newCriteria = dataWithoutHeader.map((row) => {
+      // ensures title is a string otherwise provides a fallback value
+      const title =
+        typeof row[0] === "string"
+          ? row[0]
+          : "No description yet, add something provocative!";
+
+      // Initialize a new Criteria object using the factory function
+      const criterion = createCriterion(title, "", "", []);
+
+      // Iterate through the remaining columns
+      for (let i = 1; i < row.length; i += 2) {
+        const points = Number(row[i]); // Ratings (B, D, F, etc.)
+        const description = row[i + 1];
+
+        // If points and description are valid, create a new Rating and add it to the ratings array
+        if (!isNaN(points) && typeof description === "string") {
+          const rating = createRating(points, description);
+          criterion.ratings.push(rating);
+        }
+      }
+      return criterion;
+    });
+
+    setRubric((prevRubric) => ({
+      ...prevRubric,
+      criteria: [...prevRubric.criteria, ...newCriteria],
+    }));
   };
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
-    const total: number = rubric.criteria.reduce(
+    const total: number = rubric.rubricCriteria.reduce(
       (sum: number, criterion: Criteria) => {
-        return sum + criterion.getMaxPoints();
+        return sum + criterion.points;
       },
       0,
     ); // Initialize sum as 0
@@ -95,25 +138,26 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.criteria, createCriterion()];
+    const newCriteria = [...rubric.rubricCriteria, createCriterion()];
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria });
+    setRubric({ ...rubric, rubricCriteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
+
   };
 
   const handleRemoveCriterion = (index: number) => {
-    const newCriteria = [...rubric.criteria];
+    const newCriteria = [...rubric.rubricCriteria];
     newCriteria.splice(index, 1); // remove the target criterion from the array
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria });
+    setRubric({ ...rubric, rubricCriteria: newCriteria });
   };
 
   // update criterion at given index
   const handleUpdateCriterion = (index: number, criterion: Criteria) => {
-    const newCriteria = [...rubric.criteria]; // copy criteria to new array
+    const newCriteria = [...rubric.rubricCriteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
+    setRubric({ ...rubric, rubricCriteria: newCriteria }); // update rubric to have new criteria
   };
 
   const renderFileImport = () => {
@@ -132,6 +176,7 @@ export default function RubricBuilder(): ReactElement {
     if (!fileInputActive) {
       setFileInputActive(true);
     }
+    handleImportFile();
   };
 
   const handleCloseImportCard = () => {
@@ -162,6 +207,7 @@ export default function RubricBuilder(): ReactElement {
 
   // render criterion card for each criterion in the array
   const renderCriteria = () => {
+
     return (
       <SortableContext
         items={rubric.criteria.map((criterion) => criterion.id)}
@@ -180,13 +226,13 @@ export default function RubricBuilder(): ReactElement {
         ))}
       </SortableContext>
     );
+
   };
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
-
         {/* Form Section */}
         <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
           {/* Main Heading */}
