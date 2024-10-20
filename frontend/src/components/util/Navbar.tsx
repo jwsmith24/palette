@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useNavigate } from "react-router-dom";
 
 const pages = ['Rubrics', 'Clusters'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -19,6 +20,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -35,11 +37,23 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleHomeClicked = () => {
+    navigate("/");
+  };
+
+    const handleRubricsClicked = () => {
+    navigate("/rubrics");
+  };
+
+    const handleCLustersClicked = () => {
+    navigate("/clusters");
+  };
+
   return (
     <AppBar position="static">
         <Toolbar className="bg-gradient-to-r from-red-500 via-green-500 to-purple-500 ">
-          <Button onClick={handleCloseNavMenu}>
-            <Typography variant="h5" color="success" component="a" href="/">
+          <Button onClick={handleHomeClicked}>
+            <Typography variant="h5" color="success">
                 HOME
             </Typography>
           </Button>
@@ -47,18 +61,14 @@ function ResponsiveAppBar() {
 
 
 
-          
-          
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+              Rubrics      
+            </Button>
+            <Button onClick={handleCLustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+              Clusters      
+            </Button>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
 

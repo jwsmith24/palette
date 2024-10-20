@@ -1,5 +1,5 @@
 /*
-Main view for the Rubric Builder feature.
+Main view for the Criteria Cluster feature.
  */
 
 import {
@@ -14,13 +14,13 @@ import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Dialog from "../util/Dialog.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import { Rubric } from "../../models/types/rubric.ts";
-import createRubric from "../../models/Rubric.ts";
+import { Cluster } from "../../models/types/cluster.ts";
 import { Criteria } from "../../models/types/criteria.ts";
 import createCriterion from "../../models/Criteria.ts";
+import createCluster from "../../models/Cluster.ts";
 
-export default function RubricBuilder(): ReactElement {
-  const [rubric, setRubric] = useState<Rubric>(createRubric());
+export default function ClusterBuilder(): ReactElement {
+  const [cluster, setCluster] = useState<Cluster>(createCluster());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [fileData, setFileData] = useState<string[]>([]);
@@ -29,37 +29,37 @@ export default function RubricBuilder(): ReactElement {
   const closeDialog = () => setDialogOpen(false);
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = { ...rubric };
-    newRubric.title = event.target.value;
-    setRubric(newRubric);
+    const newCluster = { ...cluster };
+    newCluster.title = event.target.value;
+    setCluster(newCluster);
   };
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
     calculateTotalPoints();
-  }, [rubric]);
+  }, [cluster]);
 
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = (event: MouseEvent) => {
     event.preventDefault();
-    console.log(submitRubric(rubric));
+    console.log(submitRubric(cluster));
     openDialog();
   };
 
   // function to send rubric to the server
-  const submitRubric = async (rubric: Rubric) => {
+  const submitRubric = async (cluster: Cluster) => {
     try {
       const res = await fetch("http://localhost:3000/rubrics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(rubric),
+        body: JSON.stringify(cluster),
       });
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Rubric saved!", data);
+        console.log("Cluster saved!", data);
       } else {
         console.error("Error connecting to server");
       }
@@ -75,7 +75,7 @@ export default function RubricBuilder(): ReactElement {
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
-    const total: number = rubric.criteria.reduce(
+    const total: number = cluster.criteria.reduce(
       (sum: number, criterion: Criteria) => {
         return sum + criterion.getMaxPoints();
       },
@@ -87,29 +87,29 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.criteria, createCriterion()];
+    const newCriteria = [...cluster.criteria, createCriterion()];
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria });
+    setCluster({ ...cluster, criteria: newCriteria });
   };
 
   const handleRemoveCriterion = (index: number) => {
-    const newCriteria = [...rubric.criteria];
+    const newCriteria = [...cluster.criteria];
     newCriteria.splice(index, 1); // remove the target criterion from the array
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria });
+    setCluster({ ...cluster, criteria: newCriteria });
   };
 
   // update criterion at given index
   const handleUpdateCriterion = (index: number, criterion: Criteria) => {
-    const newCriteria = [...rubric.criteria]; // copy criteria to new array
+    const newCriteria = [...cluster.criteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     // @ts-ignore
-    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
+    setCluster({ ...cluster, criteria: newCriteria }); // update rubric to have new criteria
   };
 
   // render criterion card for each criterion in the array
   const renderCriteria = () => {
-    return rubric.criteria.map((criterion: Criteria, index: number) => (
+    return cluster.criteria.map((criterion: Criteria, index: number) => (
       <CriteriaInput
         key={criterion.id}
         index={index}
@@ -126,7 +126,7 @@ export default function RubricBuilder(): ReactElement {
       <Header />
 
         <h1 className="font-extrabold text-2xl mb-2 text-center">
-            <p>Rubrics Page Coming Soon...</p>
+            <p>Clusters Page Coming Soon...</p>
         </h1>
 
       {/* Sticky Footer with Gradient */}

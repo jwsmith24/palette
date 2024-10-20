@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RubricBuilder from "./components/rubric-builder/RubricBuilder.tsx";
 import ClusterBuilder from "./components/rubric-builder/ClusterBuilder.tsx";
 import UserRubrics from "./components/user/UserRubrics.tsx"
+import UserClusters from "./components/user/UserClusters.tsx"
 import NotFoundPage from "./components/util/NotFoundPage.tsx";
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
@@ -23,6 +24,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/rubric-builder" element={<RubricBuilder />} />
           <Route path="/cluster-builder" element={<ClusterBuilder />} />
           <Route path="/rubrics" element={<UserRubrics />} />
+          <Route path="/clusters" element={<UserClusters />} />
           {/*Any route that doesn't match the routes defined above will go to the 404 page*/}
           <Route path={"*"} element={<NotFoundPage />} />
         </Routes>
