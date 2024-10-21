@@ -10,10 +10,10 @@ const __dirname = dirname(__filename);
 
 export default [
   {
-    ignores: ["dist"], // Ignore the compiled files in the 'dist' directory
+    ignores: ["dist", "node_modules"], // Ignore the compiled files in the 'dist' directory and node_modules
   },
   {
-    files: ["**/*.ts*.js"], // Apply ESLint to TypeScript files
+    files: ["**/*.ts", "**/*.tsx", "**/*.js"], // apply to typescript and javascript files
     languageOptions: {
       parser: tsParser, // Use @typescript-eslint parser
       parserOptions: {
