@@ -158,6 +158,30 @@ router.put(
   }),
 );
 
+// get a rubric by title
+router.get("/title/:title", asyncHandler(async (req: Request, res: Response) => {
+        const {title} = req.params;
+        const rubric = await prisma.rubric.findFirst({
+            where: {title},
+            include: {
+                rubricCriteria: {
+                    include: {
+                        ratings: true,
+                    },
+                },
+            },
+        });
+
+        if (!rubric) {
+            res.status(404)
+                .json({error: "Rubric not found"});
+        }
+
+        res.status(200)
+            .json(rubric);
+    }),
+);
+
 // delete an existing rubric
 router.delete(
   "/:id",
