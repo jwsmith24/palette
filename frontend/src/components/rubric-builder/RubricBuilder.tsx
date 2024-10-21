@@ -88,6 +88,7 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
+  const debugArray = [];
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: any[]) => {
     // create a set of current criteria descriptions to optimize duplicate check
@@ -113,9 +114,13 @@ export default function RubricBuilder(): ReactElement {
         const criteriaDescription = row[0];
 
         // check if criterion description already exists to avoid duplicates
-        if (existingCriteriaDescriptions.has(criteriaDescription)) {
+        if (
+          existingCriteriaDescriptions.has(
+            criteriaDescription.trim().toLowerCase(),
+          )
+        ) {
           console.warn(
-            `Duplicate criterion fund: ${criteriaDescription}. Throwing out entry.`,
+            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`,
           );
           return null; //skip adding the duplicate criterion
         }
@@ -137,6 +142,9 @@ export default function RubricBuilder(): ReactElement {
         return criterion;
       })
       .filter((criterion) => criterion !== null); // remove all null entries (rows that were thrown out)
+
+    console.log("new criteria", newCriteria);
+
     // update rubric state with new criteria list
     setRubric((prevRubric) => ({
       ...prevRubric,
