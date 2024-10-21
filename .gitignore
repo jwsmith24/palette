@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
+backend/prisma/.env
 # python
 __pycache__
 env

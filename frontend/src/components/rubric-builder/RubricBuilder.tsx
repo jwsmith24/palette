@@ -51,14 +51,14 @@ export default function RubricBuilder(): ReactElement {
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = (event: MouseEvent) => {
     event.preventDefault();
-    console.log(submitRubric(rubric));
+    submitRubric(rubric);
     openDialog();
   };
 
   // function to send rubric to the server
   const submitRubric = async (rubric: Rubric) => {
     try {
-      const res = await fetch("http://localhost:3000/rubrics", {
+      const res = await fetch("http://localhost:3000/api/rubrics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
