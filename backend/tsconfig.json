@@ -12,6 +12,6 @@
     "types": ["node", "express", "@prisma/client"],
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "eslint.config.js"],
   "exclude": ["node_modules"]
 }
