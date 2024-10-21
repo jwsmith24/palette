@@ -3,6 +3,11 @@
  */
 import { Request } from 'express';
 
+/**
+ * Define Criteria object that the React application will send to the backend.
+ *
+ * Will be nested inside a Rubric object.
+ */
 export interface Criteria {
   id: number;
   description: string;
@@ -11,6 +16,11 @@ export interface Criteria {
   ratings: Rating[];
 }
 
+/**
+ * Define Rating object that the React application will send to the backend.
+ *
+ * Will be nested inside Criterion objects.
+ */
 export interface Rating {
   id: number;
   description: string;
@@ -18,7 +28,12 @@ export interface Rating {
   points: number;
 }
 
-// explicitly define type for Requests to the rubrics api
+/**
+ * Define custom request body structure that the React application will be sending to the backend.
+ *
+ * Implicitly defines the Rubric model for the backend.
+ */
+
 export interface RubricRequest extends Request {
   body: {
     title: string;

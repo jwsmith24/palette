@@ -73,6 +73,7 @@ router.get(
     const rubric = await prisma.rubric.findUnique({
       where: { id: Number(id) },
       include: {
+        // ensure nested collections are sent with the rubric object
         rubricCriteria: {
           include: {
             ratings: true,
