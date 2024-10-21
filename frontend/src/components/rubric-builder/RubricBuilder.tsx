@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 
+
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
@@ -25,6 +26,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import createRating from "../../models/Rating.ts";
+import {postRubric} from "../../models/BackendRequests.ts";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -51,41 +53,10 @@ export default function RubricBuilder(): ReactElement {
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = (event: MouseEvent) => {
     event.preventDefault();
-    submitRubric(rubric);
+    postRubric(rubric);
     openDialog();
   };
 
-  // function to send rubric to the server
-  const submitRubric = async (rubric: Rubric) => {
-    try {
-      const res = await fetch("http://localhost:3000/api/rubrics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(rubric),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log("Rubric saved!", data);
-      } else {
-        const errorResult = await res.json();
-        if (res.status === 400) {
-          // Display validation errors
-          const errors = errorResult.errors;
-          errors.forEach((error: { param: any; msg: any }) => {
-            console.log(`Field: ${error.param}, Message: ${error.msg}`);
-          });
-        } else {
-          // Handle other errors
-          console.error("An error occurred:", errorResult.error);
-        }
-      }
-    } catch (error) {
-      console.error(error); // update error message with more deets
-    }
-  };
 
   // Update state with the new CSV data
   const handleImportFile = (data: any[]) => {

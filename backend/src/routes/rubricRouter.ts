@@ -114,7 +114,6 @@ router.get(
 );
 
 // update an existing rubric
-
 router.put(
   "/:id",
   validateRubric,
