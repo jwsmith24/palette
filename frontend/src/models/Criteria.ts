@@ -2,7 +2,6 @@ import { Criteria } from "./types/criteria.ts";
 import { Rating } from "./types/rating.ts";
 import createRating from "./Rating.ts";
 
-
 // Criterion factory function
 export default function createCriterion(
   description: string = "",
@@ -19,7 +18,4 @@ export default function createCriterion(
     points,
     id,
   };
-
-
-
 }
