@@ -1,6 +1,5 @@
 import { Criteria } from "./types/criteria.ts";
 import { Rating } from "./types/rating.ts";
-import createRating from "./Rating.ts";
 
 /**
  * Helper function to calculate a criterion's max point value on creation

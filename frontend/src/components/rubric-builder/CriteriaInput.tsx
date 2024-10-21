@@ -8,7 +8,6 @@ import React, {
 
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-
 import { Criteria } from "../../models/types/criteria.ts";
 import { Rating } from "../../models/types/rating.ts";
 import createRating from "../../models/Rating.ts";

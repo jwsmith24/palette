@@ -150,7 +150,7 @@ export default function RubricBuilder(): ReactElement {
             criterion.ratings.push(rating);
           }
         }
-
+        criterion.updatePoints();
         return criterion;
       })
       .filter((criterion) => criterion !== null); // remove all null entries (rows that were thrown out)
