@@ -113,50 +113,68 @@ router.get(
   }),
 );
 
-// update an existing rubric
+/**
+ * Update an existing rubric, or create a new one if it doesn't exist.
+ * The request body should contain the new rubric object.
+ * The response code should return 201 if a new rubric was created, or 204 if an existing rubric was updated.
+ */
 router.put(
-  "/:id",
-  validateRubric,
-  asyncHandler(async (req: Request, res: Response) => {
-    const { title, rubricCriteria } = req.body;
-
-    if (rubricCriteria && Array.isArray(rubricCriteria)) {
-      // Ensure each criterion has an ID before updating
-      const updateCriteriaData = rubricCriteria.map((criterion) => {
-        if (!criterion.id) {
-          throw new Error("Each criterion must have an id to update");
+    "/:id",
+    validateRubric,
+    asyncHandler(async (req: Request, res: Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).send({errors: errors.array()});
         }
-        return {
-          where: { id: criterion.id }, // criterion ID is required to update
-          data: {
-            description: criterion.description,
-            longDescription: criterion.longDescription,
-            points: criterion.points,
-          },
-        };
-      });
 
-      const updatedRubric = await prisma.rubric.update({
-        where: { id: parseInt(req.params.id, 10) },
-        data: {
-          title: title,
-          rubricCriteria: {
-            update: updateCriteriaData,
-          },
-        },
-        include: {
-          rubricCriteria: true, // Include criteria in the response
-        },
-      });
+        const {id} = req.params;
+        const {title, rubricCriteria} = req.body;
 
-      res.json(updatedRubric);
-    } else {
-      res
-        .status(400)
-        .json({ error: "Invalid rubric criteria format or missing criteria" });
-    }
-  }),
-);
+        const rubric = await prisma.rubric.upsert({
+            where: {id: Number(id)},
+            update: {
+                title,
+                rubricCriteria: {
+                    deleteMany: {},
+                    create: rubricCriteria.map((criterion: Criteria) => ({
+                        description: criterion.description,
+                        longDescription: criterion.longDescription,
+                        points: criterion.points,
+                        ratings: {
+                            create: criterion.ratings.map((rating: Rating) => ({
+                                description: rating.description,
+                                points: rating.points,
+                            })),
+                        },
+                    })),
+                },
+            },
+            create: {
+                title,
+                rubricCriteria: {
+                    create: rubricCriteria.map((criterion: Criteria) => ({
+                        description: criterion.description,
+                        longDescription: criterion.longDescription,
+                        points: criterion.points,
+                        ratings: {
+                            create: criterion.ratings.map((rating: Rating) => ({
+                                description: rating.description,
+                                points: rating.points,
+                            })),
+                        },
+                    })),
+                },
+            },
+        });
+
+        // Check if the rubric was found or created
+        if (rubric.id) {
+            res.status(204).send(); // Updated existing rubric
+        } else {
+            res.status(201).send(rubric); // Created new rubric
+        }
+    }));
+
 
 // get a rubric by title
 router.get("/title/:title", asyncHandler(async (req: Request, res: Response) => {
