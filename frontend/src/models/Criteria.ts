@@ -8,11 +8,13 @@ import createRating from "./Rating.ts";
  */
 const calcMaxPoints = (ratings: Rating[]): number => {
   // ensure ratings aren't empty
-  if (ratings[0]) {
-    return ratings.reduce(
+  if (ratings.length > 0) {
+    const maxPoints = ratings.reduce(
       (max, current) => (current.points > max.points ? current : max),
       ratings[0],
     ).points;
+    console.log(maxPoints);
+    return maxPoints;
   } else {
     return 0;
   }
@@ -22,9 +24,10 @@ const calcMaxPoints = (ratings: Rating[]): number => {
 export default function createCriterion(
   description: string = "",
   longDescription: string = "",
-  ratings: Rating[] = [createRating(5), createRating(3), createRating(0)],
-  points: number = calcMaxPoints(ratings),
-  id: number = crypto.getRandomValues(new Uint32Array(1))[0], // default to unique random number if not assigned by
+  ratings: Rating[] = [],
+  points: number = 0,
+  id: number = crypto.getRandomValues(new Uint32Array(1))[0],
+  // default to unique random number if not assigned by
   // the database yet
 ): Criteria {
   return {
@@ -33,5 +36,8 @@ export default function createCriterion(
     longDescription,
     points,
     id,
+    updatePoints() {
+      this.points = calcMaxPoints(this.ratings);
+    },
   };
 }

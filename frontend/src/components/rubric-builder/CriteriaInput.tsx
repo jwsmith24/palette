@@ -38,7 +38,7 @@ export default function CriteriaInput({
    * Whenever ratings change, recalculate criterion's max points
    */
   useEffect(() => {
-    if (ratings[0]) {
+    if (ratings.length > 0) {
       // make sure ratings array isn't empty before checking
       const maxRating = ratings.reduce(
         (max, current) => (current.points > max.points ? current : max),
