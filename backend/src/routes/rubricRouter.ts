@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import asyncHandler from 'express-async-handler';
-import { Criteria, Rating } from '../types/models';
+import { Criteria, Rating, RubricRequest } from '../types/models';
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -34,7 +34,7 @@ const validateRubric = [
 router.post(
   '/',
   validateRubric,
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req: RubricRequest, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
@@ -92,10 +92,14 @@ router.get(
   })
 );
 
-// fetch all rubrics from the database
+/**
+ * Return all rubrics from the database.
+ *
+ * "_" is added in front of req to tell eslint that it's not being used but still has to be there anyway.
+ */
 router.get(
   '/',
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (_req: Request, res: Response) => {
     // gets all rubrics with their criteria and ratings
     const rubrics = await prisma.rubric.findMany({
       include: {
@@ -115,7 +119,7 @@ router.get(
 router.put(
   '/:id',
   validateRubric,
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req: RubricRequest, res: Response) => {
     const { title, rubricCriteria } = req.body;
 
     if (rubricCriteria && Array.isArray(rubricCriteria)) {
@@ -128,7 +132,7 @@ router.put(
           where: { id: criterion.id }, // criterion ID is required to update
           data: {
             description: criterion.description,
-            longDescription: criterion.longDescription,
+            longDescription: criterion.longDescription ?? undefined,
             points: criterion.points,
           },
         };
