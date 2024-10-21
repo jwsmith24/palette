@@ -13,7 +13,6 @@ const app = express();
 const PORT = process.env.SERVER_PORT || 3000; // use environment variable, falls back to 3000
 
 // CORS config
-const whiteListOrigins = ['http://localhost:3000'];
 const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
