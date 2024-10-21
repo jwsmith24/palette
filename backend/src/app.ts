@@ -1,9 +1,9 @@
 // main entry point for backend application
-import express, { Request, Response } from "express";
+import express, {Request, Response} from "express";
 import rubricRouter from "./routes/rubricRouter.js"; // !! required js extension !!
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
+import {fileURLToPath} from "url";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -15,8 +15,8 @@ const PORT = process.env.SERVER_PORT || 3000; // use environment variable, falls
 // CORS config
 const whiteListOrigins = ["http://localhost:3000"];
 const corsOptions = {
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
 app.use(cors(corsOptions)); // enable CORS with above configuration
@@ -25,13 +25,13 @@ app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 // logging middleware function
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
+    console.log(`${req.method} ${req.url}`);
+    next();
 });
 
 // Health check route
 app.get("/health", (req: Request, res: Response) => {
-  res.status(200).json({ status: "UP" });
+    res.status(200).json({status: "UP"});
 });
 
 // API routes
@@ -50,5 +50,5 @@ app.get("*", (req: Request, res: Response) => {
 
 // Start the server and listen on port defined in .env file
 app.listen(PORT, () => {
-  console.log(`Server is up on port: ${PORT}`);
+    console.log(`Server is up on port: ${PORT}`);
 });
