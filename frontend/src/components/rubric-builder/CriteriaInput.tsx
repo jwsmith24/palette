@@ -34,10 +34,10 @@ export default function CriteriaInput({
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || "",
   );
-
+  /**
+   * Whenever ratings change, recalculate criterion's max points
+   */
   useEffect(() => {
-    // Find the rating with the maximum points when the component mounts or ratings change
-
     if (ratings[0]) {
       // make sure ratings array isn't empty before checking
       const maxRating = ratings.reduce(
