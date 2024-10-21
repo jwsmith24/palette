@@ -89,7 +89,8 @@ export default function RubricBuilder(): ReactElement {
   };
 
   /**
-   * Generates a set of the current criteria descriptions stored within the component state.
+   * Generates a set of the current criteria descriptions stored within the component state to use for checking
+   * duplicate entries.
    */
   const buildCriteriaDescriptionSet = () =>
     new Set(
