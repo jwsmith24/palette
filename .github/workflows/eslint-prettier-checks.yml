@@ -1,0 +1,52 @@
+name: ESLint and Prettier Checks
+
+# trigger on PRs into main or dev and pushes to main or dev
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # runs action for each module (since each one has its own package.json
+        module: [frontend, backend]
+    steps:
+      # checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # setup node environment
+      - name: Node setup
+        uses: actions/setup-node@v3
+        with:
+            node-version: '22'
+
+      # install dependencies for both modules
+      - name: Install dependencies
+        run: |
+          cd ${{matrix.module}}
+          npm ci
+
+      # run ESLint on both modules
+      - name: Run ESLint (Frontend/Backend)
+        run: |
+          cd ${{ matrix.module }}
+          npm run lint
+
+      # run Prettier on both modules
+      - name: Run Prettier (Frontend/Backend)
+        run: |
+          cd ${{ matrix.module }}
+          npm run prettier-check 
+
+
+
+

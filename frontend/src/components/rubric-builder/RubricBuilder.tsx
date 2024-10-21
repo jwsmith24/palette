@@ -8,23 +8,23 @@ import {
   ReactElement,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
-import Dialog from "../util/Dialog.tsx";
-import CSVUpload from "./CSVUpload.tsx";
-import Header from "../util/Header.tsx";
-import Footer from "../util/Footer.tsx";
-import { Rubric } from "../../models/types/rubric.ts";
-import createRubric from "../../models/Rubric.ts";
-import { Criteria } from "../../models/types/criteria.ts";
-import createCriterion from "../../models/Criteria.ts";
-import { DndContext } from "@dnd-kit/core";
+import CriteriaInput from '../rubric-builder/CriteriaInput.tsx';
+import Dialog from '../util/Dialog.tsx';
+import CSVUpload from './CSVUpload.tsx';
+import Header from '../util/Header.tsx';
+import Footer from '../util/Footer.tsx';
+import { Rubric } from '../../models/types/rubric.ts';
+import createRubric from '../../models/Rubric.ts';
+import { Criteria } from '../../models/types/criteria.ts';
+import createCriterion from '../../models/Criteria.ts';
+import { DndContext } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import createRating from "../../models/Rating.ts";
+} from '@dnd-kit/sortable';
+import createRating from '../../models/Rating.ts';
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -59,17 +59,17 @@ export default function RubricBuilder(): ReactElement {
   // function to send rubric to the server
   const submitRubric = async (rubric: Rubric) => {
     try {
-      const res = await fetch("http://localhost:3000/rubrics", {
-        method: "POST",
+      const res = await fetch('http://localhost:3000/rubrics', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(rubric),
       });
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Rubric saved!", data);
+        console.log('Rubric saved!', data);
       } else {
         const errorResult = await res.json();
         if (res.status === 400) {
@@ -80,7 +80,7 @@ export default function RubricBuilder(): ReactElement {
           });
         } else {
           // Handle other errors
-          console.error("An error occurred:", errorResult.error);
+          console.error('An error occurred:', errorResult.error);
         }
       }
     } catch (error) {
@@ -95,8 +95,8 @@ export default function RubricBuilder(): ReactElement {
   const buildCriteriaDescriptionSet = () =>
     new Set(
       rubric.rubricCriteria.map((criterion) =>
-        criterion.description.trim().toLowerCase(),
-      ),
+        criterion.description.trim().toLowerCase()
+      )
     );
 
   // Update state with the new CSV/XLSX data
@@ -110,15 +110,15 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = dataWithoutHeader
       .map((row) => {
         // ensures title is a string otherwise throw out the entry
-        if (typeof row[0] != "string") {
+        if (typeof row[0] != 'string') {
           console.warn(
-            `Non-string value in criterion description field: ${row[0]}. Throwing out entry.`,
+            `Non-string value in criterion description field: ${row[0]}. Throwing out entry.`
           );
           return null;
         }
 
         if (!row[0]) {
-          console.warn("Empty criteria description field. Throwing out entry.");
+          console.warn('Empty criteria description field. Throwing out entry.');
           return null;
         }
         const criteriaDescription = row[0];
@@ -126,11 +126,11 @@ export default function RubricBuilder(): ReactElement {
         // check if criterion description already exists to avoid duplicates
         if (
           existingCriteriaDescriptions.has(
-            criteriaDescription.trim().toLowerCase(),
+            criteriaDescription.trim().toLowerCase()
           )
         ) {
           console.warn(
-            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`,
+            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`
           );
           return null; //skip adding the duplicate criterion
         }
@@ -144,7 +144,7 @@ export default function RubricBuilder(): ReactElement {
           const description = row[i + 1];
 
           // If points and description are valid, create a new Rating and add it to the ratings array
-          if (!isNaN(points) && typeof description === "string") {
+          if (!isNaN(points) && typeof description === 'string') {
             const rating = createRating(points, description);
             criterion.ratings.push(rating);
           }
@@ -166,7 +166,7 @@ export default function RubricBuilder(): ReactElement {
       (sum: number, criterion: Criteria) => {
         return sum + criterion.points;
       },
-      0,
+      0
     ); // Initialize sum as 0
     setTotalPoints(total); // Update state with the total points
   };
@@ -221,10 +221,10 @@ export default function RubricBuilder(): ReactElement {
   const handleDragEnd = (event: { active: any; over: any }) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.id === event.active.id,
+        (criterion) => criterion.id === event.active.id
       );
       const newIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.id === event.over.id,
+        (criterion) => criterion.id === event.over.id
       );
 
       const updatedCriteria = [...rubric.rubricCriteria];
@@ -268,13 +268,13 @@ export default function RubricBuilder(): ReactElement {
             Create a new rubric
           </h1>
 
-          <div className={"flex justify-between"}>
+          <div className={'flex justify-between'}>
             {/*Import CSV/XLSX File*/}
             <button
               className={
-                "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
-                " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
-                " focus:ring-violet-500"
+                'transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4' +
+                ' hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2' +
+                ' focus:ring-violet-500'
               }
               onClick={handleImportFilePress}
             >
@@ -282,7 +282,7 @@ export default function RubricBuilder(): ReactElement {
             </button>
             {/* Rubric Total Points */}
             <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-              {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
+              {totalPoints} {totalPoints === 1 ? 'Point' : 'Points'}
             </h2>
           </div>
 
@@ -291,8 +291,8 @@ export default function RubricBuilder(): ReactElement {
             type="text"
             placeholder="Rubric title"
             className={
-              "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
-              " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
+              'rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500' +
+              ' focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap'
             }
             name="rubricTitle"
             id="rubricTitle"
@@ -328,7 +328,7 @@ export default function RubricBuilder(): ReactElement {
         <Dialog
           isOpen={isDialogOpen}
           onClose={closeDialog}
-          title={"Sending Rubric!"}
+          title={'Sending Rubric!'}
         >
           <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
             {JSON.stringify(rubric, null, 2)}
@@ -340,7 +340,7 @@ export default function RubricBuilder(): ReactElement {
         <Dialog
           isOpen={fileInputActive}
           onClose={() => setFileInputActive(false)}
-          title={"THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED"}
+          title={'THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED'}
         >
           {renderFileImport()}
         </Dialog>

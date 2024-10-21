@@ -10,5 +10,6 @@ ALTER TABLE "Rubric" DROP CONSTRAINT "Rubric_userId_fkey";
 
 -- AlterTable
 ALTER TABLE "Rubric" DROP COLUMN "userId",
-DROP COLUMN "criteria",
+DROP
+COLUMN "criteria",
 ADD COLUMN     "criteria" JSONB NOT NULL;

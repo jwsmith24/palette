@@ -1,2 +1,3 @@
 -- AlterTable
-ALTER TABLE "Rubric" ALTER COLUMN "authorId" DROP DEFAULT;
+ALTER TABLE "Rubric"
+    ALTER COLUMN "authorId" DROP DEFAULT;
