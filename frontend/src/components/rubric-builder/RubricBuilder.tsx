@@ -88,7 +88,6 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  const debugArray = [];
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: any[]) => {
     // create a set of current criteria descriptions to optimize duplicate check
@@ -100,7 +99,6 @@ export default function RubricBuilder(): ReactElement {
 
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
-    console.log(dataWithoutHeader); // to debug
     // data is a 2D array representing the CSV
     const newCriteria = dataWithoutHeader
       .map((row) => {
@@ -142,8 +140,6 @@ export default function RubricBuilder(): ReactElement {
         return criterion;
       })
       .filter((criterion) => criterion !== null); // remove all null entries (rows that were thrown out)
-
-    console.log("new criteria", newCriteria);
 
     // update rubric state with new criteria list
     setRubric((prevRubric) => ({
