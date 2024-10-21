@@ -11,9 +11,7 @@
     "skipLibCheck": true,
     "types": ["node", "express", "@prisma/client"],
     "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "checkJs": true
   },
-  "include": ["src/**/*", "prisma/**/*", "eslint.config.js"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/prisma/**"]
 }
