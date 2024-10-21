@@ -88,14 +88,20 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  // Update state with the new CSV/XLSX data
-  const handleImportFile = (data: any[]) => {
-    // create a set of current criteria descriptions to optimize duplicate check
-    const existingCriteriaDescriptions = new Set(
+  /**
+   * Generates a set of the current criteria descriptions stored within the component state.
+   */
+  const buildCriteriaDescriptionSet = () =>
+    new Set(
       rubric.rubricCriteria.map((criterion) =>
         criterion.description.trim().toLowerCase(),
       ),
-    ); // O(N) to O(1) bby!
+    );
+
+  // Update state with the new CSV/XLSX data
+  const handleImportFile = (data: any[]) => {
+    // create a set of current criteria descriptions to optimize duplicate check
+    const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
 
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
@@ -107,6 +113,11 @@ export default function RubricBuilder(): ReactElement {
           console.warn(
             `Non-string value in criterion description field: ${row[0]}. Throwing out entry.`,
           );
+          return null;
+        }
+
+        if (!row[0]) {
+          console.warn("Empty criteria description field. Throwing out entry.");
           return null;
         }
         const criteriaDescription = row[0];
