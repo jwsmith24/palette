@@ -6,4 +6,5 @@ export interface RubricCriterion {
   ratings: RubricRating[];
   id?: number; // id is only assigned when the rubric is saved to the database
   points: number;
+  key: string; // UUID for React
 }

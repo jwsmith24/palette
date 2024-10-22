@@ -121,7 +121,7 @@ export default function RubricBuilder(): ReactElement {
         }
 
         // If criterion is unique, initialize a new Criteria object with its factory function
-        const criterion = createCriterion(criteriaDescription);
+        const criterion: RubricCriterion = createRubricCriterion(criteriaDescription);
 
         // Iterate through the remaining columns
         for (let i = 1; i < row.length; i += 2) {
@@ -148,7 +148,7 @@ export default function RubricBuilder(): ReactElement {
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
     const total: number = rubric.rubricCriteria.reduce(
-      (sum: number, criterion: Criteria) => {
+      (sum: number, criterion: RubricCriterion) => {
         return sum + criterion.points;
       },
       0,
@@ -159,7 +159,7 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.rubricCriteria, createCriterion()];
+    const newCriteria = [...rubric.rubricCriteria, createRubricCriterion()];
     // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
@@ -173,7 +173,7 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // update criterion at given index
-  const handleUpdateCriterion = (index: number, criterion: Criteria) => {
+  const handleUpdateCriterion = (index: number, criterion: RubricCriterion) => {
     const newCriteria = [...rubric.rubricCriteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     // @ts-ignore

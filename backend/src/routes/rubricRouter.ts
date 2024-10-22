@@ -12,6 +12,7 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // defines validation for rubrics before being stored on the database
+// todo: verify validation still works after refactor
 const validateRubric = [
   body("title")
     .isString()
