@@ -3,9 +3,9 @@ import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { body, validationResult } from "express-validator";
 // @ts-ignore
-import { Criteria } from "@models/types/criteria";
+import {RubricCriterion} from "@models/types/rubricCriterion";
 // @ts-ignore // ts doesn't like using models from another module but whatever
-import { Rating } from "@models/types/rating";
+import {RubricRating} from "@models/types/rubricRating";
 import asyncHandler from "express-async-handler";
 
 const router = express.Router();
@@ -45,26 +45,26 @@ router.post(
 
     const { title, rubricCriteria } = req.body;
 
-    const newRubric = await prisma.rubric.create({
-      data: {
-        title,
-        rubricCriteria: {
-          create: rubricCriteria.map((criterion: Criteria) => ({
-            description: criterion.description,
-            longDescription: criterion.longDescription, // Make sure to include this if it's required
-            points: criterion.points,
-            ratings: {
-              create: criterion.ratings.map((rating: Rating) => ({
-                description: rating.description,
-                points: rating.points,
-              })),
+        const newRubric = await prisma.rubric.create({
+            data: {
+                title,
+                rubricCriteria: {
+                    create: rubricCriteria.map((criterion: RubricCriterion) => ({
+                        description: criterion.description,
+                        longDescription: criterion.longDescription, // Make sure to include this if it's required
+                        points: criterion.points,
+                        ratings: {
+                            create: criterion.ratings.map((rating: RubricRating) => ({
+                                description: rating.description,
+                                points: rating.points,
+                            })),
+                        },
+                    })),
+                },
             },
-          })),
-        },
-      },
-    });
-    res.status(201).send(newRubric);
-  }),
+        });
+        res.status(201).send(newRubric);
+    }),
 );
 
 // fetch a specific rubric by ID
@@ -136,12 +136,12 @@ router.put(
                 title,
                 rubricCriteria: {
                     deleteMany: {},
-                    create: rubricCriteria.map((criterion: Criteria) => ({
+                    create: rubricCriteria.map((criterion: RubricCriterion) => ({
                         description: criterion.description,
                         longDescription: criterion.longDescription,
                         points: criterion.points,
                         ratings: {
-                            create: criterion.ratings.map((rating: Rating) => ({
+                            create: criterion.ratings.map((rating: RubricRating) => ({
                                 description: rating.description,
                                 points: rating.points,
                             })),
@@ -152,12 +152,12 @@ router.put(
             create: {
                 title,
                 rubricCriteria: {
-                    create: rubricCriteria.map((criterion: Criteria) => ({
+                    create: rubricCriteria.map((criterion: RubricCriterion) => ({
                         description: criterion.description,
                         longDescription: criterion.longDescription,
                         points: criterion.points,
                         ratings: {
-                            create: criterion.ratings.map((rating: Rating) => ({
+                            create: criterion.ratings.map((rating: RubricRating) => ({
                                 description: rating.description,
                                 points: rating.points,
                             })),

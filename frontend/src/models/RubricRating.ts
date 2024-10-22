@@ -1,16 +1,13 @@
-import {Rating} from "./types/rating.ts";
+import {RubricRating} from "./types/rubricRating.ts";
 
 export default function createRating(
     points: number = 0,
     description: string = "",
     longDescription: string = "",
-    id: number = crypto.getRandomValues(new Uint32Array(1))[0], // default to unique random number if not assigned by
-    // the database yet
-): Rating {
+): RubricRating {
     return {
         points,
         description,
         longDescription,
-        id,
     };
 }

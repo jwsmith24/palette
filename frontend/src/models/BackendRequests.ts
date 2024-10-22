@@ -37,7 +37,7 @@ export async function postRubric(rubric: Rubric) {
 }
 
 // function to update rubric on the server
-export async function updateRubricWithID(id: Number, rubric: Rubric) {
+export async function updateRubricWithID(id: number, rubric: Rubric) {
     try {
         const res = await fetch(`${backendBaseURL}/rubrics/${id}`, {
             method: "PUT",

@@ -1,8 +1,6 @@
-export interface Rating {
+export interface RubricRating {
   points: number;
   description: string;
   longDescription: string;
-  id: number;
+  id?: number;
 }
-
-export default Rating;
