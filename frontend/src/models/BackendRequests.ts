@@ -101,3 +101,30 @@ export async function rubricWithTitleExists(title: string): Promise<{
     }
     return {exists: false, id: -1}; // rubric with this title does not exist
 }
+
+// function to delete a rubric by id
+export async function deleteRubricWithID(id: number) {
+    try {
+        const res = await fetch(`${backendBaseURL}/rubrics/${id}`, {
+            method: "DELETE",
+        });
+
+        if (res.ok) {
+            console.log("Rubric deleted!");
+        } else {
+            const errorResult = await res.json();
+            if (res.status === BAD_REQUEST) {
+                // Display validation errors
+                const errors = errorResult.errors;
+                errors.forEach((error: { param: any; msg: any }) => {
+                    console.log(`Field: ${error.param}, Message: ${error.msg}`);
+                });
+            } else {
+                // Handle other errors
+                console.error("An error occurred:", errorResult.error);
+            }
+        }
+    } catch (error) {
+        console.error(error); // update error message with more deets
+    }
+}
