@@ -47,7 +47,6 @@ export default function RubricBuilder(): ReactElement {
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
     calculateTotalPoints();
-    console.log("gonkulating");
   }, [rubric]);
 
   // Build rubric object with latest state values and send to server
