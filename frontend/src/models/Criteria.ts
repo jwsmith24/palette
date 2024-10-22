@@ -1,6 +1,7 @@
-import { Criteria } from "./types/criteria.ts";
-import { Rating } from "./types/rating.ts";
-import { v4 as uuid } from "uuid";
+import { Criteria } from './types/criteria.ts';
+import { Rating } from './types/rating.ts';
+
+import { v4 as uuid } from 'uuid';
 
 /**
  * Helper function to calculate a criterion's max point value on creation
@@ -22,11 +23,11 @@ export const calcMaxPoints = (ratings: Rating[]): number => {
  * Criterion factory function.
  */
 export default function createCriterion(
-  description: string = "",
-  longDescription: string = "",
-  ratings: Rating[] = [],
+  description: string = '',
+  longDescription: string = '',
   points: number = 0,
-  id: number | undefined = undefined,
+  ratings: Rating[] = [],
+  id: number | undefined = undefined
 ): Criteria {
   return {
     ratings,

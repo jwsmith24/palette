@@ -1,42 +1,24 @@
-import js from "@eslint/js";
-import typescript from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import prettier from "eslint-plugin-prettier";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-export default [
+export default tseslint.config(
   {
-    ignores: ["dist"], // Ignore the compiled files in the 'dist' directory
+    ignores: [
+      '**/build/**',
+      '**/dist/**',
+      '/node_modules',
+      '**/prisma/**',
+      'eslint.config.js',
+    ],
   },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
   {
-    files: ["**/*.ts*.js"], // Apply ESLint to TypeScript files
     languageOptions: {
-      parser: tsParser, // Use @typescript-eslint parser
       parserOptions: {
-        project: "./tsconfig.json", // Point to your tsconfig for project-specific settings
-        tsconfigRootDir: __dirname,
-        sourceType: "module",
-        ecmaVersion: "latest", // Use the latest ECMAScript features
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: {
-      typescript, // Enable TypeScript plugin for linting
-      prettier, // Integrate Prettier into ESLint
-    },
-    rules: {
-      ...js.configs.recommended.rules, // Default ESLint rules
-      ...typescript.configs.recommended.rules, // TypeScript-specific rules
-      "prettier/prettier": "error", // Run Prettier as an ESLint rule and show errors
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_" },
-      ], // Ignore unused vars prefixed with '_'
-      "@typescript-eslint/explicit-function-return-type": "off", // Disable requiring return types on functions
-      "@typescript-eslint/no-explicit-any": "warn", // Warn if 'any' is used (optional)
-    },
-  },
-];
+  }
+);
