@@ -3,13 +3,13 @@
  * handling responses. The request/response types themselves are defined in the Protocol module.
  */
 
-import {DeleteSingleRubricRequest} from "../Protocol/DeleteSingleRubric";
-import {GetSingleRubricRequest} from "../Protocol/GetSingleRubric";
+import {DeleteSingleRubricRequest} from "./DeleteSingleRubric";
+import {GetSingleRubricRequest} from "./GetSingleRubric";
 import {
     UpdateSingleRubricRequest,
     UpdateSingleRubricResponse
-} from "../Protocol/UpdateSingleRubric";
-import {CreateRubricRequest, CreateRubricResponse} from "../Protocol/CreateRubric";
+} from "./UpdateSingleRubric";
+import {CreateRubricRequest, CreateRubricResponse} from "./CreateRubric";
 import {Rubric} from "./RubricTypes";
 
 

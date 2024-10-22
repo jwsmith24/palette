@@ -4,7 +4,7 @@ import {
     RubricAssociationPurpose,
     RubricAssociationType,
     RubricCriterion
-} from '../Rubrics/RubricTypes';
+} from './RubricTypes';
 
 /**
  * This type represents the request body for creating a new Rubric.

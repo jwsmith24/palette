@@ -1,4 +1,4 @@
-import {RelatedRubricRecord} from "../Rubrics/RubricTypes";
+import {RelatedRubricRecord} from "./RubricTypes";
 
 export interface BaseRubricRequest {
     id: number;                         // The ID of the rubric
