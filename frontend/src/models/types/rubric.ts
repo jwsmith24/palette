@@ -4,5 +4,6 @@ export interface Rubric {
   title: string;
   rubricCriteria: RubricCriterion[];
   description: string;
-  id?: number // id is only assigned when the rubric is saved to the database
+  id?: number; // will be assigned by the backend once rubric is persisted
+  key: string; // unique key for React DOM (with uuid)
 }
