@@ -2,7 +2,8 @@ export interface Rating {
   points: number;
   description: string;
   longDescription: string;
-  id: number;
+  id?: number;
+  key: string;
 }
 
 export default Rating;

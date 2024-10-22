@@ -4,7 +4,8 @@ export interface Criteria {
   description: string;
   longDescription: string;
   ratings: Rating[];
-  id: number;
+  id?: number;
   points: number;
   updatePoints: () => void;
+  key: string;
 }

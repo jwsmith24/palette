@@ -87,7 +87,7 @@ export default function CriteriaInput({
     return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
         <RatingInput
-          key={rating.id}
+          key={rating.key}
           ratingIndex={ratingIndex}
           rating={rating}
           handleRatingChange={handleRatingChange}
@@ -112,10 +112,10 @@ export default function CriteriaInput({
     setActiveCriterionIndex(index);
   };
 
-  // Use the useSortable hook
+  // Use the useSortable hook to handle criteria ordering
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
-      id: criterion.id,
+      id: criterion.key,
     });
 
   const style = {

@@ -1,5 +1,6 @@
 import { Criteria } from "./types/criteria.ts";
 import { Rating } from "./types/rating.ts";
+import { v4 as uuid } from "uuid";
 
 /**
  * Helper function to calculate a criterion's max point value on creation
@@ -25,8 +26,7 @@ export default function createCriterion(
   longDescription: string = "",
   ratings: Rating[] = [],
   points: number = 0,
-  id: number = crypto.getRandomValues(new Uint32Array(1))[0],
-  // defaults to unique random number if not assigned by the database yet
+  id: number | undefined = undefined,
 ): Criteria {
   return {
     ratings,
@@ -34,8 +34,10 @@ export default function createCriterion(
     longDescription,
     points,
     id,
+    key: uuid(),
     updatePoints() {
       this.points = calcMaxPoints(this.ratings);
     },
+
   };
 }
