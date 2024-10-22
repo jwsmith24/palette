@@ -217,14 +217,14 @@ export default function RubricBuilder(): ReactElement {
     setFileInputActive(false); // hides the import file card
   };
 
-  // Fires when drag event is over
+  // Fires when drag event is over to re-sort criteria
   const handleDragEnd = (event: { active: any; over: any }) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.id === event.active.id
+        (criterion) => criterion.key === event.active.id,
       );
       const newIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.id === event.over.id
+        (criterion) => criterion.key === event.over.id,
       );
 
       const updatedCriteria = [...rubric.rubricCriteria];
@@ -239,12 +239,12 @@ export default function RubricBuilder(): ReactElement {
   const renderCriteria = () => {
     return (
       <SortableContext
-        items={rubric.rubricCriteria.map((criterion) => criterion.id)}
+        items={rubric.rubricCriteria.map((criterion) => criterion.key)}
         strategy={verticalListSortingStrategy}
       >
         {rubric.rubricCriteria.map((criterion, index) => (
           <CriteriaInput
-            key={criterion.id}
+            key={criterion.key}
             index={index}
             activeCriterionIndex={activeCriterionIndex}
             criterion={criterion}
