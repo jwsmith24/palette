@@ -6,13 +6,13 @@ import React, {
   useState,
 } from 'react';
 
-import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
-import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-import { Criteria } from "../../models/types/criteria.ts";
-import { Rating } from "../../models/types/rating.ts";
-import createRating from "../../models/Rating.ts";
-import RatingInput from "./RatingInput.tsx";
-import { calcMaxPoints } from "../../models/Criteria.ts";
+import { useSortable } from '@dnd-kit/sortable'; // Import useSortable
+import { CSS } from '@dnd-kit/utilities'; // Import CSS utilities
+import { Criteria } from '../../models/types/criteria.ts';
+import { Rating } from '../../models/types/rating.ts';
+import createRating from '../../models/Rating.ts';
+import RatingInput from './RatingInput.tsx';
+import { calcMaxPoints } from '../../models/Criteria.ts';
 
 export default function CriteriaInput({
   index,

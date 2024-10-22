@@ -12,7 +12,7 @@ export const calcMaxPoints = (ratings: Rating[]): number => {
   if (ratings.length > 0) {
     return ratings.reduce(
       (max, current) => (current.points > max.points ? current : max),
-      ratings[0],
+      ratings[0]
     ).points;
   } else {
     return 0;
@@ -39,6 +39,5 @@ export default function createCriterion(
     updatePoints() {
       this.points = calcMaxPoints(this.ratings);
     },
-
   };
 }
