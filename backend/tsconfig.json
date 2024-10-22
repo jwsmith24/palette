@@ -6,9 +6,6 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./",
-    "paths": {
-      "@models/*": ["../../frontend/src/models/*"]
-    },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
