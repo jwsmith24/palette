@@ -1,4 +1,4 @@
-import { Criteria } from "./criteria.ts";
+import { Criteria } from './criteria.ts';
 
 export interface Rubric {
   title: string;
