@@ -221,10 +221,10 @@ export default function RubricBuilder(): ReactElement {
   const handleDragEnd = (event: { active: any; over: any }) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.active.id,
+        (criterion) => criterion.key === event.active.id
       );
       const newIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.over.id,
+        (criterion) => criterion.key === event.over.id
       );
 
       const updatedCriteria = [...rubric.rubricCriteria];

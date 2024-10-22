@@ -1,7 +1,7 @@
-import { Criteria } from "./types/criteria.ts";
-import { Rating } from "./types/rating.ts";
+import { Criteria } from './types/criteria.ts';
+import { Rating } from './types/rating.ts';
 
-import { v4 as uuid } from "uuid";
+import { v4 as uuid } from 'uuid';
 
 // Criterion factory function
 export default function createCriterion(
@@ -9,7 +9,7 @@ export default function createCriterion(
   longDescription: string = '',
   points: number = 0,
   ratings: Rating[] = [],
-  id: number | undefined = undefined,
+  id: number | undefined = undefined
 ): Criteria {
   return {
     ratings,
@@ -19,7 +19,4 @@ export default function createCriterion(
     id,
     key: uuid(),
   };
-
-
-
 }
