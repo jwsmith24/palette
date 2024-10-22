@@ -15,11 +15,11 @@ import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import {Rubric} from "../../models/types/rubric.ts";
+import { Rubric } from "../../models/types/rubric.ts";
 import createRubric from "../../models/Rubric.ts";
-import {RubricCriterion} from "../../models/types/rubricCriterion.ts";
+import { RubricCriterion } from "../../models/types/rubricCriterion.ts";
 import createRubricCriterion from "../../models/RubricCriterion.ts";
-import {DndContext} from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -355,6 +355,7 @@ export default function RubricBuilder(): ReactElement {
         <ModalChoiceDialog
           show={isModalOpen}
           onHide={closeModal}
+          title={"Rubric Already Exists"}
           message={modalMessage}
           choices={modalChoices}
         />

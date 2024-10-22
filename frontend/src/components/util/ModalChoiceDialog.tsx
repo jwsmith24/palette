@@ -17,13 +17,15 @@ interface Choice {
 interface ModalChoiceDialogProps {
   show: boolean; // Whether the dialog is visible
   onHide: () => void; // The function to call when the dialog is closed
+  title: string; // The title of the dialog
   message: string; // The message to display in the dialog
-  choices: Choice[]; // The choices to present to the user
+  choices: Choice[]; // The button choices (not including cancel) to present to the user
 }
 
 const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
   show,
   onHide,
+  title,
   message,
   choices,
 }) => {
@@ -35,7 +37,9 @@ const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
         {/* Title */}
         <div className="mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">Choice Dialog</h2>
+          <h2 className="text-center text-xl font-semibold text-gray-800">
+            {title}
+          </h2>
         </div>
 
         {/* Message */}
