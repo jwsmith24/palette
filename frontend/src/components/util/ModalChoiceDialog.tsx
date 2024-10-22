@@ -27,29 +27,46 @@ const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
   message,
   choices,
 }) => {
+  if (!show) {
+    return null; // Don't render anything if the modal is not visible
+  }
   return (
-    <Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
-      <Modal.Header closeButton>
-        <Modal.Title>Choice Dialog</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <p>{message}</p>
-      </Modal.Body>
-      <Modal.Footer>
-        {choices.map((choice, index) => (
-          <Button
-            key={index}
-            variant={choice.variant || "primary"}
-            onClick={choice.action}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        {/* Title */}
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Choice Dialog</h2>
+        </div>
+
+        {/* Message */}
+        <div className="mb-6">
+          <p className="text-gray-700">{message}</p>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex justify-around space-x-4">
+          {choices.map((choice, index) => (
+            <button
+              key={index}
+              className={`py-2 px-4 rounded text-white ${
+                choice.variant === "secondary"
+                  ? "bg-gray-500 hover:bg-gray-600"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+              onClick={choice.action}
+            >
+              {choice.label}
+            </button>
+          ))}
+          <button
+            className="py-2 px-4 rounded bg-gray-500 hover:bg-gray-600 text-white"
+            onClick={onHide}
           >
-            {choice.label}
-          </Button>
-        ))}
-        <Button variant="secondary" onClick={onHide}>
-          Cancel
-        </Button>
-      </Modal.Footer>
-    </Modal>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 
