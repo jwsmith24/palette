@@ -24,13 +24,13 @@ app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 // logging middleware function
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
 // Health check route
-app.get("/health", (req: Request, res: Response) => {
+app.get("/health", (_req: Request, res: Response) => {
   res.status(200).json({ status: "UP" });
 });
 
@@ -42,7 +42,7 @@ app.use("/api/rubrics", rubricRouter);
 Wildcard handler that will direct any route not handled by the API to the home page. This lets React Router in resolve
 client-side routes that the backend doesn't know about.
  */
-app.get("*", (req: Request, res: Response) => {
+app.get("*", (_req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
 });
 
