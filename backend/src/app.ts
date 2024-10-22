@@ -1,9 +1,9 @@
 // main entry point for backend application
-import express, { Request, Response } from "express";
-import rubricRouter from "./routes/rubricRouter.js"; // !! required js extension !!
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
+import express, { Request, Response } from 'express';
+import rubricRouter from './routes/rubricRouter.js'; // !! required js extension !!
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -13,15 +13,14 @@ const app = express();
 const PORT = process.env.SERVER_PORT || 3000; // use environment variable, falls back to 3000
 
 // CORS config
-const whiteListOrigins = ["http://localhost:3000"];
 const corsOptions = {
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
 
 app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
-app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 // logging middleware function
 app.use((req, _res, next) => {
@@ -35,7 +34,7 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 // API routes
-app.use("/api/rubrics", rubricRouter);
+app.use('/api/rubrics', rubricRouter);
 
 /* Defer to client-side routing.
 
