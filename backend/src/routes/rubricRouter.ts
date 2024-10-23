@@ -5,7 +5,7 @@ import { body, validationResult } from "express-validator";
 // @ts-ignore
 import { RubricCriterion } from "@models/types/rubricCriterion";
 // @ts-ignore // ts doesn't like using models from another module but whatever
-import {RubricRating} from "@models/types/rubricRating";
+import { RubricRating } from "@models/types/rubricRating";
 import asyncHandler from "express-async-handler";
 
 const router = express.Router();
