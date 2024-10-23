@@ -25,11 +25,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import createRating from '../../models/RubricRating.ts';
-import {
-  rubricWithTitleExists,
-  postRubric,
-  updateRubricWithID,
-} from '../../models/BackendRequests.ts';
+import { BackendAPI } from '../../models/BackendRequests.ts';
 import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
 
 export default function RubricBuilder(): ReactElement {
@@ -75,7 +71,7 @@ export default function RubricBuilder(): ReactElement {
   const handleSubmitRubric = async (event: MouseEvent) => {
     event.preventDefault();
     // check if the rubric exists, if so present the user with the option to make a new copy or overwrite it
-    const { exists, id } = await rubricWithTitleExists(rubric.title);
+    const { exists, id } = await BackendAPI.checkTitleExists(rubric.title);
     if (exists) {
       // tell the user what happened
       setModalMessage(
@@ -87,7 +83,7 @@ export default function RubricBuilder(): ReactElement {
           // Overwrite button
           label: 'Overwrite',
           action: async () => {
-            await updateRubricWithID(id, rubric).then(() => {
+            await BackendAPI.update(id, rubric).then(() => {
               setLastSentRubric(rubric);
               closeModal();
               openDialog();
@@ -100,8 +96,8 @@ export default function RubricBuilder(): ReactElement {
           action: async () => {
             const newRubric: Rubric = { ...rubric };
             // append the current datetime to the title to make endlessly copyable
-            newRubric.title += ` - Copy ${new Date().toLocaleString()}`;
-            await postRubric(newRubric).then(() => {
+            newRubric.title += ` - Copy ${new Date().toLocaleString().replaceAll('/', '-')}`; // forward slashes are problematic
+            await BackendAPI.create(newRubric).then(() => {
               setLastSentRubric(newRubric);
               closeModal();
               openDialog();
@@ -111,7 +107,7 @@ export default function RubricBuilder(): ReactElement {
       ]);
       openModal();
     } else {
-      await postRubric(rubric).then(() => {
+      await BackendAPI.create(rubric).then(() => {
         setLastSentRubric(rubric);
         openDialog();
       }); // simply create a new rubric
