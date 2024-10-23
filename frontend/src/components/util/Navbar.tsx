@@ -10,20 +10,32 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const [rubricsNavButtonActive, setRubricsNavButtonActive] = useState(false)
-  const [clustersNavButtonActive, setClustersNavButtonActive] = useState(true)
-  const [builderNavButtonActive, setBuilderNavButtonActive] = useState(true)
+function Navbar() {
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  
+  const userOnRubricsTab = useRef(false)
+  const userOnClustersTab = useRef(false)
+  const userOnBuilderTab = useRef(false)
+
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location)
+  
+  useEffect(() => {
+    console.log("Component Rendered")
+
+
+  });
+
+
+
+
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -46,16 +58,24 @@ function ResponsiveAppBar() {
   };
 
     const handleRubricsClicked = () => {
+    var onRubricsTab = true
+    console.log("rubrics clicked")
     navigate("/rubrics");
 
   };
 
   const handleClustersClicked = () => {
+    var onClustersTab = true
+    console.log("clusters clicked")
     navigate("/clusters");
+
   };
 
   const handleBuilderClicked = () => {
+    var onBuilderTab = true
+    console.log("builder clicked")
     navigate("/rubric-builder");
+
   };
 
 
@@ -73,13 +93,13 @@ function ResponsiveAppBar() {
                     </Box>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', lg: 'flex', xl:'flex' } }}>
-                        <Button onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {userOnRubricsTab.current} onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Rubrics      
                         </Button>
-                        <Button onClick={handleClustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {userOnClustersTab.current} onClick={handleClustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Clusters      
                         </Button>
-                        <Button disabled= {true} onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {userOnBuilderTab.current} onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Builder      
                         </Button>
                     </Box>
@@ -161,4 +181,4 @@ function ResponsiveAppBar() {
     
   );
 }
-export default ResponsiveAppBar;
+export default Navbar;
