@@ -37,6 +37,7 @@ export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false); // dialog when rubrics send. just for debugging/playing around.
+  const [lastSentRubric, setLastSentRubric] = useState<Rubric>(createRubric()); // last rubric sent to server (for displaying in dialog)
   // Will delete when user feedback messages are added.
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
@@ -87,9 +88,11 @@ export default function RubricBuilder(): ReactElement {
           // Overwrite button
           label: "Overwrite",
           action: async () => {
-            await updateRubricWithID(id, rubric);
-            closeModal();
-            openDialog();
+            await updateRubricWithID(id, rubric).then(() => {
+              setLastSentRubric(rubric);
+              closeModal();
+              openDialog();
+            });
           },
         },
         {
@@ -99,16 +102,20 @@ export default function RubricBuilder(): ReactElement {
             const newRubric: Rubric = { ...rubric };
             // append the current datetime to the title to make endlessly copyable
             newRubric.title += ` - Copy ${new Date().toLocaleString()}`;
-            await postRubric(newRubric);
-            closeModal();
-            openDialog();
+            await postRubric(newRubric).then(() => {
+              setLastSentRubric(newRubric);
+              closeModal();
+              openDialog();
+            });
           },
         },
       ]);
       openModal();
     } else {
-      await postRubric(rubric); // simply create a new rubric
-      openDialog();
+      await postRubric(rubric).then(() => {
+        setLastSentRubric(rubric);
+        openDialog();
+      }); // simply create a new rubric
     }
   };
 
@@ -367,7 +374,7 @@ export default function RubricBuilder(): ReactElement {
           title={"Sending Rubric!"}
         >
           <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
-            {JSON.stringify(rubric, null, 2)}
+            {JSON.stringify(lastSentRubric, null, 2)}
           </pre>
         </Dialog>
 
