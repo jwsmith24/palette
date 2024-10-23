@@ -7,7 +7,6 @@ const BAD_REQUEST = 400;
 // function to send rubric to the server
 export async function postRubric(rubric: Rubric) {
   try {
-    console.log('Criteria:', rubric.rubricCriteria);
     const res = await fetch(`${backendBaseURL}/rubrics`, {
       method: 'POST',
       headers: {
@@ -40,7 +39,6 @@ export async function postRubric(rubric: Rubric) {
 // function to update rubric on the server
 export async function updateRubricWithID(id: number, rubric: Rubric) {
   try {
-    console.log('Criteria:', rubric.rubricCriteria);
     const res = await fetch(`${backendBaseURL}/rubrics/${id}`, {
       method: 'PUT',
       headers: {
@@ -50,23 +48,29 @@ export async function updateRubricWithID(id: number, rubric: Rubric) {
     });
 
     if (res.ok) {
+      // Check if the response is 204 (no content)
+      if (res.status === 204) {
+        console.log('Rubric updated successfully!');
+        return true;
+      }
       const data = await res.json();
       console.log('Rubric updated!', data);
+      return data;
     } else {
       const errorResult = await res.json();
       if (res.status === BAD_REQUEST) {
-        // Display validation errors
         const errors = errorResult.errors;
         errors.forEach((error: { param: any; msg: any }) => {
           console.log(`Field: ${error.param}, Message: ${error.msg}`);
         });
       } else {
-        // Handle other errors
         console.error('An error occurred:', errorResult.error);
       }
+      return false;
     }
   } catch (error) {
-    console.error(error); // update error message with more deets
+    console.error(error);
+    return false;
   }
 }
 
