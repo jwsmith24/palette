@@ -1,63 +1,63 @@
-import React, { ChangeEvent, useState } from "react";
-import * as XLSX from "xlsx"; // Import the xlsx library
+import React from 'react';
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 
-interface CsvUploadProps {
-  onDataChange: (data: string[]) => void; // Handles Data Changes
+interface CSVUploadProps {
+  onDataChange: (data: unknown[]) => void;
+  closeImportCard: () => void; // callback to close the import card
 }
 
-const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
-  const [error, setError] = useState<string | null>(null);
-
-  const handleCsvUpload = (event: ChangeEvent<HTMLInputElement>) => {
+const CSVUpload: React.FC<CSVUploadProps> = ({
+  onDataChange,
+  closeImportCard,
+}) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const fileExtension = file.name.split(".").pop();
+    if (!file) return;
 
-      if (fileExtension === "csv") {
-        const reader = new FileReader();
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
-        reader.onload = (e) => {
-          const text = e.target?.result as string;
-          const data = parseCsv(text);
-          onDataChange(data); // Call the onDataChange prop with the parsed data
-        };
-
-        reader.onerror = () => {
-          setError("Error reading file");
-        };
-
-        reader.readAsText(file);
-      } else if (fileExtension === "xlsx") {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: "array" });
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          const jsonData: (string | number)[][] = XLSX.utils.sheet_to_json(
-            worksheet,
-            { header: 1 },
-          );
-
-          const dataArray = jsonData.map((row) => row.join(" | ")); // Join the elements of each row with " | "
-          onDataChange(dataArray); // Call the onDataChange prop with the parsed data
-        };
-
-        reader.onerror = () => {
-          setError("Error reading file");
-        };
-
-        reader.readAsArrayBuffer(file);
-      } else {
-        setError("Invalid file type. Please upload a .csv or .xlsx file.");
-      }
+    if (fileExtension === 'csv') {
+      parseCSV(file);
+    } else if (fileExtension === 'xlsx') {
+      parseXLSX(file);
+    } else {
+      alert('Unsupported file format. Please upload a CSV or XLSX file.');
     }
   };
 
-  const parseCsv = (text: string): string[] => {
-    const rows = text.split("\n");
-    return rows.map((row) => row.split(",").join(" | "));
+  const parseCSV = (file: File) => {
+    Papa.parse(file, {
+      header: false, // keeps the output an array to sync with parsing xlsx files
+      complete: (results) => {
+        console.log('Parsed CSV data:', results.data);
+        onDataChange(results.data); // Pass parsed data to parent
+      },
+      error: (error) => {
+        console.error('Error parsing CSV:', error);
+      },
+    });
+    closeImportCard();
+  };
+
+  const parseXLSX = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target?.result as ArrayBuffer);
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      // First sheet of the rubric data
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+
+      // Convert the sheet to JSON format
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      console.log('Parsed XLSX data:', jsonData); // Log parsed XLSX data
+      onDataChange(jsonData); // Pass parsed data to parent
+      closeImportCard();
+    };
+
+    reader.readAsArrayBuffer(file);
   };
 
   return (
@@ -65,15 +65,24 @@ const CsvUpload: React.FC<CsvUploadProps> = ({ onDataChange }) => {
       <h2 className="text-2xl font-bold text-gray-200 mb-4">
         Import CSV or XLSX
       </h2>
-      <input
-        type="file"
-        accept=".csv,.xlsx"
-        onChange={handleCsvUpload}
-        className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
-      />
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      <div className={'flex justify-between items-center'}>
+        <input
+          type="file"
+          accept=".csv,.xlsx"
+          onChange={handleFileChange}
+          className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
+        />
+
+        {/* Cancel Button */}
+        <button
+          onClick={closeImportCard}
+          className="h-10 mt-4 bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };
 
-export default CsvUpload;
+export default CSVUpload;
