@@ -2,8 +2,10 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
-import { RubricCriterion } from '@models/types/rubricCriterion';
-import { RubricRating } from '@models/types/rubricRating';
+// @ts-ignore
+import { RubricCriterion } from '@models/types/rubricCriterion.ts';
+// @ts-ignore
+import { RubricRating } from '@models/types/rubricRating.ts';
 import asyncHandler from 'express-async-handler';
 
 const router = express.Router();
@@ -240,15 +242,15 @@ router.put(
 
       res.status(204).json(updatedRubric);
     } catch (error) {
-      console.error("Error updating rubric:", error);
-      res.status(500).json({ error: "Failed to update rubric" });
+      console.error('Error updating rubric:', error);
+      res.status(500).json({ error: 'Failed to update rubric' });
     }
-  }),
+  })
 );
 
 // get a rubric by title
 router.get(
-  "/title/:title",
+  '/title/:title',
   asyncHandler(async (req: Request, res: Response) => {
     const { title } = req.params;
     const rubric = await prisma.rubric.findFirst({
@@ -263,11 +265,11 @@ router.get(
     });
 
     if (!rubric) {
-      res.status(404).json({ error: "Rubric not found" });
+      res.status(404).json({ error: 'Rubric not found' });
     }
 
     res.status(200).json(rubric);
-  }),
+  })
 );
 
 // delete an existing rubric

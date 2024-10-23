@@ -1,23 +1,24 @@
-import { Rubric } from "./types/rubric.ts";
+import { Rubric } from './types/rubric.ts';
 
 // define the backed endpoints
-const backendBaseURL: string = "http://localhost:3000/api";
+const backendBaseURL: string = 'http://localhost:3000/api';
 const BAD_REQUEST = 400;
 
 // function to send rubric to the server
 export async function postRubric(rubric: Rubric) {
   try {
+    console.log('Criteria:', rubric.rubricCriteria);
     const res = await fetch(`${backendBaseURL}/rubrics`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(rubric),
     });
 
     if (res.ok) {
       const data = await res.json();
-      console.log("Rubric saved!", data);
+      console.log('Rubric saved!', data);
     } else {
       const errorResult = await res.json();
       if (res.status === BAD_REQUEST) {
@@ -28,7 +29,7 @@ export async function postRubric(rubric: Rubric) {
         });
       } else {
         // Handle other errors
-        console.error("An error occurred:", errorResult.error);
+        console.error('An error occurred:', errorResult.error);
       }
     }
   } catch (error) {
@@ -39,17 +40,18 @@ export async function postRubric(rubric: Rubric) {
 // function to update rubric on the server
 export async function updateRubricWithID(id: number, rubric: Rubric) {
   try {
+    console.log('Criteria:', rubric.rubricCriteria);
     const res = await fetch(`${backendBaseURL}/rubrics/${id}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(rubric),
     });
 
     if (res.ok) {
       const data = await res.json();
-      console.log("Rubric updated!", data);
+      console.log('Rubric updated!', data);
     } else {
       const errorResult = await res.json();
       if (res.status === BAD_REQUEST) {
@@ -60,7 +62,7 @@ export async function updateRubricWithID(id: number, rubric: Rubric) {
         });
       } else {
         // Handle other errors
-        console.error("An error occurred:", errorResult.error);
+        console.error('An error occurred:', errorResult.error);
       }
     }
   } catch (error) {
@@ -76,7 +78,7 @@ export async function rubricWithTitleExists(title: string): Promise<{
   try {
     const res = await fetch(`${backendBaseURL}/rubrics/title/${title}`, {
       headers: {
-        "Cache-control": "no-cache",
+        'Cache-control': 'no-cache',
       },
     });
     if (res.ok) {
@@ -92,7 +94,7 @@ export async function rubricWithTitleExists(title: string): Promise<{
         });
       } else {
         // Handle other errors
-        console.error("An error occurred:", errorResult.error);
+        console.error('An error occurred:', errorResult.error);
       }
     }
   } catch (error) {
@@ -105,11 +107,11 @@ export async function rubricWithTitleExists(title: string): Promise<{
 export async function deleteRubricWithID(id: number) {
   try {
     const res = await fetch(`${backendBaseURL}/rubrics/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
 
     if (res.ok) {
-      console.log("Rubric deleted!");
+      console.log('Rubric deleted!');
     } else {
       const errorResult = await res.json();
       if (res.status === BAD_REQUEST) {
@@ -120,7 +122,7 @@ export async function deleteRubricWithID(id: number) {
         });
       } else {
         // Handle other errors
-        console.error("An error occurred:", errorResult.error);
+        console.error('An error occurred:', errorResult.error);
       }
     }
   } catch (error) {

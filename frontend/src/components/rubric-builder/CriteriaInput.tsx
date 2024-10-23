@@ -8,9 +8,9 @@ import React, {
 
 import { useSortable } from '@dnd-kit/sortable'; // Import useSortable
 import { CSS } from '@dnd-kit/utilities'; // Import CSS utilities
-import { RubricCriterion } from '../../models/types/criteria.ts';
-import { RubricRating } from '../../models/types/rating.ts';
-import createRating from '../../models/Rating.ts';
+import { RubricCriterion } from '../../models/types/rubricCriterion.ts';
+import { RubricRating } from '../../models/types/rubricRating.ts';
+import createRating from '../../models/RubricRating.ts';
 import RatingInput from './RatingInput.tsx';
 
 export default function CriteriaInput({
@@ -74,7 +74,7 @@ export default function CriteriaInput({
   // Update criterion when ratings change.
   const handleRatingChange = (
     ratingIndex: number,
-    updatedRating: RubricRating,
+    updatedRating: RubricRating
   ) => {
     const updatedRatings = ratings.map((rating, index) =>
       index === ratingIndex ? updatedRating : rating

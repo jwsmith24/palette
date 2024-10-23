@@ -18,18 +18,17 @@ import Footer from '../util/Footer.tsx';
 import { Rubric } from '../../models/types/rubric.ts';
 import createRubric from '../../models/Rubric.ts';
 import { RubricCriterion } from '../../models/types/rubricCriterion';
-import createCriterion from '../../models/rubricCriteria.ts';
+import createRubricCriterion from '../../models/RubricCriterion.ts';
 import { DndContext } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+} from '@dnd-kit/sortable';
 import createRating from '../../models/RubricRating.ts';
 import {
   rubricWithTitleExists,
   postRubric,
   updateRubricWithID,
-  deleteRubricWithID,
 } from '../../models/BackendRequests.ts';
 import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
 
@@ -44,10 +43,10 @@ export default function RubricBuilder(): ReactElement {
 
   // For ModalChoiceDialog state
   const [isModalOpen, setModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [modalMessage, setModalMessage] = useState('');
   const [modalChoices, setModalChoices] = useState([
     {
-      label: "",
+      label: '',
       action: () => {},
     },
   ]);
@@ -80,13 +79,13 @@ export default function RubricBuilder(): ReactElement {
     if (exists) {
       // tell the user what happened
       setModalMessage(
-        `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
+        `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
       );
       // set button choices, each with a label and action
       setModalChoices([
         {
           // Overwrite button
-          label: "Overwrite",
+          label: 'Overwrite',
           action: async () => {
             await updateRubricWithID(id, rubric).then(() => {
               setLastSentRubric(rubric);
@@ -97,7 +96,7 @@ export default function RubricBuilder(): ReactElement {
         },
         {
           // Copy button
-          label: "Make a Copy",
+          label: 'Make a Copy',
           action: async () => {
             const newRubric: Rubric = { ...rubric };
             // append the current datetime to the title to make endlessly copyable
@@ -360,7 +359,7 @@ export default function RubricBuilder(): ReactElement {
         <ModalChoiceDialog
           show={isModalOpen}
           onHide={closeModal}
-          title={"Rubric Already Exists"}
+          title={'Rubric Already Exists'}
           message={modalMessage}
           choices={modalChoices}
         />

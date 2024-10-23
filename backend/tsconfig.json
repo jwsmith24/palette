@@ -7,7 +7,10 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
-      "@models/*": ["../../frontend/src/models/*"]
+      "@models/*": [
+        "../../frontend/src/models/*"
+      ]
+      // Include frontend models (we can remove if we relocate common models to a shared folder)
     },
     "strict": true,
     "esModuleInterop": true,
