@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { body, validationResult } from "express-validator";
 // @ts-ignore
-import {RubricCriterion} from "@models/types/rubricCriterion";
+import { RubricCriterion } from "@models/types/rubricCriterion";
 // @ts-ignore // ts doesn't like using models from another module but whatever
 import {RubricRating} from "@models/types/rubricRating";
 import asyncHandler from "express-async-handler";
@@ -98,20 +98,20 @@ router.get(
 
 // fetch all rubrics from the database
 router.get(
-    "/",
-    asyncHandler(async (req: Request, res: Response) => {
-      // gets all rubrics with their criteria and ratings
-      const rubrics = await prisma.rubric.findMany({
-        include: {
-          rubricCriteria: {
-            include: {
-              ratings: true,
-            },
+  "/",
+  asyncHandler(async (req: Request, res: Response) => {
+    // gets all rubrics with their criteria and ratings
+    const rubrics = await prisma.rubric.findMany({
+      include: {
+        rubricCriteria: {
+          include: {
+            ratings: true,
           },
         },
-      });
-      res.status(200).send(rubrics); // Send back list of all rubrics
-    }),
+      },
+    });
+    res.status(200).send(rubrics); // Send back list of all rubrics
+  }),
 );
 
 /**
