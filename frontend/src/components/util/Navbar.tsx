@@ -9,7 +9,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 
@@ -17,7 +18,12 @@ import { faEllipsisV } from '@fortawesome/free-solid-svg-icons/faEllipsisV';
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [rubricsNavButtonActive, setRubricsNavButtonActive] = useState(false)
+  const [clustersNavButtonActive, setClustersNavButtonActive] = useState(true)
+  const [builderNavButtonActive, setBuilderNavButtonActive] = useState(true)
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location)
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -41,6 +47,7 @@ function ResponsiveAppBar() {
 
     const handleRubricsClicked = () => {
     navigate("/rubrics");
+
   };
 
   const handleClustersClicked = () => {
@@ -72,7 +79,7 @@ function ResponsiveAppBar() {
                         <Button onClick={handleClustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Clusters      
                         </Button>
-                        <Button onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {true} onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Builder      
                         </Button>
                     </Box>
