@@ -18,6 +18,11 @@ export default function RatingInput({
     rating.description || "",
   );
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [longDescription, setLongDescription] = useState(
+    rating.longDescription || ""
+  );
+
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newPointValue = Number(event.target.value);
     setRatingValue(newPointValue); // update input value in state
@@ -30,6 +35,12 @@ export default function RatingInput({
     setRatingDescription(newDescription); // update input value in state
     const newRating = { ...rating, description: newDescription };
     handleRatingChange(ratingIndex, newRating); // trigger parent update
+  };
+
+  const handleLongDescriptionSave = () => {
+    const updatedRating = { ...rating, longDescription };
+    handleRatingChange(ratingIndex, updatedRating);
+    setIsPopupOpen(false); // Close the popup after saving
   };
 
   const handleRemoveRatingPress = (
@@ -67,6 +78,45 @@ export default function RatingInput({
       >
         -
       </button>
+      {/* Button to trigger editing of long description */}
+      <button
+        className="text-blue-500 hover:underline"
+        onClick={() => setIsPopupOpen(true)}
+        type="button"
+      >
+        Edit Long Description
+      </button>
+
+      {/* Popup for editing the long description */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
+            <h2 className="text-xl text-black font-semibold mb-4">
+              Edit Long Description
+            </h2>
+            <textarea
+              value={longDescription}
+              onChange={(e) => setLongDescription(e.target.value)}
+              className="w-full text-black p-2 border rounded"
+              rows={6}
+            />
+            <div className="flex justify-end mt-4">
+              <button
+                className="mr-2 bg-gray-300 px-4 py-2 rounded"
+                onClick={() => setIsPopupOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded"
+                onClick={handleLongDescriptionSave}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
