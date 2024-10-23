@@ -29,8 +29,8 @@ app.use((req, _res, next) => {
 });
 
 // Health check route
-app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).json({ status: "UP" });
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'UP' });
 });
 
 // API routes
@@ -41,8 +41,8 @@ app.use('/api/rubrics', rubricRouter);
 Wildcard handler that will direct any route not handled by the API to the home page. This lets React Router in resolve
 client-side routes that the backend doesn't know about.
  */
-app.get("*", (_req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
+app.get('*', (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
 });
 
 // Start the server and listen on port defined in .env file
