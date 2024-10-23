@@ -3,7 +3,6 @@ import { RubricRating } from "./types/rubricRating.ts";
 import createRating from "./RubricRating.ts";
 import { v4 as uuidv4 } from "uuid";
 
-
 // Criterion factory function
 export default function createRubricCriterion(
   description: string = "",
@@ -20,7 +19,4 @@ export default function createRubricCriterion(
     id,
     key: uuidv4(),
   };
-
-
-
 }

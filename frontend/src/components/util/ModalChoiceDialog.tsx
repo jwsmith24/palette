@@ -1,5 +1,4 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
 
 /**
  * A choice is a button that the user can click to perform an action.

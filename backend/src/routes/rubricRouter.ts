@@ -1,7 +1,7 @@
 // Router for all /rubrics requests
-import express, {Request, Response} from "express";
-import {PrismaClient} from "@prisma/client";
-import {body, validationResult} from "express-validator";
+import express, { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
+import { body, validationResult } from "express-validator";
 // @ts-ignore
 import {RubricCriterion} from "@models/types/rubricCriterion";
 // @ts-ignore // ts doesn't like using models from another module but whatever
@@ -14,103 +14,103 @@ const prisma = new PrismaClient();
 // defines validation for rubrics before being stored on the database
 // todo: verify validation still works after refactor
 const validateRubric = [
-    body("title")
-        .isString()
-        .notEmpty()
-        .trim()
-        .withMessage("Rubric does not have a title")
-        .isLength({max: 255}) // max length: 255 characters
-        .withMessage("Rubric title must not exceed 255 characters."),
-    body("rubricCriteria")
-        .isArray({min: 1})
-        .withMessage("Rubric must have at least one criterion."),
-    body("rubricCriteria.*.description") // * === all objects in the criteria array
-        .isString()
-        .notEmpty()
-        .trim()
-        .withMessage("Each criterion must have a description"),
-    body("rubricCriteria.*.longDescription").optional().isString(),
-    body("rubricCriteria.*.points")
-        .isNumeric()
-        .withMessage("points field must be numeric"),
+  body("title")
+    .isString()
+    .notEmpty()
+    .trim()
+    .withMessage("Rubric does not have a title")
+    .isLength({ max: 255 }) // max length: 255 characters
+    .withMessage("Rubric title must not exceed 255 characters."),
+  body("rubricCriteria")
+    .isArray({ min: 1 })
+    .withMessage("Rubric must have at least one criterion."),
+  body("rubricCriteria.*.description") // * === all objects in the criteria array
+    .isString()
+    .notEmpty()
+    .trim()
+    .withMessage("Each criterion must have a description"),
+  body("rubricCriteria.*.longDescription").optional().isString(),
+  body("rubricCriteria.*.points")
+    .isNumeric()
+    .withMessage("points field must be numeric"),
 ];
 
 router.post(
-    "/",
-    validateRubric,
-    asyncHandler(async (req: Request, res: Response) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(400).send({errors: errors.array()});
-        }
+  "/",
+  validateRubric,
+  asyncHandler(async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).send({ errors: errors.array() });
+    }
 
-        const {title, rubricCriteria} = req.body;
+    const { title, rubricCriteria } = req.body;
 
-        const newRubric = await prisma.rubric.create({
-            data: {
-                title,
-                rubricCriteria: {
-                    create: rubricCriteria.map((criterion: RubricCriterion) => ({
-                        description: criterion.description,
-                        longDescription: criterion.longDescription, // Make sure to include this if it's required
-                        points: criterion.points,
-                        ratings: {
-                            create: criterion.ratings.map((rating: RubricRating) => ({
-                                description: rating.description,
-                                points: rating.points,
-                            })),
-                        },
-                    })),
-                },
+    const newRubric = await prisma.rubric.create({
+      data: {
+        title,
+        rubricCriteria: {
+          create: rubricCriteria.map((criterion: RubricCriterion) => ({
+            description: criterion.description,
+            longDescription: criterion.longDescription, // Make sure to include this if it's required
+            points: criterion.points,
+            ratings: {
+              create: criterion.ratings.map((rating: RubricRating) => ({
+                description: rating.description,
+                points: rating.points,
+              })),
             },
-        });
-        res.status(201).send(newRubric);
-    }),
+          })),
+        },
+      },
+    });
+    res.status(201).send(newRubric);
+  }),
 );
 
 // fetch a specific rubric by ID
 router.get(
-    "/:id",
-    asyncHandler(async (req: Request, res: Response) => {
-        const {id} = req.params;
-        console.log(`trying to fetch rubric with id=${id}`);
-        const rubric = await prisma.rubric.findUnique({
-            where: {id: Number(id)},
-            include: {
-                rubricCriteria: {
-                    include: {
-                        ratings: true,
-                    },
-                },
-            },
-        });
+  "/:id",
+  asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.log(`trying to fetch rubric with id=${id}`);
+    const rubric = await prisma.rubric.findUnique({
+      where: { id: Number(id) },
+      include: {
+        rubricCriteria: {
+          include: {
+            ratings: true,
+          },
+        },
+      },
+    });
 
-        console.log("found ", rubric);
+    console.log("found ", rubric);
 
-        // Check if the rubric was found
-        if (!rubric) {
-            res.status(404).send({error: "Rubric not found"});
-        }
+    // Check if the rubric was found
+    if (!rubric) {
+      res.status(404).send({ error: "Rubric not found" });
+    }
 
-        res.status(200).send(rubric); // Send the found rubric back
-    }),
+    res.status(200).send(rubric); // Send the found rubric back
+  }),
 );
 
 // fetch all rubrics from the database
 router.get(
     "/",
     asyncHandler(async (req: Request, res: Response) => {
-        // gets all rubrics with their criteria and ratings
-        const rubrics = await prisma.rubric.findMany({
+      // gets all rubrics with their criteria and ratings
+      const rubrics = await prisma.rubric.findMany({
+        include: {
+          rubricCriteria: {
             include: {
-                rubricCriteria: {
-                    include: {
-                        ratings: true,
-                    },
-                },
+              ratings: true,
             },
-        });
-        res.status(200).send(rubrics); // Send back list of all rubrics
+          },
+        },
+      });
+      res.status(200).send(rubrics); // Send back list of all rubrics
     }),
 );
 
@@ -274,15 +274,15 @@ router.get(
 
 // delete an existing rubric
 router.delete(
-    "/:id",
-    asyncHandler(async (req: Request, res: Response) => {
-        const {id} = req.params;
+  "/:id",
+  asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
 
-        await prisma.rubric.delete({
-            where: {id: Number(id)},
-        });
-        res.status(204).send(); // Deletion was successful
-    }),
+    await prisma.rubric.delete({
+      where: { id: Number(id) },
+    });
+    res.status(204).send(); // Deletion was successful
+  }),
 );
 
 export default router;

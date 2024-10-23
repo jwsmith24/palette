@@ -73,7 +73,10 @@ export default function CriteriaInput({
   };
 
   // Update criterion when ratings change.
-  const handleRatingChange = (ratingIndex: number, updatedRating: RubricRating) => {
+  const handleRatingChange = (
+    ratingIndex: number,
+    updatedRating: RubricRating,
+  ) => {
     const updatedRatings = ratings.map((rating, index) =>
       index === ratingIndex ? updatedRating : rating,
     );
