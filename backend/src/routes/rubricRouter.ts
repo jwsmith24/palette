@@ -126,6 +126,7 @@ router.put(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
+      return;
     }
 
     const { id } = req.params;
@@ -191,6 +192,7 @@ router.put(
           },
         });
         res.status(201).json(newRubric);
+        return;
       }
 
       // If rubric exists, update it with new data
@@ -240,7 +242,7 @@ router.put(
         },
       });
 
-      res.status(204).json(updatedRubric);
+      res.status(200).json(updatedRubric);
     } catch (error) {
       console.error('Error updating rubric:', error);
       res.status(500).json({ error: 'Failed to update rubric' });
@@ -266,9 +268,11 @@ router.get(
 
     if (!rubric) {
       res.status(404).json({ error: 'Rubric not found' });
+      return;
     }
 
     res.status(200).json(rubric);
+    return;
   })
 );
 

@@ -39,10 +39,11 @@ app.use('/api/rubrics', rubricRouter);
 // Wildcard route should only handle frontend routes
 // It should not handle any routes under /api or other server-side routes.
 app.get('*', (req: Request, res: Response) => {
+  // If a developer messes up the api routes, send a 404 error with informative error
   if (req.originalUrl.startsWith('/api')) {
     res.status(404).send({ error: 'API route not found' });
   } else {
-    // send the index.html file for other routes
+    // If the client tries to navigate to an unknown page, send them the index.html file
     res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
   }
 });
