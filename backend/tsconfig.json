@@ -7,24 +7,14 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
-      "@models/*": [
-        "../../frontend/src/models/*"
-      ]
+      "@models/*": ["../../frontend/src/models/*"]
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": [
-      "node",
-      "express",
-      "@prisma/client"
-    ],
-    "forceConsistentCasingInFileNames": true
+    "types": ["node", "express", "@prisma/client"],
+    "forceConsistentCasingInFileNames": true,
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/prisma/**"]
 }

@@ -11,11 +11,11 @@ CREATE TABLE "User"
 -- CreateTable
 CREATE TABLE "Rubric"
 (
-    "id"       SERIAL  NOT NULL,
-    "title"    TEXT    NOT NULL,
+    "id"          SERIAL  NOT NULL,
+    "title"       TEXT    NOT NULL,
     "description" TEXT,
-    "criteria" TEXT    NOT NULL,
-    "userId"   INTEGER NOT NULL,
+    "criteria"    TEXT    NOT NULL,
+    "userId"      INTEGER NOT NULL,
 
     CONSTRAINT "Rubric_pkey" PRIMARY KEY ("id")
 );

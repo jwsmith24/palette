@@ -1,4 +1,4 @@
-import { RubricCriterion } from "./rubricCriterion.ts";
+import { RubricCriterion } from './rubricCriterion';
 
 export interface Rubric {
   title: string;

@@ -1,5 +1,5 @@
-import React, { ChangeEvent, ReactElement, useState } from "react";
-import { RubricRating } from "../../models/types/rubricRating.ts";
+import React, { ChangeEvent, ReactElement, useState } from 'react';
+import { RubricRating } from '../../models/types/rubricRating';
 
 export default function RatingInput({
   ratingIndex,
@@ -15,7 +15,7 @@ export default function RatingInput({
   const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or
   // default to 0.
   const [ratingDescription, setRatingDescription] = useState(
-    rating.description || "",
+    rating.description || ''
   );
 
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,14 +33,14 @@ export default function RatingInput({
   };
 
   const handleRemoveRatingPress = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     handleRemoveRating(ratingIndex); // trigger removal
   };
 
   return (
-    <div className={"grid grid-rows-1 grid-col-3 grid-flow-col gap-2 w-full"}>
+    <div className={'grid grid-rows-1 grid-col-3 grid-flow-col gap-2 w-full'}>
       <input
         type="number"
         value={ratingValue} // use local state for value
@@ -58,12 +58,12 @@ export default function RatingInput({
       />
       <button
         className={
-          "bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100" +
-          " hover:text-white"
+          'bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100' +
+          ' hover:text-white'
         }
         tabIndex={-1}
         onClick={handleRemoveRatingPress} // properly handle the remove button
-        type={"button"}
+        type={'button'}
       >
         -
       </button>

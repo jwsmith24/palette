@@ -48,12 +48,10 @@
 
 */
 -- DropForeignKey
-ALTER TABLE "RubricCriterion"
-    DROP CONSTRAINT "RubricCriterion_rubric_id_fkey";
+ALTER TABLE "RubricCriterion" DROP CONSTRAINT "RubricCriterion_rubric_id_fkey";
 
 -- DropForeignKey
-ALTER TABLE "RubricRating"
-    DROP CONSTRAINT "RubricRating_criterion_id_fkey";
+ALTER TABLE "RubricRating" DROP CONSTRAINT "RubricRating_criterion_id_fkey";
 
 -- AlterTable
 ALTER TABLE "Rubric"
@@ -125,9 +123,7 @@ ALTER TABLE "RubricRating"
     ADD COLUMN "longDescription"   VARCHAR(510);
 
 -- AddForeignKey
-ALTER TABLE "RubricCriterion"
-    ADD CONSTRAINT "RubricCriterion_rubricId_fkey" FOREIGN KEY ("rubricId") REFERENCES "Rubric" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RubricCriterion" ADD CONSTRAINT "RubricCriterion_rubricId_fkey" FOREIGN KEY ("rubricId") REFERENCES "Rubric"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RubricRating"
-    ADD CONSTRAINT "RubricRating_criterionId_fkey" FOREIGN KEY ("criterionId") REFERENCES "RubricCriterion" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RubricRating" ADD CONSTRAINT "RubricRating_criterionId_fkey" FOREIGN KEY ("criterionId") REFERENCES "RubricCriterion"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

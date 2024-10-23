@@ -6,8 +6,7 @@
 
 */
 -- DropForeignKey
-ALTER TABLE "Rubric"
-    DROP CONSTRAINT "Rubric_userId_fkey";
+ALTER TABLE "Rubric" DROP CONSTRAINT "Rubric_userId_fkey";
 
 -- AlterTable
 ALTER TABLE "Rubric"
