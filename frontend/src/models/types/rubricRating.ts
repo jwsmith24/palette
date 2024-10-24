@@ -5,3 +5,5 @@ export interface RubricRating {
   id?: number;
   key: string; // UUID for React
 }
+
+export default RubricRating;

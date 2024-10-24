@@ -1,15 +1,32 @@
-import { RubricCriterion } from "./types/rubricCriterion.ts";
-import { RubricRating } from "./types/rubricRating.ts";
-import createRating from "./RubricRating.ts";
-import { v4 as uuidv4 } from "uuid";
+import { RubricCriterion } from './types/rubricCriterion.ts';
+import { RubricRating } from './types/rubricRating.ts';
+import { v4 as uuidv4 } from 'uuid';
 
-// Criterion factory function
+/**
+ * Helper function to calculate a criterion's max point value on creation
+ * @param ratings - array of rating options for target criterion
+ */
+export const calcMaxPoints = (ratings: RubricRating[]): number => {
+  // ensure ratings aren't empty
+  if (ratings.length > 0) {
+    return ratings.reduce(
+      (max, current) => (current.points > max.points ? current : max),
+      ratings[0]
+    ).points;
+  } else {
+    return 0;
+  }
+};
+
+/**
+ * Criterion factory function.
+ */
 export default function createRubricCriterion(
-  description: string = "",
-  longDescription: string = "",
+  description: string = '',
+  longDescription: string = '',
   points: number = 0,
-  ratings: RubricRating[] = [createRating(5), createRating(3), createRating(0)],
-  id: number | undefined = undefined, // defaults to undefined until the db assigns a unique id the database yet
+  ratings: RubricRating[] = [],
+  id: number | undefined = undefined
 ): RubricCriterion {
   return {
     ratings,
@@ -18,5 +35,8 @@ export default function createRubricCriterion(
     points,
     id,
     key: uuidv4(),
+    updatePoints() {
+      this.points = calcMaxPoints(this.ratings);
+    },
   };
 }

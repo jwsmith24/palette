@@ -1,4 +1,4 @@
-import { RubricRating } from "./rubricRating.ts";
+import { RubricRating } from './rubricRating.ts';
 
 export interface RubricCriterion {
   description: string;
@@ -6,5 +6,6 @@ export interface RubricCriterion {
   ratings: RubricRating[];
   id?: number; // id is only assigned when the rubric is saved to the database
   points: number;
+  updatePoints: () => void;
   key: string; // UUID for React
 }
