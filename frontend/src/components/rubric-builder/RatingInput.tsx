@@ -1,5 +1,5 @@
 import React, { ChangeEvent, ReactElement, useState } from 'react';
-import { RubricRating } from '../../models/types/rubricRating';
+import { RubricRating } from '../../models/types/RubricRating.ts';
 
 export default function RatingInput({
   ratingIndex,

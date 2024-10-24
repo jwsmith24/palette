@@ -1,5 +1,12 @@
-import { RubricRating } from './types/rubricRating.ts';
 import { v4 as uuidv4 } from 'uuid';
+
+export interface RubricRating {
+  points: number;
+  description: string;
+  longDescription: string;
+  id?: number;
+  key: string; // UUID for React
+}
 
 export default function createRating(
   points: number = 0,

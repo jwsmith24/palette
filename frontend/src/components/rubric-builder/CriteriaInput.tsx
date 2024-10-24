@@ -8,11 +8,11 @@ import React, {
 
 import { useSortable } from '@dnd-kit/sortable'; // Import useSortable
 import { CSS } from '@dnd-kit/utilities'; // Import CSS utilities
-import { RubricCriterion } from '../../models/types/rubricCriterion.ts';
-import { RubricRating } from '../../models/types/rubricRating.ts';
-import createRating from '../../models/RubricRating.ts';
+import { RubricCriterion } from '../../models/types/RubricCriterion.ts';
+import { RubricRating } from '../../models/types/RubricRating.ts';
+import createRating from '../../models/types/RubricRating.ts';
 import RatingInput from './RatingInput.tsx';
-import { calcMaxPoints } from '../../models/RubricCriterion.ts';
+import { calcMaxPoints } from '../../models/types/RubricCriterion.ts';
 
 export default function CriteriaInput({
   index,

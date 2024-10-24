@@ -1,6 +1,13 @@
-import { RubricCriterion } from './types/rubricCriterion';
-import { Rubric } from './types/rubric.ts';
+import { RubricCriterion } from './RubricCriterion.ts';
 import { v4 as uuid4 } from 'uuid';
+
+export interface Rubric {
+  title: string;
+  rubricCriteria: RubricCriterion[];
+  description: string;
+  id?: number; // will be assigned by the backend once rubric is persisted
+  key: string; // unique key for React DOM (with uuid)
+}
 
 export default function createRubric(
   title: string = '',

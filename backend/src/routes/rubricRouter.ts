@@ -3,9 +3,9 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 // @ts-ignore
-import { RubricCriterion } from '@models/types/rubricCriterion.ts';
+import { RubricCriterion } from '@models/types/RubricCriterion.ts';
 // @ts-ignore
-import { RubricRating } from '@models/types/rubricRating.ts';
+import { RubricRating } from '@models/types/RubricRating.ts';
 import asyncHandler from 'express-async-handler';
 
 const router = express.Router();
