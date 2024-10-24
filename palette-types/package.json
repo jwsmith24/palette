@@ -8,6 +8,7 @@
     "prettier-check": "prettier --check 'src/**/*.{js,ts,tsx,json,md}'"
   },
   "keywords": [],
+  "type": "module",
   "author": "",
   "license": "ISC",
   "description": "",
