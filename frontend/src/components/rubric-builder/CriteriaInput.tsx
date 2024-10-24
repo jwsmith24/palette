@@ -35,11 +35,6 @@ export default function CriteriaInput({
     criterion.description || "",
   );
 
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [longDescription, setLongDescription] = useState(
-    criterion.longDescription || ""
-  );
-
   useEffect(() => {
     // Find the rating with the maximum points when the component mounts or ratings change
 
@@ -125,12 +120,6 @@ export default function CriteriaInput({
     setActiveCriterionIndex(index);
   };
 
-  const handleLongDescriptionSave = () => {
-    const updatedCriterion = { ...criterion, longDescription };
-    handleCriteriaUpdate(index, updatedCriterion);
-    setIsPopupOpen(false);
-  };
-
   // Use the useSortable hook to handle criteria ordering
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -177,10 +166,9 @@ export default function CriteriaInput({
     );
   };
 
-  
   const renderDetailedView = () => {
     return (
-      <div className="grid border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
+      <div className=" grid  border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
         <div className="grid grid-cols-2 gap-4 items-start content-between">
           <div className={"grid self-baseline"}>
             <input
@@ -193,46 +181,6 @@ export default function CriteriaInput({
             <p className="text-xl font-semibold mt-2 text-gray-200">
               Max Points: {maxPoints}
             </p>
-
-            {/* Button to trigger editing of long description */}
-            <button
-              className="text-blue-500 hover:underline"
-              onClick={() => setIsPopupOpen(true)}
-              type="button"
-            >
-              Edit Long Description
-            </button>
-
-            {/* Popup for editing the long description */}
-            {isPopupOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
-                  <h2 className="text-xl text-black font-semibold mb-4">
-                    Edit Long Description
-                  </h2>
-                  <textarea
-                    value={longDescription}
-                    onChange={(e) => setLongDescription(e.target.value)}
-                    className="w-full text-black p-2 border rounded"
-                    rows={6}
-                  />
-                  <div className="flex justify-end mt-4">
-                    <button
-                      className="mr-2 bg-gray-300 px-4 py-2 rounded"
-                      onClick={() => setIsPopupOpen(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="bg-blue-600 text-white px-4 py-2 rounded"
-                      onClick={handleLongDescriptionSave}
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           <div className={"grid gap-2"}>{renderRatingOptions()}</div>
@@ -255,7 +203,10 @@ export default function CriteriaInput({
                 "transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4" +
                 " py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
               }
-              onPointerDown={() => setActiveCriterionIndex(-1)}
+              onPointerDown={() => {
+                setActiveCriterionIndex(-1); // setting the index to -1 will ensure the current criteria will
+                // condense and another one won't open
+              }}
               type={"button"}
             >
               Collapse
