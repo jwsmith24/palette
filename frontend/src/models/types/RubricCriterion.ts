@@ -20,7 +20,7 @@ export const calcMaxPoints = (ratings: RubricRating[]): number => {
   if (ratings.length > 0) {
     return ratings.reduce(
       (max, current) => (current.points > max.points ? current : max),
-      ratings[0],
+      ratings[0]
     ).points;
   } else {
     return 0;
@@ -35,7 +35,7 @@ export default function createRubricCriterion(
   longDescription: string = '',
   points: number = 0,
   ratings: RubricRating[] = [],
-  id: number | undefined = undefined,
+  id: number | undefined = undefined
 ): RubricCriterion {
   return {
     ratings,
