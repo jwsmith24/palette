@@ -149,6 +149,7 @@ export default function RubricBuilder(): ReactElement {
             criterion.ratings.push(rating);
           }
         }
+        criterion.updatePoints();
         return criterion;
       })
       .filter((criterion) => criterion !== null); // remove all null entries (rows that were thrown out)
@@ -162,6 +163,7 @@ export default function RubricBuilder(): ReactElement {
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
+    console.log(rubric.rubricCriteria);
     const total: number = rubric.rubricCriteria.reduce(
       (sum: number, criterion: Criteria) => {
         return sum + criterion.points;
@@ -175,7 +177,6 @@ export default function RubricBuilder(): ReactElement {
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
     const newCriteria = [...rubric.rubricCriteria, createCriterion()];
-    // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
   };

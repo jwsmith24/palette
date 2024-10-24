@@ -6,5 +6,6 @@ export interface Criteria {
   ratings: Rating[];
   id?: number;
   points: number;
+  updatePoints: () => void;
   key: string;
 }

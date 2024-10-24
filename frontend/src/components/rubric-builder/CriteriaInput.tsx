@@ -12,6 +12,7 @@ import { Criteria } from '../../models/types/criteria.ts';
 import { Rating } from '../../models/types/rating.ts';
 import createRating from '../../models/Rating.ts';
 import RatingInput from './RatingInput.tsx';
+import { calcMaxPoints } from '../../models/Criteria.ts';
 
 export default function CriteriaInput({
   index,
@@ -33,22 +34,14 @@ export default function CriteriaInput({
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || ''
   );
-
+  /**
+   * Whenever ratings change, recalculate criterion's max points
+   */
   useEffect(() => {
-    // Find the rating with the maximum points when the component mounts or ratings change
-
-    if (ratings[0]) {
-      // make sure ratings array isn't empty before checking
-      const maxRating = ratings.reduce(
-        (max, current) => (current.points > max.points ? current : max),
-        ratings[0]
-      );
-      maxRating.points ? setMaxPoints(maxRating.points) : setMaxPoints(0);
-      const newCriterion = { ...criterion, points: maxRating.points };
-      handleCriteriaUpdate(index, newCriterion);
-    } else {
-      setMaxPoints(0);
-    }
+    const maxRating = calcMaxPoints(ratings);
+    setMaxPoints(maxRating);
+    const newCriterion = { ...criterion, points: maxRating };
+    handleCriteriaUpdate(index, newCriterion);
   }, [ratings]);
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
