@@ -9,7 +9,7 @@
     "build": "tsc",
     "lint": "eslint .",
     "prettier-check": "prettier --check 'src/**/*.{js,ts,tsx,json,md}'",
-    "start": "node dist/app.js",
+    "start": " tsc && node dist/app.js",
     "generate": "prisma generate"
   },
   "keywords": [],
