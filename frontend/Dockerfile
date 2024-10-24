@@ -1,17 +1,15 @@
 # use the offical Node.js image
 FROM node:22
 
-# working directory inside the docker container
+# set working directory inside the docker container
 WORKDIR /app
 
-# copy over package.json and package-lock.json to working directory
-COPY package*.json ./
+# copy frontend module to /app
+COPY frontend ./frontend
 
-# install dependencies
-RUN npm install
-
-# copy everything else in the module over
-COPY . .
+# change into backend module and install dependencies
+WORKDIR /app/frontend
+RUN npm ci
 
 # expost vite's default port
 EXPOSE 5173
