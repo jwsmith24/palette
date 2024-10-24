@@ -19,9 +19,6 @@ function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   
-  const userOnRubricsTab = useRef(false)
-  const userOnClustersTab = useRef(false)
-  const userOnBuilderTab = useRef(false)
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,10 +28,6 @@ function Navbar() {
 
 
   });
-
-
-
-
 
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -58,21 +51,18 @@ function Navbar() {
   };
 
     const handleRubricsClicked = () => {
-    var onRubricsTab = true
     console.log("rubrics clicked")
     navigate("/rubrics");
 
   };
 
   const handleClustersClicked = () => {
-    var onClustersTab = true
     console.log("clusters clicked")
     navigate("/clusters");
 
   };
 
   const handleBuilderClicked = () => {
-    var onBuilderTab = true
     console.log("builder clicked")
     navigate("/rubric-builder");
 
@@ -93,13 +83,13 @@ function Navbar() {
                     </Box>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', lg: 'flex', xl:'flex' } }}>
-                        <Button disabled= {userOnRubricsTab.current} onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {location.pathname == "/rubrics" } onClick={handleRubricsClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Rubrics      
                         </Button>
-                        <Button disabled= {userOnClustersTab.current} onClick={handleClustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {location.pathname == "/clusters" } onClick={handleClustersClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Clusters      
                         </Button>
-                        <Button disabled= {userOnBuilderTab.current} onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
+                        <Button disabled= {location.pathname == "/rubric-builder" } onClick={handleBuilderClicked} sx={{ my: 2, color: 'white', display: 'block' }}>
                             Builder      
                         </Button>
                     </Box>
