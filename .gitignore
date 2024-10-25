@@ -11,7 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
-backend/prisma/.env
+
+# Ignore all .env files. Not doing so is a security leak
+.env
+
 # python
 __pycache__
 env
