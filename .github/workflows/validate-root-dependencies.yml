@@ -1,0 +1,33 @@
+name: Validate Root Dependencies
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Inspect root package.json
+        run: |
+          # Check that "dependencies" key is absent in root package.json
+          if grep -q '"dependencies"' package.json; then
+            echo "Error: Root package.json should not contain dependencies."
+            exit 1
+          fi
+          
+          # Ensure only "concurrently" is in devDependencies
+          if ! grep -q '"devDependencies": {[^}]*"concurrently"' package.json; then
+            echo "Error: Only 'concurrently' is allowed in devDependencies in root package.json."
+            exit 1
+          fi
+          
+          echo "Root package.json is valid."
+          
+          
+          
