@@ -1,5 +1,7 @@
 import React, { ChangeEvent, ReactElement, useState } from 'react';
-import { Rating } from '../../models/types/rating.ts';
+import { Rating } from '../../models/types/rating';
+import editDescriptionIcon from '../../assets/description-icon.webp';
+import removeIcon from '../../assets/x-icon2.webp';
 
 export default function RatingInput({
   ratingIndex,
@@ -51,8 +53,8 @@ export default function RatingInput({
   };
 
   return (
-    <div className="grid grid-rows-1 grid-cols-1 gap-2 w-full">
-      <div className="grid grid-cols-[0.5fr_2.5fr_0.2fr] gap-2 w-full">
+    <div className="grid grid-rows-1 grid-cols-1 w-full relative">
+      <div className="grid grid-cols-[0.2fr_0.8fr_0.3fr_0.2fr] gap-3 w-full items-center">
         <input
           type="number"
           value={ratingValue} // use local state for value
@@ -60,38 +62,49 @@ export default function RatingInput({
           className="hover:bg-gray-800 rounded-lg p-2 text-gray-300 w-12 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           min="0"
           required
+          title={'set'}
         />
         <input
           type="text"
-          className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"
+          className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Enter rating description..."
           value={ratingDescription} // use local state for value
           onChange={handleDescriptionChange} // properly handle description change
         />
         <button
-          className="bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100 hover:text-white"
+          className={
+            'bg-transparent border-none rounded-lg cursor-pointer flex items-center w-12 active:opacity-70' +
+            ' active:bg-green-700 hover:bg-green-700'
+          }
+          tabIndex={-1}
+          onClick={() => setIsPopupOpen(true)}
+          type="button"
+          title={'Edit long description'}
+        >
+          <img
+            src={editDescriptionIcon}
+            alt="Edit"
+            className={'rounded-xl hover:opacity-60'}
+          />
+        </button>
+        <button
+          className="w-5 h-5 absolute right-9 bottom-12 mb-1 bg-gray-200 text-black rounded-full opacity-50 hover:bg-red-500 hover:opacity-100 hover:text-white "
           tabIndex={-1}
           onClick={handleRemoveRatingPress} // properly handle the remove button
           type="button"
+          title={'Remove rating option'}
         >
-          -
-        </button>
-      </div>
-
-      {/* Long description field below the main description field */}
-      <div className="col-span-3">
-        <button
-          className="text-blue-500 hover:underline"
-          onClick={() => setIsPopupOpen(true)}
-          type="button"
-        >
-          Edit Long Description
+          <img
+            src={removeIcon}
+            alt=""
+            className={'rounded-full hover:opacity-60'}
+          />
         </button>
       </div>
 
       {/* Popup for editing the long description */}
       {isPopupOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed z-1 inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
             <h2 className="text-xl text-black font-semibold mb-4">
               Edit Long Description
