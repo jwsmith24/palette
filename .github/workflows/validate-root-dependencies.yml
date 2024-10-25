@@ -15,14 +15,14 @@ jobs:
 
       - name: Inspect root package.json
         run: |
-          # Check that "dependencies" key is absent in root package.json
-          if grep -q '"dependencies"' package.json; then
+          # Check if the "dependencies" field exists and is non-empty
+          if jq -e '.dependencies' package.json > /dev/null; then
             echo "Error: Root package.json should not contain dependencies."
             exit 1
           fi
           
           # Ensure only "concurrently" is in devDependencies
-          if ! grep -q '"devDependencies": {[^}]*"concurrently"' package.json; then
+          if [[ $(jq -r '.devDependencies | keys_unsorted | .[]' package.json | grep -v '^concurrently$') ]]; then
             echo "Error: Only 'concurrently' is allowed in devDependencies in root package.json."
             exit 1
           fi
