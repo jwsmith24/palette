@@ -1,4 +1,4 @@
-import { RubricRating } from './RubricRating.ts';
+import { RubricRating } from './RubricRating';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface RubricCriterion {

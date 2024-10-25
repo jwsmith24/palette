@@ -2,14 +2,42 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
-// @ts-ignore
-import { RubricCriterion } from '@models/types/RubricCriterion.ts';
-// @ts-ignore
-import { RubricRating } from '@models/types/RubricRating.ts';
 import asyncHandler from 'express-async-handler';
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+interface RubricRequest extends Request {
+  body: {
+    title: string;
+    contextId?: number;
+    contextType?: string;
+    pointsPossible: number;
+    reusable?: boolean;
+    readOnly?: boolean;
+    freeFormCriterionComments?: boolean;
+    hideScoreTotal?: boolean;
+    content?: string;
+    published?: boolean;
+    authorId?: number;
+    rubricCriteria: RubricCriterion[];
+  };
+}
+
+interface RubricCriterion {
+  description: string;
+  longDescription?: string;
+  points: number;
+  ratings: RubricRating[];
+  criterionUseRange?: number;
+}
+
+interface RubricRating {
+  description: string;
+  longDescription?: string;
+  points: number;
+  criterionUseRange?: number;
+}
 
 // defines validation for rubrics before being stored on the database
 const validateRubric = [
@@ -37,7 +65,7 @@ const validateRubric = [
 router.post(
   '/',
   validateRubric,
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req: RubricRequest, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
@@ -122,7 +150,7 @@ router.get(
 router.put(
   '/:id',
   validateRubric,
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req: RubricRequest, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).send({ errors: errors.array() });
@@ -130,20 +158,7 @@ router.put(
     }
 
     const { id } = req.params;
-    const {
-      title,
-      contextId,
-      contextType,
-      pointsPossible,
-      reusable,
-      readOnly,
-      freeFormCriterionComments,
-      hideScoreTotal,
-      content,
-      published,
-      authorId,
-      rubricCriteria,
-    } = req.body;
+    const { title, pointsPossible, rubricCriteria } = req.body;
 
     try {
       // First, check if the rubric exists
@@ -163,16 +178,7 @@ router.put(
         const newRubric = await prisma.rubric.create({
           data: {
             title,
-            contextId,
-            contextType,
             pointsPossible,
-            reusable,
-            readOnly,
-            freeFormCriterionComments,
-            hideScoreTotal,
-            content,
-            published,
-            authorId,
             rubricCriteria: {
               create: rubricCriteria.map((criterion: RubricCriterion) => ({
                 description: criterion.description,
@@ -206,16 +212,7 @@ router.put(
         where: { id: Number(id) },
         data: {
           title,
-          contextId,
-          contextType,
           pointsPossible,
-          reusable,
-          readOnly,
-          freeFormCriterionComments,
-          hideScoreTotal,
-          content,
-          published,
-          authorId,
           rubricCriteria: {
             create: rubricCriteria.map((criterion: RubricCriterion) => ({
               description: criterion.description,
