@@ -20,7 +20,7 @@ export default function RatingInput({
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [longDescription, setLongDescription] = useState(
-    rating.longDescription || ""
+    rating.longDescription || ''
   );
 
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -52,32 +52,31 @@ export default function RatingInput({
 
   return (
     <div className="grid grid-rows-1 grid-cols-1 gap-2 w-full">
-    <div className="grid grid-cols-[0.5fr_2.5fr_0.2fr] gap-2 w-full">
-      <input
-        type="number"
-        value={ratingValue} // use local state for value
-        onChange={handlePointChange} // properly handle points change
-        className="hover:bg-gray-800 rounded-lg p-2 text-gray-300 w-12 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        min="0"
-        required
-      />
-      <input
-        type="text"
-        className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"
-        placeholder="Enter rating description..."
-        value={ratingDescription} // use local state for value
-        onChange={handleDescriptionChange} // properly handle description change
-      />
-      <button
-        className="bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100 hover:text-white"
-        tabIndex={-1}
-        onClick={handleRemoveRatingPress} // properly handle the remove button
-        type="button"
-      >
-        -
-      </button>
-    </div>
-
+      <div className="grid grid-cols-[0.5fr_2.5fr_0.2fr] gap-2 w-full">
+        <input
+          type="number"
+          value={ratingValue} // use local state for value
+          onChange={handlePointChange} // properly handle points change
+          className="hover:bg-gray-800 rounded-lg p-2 text-gray-300 w-12 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          min="0"
+          required
+        />
+        <input
+          type="text"
+          className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 flex-grow"
+          placeholder="Enter rating description..."
+          value={ratingDescription} // use local state for value
+          onChange={handleDescriptionChange} // properly handle description change
+        />
+        <button
+          className="bg-gray-200 text-black px-2 py-1 rounded opacity-20 hover:bg-red-500 hover:opacity-100 hover:text-white"
+          tabIndex={-1}
+          onClick={handleRemoveRatingPress} // properly handle the remove button
+          type="button"
+        >
+          -
+        </button>
+      </div>
 
       {/* Long description field below the main description field */}
       <div className="col-span-3">
@@ -123,4 +122,3 @@ export default function RatingInput({
     </div>
   );
 }
-
