@@ -2,6 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "A TypeScript backend application using Express",
+  "private": true,
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
