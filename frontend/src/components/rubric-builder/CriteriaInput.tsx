@@ -8,11 +8,11 @@ import React, {
 
 import { useSortable } from '@dnd-kit/sortable'; // Import useSortable
 import { CSS } from '@dnd-kit/utilities'; // Import CSS utilities
-import { Criteria } from '../../models/types/criteria.ts';
-import { Rating } from '../../models/types/rating.ts';
-import createRating from '../../models/Rating.ts';
-import RatingInput from './RatingInput.tsx';
-import { calcMaxPoints } from '../../models/Criteria.ts';
+import { Criteria } from '../../models/types/criteria';
+import { Rating } from '../../models/types/rating';
+import createRating from '../../models/Rating';
+import RatingInput from './RatingInput';
+import { calcMaxPoints } from '../../models/Criteria';
 
 export default function CriteriaInput({
   index,
@@ -160,8 +160,8 @@ export default function CriteriaInput({
 
   const renderDetailedView = () => {
     return (
-      <div className=" grid  border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
-        <div className="grid grid-cols-2 gap-4 items-start content-between">
+      <div className=" grid border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
+        <div className="grid mt-4 mr-3 grid-cols-2 gap-4 items-start content-between">
           <div className={'grid self-baseline'}>
             <input
               type="text"
@@ -175,7 +175,7 @@ export default function CriteriaInput({
             </p>
           </div>
 
-          <div className={'grid gap-2'}>{renderRatingOptions()}</div>
+          <div className={'grid gap-8'}>{renderRatingOptions()}</div>
 
           <div className={'flex gap-3 justify-self-start'}>
             <button
