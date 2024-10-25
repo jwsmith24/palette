@@ -1,5 +1,5 @@
 import React, { ChangeEvent, ReactElement, useState } from 'react';
-import { Rating } from '../../models/types/rating.ts';
+import { Rating } from '../../models/types/rating';
 import editDescriptionIcon from '../../assets/description-icon.webp';
 import removeIcon from '../../assets/x-icon2.webp';
 

@@ -10,21 +10,21 @@ import {
   useState,
 } from 'react';
 
-import CriteriaInput from '../rubric-builder/CriteriaInput.tsx';
-import Dialog from '../util/Dialog.tsx';
-import CSVUpload from './CSVUpload.tsx';
-import Header from '../util/Header.tsx';
-import Footer from '../util/Footer.tsx';
-import { Rubric } from '../../models/types/rubric.ts';
-import createRubric from '../../models/Rubric.ts';
-import { Criteria } from '../../models/types/criteria.ts';
-import createCriterion from '../../models/Criteria.ts';
+import CriteriaInput from '../rubric-builder/CriteriaInput';
+import Dialog from '../util/Dialog';
+import CSVUpload from './CSVUpload';
+import Header from '../util/Header';
+import Footer from '../util/Footer';
+import { Rubric } from '../../models/types/rubric';
+import createRubric from '../../models/Rubric';
+import { Criteria } from '../../models/types/criteria';
+import createCriterion from '../../models/Criteria';
 import { DndContext } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import createRating from '../../models/Rating.ts';
+import createRating from '../../models/Rating';
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
