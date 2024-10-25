@@ -14,7 +14,7 @@ export default function createRubric(
   title: string = '',
   criteria: RubricCriterion[] = [],
   description: string = 'Enter description',
-  id: undefined | number = undefined // defaults to undefined until the db assigns a unique id
+  id: number = -1
 ): Rubric {
   return {
     title,
