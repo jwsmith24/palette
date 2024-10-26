@@ -1,9 +1,9 @@
 import React, {
   ChangeEvent,
   ReactElement,
-  useState,
   useEffect,
   useRef,
+  useState,
 } from 'react';
 import { RubricRating } from '../../models/types/RubricRating.ts';
 

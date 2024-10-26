@@ -15,10 +15,10 @@ import Dialog from '../util/Dialog.tsx';
 import CSVUpload from './CSVUpload.tsx';
 import Header from '../util/Header.tsx';
 import Footer from '../util/Footer.tsx';
-import { Rubric } from '../../models/types/Rubric.ts';
-import createRubric from '../../models/types/Rubric.ts';
-import { RubricCriterion } from '../../models/types/RubricCriterion.ts';
-import createRubricCriterion from '../../models/types/RubricCriterion.ts';
+import createRubric, { Rubric } from '../../models/types/Rubric.ts';
+import createRubricCriterion, {
+  RubricCriterion,
+} from '../../models/types/RubricCriterion.ts';
 import { DndContext } from '@dnd-kit/core';
 import {
   SortableContext,
