@@ -1,13 +1,21 @@
-import { Criteria } from './types/criteria.ts';
-import { Rating } from './types/rating.ts';
+import { RubricRating } from './RubricRating';
+import { v4 as uuidv4 } from 'uuid';
 
-import { v4 as uuid } from 'uuid';
+export interface RubricCriterion {
+  description: string;
+  longDescription: string;
+  ratings: RubricRating[];
+  id?: number; // id is only assigned when the rubric is saved to the database
+  points: number;
+  updatePoints: () => void;
+  key: string; // UUID for React
+}
 
 /**
  * Helper function to calculate a criterion's max point value on creation
  * @param ratings - array of rating options for target criterion
  */
-export const calcMaxPoints = (ratings: Rating[]): number => {
+export const calcMaxPoints = (ratings: RubricRating[]): number => {
   // ensure ratings aren't empty
   if (ratings.length > 0) {
     return ratings.reduce(
@@ -22,20 +30,20 @@ export const calcMaxPoints = (ratings: Rating[]): number => {
 /**
  * Criterion factory function.
  */
-export default function createCriterion(
+export default function createRubricCriterion(
   description: string = '',
   longDescription: string = '',
   points: number = 0,
-  ratings: Rating[] = [],
+  ratings: RubricRating[] = [],
   id: number | undefined = undefined
-): Criteria {
+): RubricCriterion {
   return {
     ratings,
     description,
     longDescription,
     points,
     id,
-    key: uuid(),
+    key: uuidv4(),
     updatePoints() {
       this.points = calcMaxPoints(this.ratings);
     },
