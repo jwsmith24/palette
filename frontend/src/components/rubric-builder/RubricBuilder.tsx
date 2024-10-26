@@ -70,54 +70,91 @@ export default function RubricBuilder(): ReactElement {
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = async (event: MouseEvent) => {
     event.preventDefault();
-    // check if the rubric exists, if so present the user with the option to make a new copy or overwrite it
+
+    // Check if the rubric exists
     const { exists, id, error } = await BackendAPI.checkTitleExists(
       rubric.title
     );
 
     if (error) {
-      alert(error);
-    } else if (exists && !error) {
-      // tell the user what happened
+      return alert(error);
+    }
+
+    // If the rubric already exists, open modal with overwrite or copy options
+    if (exists) {
       setModalMessage(
         `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
       );
-      // set button choices, each with a label and action
+
       setModalChoices([
         {
-          // Overwrite button
+          // Overwrite option
           label: 'Overwrite',
           action: async () => {
-            await BackendAPI.update(id, rubric).then(() => {
-              setLastSentRubric(rubric);
-              closeModal();
-              openDialog();
-            });
+            try {
+              const result = await BackendAPI.update(id, rubric);
+              if (result.success) {
+                setLastSentRubric(rubric);
+                closeModal();
+                openDialog();
+              } else {
+                alert(result || 'Failed to overwrite the rubric.');
+              }
+            } catch (error) {
+              console.error('Failed to overwrite:', error);
+              alert('An error occurred while overwriting the rubric.');
+            }
           },
         },
         {
-          // Copy button
+          // Make a Copy option
           label: 'Make a Copy',
           action: async () => {
-            const newRubric: Rubric = { ...rubric };
-            // append the current datetime to the title to make endlessly copyable
-            newRubric.title += ` - Copy ${new Date().toLocaleString().replaceAll('/', '-')}`; // forward slashes are problematic
-            await BackendAPI.create(newRubric).then(() => {
-              setLastSentRubric(newRubric);
-              closeModal();
-              openDialog();
-            });
+            try {
+              const newRubric: Rubric = {
+                ...rubric,
+                title: `${rubric.title} - Copy ${formatDate()}`,
+              };
+              const result = await BackendAPI.create(newRubric);
+              if (result.success) {
+                setLastSentRubric(newRubric);
+                closeModal();
+                openDialog();
+              } else {
+                alert('Failed to create a copy of the rubric.');
+              }
+            } catch (error) {
+              console.error('Failed to create a copy:', error);
+              alert('An error occurred while creating a copy of the rubric.');
+            }
           },
         },
       ]);
+
       openModal();
     } else {
-      await BackendAPI.create(rubric).then(() => {
-        setLastSentRubric(rubric);
-        openDialog();
-      }); // simply create a new rubric
+      // Create a new rubric if it doesn’t exist
+      try {
+        // now result is an APIResponse
+        const result = await BackendAPI.create(rubric);
+        console.log('submit result: ', result);
+        if (result && result.success) {
+          alert('Rubric created successfully.');
+          setLastSentRubric(rubric);
+          openDialog();
+        } else if (result && result.errors && result.errors.length > 0) {
+          alert(result.errors[0]);
+        } else {
+          alert('Rubric creation failed.');
+        }
+      } catch (error) {
+        alert('An error occurred while creating the rubric.');
+      }
     }
   };
+
+  // Helper function to format the current date/time for the copy title
+  const formatDate = () => new Date().toLocaleString().replace(/\//g, '-');
 
   /**
    * Generates a set of the current criteria descriptions stored within the component state to use for checking

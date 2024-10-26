@@ -15,17 +15,16 @@ interface APIError {
   msg: string;
 }
 
-interface APIResponse<T> {
+interface APIResponse<T = undefined> {
+  success: boolean;
   data?: T;
   error?: string;
-  errors?: APIError[];
+  errors?: string[];
 }
 
 // Error handling utility
-const handleAPIErrors = (errors: APIError[]): void => {
-  errors.forEach(({ param, msg }) => {
-    console.log(`Field: ${param}, Message: ${msg}`);
-  });
+const handleAPIErrors = (errors: APIError[]): string[] => {
+  return errors.map(({ msg }) => msg); // extract messages from each error object
 };
 
 // Generic fetch wrapper with error handling
@@ -47,23 +46,26 @@ async function fetchAPI<T>(
     // Handle any errors
     if (!response.ok) {
       const errorData = await response.json();
-      if (response.status === 400 && errorData.errors) {
-        handleAPIErrors(errorData.errors);
-      }
-      return { error: errorData.error || 'An unknown error occurred' };
+      const errors = errorData.errors ? handleAPIErrors(errorData.errors) : [];
+
+      return {
+        success: false,
+        error: errorData.error,
+        errors,
+      };
     }
 
     // Handle 204 No Content responses
     if (response.status === 204) {
-      return { data: undefined };
+      return { success: true };
     }
 
     // Not an error, not 204, parse the response
     const data = await response.json();
-    return { data };
+    return { success: true, data };
   } catch (error) {
     console.error('API Request failed:', error);
-    return { error: 'Failed to complete request' };
+    return { success: false, error: 'Failed to complete request' };
   }
 }
 
@@ -75,17 +77,16 @@ export const BackendAPI = {
    * Create a new rubric in the database.
    * @param rubric The rubric data to save
    */
-  async create(rubric: Rubric): Promise<boolean> {
+  async create(rubric: Rubric): Promise<APIResponse<Rubric>> {
     const result = await fetchAPI<Rubric>('/rubrics', {
       method: 'POST',
       body: JSON.stringify(rubric),
     });
 
-    if (result.data) {
+    if (result.success) {
       console.log('Rubric saved!', result.data);
-      return true;
     }
-    return false;
+    return result;
   },
 
   /**
@@ -93,7 +94,7 @@ export const BackendAPI = {
    * @param id The ID of the rubric to update
    * @param rubric The updated rubric data
    */
-  async update(id: number, rubric: Rubric): Promise<boolean> {
+  async update(id: number, rubric: Rubric): Promise<APIResponse<Rubric>> {
     const result = await fetchAPI<Rubric>(
       `/rubrics/${encodeURIComponent(id)}`,
       {
@@ -102,12 +103,11 @@ export const BackendAPI = {
       }
     );
 
-    if (result.data || result.data === undefined) {
+    if (result.success) {
       // handles both 200 and 204 responses
       console.log('Rubric updated successfully!');
-      return true;
     }
-    return false;
+    return result;
   },
 
   /**

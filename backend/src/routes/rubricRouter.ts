@@ -70,7 +70,9 @@ router.post(
   asyncHandler(async (req: RubricRequest, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(errors);
       res.status(400).send({ errors: errors.array() });
+      return;
     }
 
     const { title, rubricCriteria } = req.body;
