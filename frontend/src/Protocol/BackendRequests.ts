@@ -117,7 +117,7 @@ export const BackendAPI = {
   ): Promise<{ exists: boolean; id: number }> {
     console.log('Checking title:', title);
     const result = await fetchAPI<{ id: number }>(`/rubrics/title/${title}`);
-
+    console.log(result.data);
     if (result.data) {
       return { exists: true, id: result.data.id };
     }

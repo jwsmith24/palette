@@ -1,25 +1,13 @@
-version: '3'
+version: '3.8'
 services:
-  frontend:
+  app:
     build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
+      context: . # project root
+      dockerfile: ./Dockerfile
     ports:
-      - "5173:5173" # map vite server in container to localhost
+      - "5173:5173" # map the frontend port
+      - "3000:3000" # map the backend port
     volumes:
-      - ./frontend:/app/frontend # sync outside changes to the container
-    depends_on:
-      - backend # make sure backend container builds first
+      - .:/app # mounts project files for live changes without needing to rebuild container
     environment:
       - NODE_ENV=development
-
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-    ports:
-      - "3000:3000" # map express server in container to localhost
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./backend:/app/backend # syncs outside changes in the container

@@ -101,6 +101,7 @@ router.post(
 router.get(
   '/:id',
   asyncHandler(async (req: Request, res: Response) => {
+    console.log(req.params);
     const { id } = req.params;
     console.log(`trying to fetch rubric with id=${id}`);
     const rubric = await prisma.rubric.findUnique({

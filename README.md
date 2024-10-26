@@ -32,31 +32,18 @@ docker-compose --version
    cd palette
    ```
 
-2. Run the `start.sh` script to build and run the Docker containers:
-   ```bash
-   ./start.sh
-   ```
-   This will:
-    - Build the necessary Docker images
-    - Start the containers in either detached or attached mode (based on your choice)
+2. Ensure you're in the root directory containing the `docker-compose.yml` file.
 
-3. Once the container is running, open your browser and navigate to:
-
-   > http://localhost:5173
-
-### Alternative Manual Steps:
-
-If you prefer manual steps over the script:
-
-1. Ensure you're in the directory containing your `docker-compose.yml` file.
-2. Run one of the following commands to start your services:
+3. Run one of the following commands to start your services:
 
 ```bash
-  docker-compose up # run in attached mode
-  docker-compose up -d # run in detached mode
+  docker-compose up # run in attached mode (blocks the active shell session)
+  docker-compose up -d # run in detached mode (does not block the active shell session)
  ```
+ _Note: when running in detached mode, stop the container with `docker-compose down`. Follow instructions below for 
+ cleaning up afterward._
 
-This will build (if needed) and start the containers defined in the `docker-compose.yml` file within the root directory.
+This will build and start the container, running the application with all dependencies included on any OS.
 
 ## Shutting Down
 
@@ -66,6 +53,7 @@ This will build (if needed) and start the containers defined in the `docker-comp
    ```bash
    docker-compose down
    ```
+- _If running in attached mode, you can shut down the container with `CTRL + C`._
 
 ### Cleaning Up:
 
@@ -88,22 +76,26 @@ This will build (if needed) and start the containers defined in the `docker-comp
 
 ## Troubleshooting
 
-1. **Docker Permissions Issues**:  
-   If you encounter permission errors, ensure Docker is running and your user has permission to run Docker commands. Use
-   `sudo` if necessary.
+1. **Docker Permissions Issues**:
+   - Docker should automatically add your user account to the docker group
+   - If you encounter permission errors, ensure Docker is running and your user has permission to run Docker commands 
+         (added to the docker group).
+   - You can check your current groups by running `groups` in the terminal.  
+   - For a temporary solution, run with `sudo`.
+   - To add your user account to the docker group (permanent fix) run `sudo groupadd docker`.
 
 2. **Check Logs**:  
-   To check logs for debugging purposes:
+   - To check logs for debugging purposes:
    ```bash
    docker-compose logs
    ```
 
 3. **Rebuilding Containers**:  
-   If changes are made, and you need to rebuild the containers:
+   - If changes are made, and you need to rebuild the containers:
    ```bash
    docker-compose up --build
    ```
 
 4. **Network Issues**:  
-   If the application isn't accessible, ensure port 5173 is not being used by another application.
+   - If the application isn't accessible, ensure port 5173 is not being used by another application.
 
