@@ -245,7 +245,6 @@ export default function RubricBuilder(): ReactElement {
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
     const newCriteria = [...rubric.rubricCriteria, createRubricCriterion()];
-    // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
   };
@@ -253,7 +252,6 @@ export default function RubricBuilder(): ReactElement {
   const handleRemoveCriterion = (index: number) => {
     const newCriteria = [...rubric.rubricCriteria];
     newCriteria.splice(index, 1); // remove the target criterion from the array
-    // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
   };
 
@@ -261,7 +259,6 @@ export default function RubricBuilder(): ReactElement {
   const handleUpdateCriterion = (index: number, criterion: RubricCriterion) => {
     const newCriteria = [...rubric.rubricCriteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
-    // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria }); // update rubric to have new criteria
   };
 

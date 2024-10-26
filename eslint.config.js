@@ -1,63 +1,32 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import tsParser from '@typescript-eslint/parser';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
-export default [
+export default tseslint.config(
   {
-    ignores: [
-      '**/build/**',
-      '**/dist/**',
-      '/node_modules',
-      '**/prisma/**',
-      'eslint.config.js',
-    ],
+    ignores: ['**/build/**', '**/dist/**', '**/node_modules'],
   },
-  eslint.configs.recommended, // Basic ESLint recommended config
+  eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
+    plugins: {
+      //'@typescript-eslint': tseslint.plugin,
+      'eslint-plugin-react': react,
+      'eslint-plugin-react-hooks': reactHooks,
+      'eslint-plugin-react-refresh': reactRefresh,
+    },
     languageOptions: {
-      parser: tsParser,
+      parser: tseslint.parser,
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-        ecmaVersion: 'latest',
-        ecmaFeatures: {
-          jsx: true,
-        },
-        sourceType: 'module',
-      },
-    },
-    plugins: {
-      '@typescript-eslint': tseslint,
-      react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      // React-specific rules
-      'react/react-in-jsx-scope': 'off', // If using new JSX transform
-      'react/prop-types': 'off', // Typically off when using TypeScript for props
-
-      // React Refresh rule
-      'react-refresh/only-export-components': 'warn',
-
-      // React Hooks rules
-      'react-hooks/rules-of-hooks': 'error', // Checks the rules of Hooks
-      'react-hooks/exhaustive-deps': 'warn', // Checks dependency arrays
-
-      // TypeScript-specific rules
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
-      ],
-    },
-    settings: {
-      react: {
-        version: 'detect', // Automatically detect React version
       },
     },
   },
-];
+  {
+    // disable type-aware linting on JS files
+    files: ['**/*.js'],
+    ...tseslint.configs.disableTypeChecked,
+  }
+);

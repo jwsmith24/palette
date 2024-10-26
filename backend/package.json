@@ -8,8 +8,6 @@
   "scripts": {
     "dev": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
     "build": "tsc",
-    "lint": "eslint .",
-    "prettier": "prettier --check 'src/**/*.{js,ts,tsx,json,md}'",
     "start": "node dist/app.js",
     "generate": "prisma generate"
   },

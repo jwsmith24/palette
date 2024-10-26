@@ -1,6 +1,7 @@
 {
   "name": "palette",
   "private": true,
+  "type": "module",
   "workspaces": [
     "frontend",
     "backend"
@@ -8,8 +9,8 @@
   "scripts": {
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
     "build": "npm run build --workspaces",
-    "lint": "npm run lint --workspaces",
-    "prettier": "npm run prettier --workspaces"
+    "lint": "eslint .",
+    "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
