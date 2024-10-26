@@ -51,19 +51,16 @@ function Navbar() {
   };
 
     const handleRubricsClicked = () => {
-    console.log("rubrics clicked")
     navigate("/rubrics");
 
   };
 
   const handleClustersClicked = () => {
-    console.log("clusters clicked")
     navigate("/clusters");
 
   };
 
   const handleBuilderClicked = () => {
-    console.log("builder clicked")
     navigate("/rubric-builder");
 
   };
