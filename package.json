@@ -7,7 +7,9 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
-    "build": "npm run build --workspaces"
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "prettier": "npm run prettier --workspaces"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"

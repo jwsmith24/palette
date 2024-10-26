@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "prettier-check": "prettier --check 'src/**/*.{js,ts,jsx,tsx,json,md}'",
+    "prettier": "prettier --check 'src/**/*.{js,ts,jsx,tsx,json,md}'",
     "preview": "vite preview"
   },
   "dependencies": {

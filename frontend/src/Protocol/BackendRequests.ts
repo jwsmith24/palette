@@ -7,7 +7,7 @@ const API_CONFIG = {
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache',
   },
-} as const; // make TS enforce immutability
+} as const; // enforce immutability
 
 // Types
 interface APIError {
