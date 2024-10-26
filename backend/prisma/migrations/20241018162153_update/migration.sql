@@ -55,12 +55,18 @@ ALTER TABLE "RubricRating" DROP CONSTRAINT "RubricRating_criterion_id_fkey";
 
 -- AlterTable
 ALTER TABLE "Rubric"
-    DROP COLUMN "context_id",
-    DROP COLUMN "context_type",
-    DROP COLUMN "free_form_criterion_comments",
-    DROP COLUMN "hide_score_total",
-    DROP COLUMN "points_possible",
-    DROP COLUMN "read_only",
+DROP
+COLUMN "context_id",
+    DROP
+COLUMN "context_type",
+    DROP
+COLUMN "free_form_criterion_comments",
+    DROP
+COLUMN "hide_score_total",
+    DROP
+COLUMN "points_possible",
+    DROP
+COLUMN "read_only",
     ADD COLUMN "contextId"                 INTEGER,
     ADD COLUMN "contextType"               TEXT,
     ADD COLUMN "freeFormCriterionComments" BOOLEAN,
@@ -70,13 +76,20 @@ ALTER TABLE "Rubric"
 
 -- AlterTable
 ALTER TABLE "RubricAssessment"
-    DROP COLUMN "artifact_attempt",
-    DROP COLUMN "artifact_id",
-    DROP COLUMN "artifact_type",
-    DROP COLUMN "assessment_type",
-    DROP COLUMN "assessor_id",
-    DROP COLUMN "rubric_association_id",
-    DROP COLUMN "rubric_id",
+DROP
+COLUMN "artifact_attempt",
+    DROP
+COLUMN "artifact_id",
+    DROP
+COLUMN "artifact_type",
+    DROP
+COLUMN "assessment_type",
+    DROP
+COLUMN "assessor_id",
+    DROP
+COLUMN "rubric_association_id",
+    DROP
+COLUMN "rubric_id",
     ADD COLUMN "artifactAttempt"     INTEGER NOT NULL,
     ADD COLUMN "artifactId"          INTEGER NOT NULL,
     ADD COLUMN "artifactType"        TEXT    NOT NULL,
@@ -87,14 +100,22 @@ ALTER TABLE "RubricAssessment"
 
 -- AlterTable
 ALTER TABLE "RubricAssociation"
-    DROP COLUMN "association_id",
-    DROP COLUMN "association_type",
-    DROP COLUMN "hide_outcome_results",
-    DROP COLUMN "hide_points",
-    DROP COLUMN "hide_score_total",
-    DROP COLUMN "rubric_id",
-    DROP COLUMN "summary_data",
-    DROP COLUMN "use_for_grading",
+DROP
+COLUMN "association_id",
+    DROP
+COLUMN "association_type",
+    DROP
+COLUMN "hide_outcome_results",
+    DROP
+COLUMN "hide_points",
+    DROP
+COLUMN "hide_score_total",
+    DROP
+COLUMN "rubric_id",
+    DROP
+COLUMN "summary_data",
+    DROP
+COLUMN "use_for_grading",
     ADD COLUMN "associationId"      INTEGER NOT NULL,
     ADD COLUMN "associationType"    TEXT    NOT NULL,
     ADD COLUMN "hideOutcomeResults" BOOLEAN NOT NULL,
@@ -106,24 +127,32 @@ ALTER TABLE "RubricAssociation"
 
 -- AlterTable
 ALTER TABLE "RubricCriterion"
-    DROP COLUMN "criterion_use_range",
-    DROP COLUMN "long_description",
-    DROP COLUMN "rubric_id",
+DROP
+COLUMN "criterion_use_range",
+    DROP
+COLUMN "long_description",
+    DROP
+COLUMN "rubric_id",
     ADD COLUMN "criterionUseRange" INTEGER,
     ADD COLUMN "longDescription"   VARCHAR(510),
     ADD COLUMN "rubricId"          INTEGER NOT NULL;
 
 -- AlterTable
 ALTER TABLE "RubricRating"
-    DROP COLUMN "criterion_id",
-    DROP COLUMN "criterion_use_range",
-    DROP COLUMN "long_description",
+DROP
+COLUMN "criterion_id",
+    DROP
+COLUMN "criterion_use_range",
+    DROP
+COLUMN "long_description",
     ADD COLUMN "criterionId"       INTEGER NOT NULL,
     ADD COLUMN "criterionUseRange" INTEGER,
     ADD COLUMN "longDescription"   VARCHAR(510);
 
 -- AddForeignKey
-ALTER TABLE "RubricCriterion" ADD CONSTRAINT "RubricCriterion_rubricId_fkey" FOREIGN KEY ("rubricId") REFERENCES "Rubric"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RubricCriterion"
+    ADD CONSTRAINT "RubricCriterion_rubricId_fkey" FOREIGN KEY ("rubricId") REFERENCES "Rubric" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RubricRating" ADD CONSTRAINT "RubricRating_criterionId_fkey" FOREIGN KEY ("criterionId") REFERENCES "RubricCriterion"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "RubricRating"
+    ADD CONSTRAINT "RubricRating_criterionId_fkey" FOREIGN KEY ("criterionId") REFERENCES "RubricCriterion" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
