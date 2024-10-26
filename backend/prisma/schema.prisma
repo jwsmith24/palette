@@ -37,7 +37,7 @@ model RubricCriterion {
   points            Int            @default(0)
   criterionUseRange Int?
   ratings           RubricRating[]
-  rubric            Rubric         @relation(fields: [rubricId], references: [id])
+  rubric            Rubric         @relation(fields: [rubricId], references: [id], onDelete: Cascade)
   rubricId          Int
 }
 
@@ -47,7 +47,7 @@ model RubricRating {
   longDescription   String?         @db.VarChar(510)
   points            Int             @default(0)
   criterionUseRange Int?
-  criterion         RubricCriterion @relation(fields: [criterionId], references: [id])
+  criterion         RubricCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
   criterionId       Int
 }
 
