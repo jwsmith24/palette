@@ -8,10 +8,11 @@ import React, {
 
 import { useSortable } from '@dnd-kit/sortable'; // Import useSortable
 import { CSS } from '@dnd-kit/utilities'; // Import CSS utilities
-import { Criteria } from '../../models/types/criteria.ts';
-import { Rating } from '../../models/types/rating.ts';
-import createRating from '../../models/Rating.ts';
+import { RubricCriterion } from '../../models/types/RubricCriterion.ts';
+import { RubricRating } from '../../models/types/RubricRating.ts';
+import createRating from '../../models/types/RubricRating.ts';
 import RatingInput from './RatingInput.tsx';
+import { calcMaxPoints } from '../../models/types/RubricCriterion.ts';
 
 export default function CriteriaInput({
   index,
@@ -23,32 +24,24 @@ export default function CriteriaInput({
 }: {
   index: number;
   activeCriterionIndex: number;
-  criterion: Criteria;
-  handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
+  criterion: RubricCriterion;
+  handleCriteriaUpdate: (index: number, criterion: RubricCriterion) => void;
   removeCriterion: (index: number) => void;
   setActiveCriterionIndex: (index: number) => void;
 }): ReactElement {
-  const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
+  const [ratings, setRatings] = useState<RubricRating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || ''
   );
-
+  /**
+   * Whenever ratings change, recalculate criterion's max points
+   */
   useEffect(() => {
-    // Find the rating with the maximum points when the component mounts or ratings change
-
-    if (ratings[0]) {
-      // make sure ratings array isn't empty before checking
-      const maxRating = ratings.reduce(
-        (max, current) => (current.points > max.points ? current : max),
-        ratings[0]
-      );
-      maxRating.points ? setMaxPoints(maxRating.points) : setMaxPoints(0);
-      const newCriterion = { ...criterion, points: maxRating.points };
-      handleCriteriaUpdate(index, newCriterion);
-    } else {
-      setMaxPoints(0);
-    }
+    const maxRating = calcMaxPoints(ratings);
+    setMaxPoints(maxRating);
+    const newCriterion = { ...criterion, points: maxRating };
+    handleCriteriaUpdate(index, newCriterion);
   }, [ratings]);
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +65,10 @@ export default function CriteriaInput({
   };
 
   // Update criterion when ratings change.
-  const handleRatingChange = (ratingIndex: number, updatedRating: Rating) => {
+  const handleRatingChange = (
+    ratingIndex: number,
+    updatedRating: RubricRating
+  ) => {
     const updatedRatings = ratings.map((rating, index) =>
       index === ratingIndex ? updatedRating : rating
     );
@@ -91,7 +87,7 @@ export default function CriteriaInput({
   };
 
   const renderRatingOptions = () => {
-    return ratings.map((rating: Rating, ratingIndex: number) => {
+    return ratings.map((rating: RubricRating, ratingIndex: number) => {
       return (
         <RatingInput
           key={rating.key}
@@ -167,8 +163,8 @@ export default function CriteriaInput({
 
   const renderDetailedView = () => {
     return (
-      <div className=" grid  border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
-        <div className="grid grid-cols-2 gap-4 items-start content-between">
+      <div className=" grid border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
+        <div className="grid mt-4 mr-3 grid-cols-2 gap-4 items-start content-between">
           <div className={'grid self-baseline'}>
             <input
               type="text"
@@ -182,7 +178,7 @@ export default function CriteriaInput({
             </p>
           </div>
 
-          <div className={'grid gap-2'}>{renderRatingOptions()}</div>
+          <div className={'grid gap-8'}>{renderRatingOptions()}</div>
 
           <div className={'flex gap-3 justify-self-start'}>
             <button
