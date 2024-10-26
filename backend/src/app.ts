@@ -36,13 +36,16 @@ app.get('/health', (_req: Request, res: Response) => {
 // API routes
 app.use('/api/rubrics', rubricRouter);
 
-/* Defer to client-side routing.
-
-Wildcard handler that will direct any route not handled by the API to the home page. This lets React Router in resolve
-client-side routes that the backend doesn't know about.
- */
-app.get('*', (_req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
+// Wildcard route should only handle frontend routes
+// It should not handle any routes under /api or other server-side routes.
+app.get('*', (req: Request, res: Response) => {
+  // If a developer messes up the api routes, send a 404 error with informative error
+  if (req.originalUrl.startsWith('/api')) {
+    res.status(404).send({ error: 'API route not found' });
+  } else {
+    // If the client tries to navigate to an unknown page, send them the index.html file
+    res.sendFile(path.join(__dirname, '../../frontend/dist', 'index.html'));
+  }
 });
 
 // Start the server and listen on port defined in .env file

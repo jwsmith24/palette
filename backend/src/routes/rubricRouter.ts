@@ -3,10 +3,41 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import asyncHandler from 'express-async-handler';
-import { Criteria, Rating, RubricRequest } from '../types/models';
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+interface RubricRequest extends Request {
+  body: {
+    title: string;
+    contextId?: number;
+    contextType?: string;
+    pointsPossible: number;
+    reusable?: boolean;
+    readOnly?: boolean;
+    freeFormCriterionComments?: boolean;
+    hideScoreTotal?: boolean;
+    content?: string;
+    published?: boolean;
+    authorId?: number;
+    rubricCriteria: RubricCriterion[];
+  };
+}
+
+interface RubricCriterion {
+  description: string;
+  longDescription?: string;
+  points: number;
+  ratings: RubricRating[];
+  criterionUseRange?: number;
+}
+
+interface RubricRating {
+  description: string;
+  longDescription?: string;
+  points: number;
+  criterionUseRange?: number;
+}
 
 // defines validation for rubrics before being stored on the database
 const validateRubric = [
@@ -46,12 +77,12 @@ router.post(
       data: {
         title,
         rubricCriteria: {
-          create: rubricCriteria.map((criterion: Criteria) => ({
+          create: rubricCriteria.map((criterion: RubricCriterion) => ({
             description: criterion.description,
             longDescription: criterion.longDescription, // Make sure to include this if it's required
             points: criterion.points,
             ratings: {
-              create: criterion.ratings.map((rating: Rating) => ({
+              create: criterion.ratings.map((rating: RubricRating) => ({
                 description: rating.description,
                 points: rating.points,
               })),
@@ -73,7 +104,6 @@ router.get(
     const rubric = await prisma.rubric.findUnique({
       where: { id: Number(id) },
       include: {
-        // ensure nested collections are sent with the rubric object
         rubricCriteria: {
           include: {
             ratings: true,
@@ -121,43 +151,125 @@ router.put(
   '/:id',
   validateRubric,
   asyncHandler(async (req: RubricRequest, res: Response) => {
-    const { title, rubricCriteria } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).send({ errors: errors.array() });
+      return;
+    }
 
-    if (rubricCriteria && Array.isArray(rubricCriteria)) {
-      // Ensure each criterion has an ID before updating
-      const updateCriteriaData = rubricCriteria.map((criterion) => {
-        if (!criterion.id) {
-          throw new Error('Each criterion must have an id to update');
-        }
-        return {
-          where: { id: criterion.id }, // criterion ID is required to update
-          data: {
-            description: criterion.description,
-            longDescription: criterion.longDescription ?? undefined,
-            points: criterion.points,
+    const { id } = req.params;
+    const { title, pointsPossible, rubricCriteria } = req.body;
+
+    try {
+      // First, check if the rubric exists
+      const existingRubric = await prisma.rubric.findUnique({
+        where: { id: Number(id) },
+        include: {
+          rubricCriteria: {
+            include: {
+              ratings: true,
+            },
           },
-        };
+        },
       });
 
+      if (!existingRubric) {
+        // Create new rubric if it doesn't exist
+        const newRubric = await prisma.rubric.create({
+          data: {
+            title,
+            pointsPossible,
+            rubricCriteria: {
+              create: rubricCriteria.map((criterion: RubricCriterion) => ({
+                description: criterion.description,
+                longDescription: criterion.longDescription,
+                points: criterion.points,
+                criterionUseRange: criterion.criterionUseRange,
+                ratings: {
+                  create: criterion.ratings.map((rating: RubricRating) => ({
+                    description: rating.description,
+                    longDescription: rating.longDescription,
+                    points: rating.points,
+                    criterionUseRange: rating.criterionUseRange,
+                  })),
+                },
+              })),
+            },
+          },
+        });
+        res.status(201).json(newRubric);
+        return;
+      }
+
+      // If rubric exists, update it with new data
+      // First, delete all existing criteria and their ratings
+      await prisma.rubricCriterion.deleteMany({
+        where: { rubricId: Number(id) },
+      });
+
+      // Then create new criteria and ratings
       const updatedRubric = await prisma.rubric.update({
-        where: { id: parseInt(req.params.id, 10) },
+        where: { id: Number(id) },
         data: {
-          title: title,
+          title,
+          pointsPossible,
           rubricCriteria: {
-            update: updateCriteriaData,
+            create: rubricCriteria.map((criterion: RubricCriterion) => ({
+              description: criterion.description,
+              longDescription: criterion.longDescription,
+              points: criterion.points,
+              criterionUseRange: criterion.criterionUseRange,
+              ratings: {
+                create: criterion.ratings.map((rating: RubricRating) => ({
+                  description: rating.description,
+                  longDescription: rating.longDescription,
+                  points: rating.points,
+                  criterionUseRange: rating.criterionUseRange,
+                })),
+              },
+            })),
           },
         },
         include: {
-          rubricCriteria: true, // Include criteria in the response
+          rubricCriteria: {
+            include: {
+              ratings: true,
+            },
+          },
         },
       });
 
-      res.json(updatedRubric);
-    } else {
-      res
-        .status(400)
-        .json({ error: 'Invalid rubric criteria format or missing criteria' });
+      res.status(200).json(updatedRubric);
+    } catch (error) {
+      console.error('Error updating rubric:', error);
+      res.status(500).json({ error: 'Failed to update rubric' });
     }
+  })
+);
+
+// get a rubric by title
+router.get(
+  '/title/:title',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { title } = req.params;
+    const rubric = await prisma.rubric.findFirst({
+      where: { title },
+      include: {
+        rubricCriteria: {
+          include: {
+            ratings: true,
+          },
+        },
+      },
+    });
+
+    if (!rubric) {
+      res.status(404).json({ error: 'Rubric not found' });
+      return;
+    }
+
+    res.status(200).json(rubric);
+    return;
   })
 );
 
