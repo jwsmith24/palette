@@ -62,6 +62,14 @@ const validateRubric = [
   body('rubricCriteria.*.points')
     .isNumeric()
     .withMessage('points field must be numeric'),
+  body('rubricCriteria.*.ratings')
+    .isArray({ min: 1 })
+    .withMessage('Criterion must have at least one rating.'),
+  body('rubricCriteria.*.ratings.*.description')
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Ratings must have a description.'),
 ];
 
 router.post(
