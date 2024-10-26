@@ -5,21 +5,21 @@ import removeIcon from '../../assets/x-icon2.webp';
 
 export default function RatingInput({
   ratingIndex,
-  rating,
-  handleRatingChange,
-  handleRemoveRating,
+  rating, // pass criterion.ratings[index] to keep it short
+  handleRatingChange, // callback to handle rating changes
+  handleRemoveRating, // callback to handle rating removal
 }: {
   ratingIndex: number;
   rating: Rating;
   handleRatingChange: (index: number, updatedRating: Rating) => void;
   handleRemoveRating: (ratingIndex: number) => void;
 }): ReactElement {
-  const [ratingValue, setRatingValue] = useState(rating.points || 0);
+  const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or
+  // default to 0.
   const [ratingDescription, setRatingDescription] = useState(rating.description || '');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [longDescription, setLongDescription] = useState(rating.longDescription || '');
 
-  // Ref for the first focusable element inside the popup (Cancel button)
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -47,36 +47,39 @@ export default function RatingInput({
 
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newPointValue = Number(event.target.value);
-    setRatingValue(newPointValue);
+    setRatingValue(newPointValue); // update input value in state
     const newRating = { ...rating, points: newPointValue };
-    handleRatingChange(ratingIndex, newRating);
+    handleRatingChange(ratingIndex, newRating); // trigger parent update
   };
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newDescription = event.target.value;
-    setRatingDescription(newDescription);
+    setRatingDescription(newDescription); // update input value in state
     const newRating = { ...rating, description: newDescription };
-    handleRatingChange(ratingIndex, newRating);
+    handleRatingChange(ratingIndex, newRating); // trigger parent update
   };
 
   const handleLongDescriptionSave = () => {
     const updatedRating = { ...rating, longDescription };
     handleRatingChange(ratingIndex, updatedRating);
-    setIsPopupOpen(false);
+    setIsPopupOpen(false); // Close the popup after saving
   };
 
-  const handleRemoveRatingPress = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRemoveRatingPress = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
-    handleRemoveRating(ratingIndex);
+    handleRemoveRating(ratingIndex); // trigger removal
   };
+
 
   return (
     <div className="grid grid-rows-1 grid-cols-1 w-full relative">
       <div className="grid grid-cols-[0.2fr_0.8fr_0.3fr_0.2fr] gap-3 w-full items-center">
         <input
           type="number"
-          value={ratingValue}
-          onChange={handlePointChange}
+          value={ratingValue}// use local state for value
+          onChange={handlePointChange} // properly handle points change
           className="hover:bg-gray-800 rounded-lg p-2 text-gray-300 w-12 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           min="0"
           required
@@ -86,8 +89,8 @@ export default function RatingInput({
           type="text"
           className="hover:bg-gray-800 rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Enter rating description..."
-          value={ratingDescription}
-          onChange={handleDescriptionChange}
+          value={ratingDescription} // use local state for value
+          onChange={handleDescriptionChange} // properly handle description change
         />
         <button
           className="bg-transparent border-none rounded-lg cursor-pointer flex items-center w-12 active:opacity-70 active:bg-green-700 hover:bg-green-700"
@@ -101,7 +104,7 @@ export default function RatingInput({
         <button
           className="w-5 h-5 absolute right-9 bottom-12 mb-1 bg-gray-200 text-black rounded-full opacity-50 hover:bg-red-500 hover:opacity-100 hover:text-white"
           tabIndex={-1}
-          onClick={handleRemoveRatingPress}
+          onClick={handleRemoveRatingPress} // properly handle the remove button
           type="button"
           title={'Remove rating option'}
         >
