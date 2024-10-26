@@ -22,12 +22,6 @@ function Navbar() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  
-  useEffect(() => {
-    console.log("Component Rendered")
-
-
-  });
 
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -114,10 +108,10 @@ function Navbar() {
                         onClose={handleClosenNavMenu}
                         >
                             <MenuItem onClick={handleClosenNavMenu}>
-                                <Typography sx={{ textAlign: 'center' }} component="a" href="/rubrics">Rubrics</Typography>
+                                <Typography sx={{ textAlign: 'center' }} component="a" href="/rubrics">Your Rubrics</Typography>
                             </MenuItem>
                             <MenuItem onClick={handleClosenNavMenu}>
-                                <Typography sx={{ textAlign: 'center' }} component="a" href="/clusters">Clusters</Typography>
+                                <Typography sx={{ textAlign: 'center' }} component="a" href="/clusters">Your Templates</Typography>
                             </MenuItem>
                             <MenuItem onClick={handleClosenNavMenu}>
                                 <Typography sx={{ textAlign: 'center' }} component="a" href="/rubric-builder">Builder</Typography>

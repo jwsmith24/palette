@@ -1,5 +1,6 @@
 import { Criteria } from "./types/criteria.ts";
 import { Cluster } from "./types/cluster.ts";
+import { v4 as uuid } from 'uuid';
 
 export default function createCluster(
   title: string = "",
@@ -13,5 +14,7 @@ export default function createCluster(
     criteria,
     description,
     id,
+    key: uuid(), // generates unique uuid string for React DOM
+
   };
 }

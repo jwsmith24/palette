@@ -5,4 +5,6 @@ export interface Cluster {
   criteria: Criteria[];
   description: string;
   id: number;
+  key: string; // unique key for React DOM (with uuid)
+
 }
