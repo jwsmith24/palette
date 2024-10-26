@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd ${{matrix.module}}
-          npm ci
+          npm install
 
       # run ESLint on both modules
       - name: Run ESLint (Frontend/Backend)
