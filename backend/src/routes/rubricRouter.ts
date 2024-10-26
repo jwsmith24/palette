@@ -39,7 +39,9 @@ interface RubricRating {
   criterionUseRange?: number;
 }
 
-// defines validation for rubrics before being stored on the database
+/**
+ * define validation for rubrics before being stored on the database
+ */
 const validateRubric = [
   body('title')
     .isString()
