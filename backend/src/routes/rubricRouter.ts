@@ -120,9 +120,11 @@ router.get(
     // Check if the rubric was found
     if (!rubric) {
       res.status(404).send({ error: 'Rubric not found' });
+      return;
     }
 
     res.status(200).send(rubric); // Send the found rubric back
+    return;
   })
 );
 
@@ -255,24 +257,22 @@ router.get(
   '/title/:title',
   asyncHandler(async (req: Request, res: Response) => {
     const { title } = req.params;
-    const rubric = await prisma.rubric.findFirst({
-      where: { title },
-      include: {
-        rubricCriteria: {
-          include: {
-            ratings: true,
-          },
-        },
-      },
-    });
 
-    if (!rubric) {
-      res.status(404).json({ error: 'Rubric not found' });
+    if (!title) {
+      res.status(400).json({ error: 'Rubric title is required!' });
       return;
     }
 
-    res.status(200).json(rubric);
-    return;
+    const rubric = await prisma.rubric.findFirst({
+      where: { title }, // find first rubric with matching title
+      select: { id: true }, // return only the id to minimize response payload
+    });
+
+    if (rubric) {
+      res.json({ exists: true, id: rubric.id });
+    } else {
+      res.json({ exists: false, id: null });
+    }
   })
 );
 

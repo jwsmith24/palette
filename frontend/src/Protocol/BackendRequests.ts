@@ -118,8 +118,8 @@ export const BackendAPI = {
     console.log('Checking title:', title);
     const result = await fetchAPI<{ id: number }>(`/rubrics/title/${title}`);
     console.log(result.data);
-    if (result.data) {
-      return { exists: true, id: result.data.id };
+    if (result.data && result.data.id) {
+      return { exists: true, id: result.data.id ?? -1 };
     }
     return { exists: false, id: -1 };
   },
