@@ -1,3 +1,5 @@
+import React, { ChangeEvent, ReactElement, useState } from 'react';
+import { RubricRating } from '../../models/types/RubricRating.ts';
 import React, { ChangeEvent, ReactElement, useState, useEffect, useRef } from 'react';
 import { Rating } from '../../models/types/rating';
 import editDescriptionIcon from '../../assets/description-icon.webp';
@@ -10,8 +12,8 @@ export default function RatingInput({
   handleRemoveRating, // callback to handle rating removal
 }: {
   ratingIndex: number;
-  rating: Rating;
-  handleRatingChange: (index: number, updatedRating: Rating) => void;
+  rating: RubricRating;
+  handleRatingChange: (index: number, updatedRating: RubricRating) => void;
   handleRemoveRating: (ratingIndex: number) => void;
 }): ReactElement {
   const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or

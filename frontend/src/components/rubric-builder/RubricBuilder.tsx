@@ -2,7 +2,7 @@
 Main view for the Rubric Builder feature.
  */
 
-import {
+import React, {
   ChangeEvent,
   MouseEvent,
   ReactElement,
@@ -10,32 +10,50 @@ import {
   useState,
 } from 'react';
 
-import CriteriaInput from '../rubric-builder/CriteriaInput';
-import Dialog from '../util/Dialog';
-import CSVUpload from './CSVUpload';
-import Header from '../util/Header';
-import Footer from '../util/Footer';
-import { Rubric } from '../../models/types/rubric';
-import createRubric from '../../models/Rubric';
-import { Criteria } from '../../models/types/criteria';
-import createCriterion from '../../models/Criteria';
+import CriteriaInput from '../rubric-builder/CriteriaInput.tsx';
+import Dialog from '../util/Dialog.tsx';
+import CSVUpload from './CSVUpload.tsx';
+import Header from '../util/Header.tsx';
+import Footer from '../util/Footer.tsx';
+import { Rubric } from '../../models/types/Rubric.ts';
+import createRubric from '../../models/types/Rubric.ts';
+import { RubricCriterion } from '../../models/types/RubricCriterion.ts';
+import createRubricCriterion from '../../models/types/RubricCriterion.ts';
 import { DndContext } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import createRating from '../../models/Rating';
+import createRating from '../../models/types/RubricRating.ts';
+import { BackendAPI } from '../../Protocol/BackendRequests.ts';
+import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [isDialogOpen, setDialogOpen] = useState(false); // dialog when rubrics send. just for debugging/playing around.
+  const [lastSentRubric, setLastSentRubric] = useState<Rubric>(createRubric()); // last rubric sent to server (for displaying in dialog)
   // Will delete when user feedback messages are added.
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
+  // For ModalChoiceDialog state
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalChoices, setModalChoices] = useState([
+    {
+      label: '',
+      action: () => {},
+    },
+  ]);
+
+  // shorthand functions for opening and closing the dialog
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
+
+  // shorthand functions for opening and closing the modal
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
 
   // Ensure title is updated independently of the rest of the rubric
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -50,41 +68,49 @@ export default function RubricBuilder(): ReactElement {
   }, [rubric]);
 
   // Build rubric object with latest state values and send to server
-  const handleSubmitRubric = (event: MouseEvent) => {
+  const handleSubmitRubric = async (event: MouseEvent) => {
     event.preventDefault();
-    console.log(submitRubric(rubric));
-    openDialog();
-  };
-
-  // function to send rubric to the server
-  const submitRubric = async (rubric: Rubric) => {
-    try {
-      const res = await fetch('http://localhost:3000/rubrics', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    // check if the rubric exists, if so present the user with the option to make a new copy or overwrite it
+    const { exists, id } = await BackendAPI.checkTitleExists(rubric.title);
+    if (exists) {
+      // tell the user what happened
+      setModalMessage(
+        `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
+      );
+      // set button choices, each with a label and action
+      setModalChoices([
+        {
+          // Overwrite button
+          label: 'Overwrite',
+          action: async () => {
+            await BackendAPI.update(id, rubric).then(() => {
+              setLastSentRubric(rubric);
+              closeModal();
+              openDialog();
+            });
+          },
         },
-        body: JSON.stringify(rubric),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log('Rubric saved!', data);
-      } else {
-        const errorResult = await res.json();
-        if (res.status === 400) {
-          // Display validation errors
-          const errors = errorResult.errors;
-          errors.forEach((error: { param: any; msg: any }) => {
-            console.log(`Field: ${error.param}, Message: ${error.msg}`);
-          });
-        } else {
-          // Handle other errors
-          console.error('An error occurred:', errorResult.error);
-        }
-      }
-    } catch (error) {
-      console.error(error); // update error message with more deets
+        {
+          // Copy button
+          label: 'Make a Copy',
+          action: async () => {
+            const newRubric: Rubric = { ...rubric };
+            // append the current datetime to the title to make endlessly copyable
+            newRubric.title += ` - Copy ${new Date().toLocaleString().replaceAll('/', '-')}`; // forward slashes are problematic
+            await BackendAPI.create(newRubric).then(() => {
+              setLastSentRubric(newRubric);
+              closeModal();
+              openDialog();
+            });
+          },
+        },
+      ]);
+      openModal();
+    } else {
+      await BackendAPI.create(rubric).then(() => {
+        setLastSentRubric(rubric);
+        openDialog();
+      }); // simply create a new rubric
     }
   };
 
@@ -136,7 +162,8 @@ export default function RubricBuilder(): ReactElement {
         }
 
         // If criterion is unique, initialize a new Criteria object with its factory function
-        const criterion = createCriterion(criteriaDescription);
+        const criterion: RubricCriterion =
+          createRubricCriterion(criteriaDescription);
 
         // Iterate through the remaining columns
         for (let i = 1; i < row.length; i += 2) {
@@ -163,9 +190,8 @@ export default function RubricBuilder(): ReactElement {
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
-    console.log(rubric.rubricCriteria);
     const total: number = rubric.rubricCriteria.reduce(
-      (sum: number, criterion: Criteria) => {
+      (sum: number, criterion: RubricCriterion) => {
         return sum + criterion.points;
       },
       0
@@ -176,7 +202,8 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.rubricCriteria, createCriterion()];
+    const newCriteria = [...rubric.rubricCriteria, createRubricCriterion()];
+    // @ts-ignore
     setRubric({ ...rubric, rubricCriteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
   };
@@ -189,7 +216,7 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // update criterion at given index
-  const handleUpdateCriterion = (index: number, criterion: Criteria) => {
+  const handleUpdateCriterion = (index: number, criterion: RubricCriterion) => {
     const newCriteria = [...rubric.rubricCriteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
     // @ts-ignore
@@ -325,6 +352,15 @@ export default function RubricBuilder(): ReactElement {
           </div>
         </form>
 
+        {/* ModalChoiceDialog */}
+        <ModalChoiceDialog
+          show={isModalOpen}
+          onHide={closeModal}
+          title={'Rubric Already Exists'}
+          message={modalMessage}
+          choices={modalChoices}
+        />
+
         {/* Rubric Sending Dialog */}
         <Dialog
           isOpen={isDialogOpen}
@@ -332,7 +368,7 @@ export default function RubricBuilder(): ReactElement {
           title={'Sending Rubric!'}
         >
           <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
-            {JSON.stringify(rubric, null, 2)}
+            {JSON.stringify(lastSentRubric, null, 2)}
           </pre>
         </Dialog>
 
