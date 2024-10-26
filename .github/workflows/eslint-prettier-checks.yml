@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         # runs action for each module (since each one has its own package.json
-        module: [frontend, backend]
+        module: [frontend, backend, palette-types]
     steps:
       # checkout repo
       - name: Checkout code
@@ -29,19 +29,19 @@ jobs:
         with:
             node-version: '22'
 
-      # install dependencies for both modules
+      # install dependencies
       - name: Install dependencies
         run: |
           cd ${{matrix.module}}
           npm ci
 
-      # run ESLint on both modules
+      # run ESLint
       - name: Run ESLint (Frontend/Backend)
         run: |
           cd ${{ matrix.module }}
           npm run lint
 
-      # run Prettier on both modules
+      # run Prettier
       - name: Run Prettier (Frontend/Backend)
         run: |
           cd ${{ matrix.module }}
