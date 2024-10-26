@@ -1,4 +1,10 @@
-import React, { ChangeEvent, ReactElement, useState, useEffect, useRef } from 'react';
+import React, {
+  ChangeEvent,
+  ReactElement,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { RubricRating } from '../../models/types/RubricRating.ts';
 
 import editDescriptionIcon from '../../assets/description-icon.webp';
@@ -17,9 +23,13 @@ export default function RatingInput({
 }): ReactElement {
   const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or
   // default to 0.
-  const [ratingDescription, setRatingDescription] = useState(rating.description || '');
+  const [ratingDescription, setRatingDescription] = useState(
+    rating.description || ''
+  );
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [longDescription, setLongDescription] = useState(rating.longDescription || '');
+  const [longDescription, setLongDescription] = useState(
+    rating.longDescription || ''
+  );
 
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -73,13 +83,12 @@ export default function RatingInput({
     handleRemoveRating(ratingIndex); // trigger removal
   };
 
-
   return (
     <div className="grid grid-rows-1 grid-cols-1 w-full relative">
       <div className="grid grid-cols-[0.2fr_0.8fr_0.3fr_0.2fr] gap-3 w-full items-center">
         <input
           type="number"
-          value={ratingValue}// use local state for value
+          value={ratingValue} // use local state for value
           onChange={handlePointChange} // properly handle points change
           className="hover:bg-gray-800 rounded-lg p-2 text-gray-300 w-12 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           min="0"
@@ -100,7 +109,11 @@ export default function RatingInput({
           type="button"
           title={'Edit long description'}
         >
-          <img src={editDescriptionIcon} alt="Edit" className="rounded-xl hover:opacity-60" />
+          <img
+            src={editDescriptionIcon}
+            alt="Edit"
+            className="rounded-xl hover:opacity-60"
+          />
         </button>
         <button
           className="w-5 h-5 absolute right-9 bottom-12 mb-1 bg-gray-200 text-black rounded-full opacity-50 hover:bg-red-500 hover:opacity-100 hover:text-white"
@@ -109,7 +122,11 @@ export default function RatingInput({
           type="button"
           title={'Remove rating option'}
         >
-          <img src={removeIcon} alt="" className="rounded-full hover:opacity-60" />
+          <img
+            src={removeIcon}
+            alt=""
+            className="rounded-full hover:opacity-60"
+          />
         </button>
       </div>
 
@@ -125,7 +142,9 @@ export default function RatingInput({
           }}
         >
           <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full">
-            <h2 className="text-xl text-black font-semibold mb-4">Edit Long Description</h2>
+            <h2 className="text-xl text-black font-semibold mb-4">
+              Edit Long Description
+            </h2>
             <textarea
               value={longDescription}
               onChange={(e) => setLongDescription(e.target.value)}
