@@ -1,7 +1,6 @@
-import React, { ChangeEvent, ReactElement, useState } from 'react';
-import { RubricRating } from '../../models/types/RubricRating.ts';
 import React, { ChangeEvent, ReactElement, useState, useEffect, useRef } from 'react';
-import { Rating } from '../../models/types/rating';
+import { RubricRating } from '../../models/types/RubricRating.ts';
+
 import editDescriptionIcon from '../../assets/description-icon.webp';
 import removeIcon from '../../assets/x-icon2.webp';
 
