@@ -9,22 +9,24 @@
 
 */
 -- AlterTable
-ALTER TABLE "Rubric" DROP COLUMN "criteria",
+ALTER TABLE "Rubric"
 DROP
+COLUMN "criteria",
+    DROP
 COLUMN "description",
-ADD COLUMN     "authorId" INTEGER DEFAULT 0,
-ADD COLUMN     "content" TEXT,
-ADD COLUMN     "context_id" INTEGER,
-ADD COLUMN     "context_type" TEXT,
-ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "free_form_criterion_comments" BOOLEAN,
-ADD COLUMN     "hide_score_total" BOOLEAN,
-ADD COLUMN     "points_possible" INTEGER NOT NULL DEFAULT 0,
-ADD COLUMN     "published" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "read_only" BOOLEAN,
-ADD COLUMN     "reusable" BOOLEAN,
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ALTER
+    ADD COLUMN "authorId"                     INTEGER DEFAULT 0,
+    ADD COLUMN "content"                      TEXT,
+    ADD COLUMN "context_id"                   INTEGER,
+    ADD COLUMN "context_type"                 TEXT,
+    ADD COLUMN "createdAt"                    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ADD COLUMN "free_form_criterion_comments" BOOLEAN,
+    ADD COLUMN "hide_score_total"             BOOLEAN,
+    ADD COLUMN "points_possible"              INTEGER      NOT NULL DEFAULT 0,
+    ADD COLUMN "published"                    BOOLEAN      NOT NULL DEFAULT false,
+    ADD COLUMN "read_only"                    BOOLEAN,
+    ADD COLUMN "reusable"                     BOOLEAN,
+    ADD COLUMN "updatedAt"                    TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ALTER
 COLUMN "title" SET DATA TYPE VARCHAR(255);
 
 -- DropTable

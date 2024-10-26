@@ -1,0 +1,25 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - "5173:5173" # map vite server in container to localhost
+    volumes:
+      - ./frontend:/app/frontend # sync outside changes to the container
+    depends_on:
+      - backend # make sure backend container builds first
+    environment:
+      - NODE_ENV=development
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "3000:3000" # map express server in container to localhost
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app/backend # syncs outside changes in the container
