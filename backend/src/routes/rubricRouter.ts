@@ -124,7 +124,6 @@ router.get(
     }
 
     res.status(200).send(rubric); // Send the found rubric back
-    return;
   })
 );
 

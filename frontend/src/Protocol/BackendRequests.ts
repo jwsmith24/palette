@@ -94,10 +94,13 @@ export const BackendAPI = {
    * @param rubric The updated rubric data
    */
   async update(id: number, rubric: Rubric): Promise<boolean> {
-    const result = await fetchAPI<Rubric>(`/rubrics/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(rubric),
-    });
+    const result = await fetchAPI<Rubric>(
+      `/rubrics/${encodeURIComponent(id)}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(rubric),
+      }
+    );
 
     if (result.data || result.data === undefined) {
       // handles both 200 and 204 responses
@@ -114,12 +117,20 @@ export const BackendAPI = {
    */
   async checkTitleExists(
     title: string
-  ): Promise<{ exists: boolean; id: number }> {
-    console.log('Checking title:', title);
-    const result = await fetchAPI<{ id: number }>(`/rubrics/title/${title}`);
+  ): Promise<{ exists: boolean; id: number; error?: string }> {
+    // add optional error field
+    // check for empty or whitespace only title
+    if (!title.trim()) {
+      console.warn('Rubric does not have a title!');
+      return { exists: false, id: -1, error: 'Rubric must have a title' };
+    }
+
+    const result = await fetchAPI<{ id: number }>(
+      `/rubrics/title/${encodeURIComponent(title)}`
+    );
     console.log(result.data);
     if (result.data && result.data.id) {
-      return { exists: true, id: result.data.id ?? -1 };
+      return { exists: true, id: result.data.id };
     }
     return { exists: false, id: -1 };
   },
@@ -129,7 +140,7 @@ export const BackendAPI = {
    * @param id The ID of the rubric to delete
    */
   async delete(id: number): Promise<boolean> {
-    const result = await fetchAPI(`/rubrics/${id}`, {
+    const result = await fetchAPI(`/rubrics/${encodeURIComponent(id)}`, {
       method: 'DELETE',
     });
 

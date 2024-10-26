@@ -71,8 +71,13 @@ export default function RubricBuilder(): ReactElement {
   const handleSubmitRubric = async (event: MouseEvent) => {
     event.preventDefault();
     // check if the rubric exists, if so present the user with the option to make a new copy or overwrite it
-    const { exists, id } = await BackendAPI.checkTitleExists(rubric.title);
-    if (exists) {
+    const { exists, id, error } = await BackendAPI.checkTitleExists(
+      rubric.title
+    );
+
+    if (error) {
+      alert(error);
+    } else if (exists && !error) {
       // tell the user what happened
       setModalMessage(
         `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
