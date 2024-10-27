@@ -28,6 +28,9 @@ import createRating from '../../models/types/RubricRating.ts';
 import { APIResponse, BackendAPI } from '../../Protocol/BackendRequests.ts';
 import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
 
+// add type for to define our csv rows for the data field in papa parse
+export type CSVRow = Array<string | number>;
+
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
@@ -165,11 +168,9 @@ export default function RubricBuilder(): ReactElement {
       )
     );
 
-  // add type for a CSV row of data so typescript knows what to expect:
-  type CSVRow = [string, ...Array<string | number>];
-
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: CSVRow[]) => {
+    console.log('data that rubric builder gets: ', data);
     // create a set of current criteria descriptions to optimize duplicate check
     const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
 
@@ -177,7 +178,7 @@ export default function RubricBuilder(): ReactElement {
     const dataWithoutHeader = data.slice(1);
     // data is a 2D array representing the CSV
     const newCriteria = dataWithoutHeader
-      .map((row) => {
+      .map((row: CSVRow) => {
         // ensures title is a string and non-empty otherwise throw out the entry
         if (typeof row[0] !== 'string' || !row[0].trim()) {
           console.warn(
@@ -255,7 +256,7 @@ export default function RubricBuilder(): ReactElement {
     if (fileInputActive) {
       return (
         <CSVUpload
-          onDataChange={() => handleImportFile} // wrap with inline function to return void instead of promise
+          onDataChange={handleImportFile}
           closeImportCard={handleCloseImportCard}
         />
       );

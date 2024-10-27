@@ -1,6 +1,7 @@
 import React from 'react';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
+import { CSVRow } from './RubricBuilder.tsx';
 
 interface CSVUploadProps {
   onDataChange: (data: unknown[]) => void;
@@ -31,7 +32,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       header: false, // keeps the output an array to sync with parsing xlsx files
       complete: (results) => {
         console.log('Parsed CSV data:', results.data);
-        onDataChange(results.data); // Pass parsed data to parent
+        onDataChange(results.data as CSVRow[]); // Pass parsed data to parent
       },
       error: (error) => {
         console.error('Error parsing CSV:', error);
