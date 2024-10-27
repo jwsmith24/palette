@@ -1,4 +1,7 @@
 // main entry point for backend application
+
+// this is text how fun
+
 import express, { Request, Response } from 'express';
 import rubricRouter from './routes/rubricRouter.js'; // !! required js extension !!
 import cors from 'cors';
