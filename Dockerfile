@@ -13,11 +13,11 @@ COPY backend/package.json ./backend/
 # clean install dependencies
 RUN npm ci
 
-# generate prisma client
-RUN npm run generate
-
 # copy the rest of the project files
 COPY . .
+
+# generate prisma client
+RUN npm run generate
 
 # expose key ports for each module
 EXPOSE 5173 3000

@@ -77,7 +77,7 @@ export default function RubricBuilder(): ReactElement {
   }, [rubric]);
 
   // Build rubric object with latest state values and send to server
-  const handleSubmitRubric = async (event: MouseEvent) => {
+  const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
 
     try {
@@ -380,7 +380,13 @@ export default function RubricBuilder(): ReactElement {
             <button
               className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-              onClick={() => handleSubmitRubric} // wrap with inline function to return void instead of promise
+              onClick={(event: MouseEvent) => {
+                handleSubmitRubric(event).catch((error) => {
+                  console.error('Error handling rubric submission: ', error);
+                });
+              }}
+              // instead of
+              // promise
             >
               Save Rubric
             </button>
