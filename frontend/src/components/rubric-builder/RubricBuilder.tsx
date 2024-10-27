@@ -194,45 +194,33 @@ export default function RubricBuilder(): ReactElement {
           return null;
         }
 
-        if (!row[0]) {
-          console.warn('Empty criteria description field. Throwing out entry.');
-          return null;
-        }
-        const criteriaDescription = row[0];
-
-        // check if criterion description already exists to avoid duplicates
-        if (
-          existingCriteriaDescriptions.has(
-            criteriaDescription.trim().toLowerCase()
-          )
-        ) {
+        const criteriaDescription = row[0].trim().toLowerCase();
+        // check for duplicates
+        if (existingCriteriaDescriptions.has(criteriaDescription)) {
           console.warn(
             `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`
           );
           return null; //skip adding the duplicate criterion
         }
 
-        // If criterion is unique, initialize a new Criteria object with its factory function
-        const criterion: RubricCriterion =
-          createRubricCriterion(criteriaDescription);
+        // Create new criterion if unique
+        const criterion: RubricCriterion = createRubricCriterion(row[0]); // use the original format
 
-        // Iterate through the remaining columns
+        // process ratings in their column pairs
         for (let i = 1; i < row.length; i += 2) {
-          const points = Number(row[i]); // Ratings (B, D, F, etc.)
-          const description = row[i + 1];
+          const points = row[i] as number; // Ratings (B, D, F, etc.)
+          const description = row[i + 1] as string; // add type assertion (cleaner than casting)
 
           // If points and description are valid, create a new Rating and add it to the ratings array
-          if (!isNaN(points) && typeof description === 'string') {
-            const rating = createRating(points, description);
-            criterion.ratings.push(rating);
-          }
+          const rating = createRating(points, description);
+          criterion.ratings.push(rating);
         }
         criterion.updatePoints();
         return criterion;
       })
-      .filter((criterion) => criterion !== null); // remove all null entries (rows that were thrown out)
+      .filter((criterion) => criterion !== null); // remove null values (bad entries)
 
-    // update rubric state with new criteria list
+    // update rubric state
     setRubric((prevRubric) => ({
       ...prevRubric,
       rubricCriteria: [...prevRubric.rubricCriteria, ...newCriteria],
