@@ -1,7 +1,12 @@
 // Router for all /rubrics requests
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { body, validationResult } from 'express-validator';
+import {
+  body,
+  validationResult,
+  ValidationError,
+  Result,
+} from 'express-validator';
 import asyncHandler from 'express-async-handler';
 
 const router = express.Router();
@@ -76,7 +81,7 @@ router.post(
   '/',
   validateRubric,
   asyncHandler(async (req: RubricRequest, res: Response) => {
-    const errors = validationResult(req);
+    const errors: Result<ValidationError> = validationResult(req);
     if (!errors.isEmpty()) {
       console.log(errors);
       res.status(400).send({ errors: errors.array() });
