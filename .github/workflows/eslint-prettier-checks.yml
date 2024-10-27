@@ -31,7 +31,7 @@ jobs:
 
       # generate Prisma client
       - name: Generate prisma client
-        run: npx prisma generate
+        run: npm run generate
 
       # run ESLint
       - name: Run ESLint
