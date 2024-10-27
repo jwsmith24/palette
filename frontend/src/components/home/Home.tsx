@@ -7,8 +7,8 @@ export default function Home(): ReactElement {
   const navigate = useNavigate();
 
   function randomColor(): string {
-    let max = options.length;
-    let randomInt = Math.floor(Math.random() * max);
+    const max = options.length;
+    const randomInt = Math.floor(Math.random() * max);
     return options[randomInt];
   }
 
