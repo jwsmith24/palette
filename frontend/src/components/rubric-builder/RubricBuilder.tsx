@@ -282,7 +282,10 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // Fires when drag event is over to re-sort criteria
-  const handleDragEnd = (event: { active: any; over: any }) => {
+  const handleDragEnd = (event: {
+    active: { id: string };
+    over: { id: string };
+  }) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
         (criterion) => criterion.key === event.active.id
