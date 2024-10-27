@@ -13,6 +13,9 @@ COPY backend/package.json ./backend/
 # clean install dependencies
 RUN npm ci
 
+# generate prisma client
+RUN npm run generate
+
 # copy the rest of the project files
 COPY . .
 
