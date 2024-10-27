@@ -10,12 +10,12 @@ const API_CONFIG = {
 } as const; // enforce immutability
 
 // Types
-interface APIError {
+export interface APIError {
   param: string;
   msg: string;
 }
 
-interface APIResponse<T = undefined> {
+export interface APIResponse<T> {
   success: boolean;
   data?: T;
   error?: string;

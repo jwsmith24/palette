@@ -19,13 +19,13 @@ import createRubric, { Rubric } from '../../models/types/Rubric.ts';
 import createRubricCriterion, {
   RubricCriterion,
 } from '../../models/types/RubricCriterion.ts';
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import createRating from '../../models/types/RubricRating.ts';
-import { BackendAPI } from '../../Protocol/BackendRequests.ts';
+import { APIResponse, BackendAPI } from '../../Protocol/BackendRequests.ts';
 import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
 
 export default function RubricBuilder(): ReactElement {
@@ -76,86 +76,78 @@ export default function RubricBuilder(): ReactElement {
   const handleSubmitRubric = async (event: MouseEvent) => {
     event.preventDefault();
 
-    // Check if the rubric exists
-    const { exists, id, error } = await BackendAPI.checkTitleExists(
-      rubric.title
-    );
-
-    if (error) {
-      return alert(error);
-    }
-
-    // If the rubric already exists, open modal with overwrite or copy options
-    if (exists) {
-      setModalMessage(
-        `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
+    try {
+      // Check if the rubric already exists
+      const { exists, id, error } = await BackendAPI.checkTitleExists(
+        rubric.title
       );
 
-      setModalChoices([
-        {
-          // Overwrite option
-          label: 'Overwrite',
-          action: async () => {
-            try {
-              const result = await BackendAPI.update(id, rubric);
-              if (result.success) {
-                setLastSentRubric(rubric);
-                closeModal();
-                openDialog();
-              } else {
-                alert(result || 'Failed to overwrite the rubric.');
-              }
-            } catch (error) {
-              console.error('Failed to overwrite:', error);
-              alert('An error occurred while overwriting the rubric.');
-            }
-          },
-        },
-        {
-          // Make a Copy option
-          label: 'Make a Copy',
-          action: async () => {
-            try {
-              const newRubric: Rubric = {
-                ...rubric,
-                title: `${rubric.title} - Copy ${formatDate()}`,
-              };
-              const result = await BackendAPI.create(newRubric);
-              if (result.success) {
-                setLastSentRubric(newRubric);
-                closeModal();
-                openDialog();
-              } else {
-                alert('Failed to create a copy of the rubric.');
-              }
-            } catch (error) {
-              console.error('Failed to create a copy:', error);
-              alert('An error occurred while creating a copy of the rubric.');
-            }
-          },
-        },
-      ]);
-
-      openModal();
-    } else {
-      // Create a new rubric if it doesn’t exist
-      try {
-        // now result is an APIResponse
-        const result = await BackendAPI.create(rubric);
-        console.log('submit result: ', result);
-        if (result && result.success) {
-          alert('Rubric created successfully.');
-          setLastSentRubric(rubric);
-          openDialog();
-        } else if (result && result.errors && result.errors.length > 0) {
-          alert(result.errors[0]);
-        } else {
-          alert('Rubric creation failed.');
-        }
-      } catch (error) {
-        alert('An error occurred while creating the rubric.');
-        console.error(error);
+      if (error) {
+        alert(error);
+        return;
       }
+
+      if (exists) {
+        setModalMessage(
+          `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
+        );
+
+        setModalChoices([
+          {
+            label: 'Overwrite',
+            action: async () => {
+              try {
+                const result = await BackendAPI.update(id, rubric);
+                handleApiResponse(result, rubric);
+              } catch (error) {
+                console.error('Failed to overwrite:', error);
+                alert('An error occurred while overwriting the rubric.');
+              }
+            },
+          },
+          {
+            label: 'Make a Copy',
+            action: async () => {
+              try {
+                const newRubric: Rubric = {
+                  ...rubric,
+                  title: `${rubric.title} - Copy ${formatDate()}`,
+                };
+                const result = await BackendAPI.create(newRubric);
+                handleApiResponse(result, newRubric);
+              } catch (error) {
+                console.error('Failed to create a copy:', error);
+                alert('An error occurred while creating a copy of the rubric.');
+              }
+            },
+          },
+        ]);
+
+        openModal();
+      } else {
+        // Create a new rubric if it doesn’t exist
+        const result = await BackendAPI.create(rubric);
+        handleApiResponse(result, rubric);
+      }
+    } catch (error) {
+      console.error('Error during rubric submission:', error);
+      alert('An error occurred while creating the rubric.');
+    }
+  };
+
+  // Helper function to handle API responses
+  const handleApiResponse = (
+    result: APIResponse<Rubric>,
+    rubricToSet: Rubric
+  ) => {
+    if (result.success) {
+      setLastSentRubric(rubricToSet);
+      openDialog();
+      alert('Success!');
+    } else if (result.errors && result.errors.length > 0) {
+      alert(result.errors[0]);
+    } else {
+      alert('Operation failed.');
     }
   };
 
@@ -263,7 +255,7 @@ export default function RubricBuilder(): ReactElement {
     if (fileInputActive) {
       return (
         <CSVUpload
-          onDataChange={handleImportFile}
+          onDataChange={() => handleImportFile} // wrap with inline function to return void instead of promise
           closeImportCard={handleCloseImportCard}
         />
       );
@@ -282,16 +274,13 @@ export default function RubricBuilder(): ReactElement {
   };
 
   // Fires when drag event is over to re-sort criteria
-  const handleDragEnd = (event: {
-    active: { id: string };
-    over: { id: string };
-  }) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
         (criterion) => criterion.key === event.active.id
       );
       const newIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.over.id
+        (criterion) => criterion.key === event.over!.id // assert not null for type safety
       );
 
       const updatedCriteria = [...rubric.rubricCriteria];
@@ -384,7 +373,7 @@ export default function RubricBuilder(): ReactElement {
             <button
               className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-              onClick={handleSubmitRubric}
+              onClick={() => handleSubmitRubric} // wrap with inline function to return void instead of promise
             >
               Save Rubric
             </button>
