@@ -40,8 +40,9 @@ docker-compose --version
   docker-compose up # run in attached mode (blocks the active shell session)
   docker-compose up -d # run in detached mode (does not block the active shell session)
  ```
- _Note: when running in detached mode, stop the container with `docker-compose down`. Follow instructions below for 
- cleaning up afterward._
+
+_Note: when running in detached mode, stop the container with `docker-compose down`. Follow instructions below for
+cleaning up afterward._
 
 This will build and start the container, running the application with all dependencies included on any OS.
 
@@ -77,25 +78,25 @@ This will build and start the container, running the application with all depend
 ## Troubleshooting
 
 1. **Docker Permissions Issues**:
-   - Docker should automatically add your user account to the docker group
-   - If you encounter permission errors, ensure Docker is running and your user has permission to run Docker commands 
-         (added to the docker group).
-   - You can check your current groups by running `groups` in the terminal.  
-   - For a temporary solution, run with `sudo`.
-   - To add your user account to the docker group (permanent fix) run `sudo groupadd docker`.
+    - Docker should automatically add your user account to the docker group
+    - If you encounter permission errors, ensure Docker is running and your user has permission to run Docker commands
+      (added to the docker group).
+    - You can check your current groups by running `groups` in the terminal.
+    - For a temporary solution, run with `sudo`.
+    - To add your user account to the docker group (permanent fix) run `sudo groupadd docker`.
 
-2. **Check Logs**:  
-   - To check logs for debugging purposes:
+2. **Check Logs**:
+    - To check logs for debugging purposes:
    ```bash
    docker-compose logs
    ```
 
-3. **Rebuilding Containers**:  
-   - If changes are made, and you need to rebuild the containers:
+3. **Rebuilding Containers**:
+    - If changes are made, and you need to rebuild the containers:
    ```bash
    docker-compose up --build
    ```
 
-4. **Network Issues**:  
-   - If the application isn't accessible, ensure port 5173 is not being used by another application.
+4. **Network Issues**:
+    - If the application isn't accessible, ensure port 5173 is not being used by another application.
 

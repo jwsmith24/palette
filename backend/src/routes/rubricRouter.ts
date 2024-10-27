@@ -3,9 +3,9 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import {
   body,
-  validationResult,
-  ValidationError,
   Result,
+  ValidationError,
+  validationResult,
 } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 
