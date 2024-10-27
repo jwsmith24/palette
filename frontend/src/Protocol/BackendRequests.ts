@@ -45,13 +45,16 @@ async function fetchAPI<T>(
 
     // Handle any errors
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = (await response.json()) as {
+        error?: string;
+        errors?: APIError[]; // define response.json structure we expect
+      };
       const errors = errorData.errors ? handleAPIErrors(errorData.errors) : [];
 
       return {
         success: false,
         error: errorData.error,
-        errors,
+        errors, // todo: maybe update naming convention here to not be so confusing
       };
     }
 
@@ -60,8 +63,8 @@ async function fetchAPI<T>(
       return { success: true };
     }
 
-    // Not an error, not 204, parse the response
-    const data = await response.json();
+    // parse response if not an error
+    const data = (await response.json()) as T;
     return { success: true, data };
   } catch (error) {
     console.error('API Request failed:', error);
