@@ -38,12 +38,18 @@ export default function RubricBuilder(): ReactElement {
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   // For ModalChoiceDialog state
+
+  // define type for modal options
+  interface ModalChoice {
+    label: string;
+    action: () => Promise<void>;
+  }
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [modalChoices, setModalChoices] = useState([
+  const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
     {
       label: '',
-      action: () => {},
+      action: async () => {}, // define action to expect async function
     },
   ]);
 
