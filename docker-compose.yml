@@ -7,6 +7,7 @@ services:
     ports:
       - "5173:5173" # map the frontend port
       - "3000:3000" # map the backend port
+      - "5432:5432" # map postgres port
     volumes:
       - .:/app # mounts project files for live changes without needing to rebuild container
     environment:

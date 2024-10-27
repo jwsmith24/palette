@@ -19,8 +19,8 @@ COPY . .
 # generate prisma client
 RUN npm run generate
 
-# expose key ports for each module
-EXPOSE 5173 3000
+# expose ports for frontend, backend, and postgres
+EXPOSE 5173 3000 5432
 
 ## start the application in development mode
 CMD ["npm", "run", "dev"]
