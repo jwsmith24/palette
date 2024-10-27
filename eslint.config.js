@@ -12,7 +12,6 @@ export default tseslint.config(
   ...tseslint.configs.recommendedTypeChecked,
   {
     plugins: {
-      //'@typescript-eslint': tseslint.plugin,
       'eslint-plugin-react': react,
       'eslint-plugin-react-hooks': reactHooks,
       'eslint-plugin-react-refresh': reactRefresh,
