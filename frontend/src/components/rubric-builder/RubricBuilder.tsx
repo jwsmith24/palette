@@ -45,6 +45,7 @@ export default function RubricBuilder(): ReactElement {
     label: string;
     action: () => Promise<void>;
   }
+
   // For ModalChoiceDialog state
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
