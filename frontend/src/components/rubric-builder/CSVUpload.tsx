@@ -29,10 +29,21 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       header: false, // keeps the output an array to sync with parsing xlsx files
       complete: (results) => {
         console.log('Parsed CSV data:', results.data);
-        onDataChange(results.data as CSVRow[]); // Pass parsed data to parent
-      },
-      error: (error) => {
-        console.error('Error parsing CSV:', error);
+
+        // Validate each row to ensure it matches CSVRow type
+        const parsedData = results.data.filter((row): row is CSVRow => {
+          return (
+            Array.isArray(row) &&
+            typeof row[0] === 'string' &&
+            row
+              .slice(1)
+              .every(
+                (cell) => typeof cell === 'string' || typeof cell === 'number'
+              )
+          );
+        });
+        console.log('Validated CSV data:', results.data);
+        onDataChange(parsedData); // Pass validated data to parent
       },
     });
     closeImportCard();

@@ -29,7 +29,7 @@ import { APIResponse, BackendAPI } from '../../Protocol/BackendRequests.ts';
 import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
 
 // add type for to define our csv rows for the data field in papa parse
-export type CSVRow = Array<string | number>;
+export type CSVRow = [string, ...(number | string)[]];
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -202,11 +202,12 @@ export default function RubricBuilder(): ReactElement {
 
         // process ratings in their column pairs
         for (let i = 1; i < row.length; i += 2) {
-          const points = row[i] as number; // Ratings (B, D, F, etc.)
-          const description = row[i + 1] as string; // add type assertion (cleaner than casting)
+          const points = Number(row[i] as number); // Ratings (B, D, F, etc.)
+          const description = row[i + 1] as string; // add type assertions
 
           // If points and description are valid, create a new Rating and add it to the ratings array
           const rating = createRating(points, description);
+          console.log(rating);
           criterion.ratings.push(rating);
         }
         criterion.updatePoints();
@@ -225,10 +226,14 @@ export default function RubricBuilder(): ReactElement {
   const calculateTotalPoints = () => {
     const total: number = rubric.rubricCriteria.reduce(
       (sum: number, criterion: RubricCriterion) => {
-        return sum + criterion.points;
+        if (isNaN(criterion.points)) {
+          return sum; // do not add bad value
+        }
+        return sum + Number(criterion.points); // ensure points aren't treated as a string
       },
       0
     ); // Initialize sum as 0
+    console.log(total);
     setTotalPoints(total); // Update state with the total points
   };
 
@@ -257,7 +262,7 @@ export default function RubricBuilder(): ReactElement {
     if (fileInputActive) {
       return (
         <CSVUpload
-          onDataChange={handleImportFile}
+          onDataChange={(data: CSVRow[]) => handleImportFile(data)}
           closeImportCard={handleCloseImportCard}
         />
       );

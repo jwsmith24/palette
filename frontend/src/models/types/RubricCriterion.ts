@@ -45,7 +45,7 @@ export default function createRubricCriterion(
     id,
     key: uuidv4(),
     updatePoints() {
-      this.points = calcMaxPoints(this.ratings);
+      this.points = Number(calcMaxPoints(this.ratings));
     },
   };
 }

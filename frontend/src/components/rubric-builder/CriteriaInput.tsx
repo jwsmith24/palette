@@ -31,7 +31,7 @@ export default function CriteriaInput({
   setActiveCriterionIndex: (index: number) => void;
 }): ReactElement {
   const [ratings, setRatings] = useState<RubricRating[]>(criterion.ratings);
-  const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
+  const [maxPoints, setMaxPoints] = useState<number>(0); // Initialize state for max points
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || ''
   );
