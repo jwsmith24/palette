@@ -37,13 +37,12 @@ export default function RubricBuilder(): ReactElement {
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
-  // For ModalChoiceDialog state
-
-  // define type for modal options
+  // Define type for modal choices
   interface ModalChoice {
     label: string;
     action: () => Promise<void>;
   }
+  // For ModalChoiceDialog state
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
@@ -155,6 +154,7 @@ export default function RubricBuilder(): ReactElement {
         }
       } catch (error) {
         alert('An error occurred while creating the rubric.');
+        console.error(error);
       }
     }
   };
@@ -173,8 +173,11 @@ export default function RubricBuilder(): ReactElement {
       )
     );
 
+  // add type for a CSV row of data so typescript knows what to expect:
+  type CSVRow = [string, ...Array<string | number>];
+
   // Update state with the new CSV/XLSX data
-  const handleImportFile = (data: any[]) => {
+  const handleImportFile = (data: CSVRow[]) => {
     // create a set of current criteria descriptions to optimize duplicate check
     const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
 
@@ -183,10 +186,10 @@ export default function RubricBuilder(): ReactElement {
     // data is a 2D array representing the CSV
     const newCriteria = dataWithoutHeader
       .map((row) => {
-        // ensures title is a string otherwise throw out the entry
-        if (typeof row[0] != 'string') {
+        // ensures title is a string and non-empty otherwise throw out the entry
+        if (typeof row[0] !== 'string' || !row[0].trim()) {
           console.warn(
-            `Non-string value in criterion description field: ${row[0]}. Throwing out entry.`
+            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`
           );
           return null;
         }
