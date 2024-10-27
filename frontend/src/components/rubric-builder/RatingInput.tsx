@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { RubricRating } from '../../models/types/RubricRating.ts';
+import { RubricRating } from '../../models/RubricRating.ts';
 
 import editDescriptionIcon from '../../assets/description-icon.webp';
 import removeIcon from '../../assets/x-icon2.webp';
