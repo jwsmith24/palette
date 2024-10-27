@@ -7,7 +7,7 @@ export interface Rubric {
   description: string;
   points?: number;
   id?: number; // will be assigned by the backend once rubric is persisted
-  key: string; // unique key for React DOM (with uuid)
+  key?: string; // unique key for React DOM (with uuid)
 }
 
 export default function createRubric(
