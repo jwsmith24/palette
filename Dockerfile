@@ -16,11 +16,11 @@ RUN npm ci
 # copy the rest of the project files
 COPY . .
 
-# generate prisma client
-RUN npm run generate
+# apply migration and generate prisma client
+RUN npx prisma migrate dev
 
-# expose ports for frontend, backend, and postgres
-EXPOSE 5173 3000 5432
+# expose ports for frontend, backend
+EXPOSE 5173 3000
 
 ## start the application in development mode
 CMD ["npm", "run", "dev"]

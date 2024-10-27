@@ -7,8 +7,20 @@ services:
     ports:
       - "5173:5173" # map the frontend port
       - "3000:3000" # map the backend port
-      - "5432:5432" # map postgres port
     volumes:
       - .:/app # mounts project files for live changes without needing to rebuild container
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: palette-db
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # persists data within the container
+
+volumes:
+  pgdata:
