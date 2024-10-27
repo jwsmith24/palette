@@ -4,12 +4,13 @@
   "type": "module",
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "palette-types"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
     "build": "npm run build --workspaces",
-    "lint": "eslint .",
+    "lint": "eslint . --no-cache",
     "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "devDependencies": {
