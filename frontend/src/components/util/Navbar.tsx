@@ -45,8 +45,8 @@ function Navbar() {
 
   return (
     <div>
-      <div className="flex justify-normal sm h-16">
-        <div>
+      <div className="flex justify-normal sm h-16 display: {}">
+        <div className="">
           <button
             className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
             onClick={handleHomeClicked}
@@ -54,7 +54,15 @@ function Navbar() {
             HOME
           </button>
         </div>
-        <div>
+        <div className="flex-grow sm:hidden">
+          <button
+            className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
+            onClick={handleOpenNavMenu}
+          >
+            ...
+          </button>
+        </div>
+        <div className="hidden sm:block">
           <button
             disabled={location.pathname == '/rubrics'}
             className={`px-3 py-5 ${onRubrics ? 'underline' : 'no-underline hover:opacity-80 transition duration-300 transform hover:scale-105'}`}
@@ -63,7 +71,7 @@ function Navbar() {
             RUBRICS
           </button>
         </div>
-        <div>
+        <div className="hidden sm:block">
           <button
             disabled={location.pathname == '/clusters'}
             className={`px-3 py-5 ${onTemplates ? 'underline' : 'no-underline hover:opacity-80 transition duration-300 transform hover:scale-105'}`}
@@ -72,7 +80,7 @@ function Navbar() {
             TEMPLATES
           </button>
         </div>
-        <div className="flex-grow">
+        <div className="flex-grow hidden sm:block">
           <button
             disabled={location.pathname == '/rubric-builder'}
             className={`px-3 py-5 ${onBuilder ? 'underline' : 'no-underline hover:opacity-80 transition duration-300 transform hover:scale-105'}`}
