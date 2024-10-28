@@ -1,14 +1,14 @@
-import { ReactElement, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ReactElement, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home(): ReactElement {
-  const options: string[] = ['red', 'yellow', 'green', 'blue', 'purple'];
-  const [color, setColor] = useState('red');
+  const options: string[] = ["red", "yellow", "green", "blue", "purple"];
+  const [color, setColor] = useState("red");
   const navigate = useNavigate();
 
   function randomColor(): string {
-    let max = options.length;
-    let randomInt = Math.floor(Math.random() * max);
+    const max = options.length;
+    const randomInt = Math.floor(Math.random() * max);
     return options[randomInt];
   }
 
@@ -17,11 +17,11 @@ export default function Home(): ReactElement {
   };
 
   const handleLogin = () => {
-    navigate('/rubric-builder');
+    navigate("/rubric-builder");
   };
 
   const handleSignUp = () => {
-    navigate('/signup');
+    navigate("/signup");
   };
 
   return (
@@ -36,7 +36,7 @@ export default function Home(): ReactElement {
           src="/palette-2.webp"
           alt="Palette Logo"
           width={350}
-          className={'mb-2 rounded-full'}
+          className={"mb-2 rounded-full"}
         />
 
         {/* Title */}

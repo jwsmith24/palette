@@ -1,8 +1,13 @@
 // Router for all /rubrics requests
-import express, { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { body, validationResult } from 'express-validator';
-import asyncHandler from 'express-async-handler';
+import express, { Request, Response } from "express";
+import { PrismaClient } from "@prisma/client";
+import {
+  body,
+  Result,
+  ValidationError,
+  validationResult,
+} from "express-validator";
+import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -43,34 +48,44 @@ interface RubricRating {
  * define validation for rubrics before being stored on the database
  */
 const validateRubric = [
-  body('title')
+  body("title")
     .isString()
-    .notEmpty()
     .trim()
-    .withMessage('Rubric does not have a title')
+    .notEmpty()
+    .withMessage("Rubric does not have a title")
     .isLength({ max: 255 }) // max length: 255 characters
-    .withMessage('Rubric title must not exceed 255 characters.'),
-  body('rubricCriteria')
+    .withMessage("Rubric title must not exceed 255 characters."),
+  body("rubricCriteria")
     .isArray({ min: 1 })
-    .withMessage('Rubric must have at least one criterion.'),
-  body('rubricCriteria.*.description') // * === all objects in the criteria array
+    .withMessage("Rubric must have at least one criterion."),
+  body("rubricCriteria.*.description") // * === all objects in the criteria array
     .isString()
-    .notEmpty()
     .trim()
-    .withMessage('Each criterion must have a description'),
-  body('rubricCriteria.*.longDescription').optional().isString(),
-  body('rubricCriteria.*.points')
+    .notEmpty()
+    .withMessage("Each criterion must have a description"),
+  body("rubricCriteria.*.longDescription").optional().isString(),
+  body("rubricCriteria.*.points")
     .isNumeric()
-    .withMessage('points field must be numeric'),
+    .withMessage("points field must be numeric"),
+  body("rubricCriteria.*.ratings")
+    .isArray({ min: 1 })
+    .withMessage("Criterion must have at least one rating."),
+  body("rubricCriteria.*.ratings.*.description")
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage("Ratings must have a description."),
 ];
 
 router.post(
-  '/',
+  "/",
   validateRubric,
   asyncHandler(async (req: RubricRequest, res: Response) => {
-    const errors = validationResult(req);
+    const errors: Result<ValidationError> = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(errors);
       res.status(400).send({ errors: errors.array() });
+      return;
     }
 
     const { title, rubricCriteria } = req.body;
@@ -94,13 +109,14 @@ router.post(
       },
     });
     res.status(201).send(newRubric);
-  })
+  }),
 );
 
 // fetch a specific rubric by ID
 router.get(
-  '/:id',
+  "/:id",
   asyncHandler(async (req: Request, res: Response) => {
+    console.log(req.params);
     const { id } = req.params;
     console.log(`trying to fetch rubric with id=${id}`);
     const rubric = await prisma.rubric.findUnique({
@@ -114,15 +130,16 @@ router.get(
       },
     });
 
-    console.log('found ', rubric);
+    console.log("found ", rubric);
 
     // Check if the rubric was found
     if (!rubric) {
-      res.status(404).send({ error: 'Rubric not found' });
+      res.status(404).send({ error: "Rubric not found" });
+      return;
     }
 
     res.status(200).send(rubric); // Send the found rubric back
-  })
+  }),
 );
 
 /**
@@ -131,7 +148,7 @@ router.get(
  * "_" is added in front of req to tell eslint that it's not being used but still has to be there anyway.
  */
 router.get(
-  '/',
+  "/",
   asyncHandler(async (_req: Request, res: Response) => {
     // gets all rubrics with their criteria and ratings
     const rubrics = await prisma.rubric.findMany({
@@ -144,13 +161,13 @@ router.get(
       },
     });
     res.status(200).send(rubrics); // Send back list of all rubrics
-  })
+  }),
 );
 
 // update an existing rubric
 
 router.put(
-  '/:id',
+  "/:id",
   validateRubric,
   asyncHandler(async (req: RubricRequest, res: Response) => {
     const errors = validationResult(req);
@@ -243,41 +260,39 @@ router.put(
 
       res.status(200).json(updatedRubric);
     } catch (error) {
-      console.error('Error updating rubric:', error);
-      res.status(500).json({ error: 'Failed to update rubric' });
+      console.error("Error updating rubric:", error);
+      res.status(500).json({ error: "Failed to update rubric" });
     }
-  })
+  }),
 );
 
 // get a rubric by title
 router.get(
-  '/title/:title',
+  "/title/:title",
   asyncHandler(async (req: Request, res: Response) => {
     const { title } = req.params;
-    const rubric = await prisma.rubric.findFirst({
-      where: { title },
-      include: {
-        rubricCriteria: {
-          include: {
-            ratings: true,
-          },
-        },
-      },
-    });
 
-    if (!rubric) {
-      res.status(404).json({ error: 'Rubric not found' });
+    if (!title) {
+      res.status(400).json({ error: "Rubric title is required!" });
       return;
     }
 
-    res.status(200).json(rubric);
-    return;
-  })
+    const rubric = await prisma.rubric.findFirst({
+      where: { title }, // find first rubric with matching title
+      select: { id: true }, // return only the id to minimize response payload
+    });
+
+    if (rubric) {
+      res.json({ exists: true, id: rubric.id });
+    } else {
+      res.json({ exists: false, id: null });
+    }
+  }),
 );
 
 // delete an existing rubric
 router.delete(
-  '/:id',
+  "/:id",
   asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
 
@@ -285,7 +300,7 @@ router.delete(
       where: { id: Number(id) },
     });
     res.status(204).send(); // Deletion was successful
-  })
+  }),
 );
 
 export default router;
