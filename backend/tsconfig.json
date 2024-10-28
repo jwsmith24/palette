@@ -7,27 +7,15 @@
     "rootDir": "./src",
     "baseUrl": "./",
     "paths": {
-      "@models/types/*": [
-        "../frontend/src/models/types/*"
-      ]
+      "@models/types/*": ["../frontend/src/models/types/*"]
       // Include frontend models (we can remove if we relocate common models to a shared folder)
     },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": [
-      "node",
-      "express",
-      "@prisma/client"
-    ],
+    "types": ["node", "express", "@prisma/client"],
     "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/prisma/**"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/prisma/**"]
 }
