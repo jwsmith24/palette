@@ -10,6 +10,7 @@
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
     "allowImportingTsExtensions": true,
     "types": ["node", "express", "react", "vite/client"]
   },
