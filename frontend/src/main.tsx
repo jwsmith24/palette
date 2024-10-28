@@ -7,7 +7,6 @@ import "./index.css";
 import Home from "./components/home/Home.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RubricBuilder from "./components/rubric-builder/RubricBuilder.tsx";
-import ClusterBuilder from "./components/rubric-builder/ClusterBuilder.tsx";
 import UserRubrics from "./components/user/UserRubrics.tsx"
 import UserClusters from "./components/user/UserClusters.tsx"
 import NotFoundPage from "./components/util/NotFoundPage.tsx";
@@ -22,7 +21,6 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/rubric-builder" element={<RubricBuilder />} />
-          <Route path="/cluster-builder" element={<ClusterBuilder />} />
           <Route path="/rubrics" element={<UserRubrics />} />
           <Route path="/clusters" element={<UserClusters />} />
           {/*Any route that doesn't match the routes defined above will go to the 404 page*/}
