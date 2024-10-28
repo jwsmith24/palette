@@ -1,4 +1,4 @@
-import { Criteria } from "./criteria.ts";
+import { Criteria } from './criteria.ts';
 
 export interface Cluster {
   title: string;
@@ -6,5 +6,4 @@ export interface Cluster {
   description: string;
   id: number;
   key: string; // unique key for React DOM (with uuid)
-
 }

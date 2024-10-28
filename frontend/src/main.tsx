@@ -3,14 +3,13 @@ Entry point for the entire application.
  */
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import "./index.css";
-import Home from "./components/home/Home.tsx";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import RubricBuilder from "./components/rubric-builder/RubricBuilder.tsx";
-import UserRubrics from "./components/user/UserRubrics.tsx"
-import UserClusters from "./components/user/UserClusters.tsx"
-import NotFoundPage from "./components/util/NotFoundPage.tsx";
-
+import './index.css';
+import Home from './components/home/Home.tsx';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import RubricBuilder from './components/rubric-builder/RubricBuilder.tsx';
+import UserRubrics from './components/user/UserRubrics.tsx';
+import UserClusters from './components/user/UserClusters.tsx';
+import NotFoundPage from './components/util/NotFoundPage.tsx';
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
 createRoot(document.getElementById('root')!).render(
