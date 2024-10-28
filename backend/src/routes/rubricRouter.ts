@@ -50,8 +50,8 @@ interface RubricRating {
 const validateRubric = [
   body('title')
     .isString()
-    .notEmpty()
     .trim()
+    .notEmpty()
     .withMessage('Rubric does not have a title')
     .isLength({ max: 255 }) // max length: 255 characters
     .withMessage('Rubric title must not exceed 255 characters.'),
@@ -60,8 +60,8 @@ const validateRubric = [
     .withMessage('Rubric must have at least one criterion.'),
   body('rubricCriteria.*.description') // * === all objects in the criteria array
     .isString()
-    .notEmpty()
     .trim()
+    .notEmpty()
     .withMessage('Each criterion must have a description'),
   body('rubricCriteria.*.longDescription').optional().isString(),
   body('rubricCriteria.*.points')
