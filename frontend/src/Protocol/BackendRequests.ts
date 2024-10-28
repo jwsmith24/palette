@@ -1,11 +1,11 @@
-import { Rubric } from '../models/types/Rubric.ts';
+import { Rubric } from "../models/types/Rubric.ts";
 
 // Constants
 const API_CONFIG = {
-  baseURL: 'http://localhost:3000/api',
+  baseURL: "http://localhost:3000/api",
   headers: {
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache',
+    "Content-Type": "application/json",
+    "Cache-Control": "no-cache",
   },
 } as const; // enforce immutability
 
@@ -30,7 +30,7 @@ const handleAPIErrors = (errors: APIError[]): string[] => {
 // Generic fetch wrapper with error handling
 async function fetchAPI<T>(
   endpoint: string,
-  options: RequestInit = {} // used for extend
+  options: RequestInit = {}, // used for extend
 ): Promise<APIResponse<T>> {
   try {
     const url = `${API_CONFIG.baseURL}${endpoint}`;
@@ -67,8 +67,8 @@ async function fetchAPI<T>(
     const data = (await response.json()) as T;
     return { success: true, data };
   } catch (error) {
-    console.error('API Request failed:', error);
-    return { success: false, error: 'Failed to complete request' };
+    console.error("API Request failed:", error);
+    return { success: false, error: "Failed to complete request" };
   }
 }
 
@@ -81,13 +81,13 @@ export const BackendAPI = {
    * @param rubric The rubric data to save
    */
   async create(rubric: Rubric): Promise<APIResponse<Rubric>> {
-    const result = await fetchAPI<Rubric>('/rubrics', {
-      method: 'POST',
+    const result = await fetchAPI<Rubric>("/rubrics", {
+      method: "POST",
       body: JSON.stringify(rubric),
     });
 
     if (result.success) {
-      console.log('Rubric saved!', result.data);
+      console.log("Rubric saved!", result.data);
     }
     return result;
   },
@@ -101,14 +101,14 @@ export const BackendAPI = {
     const result = await fetchAPI<Rubric>(
       `/rubrics/${encodeURIComponent(id)}`,
       {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(rubric),
-      }
+      },
     );
 
     if (result.success) {
       // handles both 200 and 204 responses
-      console.log('Rubric updated successfully!');
+      console.log("Rubric updated successfully!");
     }
     return result;
   },
@@ -119,17 +119,17 @@ export const BackendAPI = {
    * @return An object { exists: boolean, id: number } indicating if the title exists and the ID if it does. If the title does not exist, the ID will be a garbage value.
    */
   async checkTitleExists(
-    title: string
+    title: string,
   ): Promise<{ exists: boolean; id: number; error?: string }> {
     // add optional error field
     // check for empty or whitespace only title
     if (!title.trim()) {
-      console.warn('Rubric does not have a title!');
-      return { exists: false, id: -1, error: 'Rubric must have a title' };
+      console.warn("Rubric does not have a title!");
+      return { exists: false, id: -1, error: "Rubric must have a title" };
     }
 
     const result = await fetchAPI<{ id: number }>(
-      `/rubrics/title/${encodeURIComponent(title)}`
+      `/rubrics/title/${encodeURIComponent(title)}`,
     );
     console.log(result.data);
     if (result.data && result.data.id) {
@@ -144,11 +144,11 @@ export const BackendAPI = {
    */
   async delete(id: number): Promise<boolean> {
     const result = await fetchAPI(`/rubrics/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
 
     if (!result.error) {
-      console.log('Rubric deleted!');
+      console.log("Rubric deleted!");
       return true;
     }
     return false;

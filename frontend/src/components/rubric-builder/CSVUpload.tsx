@@ -1,6 +1,6 @@
-import React from 'react';
-import Papa from 'papaparse';
-import { CSVRow } from './RubricBuilder.tsx';
+import React from "react";
+import Papa from "papaparse";
+import { CSVRow } from "./RubricBuilder.tsx";
 
 interface CSVUploadProps {
   onDataChange: (data: CSVRow[]) => void;
@@ -15,12 +15,12 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-    if (fileExtension === 'csv') {
+    if (fileExtension === "csv") {
       parseCSV(file);
     } else {
-      alert('Unsupported file format. Please upload a CSV or XLSX file.');
+      alert("Unsupported file format. Please upload a CSV or XLSX file.");
     }
   };
 
@@ -28,21 +28,21 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     Papa.parse(file, {
       header: false, // keeps the output an array to sync with parsing xlsx files
       complete: (results) => {
-        console.log('Parsed CSV data:', results.data);
+        console.log("Parsed CSV data:", results.data);
 
         // Validate each row to ensure it matches CSVRow type
         const parsedData = results.data.filter((row): row is CSVRow => {
           return (
             Array.isArray(row) &&
-            typeof row[0] === 'string' &&
+            typeof row[0] === "string" &&
             row
               .slice(1)
               .every(
-                (cell) => typeof cell === 'string' || typeof cell === 'number'
+                (cell) => typeof cell === "string" || typeof cell === "number",
               )
           );
         });
-        console.log('Validated CSV data:', results.data);
+        console.log("Validated CSV data:", results.data);
         onDataChange(parsedData); // Pass validated data to parent
       },
     });
@@ -54,7 +54,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       <h2 className="text-2xl font-bold text-gray-200 mb-4">
         Import CSV or XLSX
       </h2>
-      <div className={'flex justify-between items-center'}>
+      <div className={"flex justify-between items-center"}>
         <input
           type="file"
           accept=".csv,.xlsx"

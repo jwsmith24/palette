@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 /**
  * A choice is a button that the user can click to perform an action.
@@ -52,9 +52,9 @@ const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
             <button
               key={index}
               className={`py-2 px-4 rounded text-white ${
-                choice.variant === 'secondary'
-                  ? 'bg-gray-500 hover:bg-gray-600'
-                  : 'bg-blue-600 hover:bg-blue-700'
+                choice.variant === "secondary"
+                  ? "bg-gray-500 hover:bg-gray-600"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
               onClick={choice.action}
             >

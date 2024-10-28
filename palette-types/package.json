@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "build": "tsc",
-    "lint": "eslint .",
-    "prettier-check": "prettier --check 'src/**/*.{js,ts,tsx,json,md}'"
+    "build": "tsc"
   },
   "keywords": [],
   "type": "module",

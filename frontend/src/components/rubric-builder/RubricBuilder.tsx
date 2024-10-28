@@ -8,25 +8,25 @@ import React, {
   ReactElement,
   useEffect,
   useState,
-} from 'react';
+} from "react";
 
-import CriteriaInput from '../rubric-builder/CriteriaInput.tsx';
-import Dialog from '../util/Dialog.tsx';
-import CSVUpload from './CSVUpload.tsx';
-import Header from '../util/Header.tsx';
-import Footer from '../util/Footer.tsx';
-import createRubric, { Rubric } from '../../models/types/Rubric.ts';
+import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
+import Dialog from "../util/Dialog.tsx";
+import CSVUpload from "./CSVUpload.tsx";
+import Header from "../util/Header.tsx";
+import Footer from "../util/Footer.tsx";
+import createRubric, { Rubric } from "../../models/types/Rubric.ts";
 import createRubricCriterion, {
   RubricCriterion,
-} from '../../models/types/RubricCriterion.ts';
-import { DndContext, DragEndEvent } from '@dnd-kit/core';
+} from "../../models/types/RubricCriterion.ts";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import createRating from '../../models/types/RubricRating.ts';
-import { APIResponse, BackendAPI } from '../../Protocol/BackendRequests.ts';
-import ModalChoiceDialog from '../util/ModalChoiceDialog.tsx';
+} from "@dnd-kit/sortable";
+import createRating from "../../models/types/RubricRating.ts";
+import { APIResponse, BackendAPI } from "../../Protocol/BackendRequests.ts";
+import ModalChoiceDialog from "../util/ModalChoiceDialog.tsx";
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
@@ -48,10 +48,10 @@ export default function RubricBuilder(): ReactElement {
 
   // For ModalChoiceDialog state
   const [isModalOpen, setModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState("");
   const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
     {
-      label: '',
+      label: "",
       action: async () => {}, // define action to expect async function
     },
   ]);
@@ -83,7 +83,7 @@ export default function RubricBuilder(): ReactElement {
     try {
       // Check if the rubric already exists
       const { exists, id, error } = await BackendAPI.checkTitleExists(
-        rubric.title
+        rubric.title,
       );
 
       if (error) {
@@ -93,24 +93,24 @@ export default function RubricBuilder(): ReactElement {
 
       if (exists) {
         setModalMessage(
-          `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
+          `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
         );
 
         setModalChoices([
           {
-            label: 'Overwrite',
+            label: "Overwrite",
             action: async () => {
               try {
                 const result = await BackendAPI.update(id, rubric);
                 handleApiResponse(result, rubric);
               } catch (error) {
-                console.error('Failed to overwrite:', error);
-                alert('An error occurred while overwriting the rubric.');
+                console.error("Failed to overwrite:", error);
+                alert("An error occurred while overwriting the rubric.");
               }
             },
           },
           {
-            label: 'Make a Copy',
+            label: "Make a Copy",
             action: async () => {
               try {
                 const newRubric: Rubric = {
@@ -120,8 +120,8 @@ export default function RubricBuilder(): ReactElement {
                 const result = await BackendAPI.create(newRubric);
                 handleApiResponse(result, newRubric);
               } catch (error) {
-                console.error('Failed to create a copy:', error);
-                alert('An error occurred while creating a copy of the rubric.');
+                console.error("Failed to create a copy:", error);
+                alert("An error occurred while creating a copy of the rubric.");
               }
             },
           },
@@ -134,29 +134,29 @@ export default function RubricBuilder(): ReactElement {
         handleApiResponse(result, rubric);
       }
     } catch (error) {
-      console.error('Error during rubric submission:', error);
-      alert('An error occurred while creating the rubric.');
+      console.error("Error during rubric submission:", error);
+      alert("An error occurred while creating the rubric.");
     }
   };
 
   // Helper function to handle API responses
   const handleApiResponse = (
     result: APIResponse<Rubric>,
-    rubricToSet: Rubric
+    rubricToSet: Rubric,
   ) => {
     if (result.success) {
       setLastSentRubric(rubricToSet);
       openDialog();
-      alert('Success!');
+      alert("Success!");
     } else if (result.errors && result.errors.length > 0) {
       alert(result.errors[0]);
     } else {
-      alert('Operation failed.');
+      alert("Operation failed.");
     }
   };
 
   // Helper function to format the current date/time for the copy title
-  const formatDate = () => new Date().toLocaleString().replace(/\//g, '-');
+  const formatDate = () => new Date().toLocaleString().replace(/\//g, "-");
 
   /**
    * Generates a set of the current criteria descriptions stored within the component state to use for checking
@@ -165,13 +165,13 @@ export default function RubricBuilder(): ReactElement {
   const buildCriteriaDescriptionSet = () =>
     new Set(
       rubric.rubricCriteria.map((criterion) =>
-        criterion.description.trim().toLowerCase()
-      )
+        criterion.description.trim().toLowerCase(),
+      ),
     );
 
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: CSVRow[]) => {
-    console.log('data that rubric builder gets: ', data);
+    console.log("data that rubric builder gets: ", data);
     // create a set of current criteria descriptions to optimize duplicate check
     const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
 
@@ -181,9 +181,9 @@ export default function RubricBuilder(): ReactElement {
     const newCriteria = dataWithoutHeader
       .map((row: CSVRow) => {
         // ensures title is a string and non-empty otherwise throw out the entry
-        if (typeof row[0] !== 'string' || !row[0].trim()) {
+        if (typeof row[0] !== "string" || !row[0].trim()) {
           console.warn(
-            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`
+            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`,
           );
           return null;
         }
@@ -192,7 +192,7 @@ export default function RubricBuilder(): ReactElement {
         // check for duplicates
         if (existingCriteriaDescriptions.has(criteriaDescription)) {
           console.warn(
-            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`
+            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`,
           );
           return null; //skip adding the duplicate criterion
         }
@@ -231,7 +231,7 @@ export default function RubricBuilder(): ReactElement {
         }
         return sum + Number(criterion.points); // ensure points aren't treated as a string
       },
-      0
+      0,
     ); // Initialize sum as 0
     console.log(total);
     setTotalPoints(total); // Update state with the total points
@@ -284,10 +284,10 @@ export default function RubricBuilder(): ReactElement {
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.active.id
+        (criterion) => criterion.key === event.active.id,
       );
       const newIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.over!.id // assert not null for type safety
+        (criterion) => criterion.key === event.over!.id, // assert not null for type safety
       );
 
       const updatedCriteria = [...rubric.rubricCriteria];
@@ -331,13 +331,13 @@ export default function RubricBuilder(): ReactElement {
             Create a new rubric
           </h1>
 
-          <div className={'flex justify-between'}>
+          <div className={"flex justify-between"}>
             {/*Import CSV/XLSX File*/}
             <button
               className={
-                'transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4' +
-                ' hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2' +
-                ' focus:ring-violet-500'
+                "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
+                " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
+                " focus:ring-violet-500"
               }
               onClick={handleImportFilePress}
             >
@@ -345,7 +345,7 @@ export default function RubricBuilder(): ReactElement {
             </button>
             {/* Rubric Total Points */}
             <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-              {totalPoints} {totalPoints === 1 ? 'Point' : 'Points'}
+              {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
             </h2>
           </div>
 
@@ -354,8 +354,8 @@ export default function RubricBuilder(): ReactElement {
             type="text"
             placeholder="Rubric title"
             className={
-              'rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500' +
-              ' focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap'
+              "rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500" +
+              " focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
             }
             name="rubricTitle"
             id="rubricTitle"
@@ -382,7 +382,7 @@ export default function RubricBuilder(): ReactElement {
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
               onClick={(event: MouseEvent) => {
                 handleSubmitRubric(event).catch((error) => {
-                  console.error('Error handling rubric submission: ', error);
+                  console.error("Error handling rubric submission: ", error);
                 });
               }}
               // instead of
@@ -397,7 +397,7 @@ export default function RubricBuilder(): ReactElement {
         <ModalChoiceDialog
           show={isModalOpen}
           onHide={closeModal}
-          title={'Rubric Already Exists'}
+          title={"Rubric Already Exists"}
           message={modalMessage}
           choices={modalChoices}
         />
@@ -406,7 +406,7 @@ export default function RubricBuilder(): ReactElement {
         <Dialog
           isOpen={isDialogOpen}
           onClose={closeDialog}
-          title={'Sending Rubric!'}
+          title={"Sending Rubric!"}
         >
           <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
             {JSON.stringify(lastSentRubric, null, 2)}
@@ -418,7 +418,7 @@ export default function RubricBuilder(): ReactElement {
         <Dialog
           isOpen={fileInputActive}
           onClose={() => setFileInputActive(false)}
-          title={'THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED'}
+          title={"THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED"}
         >
           {renderFileImport()}
         </Dialog>

@@ -1,5 +1,5 @@
-import { RubricCriterion } from './RubricCriterion.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { RubricCriterion } from "./RubricCriterion.ts";
+import { v4 as uuidv4 } from "uuid";
 
 export interface Rubric {
   title: string;
@@ -11,10 +11,10 @@ export interface Rubric {
 }
 
 export default function createRubric(
-  title: string = '',
+  title: string = "",
   criteria: RubricCriterion[] = [],
-  description: string = 'Enter description',
-  id: number = -1
+  description: string = "Enter description",
+  id: number = -1,
 ): Rubric {
   return {
     title,

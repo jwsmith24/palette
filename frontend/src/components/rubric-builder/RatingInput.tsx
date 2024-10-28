@@ -4,11 +4,11 @@ import React, {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { RubricRating } from '../../models/types/RubricRating.ts';
+} from "react";
+import { RubricRating } from "../../models/types/RubricRating.ts";
 
-import editDescriptionIcon from '../../assets/description-icon.webp';
-import removeIcon from '../../assets/x-icon2.webp';
+import editDescriptionIcon from "../../assets/description-icon.webp";
+import removeIcon from "../../assets/x-icon2.webp";
 
 export default function RatingInput({
   ratingIndex,
@@ -24,11 +24,11 @@ export default function RatingInput({
   const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or
   // default to 0.
   const [ratingDescription, setRatingDescription] = useState(
-    rating.description || ''
+    rating.description || "",
   );
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [longDescription, setLongDescription] = useState(
-    rating.longDescription || ''
+    rating.longDescription || "",
   );
 
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
@@ -41,18 +41,18 @@ export default function RatingInput({
 
     // Add a listener for the "Escape" key to close the popup
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setIsPopupOpen(false);
       }
     };
 
     if (isPopupOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener("keydown", handleKeyDown);
     }
 
     // Cleanup event listener on component unmount or popup close
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isPopupOpen]);
 
@@ -77,7 +77,7 @@ export default function RatingInput({
   };
 
   const handleRemoveRatingPress = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     handleRemoveRating(ratingIndex); // trigger removal
@@ -93,7 +93,7 @@ export default function RatingInput({
           className="hover:bg-gray-800 rounded-lg p-2 text-gray-300 w-12 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           min="0"
           required
-          title={'set'}
+          title={"set"}
         />
         <input
           type="text"
@@ -107,7 +107,7 @@ export default function RatingInput({
           tabIndex={-1}
           onClick={() => setIsPopupOpen(true)}
           type="button"
-          title={'Edit long description'}
+          title={"Edit long description"}
         >
           <img
             src={editDescriptionIcon}
@@ -120,7 +120,7 @@ export default function RatingInput({
           tabIndex={-1}
           onClick={handleRemoveRatingPress} // properly handle the remove button
           type="button"
-          title={'Remove rating option'}
+          title={"Remove rating option"}
         >
           <img
             src={removeIcon}
@@ -135,7 +135,7 @@ export default function RatingInput({
         <div
           className="fixed z-50 inset-0 bg-black bg-opacity-70 flex justify-center items-center"
           onKeyDown={(e) => {
-            if (e.key === 'Tab') {
+            if (e.key === "Tab") {
               // Prevent tabbing out of the popup
               e.preventDefault();
             }
