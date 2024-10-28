@@ -12,6 +12,7 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
+    command: sh -c "npm run migrate && npm run dev"
 
   db:
     image: postgres:latest

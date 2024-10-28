@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "migrate": "npm run migrate -w backend",
     "build": "npm run build --workspaces",
     "lint": "eslint . --no-cache",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",

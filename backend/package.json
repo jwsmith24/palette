@@ -9,7 +9,8 @@
     "dev": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
     "build": "tsc",
     "start": "node dist/app.js",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "migrate": "npx prisma migrate dev"
   },
   "keywords": [],
   "author": "Your Name",
