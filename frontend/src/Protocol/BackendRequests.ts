@@ -21,14 +21,23 @@ interface APIResponse<T> {
   errors?: APIError[];
 }
 
-// Error handling utility
+/**
+ * Error-handling utility for fetchAPI wrapper. It currently logs errors to the server console.
+ * @param errors
+ */
 const handleAPIErrors = (errors: APIError[]): void => {
   errors.forEach(({ param, msg }) => {
     console.log(`Field: ${param}, Message: ${msg}`);
   });
 };
 
-// Generic fetch wrapper with error handling
+/**
+ * <p>Generic fetch wrapper function to avoid similar fetch requests in each CRUD method.</p>
+ * @param endpoint url of the target endpoint: api/<endpoint>
+ * @param options modify request body for specific requests
+ *
+ * returns an APIResponse object
+ */
 async function fetchAPI<T>(
   endpoint: string,
   options: RequestInit = {} // used for extend
@@ -37,7 +46,7 @@ async function fetchAPI<T>(
     const url = `${API_CONFIG.baseURL}${endpoint}`;
     const response = await fetch(url, {
       ...options,
-      // add the API_CONFIG headers and any additional headers for the specific request
+      // add the API_CONFIG headers and modify the request body for the specific request
       headers: {
         ...API_CONFIG.headers,
         ...options.headers,
@@ -50,6 +59,7 @@ async function fetchAPI<T>(
       if (response.status === 400 && errorData.errors) {
         handleAPIErrors(errorData.errors);
       }
+
       return { error: errorData.error || 'An unknown error occurred' };
     }
 
@@ -99,6 +109,7 @@ export const BackendAPI = {
       body: JSON.stringify(rubric),
     });
 
+    // this only checks if the result is non-null, we need to make sure the response was ok
     if (result.data || result.data === undefined) {
       // handles both 200 and 204 responses
       console.log('Rubric updated successfully!');
