@@ -15,16 +15,17 @@ import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import createRubric, { Rubric } from "../../models/types/Rubric.ts";
+import createRubric, { Rubric } from "../../models/Rubric.ts";
+
 import createRubricCriterion, {
   RubricCriterion,
-} from "../../models/types/RubricCriterion.ts";
+} from "../../models/RubricCriterion.ts";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import createRating from "../../models/types/RubricRating.ts";
+import createRating from "../../models/RubricRating.ts";
 import { APIResponse, BackendAPI } from "../../Protocol/BackendRequests.ts";
 import ModalChoiceDialog from "../util/ModalChoiceDialog.tsx";
 

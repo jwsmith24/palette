@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 
 export interface RubricRating {
   points: number;
@@ -19,6 +19,6 @@ export default function createRating(
     description,
     longDescription,
     id,
-    key: uuidv4(),
+    key: uuid(),
   };
 }
