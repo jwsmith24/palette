@@ -100,6 +100,7 @@ export default function RubricBuilder(): ReactElement {
           {
             label: "Overwrite",
             action: async () => {
+              closeModal();
               try {
                 const result = await BackendAPI.update(id, rubric);
                 handleApiResponse(result, rubric);
@@ -112,6 +113,7 @@ export default function RubricBuilder(): ReactElement {
           {
             label: "Make a Copy",
             action: async () => {
+              closeModal();
               try {
                 const newRubric: Rubric = {
                   ...rubric,
