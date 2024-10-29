@@ -2,33 +2,29 @@ import { Rubric } from '../models/Rubric.ts';
 
 // Constants
 const API_CONFIG = {
-  baseURL: 'http://localhost:3000/api',
+  baseURL: "http://localhost:3000/api",
   headers: {
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache',
+    "Content-Type": "application/json",
+    "Cache-Control": "no-cache",
   },
-} as const; // make TS enforce immutability
+} as const; // enforce immutability
 
 // Types
-interface APIError {
+export interface APIError {
   param: string;
   msg: string;
 }
 
-interface APIResponse<T> {
+export interface APIResponse<T> {
+  success: boolean;
   data?: T;
   error?: string;
-  errors?: APIError[];
+  errors?: string[];
 }
 
-/**
- * Error-handling utility for fetchAPI wrapper. It currently logs errors to the server console.
- * @param errors
- */
-const handleAPIErrors = (errors: APIError[]): void => {
-  errors.forEach(({ param, msg }) => {
-    console.log(`Field: ${param}, Message: ${msg}`);
-  });
+// Error handling utility
+const handleAPIErrors = (errors: APIError[]): string[] => {
+  return errors.map(({ msg }) => msg); // extract messages from each error object
 };
 
 /**
@@ -40,7 +36,7 @@ const handleAPIErrors = (errors: APIError[]): void => {
  */
 async function fetchAPI<T>(
   endpoint: string,
-  options: RequestInit = {} // used for extend
+  options: RequestInit = {}, // used for extend
 ): Promise<APIResponse<T>> {
   try {
     const url = `${API_CONFIG.baseURL}${endpoint}`;
@@ -55,25 +51,30 @@ async function fetchAPI<T>(
 
     // Handle any errors
     if (!response.ok) {
-      const errorData = await response.json();
-      if (response.status === 400 && errorData.errors) {
-        handleAPIErrors(errorData.errors);
-      }
+      const errorData = (await response.json()) as {
+        error?: string;
+        errors?: APIError[]; // define response.json structure we expect
+      };
+      const errors = errorData.errors ? handleAPIErrors(errorData.errors) : [];
 
-      return { error: errorData.error || 'An unknown error occurred' };
+      return {
+        success: false,
+        error: errorData.error,
+        errors, // todo: maybe update naming convention here to not be so confusing
+      };
     }
 
     // Handle 204 No Content responses
     if (response.status === 204) {
-      return { data: undefined };
+      return { success: true };
     }
 
-    // Not an error, not 204, parse the response
-    const data = await response.json();
-    return { data };
+    // parse response if not an error
+    const data = (await response.json()) as T;
+    return { success: true, data };
   } catch (error) {
-    console.error('API Request failed:', error);
-    return { error: 'Failed to complete request' };
+    console.error("API Request failed:", error);
+    return { success: false, error: "Failed to complete request" };
   }
 }
 
@@ -85,17 +86,16 @@ export const BackendAPI = {
    * Create a new rubric in the database.
    * @param rubric The rubric data to save
    */
-  async create(rubric: Rubric): Promise<boolean> {
-    const result = await fetchAPI<Rubric>('/rubrics', {
-      method: 'POST',
+  async create(rubric: Rubric): Promise<APIResponse<Rubric>> {
+    const result = await fetchAPI<Rubric>("/rubrics", {
+      method: "POST",
       body: JSON.stringify(rubric),
     });
 
-    if (result.data) {
-      console.log('Rubric saved!', result.data);
-      return true;
+    if (result.success) {
+      console.log("Rubric saved!", result.data);
     }
-    return false;
+    return result;
   },
 
   /**
@@ -103,19 +103,20 @@ export const BackendAPI = {
    * @param id The ID of the rubric to update
    * @param rubric The updated rubric data
    */
-  async update(id: number, rubric: Rubric): Promise<boolean> {
-    const result = await fetchAPI<Rubric>(`/rubrics/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(rubric),
-    });
+  async update(id: number, rubric: Rubric): Promise<APIResponse<Rubric>> {
+    const result = await fetchAPI<Rubric>(
+      `/rubrics/${encodeURIComponent(id)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(rubric),
+      },
+    );
 
-    // this only checks if the result is non-null, we need to make sure the response was ok
-    if (result.data || result.data === undefined) {
+    if (result.success) {
       // handles both 200 and 204 responses
-      console.log('Rubric updated successfully!');
-      return true;
+      console.log("Rubric updated successfully!");
     }
-    return false;
+    return result;
   },
 
   /**
@@ -124,12 +125,20 @@ export const BackendAPI = {
    * @return An object { exists: boolean, id: number } indicating if the title exists and the ID if it does. If the title does not exist, the ID will be a garbage value.
    */
   async checkTitleExists(
-    title: string
-  ): Promise<{ exists: boolean; id: number }> {
-    console.log('Checking title:', title);
-    const result = await fetchAPI<{ id: number }>(`/rubrics/title/${title}`);
+    title: string,
+  ): Promise<{ exists: boolean; id: number; error?: string }> {
+    // add optional error field
+    // check for empty or whitespace only title
+    if (!title.trim()) {
+      console.warn("Rubric does not have a title!");
+      return { exists: false, id: -1, error: "Rubric must have a title" };
+    }
 
-    if (result.data) {
+    const result = await fetchAPI<{ id: number }>(
+      `/rubrics/title/${encodeURIComponent(title)}`,
+    );
+    console.log(result.data);
+    if (result.data && result.data.id) {
       return { exists: true, id: result.data.id };
     }
     return { exists: false, id: -1 };
@@ -140,12 +149,12 @@ export const BackendAPI = {
    * @param id The ID of the rubric to delete
    */
   async delete(id: number): Promise<boolean> {
-    const result = await fetchAPI(`/rubrics/${id}`, {
-      method: 'DELETE',
+    const result = await fetchAPI(`/rubrics/${encodeURIComponent(id)}`, {
+      method: "DELETE",
     });
 
     if (!result.error) {
-      console.log('Rubric deleted!');
+      console.log("Rubric deleted!");
       return true;
     }
     return false;

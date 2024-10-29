@@ -10,9 +10,9 @@ export interface RubricRating {
 
 export default function createRating(
   points: number = 0,
-  description: string = '',
-  longDescription: string = '',
-  id: number | undefined = undefined
+  description: string = "",
+  longDescription: string = "",
+  id: number | undefined = undefined,
 ): RubricRating {
   return {
     points,

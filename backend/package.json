@@ -6,12 +6,11 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "dev": "tsc --watch & nodemon dist/app.js",
+    "dev": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
     "build": "tsc",
-    "lint": "eslint .",
-    "prettier-check": "prettier --check 'src/**/*.{js,ts,tsx,json,md}'",
-    "start": " tsc && node dist/app.js",
-    "generate": "prisma generate"
+    "start": "node dist/app.js",
+    "generate": "prisma generate",
+    "migrate": "npx prisma migrate dev"
   },
   "keywords": [],
   "author": "Your Name",
@@ -34,8 +33,10 @@
     "@types/node": "^22.7.5",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
     "@typescript-eslint/parser": "^8.10.0",
+    "concurrently": "^9.0.1",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
+    "nodemon": "^3.1.7",
     "prettier": "^3.3.3",
     "prisma": "^5.21.1",
     "ts-node": "^10.9.2",
