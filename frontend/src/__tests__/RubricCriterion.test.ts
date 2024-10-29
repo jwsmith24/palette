@@ -5,79 +5,79 @@
 // Mock uuid to ensure predictable values
 import createRubricCriterion, {
   calcMaxPoints,
-} from '../models/RubricCriterion.ts';
-import createRating, { RubricRating } from '../models/RubricRating.ts';
+} from "../models/RubricCriterion.ts";
+import createRating, { RubricRating } from "../models/RubricRating.ts";
 
-jest.mock('uuid', () => ({
-  v4: jest.fn(() => 'test-uuid'),
+jest.mock("uuid", () => ({
+  v4: jest.fn(() => "test-uuid"),
 }));
 
 // rubric criterion test suite
-describe('RubricCriterion', () => {
+describe("RubricCriterion", () => {
   // each describe is a unit test
-  describe('createRubricCriterion', () => {
-    it('should create a RubricCriterion with default values', () => {
+  describe("createRubricCriterion", () => {
+    it("should create a RubricCriterion with default values", () => {
       const criterion = createRubricCriterion();
 
-      expect(criterion.description).toBe('');
-      expect(criterion.longDescription).toBe('');
+      expect(criterion.description).toBe("");
+      expect(criterion.longDescription).toBe("");
       expect(criterion.points).toBe(0);
       expect(criterion.ratings).toEqual([]);
       expect(criterion.id).toBeUndefined();
-      expect(criterion.key).toBe('test-uuid'); // Mocked UUID
+      expect(criterion.key).toBe("test-uuid"); // Mocked UUID
     });
 
-    it('should create a RubricCriterion with specified values', () => {
+    it("should create a RubricCriterion with specified values", () => {
       const mockRatings: RubricRating[] = [
-        createRating(5, 'Rating 1'),
-        createRating(10, 'Rating 2'),
+        createRating(5, "Rating 1"),
+        createRating(10, "Rating 2"),
       ];
       const criterion = createRubricCriterion(
-        'Criterion Title',
-        'Detailed description',
+        "Criterion Title",
+        "Detailed description",
         15,
         mockRatings,
-        123
+        123,
       );
 
-      expect(criterion.description).toBe('Criterion Title');
-      expect(criterion.longDescription).toBe('Detailed description');
+      expect(criterion.description).toBe("Criterion Title");
+      expect(criterion.longDescription).toBe("Detailed description");
       expect(criterion.points).toBe(15);
       expect(criterion.ratings).toEqual(mockRatings);
       expect(criterion.id).toBe(123);
-      expect(criterion.key).toBe('test-uuid');
+      expect(criterion.key).toBe("test-uuid");
     });
   });
 
-  describe('calcMaxPoints', () => {
-    it('should return the maximum points value from the ratings', () => {
+  describe("calcMaxPoints", () => {
+    it("should return the maximum points value from the ratings", () => {
       const ratings: RubricRating[] = [
-        createRating(5, 'Low'),
-        createRating(15, 'Medium'),
-        createRating(10, 'High'),
+        createRating(5, "Low"),
+        createRating(15, "Medium"),
+        createRating(10, "High"),
       ];
       const maxPoints = calcMaxPoints(ratings);
 
       expect(maxPoints).toBe(15);
     });
 
-    it('should return 0 if ratings array is empty', () => {
+    it("should return 0 if ratings array is empty", () => {
       const maxPoints = calcMaxPoints([]);
       expect(maxPoints).toBe(0);
     });
   });
 
-  describe('updatePoints', () => {
-    it('should update the points to the maximum rating points in the ratings array', () => {
+  describe("updatePoints", () => {
+    it("should update the points to the maximum rating points in the ratings array", () => {
       const ratings: RubricRating[] = [
-        createRating(8, 'Average'),
-        createRating(20, 'Excellent'),
+        createRating(8, "Average"),
+        createRating(20, "Excellent"),
       ];
       const criterion = createRubricCriterion(
-        'Criterion with Ratings',
-        'Long Description',
+        "Criterion with Ratings",
+        "Long Description",
         0,
-        ratings
+        ratings,
       );
 
       // Call updatePoints to update the points based on the ratings

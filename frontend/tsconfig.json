@@ -12,20 +12,8 @@
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "allowImportingTsExtensions": true,
-    "types": [
-      "node",
-      "express",
-      "react",
-      "vite/client",
-      "jest"
-    ]
+    "types": ["node", "express", "react", "vite/client", "jest"]
   },
-  "include": [
-    "src",
-    "vite.config.ts",
-    "src/**/*.test.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "vite.config.ts", "src/**/*.test.ts"],
+  "exclude": ["node_modules"]
 }
