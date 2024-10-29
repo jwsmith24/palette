@@ -1,4 +1,4 @@
-import { Rubric } from '../models/Rubric.ts';
+import { Rubric } from "../models/Rubric.ts";
 
 // Constants
 const API_CONFIG = {
