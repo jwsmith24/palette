@@ -1,4 +1,4 @@
-import { Rubric } from "../models/types/Rubric.ts";
+import { Rubric } from "../models/Rubric.ts";
 
 // Constants
 const API_CONFIG = {
@@ -27,7 +27,13 @@ const handleAPIErrors = (errors: APIError[]): string[] => {
   return errors.map(({ msg }) => msg); // extract messages from each error object
 };
 
-// Generic fetch wrapper with error handling
+/**
+ * <p>Generic fetch wrapper function to avoid similar fetch requests in each CRUD method.</p>
+ * @param endpoint url of the target endpoint: api/<endpoint>
+ * @param options modify request body for specific requests
+ *
+ * returns an APIResponse object
+ */
 async function fetchAPI<T>(
   endpoint: string,
   options: RequestInit = {}, // used for extend
@@ -36,7 +42,7 @@ async function fetchAPI<T>(
     const url = `${API_CONFIG.baseURL}${endpoint}`;
     const response = await fetch(url, {
       ...options,
-      // add the API_CONFIG headers and any additional headers for the specific request
+      // add the API_CONFIG headers and modify the request body for the specific request
       headers: {
         ...API_CONFIG.headers,
         ...options.headers,

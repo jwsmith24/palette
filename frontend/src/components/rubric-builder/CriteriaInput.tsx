@@ -11,8 +11,8 @@ import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import {
   calcMaxPoints,
   RubricCriterion,
-} from "../../models/types/RubricCriterion.ts";
-import createRating, { RubricRating } from "../../models/types/RubricRating.ts";
+} from "../../models/RubricCriterion.ts";
+import createRating, { RubricRating } from "../../models/RubricRating.ts";
 import RatingInput from "./RatingInput.tsx";
 
 export default function CriteriaInput({
