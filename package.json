@@ -15,7 +15,7 @@
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "generate": "npm run generate -w backend",
-    "test": "npm run test --workspaces"
+    "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\""
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
