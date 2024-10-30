@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -59,7 +63,7 @@ function Navbar() {
             className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
             onClick={handleOpenNavMenu}
           >
-            ...
+            <FontAwesomeIcon icon={faBars} />
           </button>
         </div>
         <div className="hidden sm:block">
@@ -92,11 +96,52 @@ function Navbar() {
         <div className="flex justify-end px-2 py-2">
           <button
             className={`px-5 py-1 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
-            onClick={handleCloseUserMenu}
+            onClick={handleOpenUserMenu}
           >
             U
           </button>
         </div>
+
+        <Menu
+          sx={{ mt: '45px' }}
+          id="hamburger-menu"
+          anchorEl={anchorElNav}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorElNav)}
+          onClose={handleClosenNavMenu}
+        >
+          <MenuItem onClick={handleRubricsClicked}>Rubrics</MenuItem>
+          <MenuItem onClick={handleClustersClicked}>Templates</MenuItem>
+          <MenuItem onClick={handleBuilderClicked}>Builder</MenuItem>
+        </Menu>
+
+        <Menu
+          sx={{ mt: '45px' }}
+          id="user-menu"
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
+          <MenuItem onClick={handleHomeClicked}>Logout</MenuItem>
+        </Menu>
       </div>
     </div>
   );
