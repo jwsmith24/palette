@@ -9,8 +9,8 @@ import { Rubric, RubricCriterion, RubricRating } from '../routes/rubricRouter';
 export default class PrismaRubricService implements RubricService {
   private prisma = new PrismaClient();
 
-  async createRubric(rubric: Rubric): Promise<void> {
-    await this.prisma.rubric.create({
+  async createRubric(rubric: Rubric): Promise<Rubric | null> {
+    const createdRubric = this.prisma.rubric.create({
       data: {
         title: rubric.title,
         rubricCriteria: {
@@ -30,6 +30,11 @@ export default class PrismaRubricService implements RubricService {
         },
       },
     });
+
+    if (!createdRubric) {
+      return null;
+    }
+    return this.toRubricDTO(createdRubric);
   }
 
   async getRubricById(id: number): Promise<Rubric | null> {
@@ -42,7 +47,7 @@ export default class PrismaRubricService implements RubricService {
           },
         },
       },
-    });
+    })
 
     // if rubric is null, return null, else return the mapped rubric
     return rubric ? this.toRubricDTO(rubric) : null;

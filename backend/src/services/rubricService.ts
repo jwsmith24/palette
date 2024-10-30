@@ -8,7 +8,7 @@ import { Rubric } from '../routes/rubricRouter';
  * This allows for easier testing and swapping out different implementations of the RubricService class.
  */
 export interface RubricService {
-  createRubric(data: Rubric): Promise<void>;
+  createRubric(data: Rubric): Promise<Rubric | null>;
   getRubricById(id: number): Promise<Rubric | null>;
   getAllRubrics(): Promise<Rubric[]>;
   getRubricIdByTitle(title: string): Promise<{ id: number } | null>;

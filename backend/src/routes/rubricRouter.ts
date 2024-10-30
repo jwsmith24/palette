@@ -4,8 +4,8 @@ import { Result, ValidationError, validationResult } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 //import validateRubric from '../validators/rubricValidator';
 import { RubricService } from '../services/rubricService';
-import PrismaRubricService from '../services/prismaRubricService';
-import validateRubric from '../validators/rubricValidator';
+import PrismaRubricService from '../services/prismaRubricService.js';
+import validateRubric from '../validators/rubricValidator.js';
 
 const router = express.Router();
 const rubricService: RubricService = new PrismaRubricService();
@@ -23,6 +23,7 @@ export interface Rubric {
   published?: boolean;
   authorId?: number | null;
   rubricCriteria: RubricCriterion[]; // required
+  key?: string;
 }
 
 export interface RubricCriterion {
@@ -49,8 +50,10 @@ router.post(
       return;
     }
 
-    const newRubric = await rubricService.createRubric(req.body as Rubric);
-    res.status(201).json(newRubric);
+    await rubricService.createRubric(req.body as Rubric);
+    // respond with the rubric without the key and id fields
+
+    res.status(201).json(req.body as Rubric);
   }),
 );
 
