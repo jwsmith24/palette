@@ -4,16 +4,16 @@ import React, {
   ReactElement,
   useEffect,
   useState,
-} from 'react';
+} from "react";
 
-import { useSortable } from '@dnd-kit/sortable'; // Import useSortable
-import { CSS } from '@dnd-kit/utilities'; // Import CSS utilities
+import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
+import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import {
   calcMaxPoints,
   RubricCriterion,
-} from '../../models/types/RubricCriterion.ts';
-import createRating, { RubricRating } from '../../models/types/RubricRating.ts';
-import RatingInput from './RatingInput.tsx';
+} from "../../models/RubricCriterion.ts";
+import createRating, { RubricRating } from "../../models/RubricRating.ts";
+import RatingInput from "./RatingInput.tsx";
 
 export default function CriteriaInput({
   index,
@@ -31,9 +31,9 @@ export default function CriteriaInput({
   setActiveCriterionIndex: (index: number) => void;
 }): ReactElement {
   const [ratings, setRatings] = useState<RubricRating[]>(criterion.ratings);
-  const [maxPoints, setMaxPoints] = useState(0); // Initialize state for max points
+  const [maxPoints, setMaxPoints] = useState<number>(0); // Initialize state for max points
   const [criteriaDescription, setCriteriaDescription] = useState(
-    criterion.description || ''
+    criterion.description || "",
   );
   /**
    * Whenever ratings change, recalculate criterion's max points
@@ -55,9 +55,9 @@ export default function CriteriaInput({
 
   const handleRemoveCriteriaButton = (
     event: ReactMouseEvent,
-    index: number
+    index: number,
   ) => {
-    console.log('removing the criterion!');
+    console.log("removing the criterion!");
     event.preventDefault();
     event.stopPropagation();
     setTimeout(() => {
@@ -68,10 +68,10 @@ export default function CriteriaInput({
   // Update criterion when ratings change.
   const handleRatingChange = (
     ratingIndex: number,
-    updatedRating: RubricRating
+    updatedRating: RubricRating,
   ) => {
     const updatedRatings = ratings.map((rating, index) =>
-      index === ratingIndex ? updatedRating : rating
+      index === ratingIndex ? updatedRating : rating,
     );
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
@@ -103,7 +103,7 @@ export default function CriteriaInput({
 
   const handleAddRating = (
     event: ReactMouseEvent<HTMLButtonElement>,
-    index: number
+    index: number,
   ) => {
     event.preventDefault();
     const updatedRatings = [...ratings, createRating()];
@@ -140,19 +140,19 @@ export default function CriteriaInput({
         <div className="text-gray-300">
           <strong>{criteriaDescription}</strong> - Max Points: {maxPoints}
         </div>
-        <div className={'flex gap-3'}>
+        <div className={"flex gap-3"}>
           <button
             onPointerDown={(
-              event: ReactMouseEvent // Change to onPointerDown
+              event: ReactMouseEvent, // Change to onPointerDown
             ) => handleRemoveCriteriaButton(event, index)}
-            type={'button'}
+            type={"button"}
             className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
           >
             Remove
           </button>
           <button
             onPointerDown={handleExpandCriterion}
-            type={'button'}
+            type={"button"}
             className="transition-all ease-in-out duration-300 bg-emerald-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-emerald-700 focus:outline-none border-2 border-transparent"
           >
             Edit
@@ -166,7 +166,7 @@ export default function CriteriaInput({
     return (
       <div className=" grid border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
         <div className="grid mt-4 mr-3 grid-cols-2 gap-4 items-start content-between">
-          <div className={'grid self-baseline'}>
+          <div className={"grid self-baseline"}>
             <input
               type="text"
               placeholder={`Criteria ${index + 1} Description...`}
@@ -179,31 +179,31 @@ export default function CriteriaInput({
             </p>
           </div>
 
-          <div className={'grid gap-8'}>{renderRatingOptions()}</div>
+          <div className={"grid gap-8"}>{renderRatingOptions()}</div>
 
-          <div className={'flex gap-3 justify-self-start'}>
+          <div className={"flex gap-3 justify-self-start"}>
             <button
               onPointerDown={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleRemoveCriteriaButton(event, index)
               }
               className={
-                'transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4' +
-                ' py-2 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none'
+                "transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4" +
+                " py-2 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none"
               }
-              type={'button'}
+              type={"button"}
             >
               Remove
             </button>
             <button
               className={
-                'transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4' +
-                ' py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none'
+                "transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4" +
+                " py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
               }
               onPointerDown={() => {
                 setActiveCriterionIndex(-1); // setting the index to -1 will ensure the current criteria will
                 // condense and another one won't open
               }}
-              type={'button'}
+              type={"button"}
             >
               Collapse
             </button>
@@ -211,13 +211,13 @@ export default function CriteriaInput({
 
           <button
             className={
-              'transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4' +
-              ' py-2 justify-self-end hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:outline-none'
+              "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4" +
+              " py-2 justify-self-end hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:outline-none"
             }
             onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
               handleAddRating(event, index)
             }
-            type={'button'}
+            type={"button"}
           >
             Add Rating
           </button>

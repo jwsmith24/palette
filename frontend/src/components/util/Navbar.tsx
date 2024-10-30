@@ -1,10 +1,10 @@
-import * as React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
+import * as React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -12,9 +12,9 @@ function Navbar() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const onRubrics = location.pathname == '/rubrics';
-  const onTemplates = location.pathname == '/clusters';
-  const onBuilder = location.pathname == '/rubric-builder';
+  const onRubrics = location.pathname == "/rubrics";
+  const onTemplates = location.pathname == "/clusters";
+  const onBuilder = location.pathname == "/rubric-builder";
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -32,19 +32,19 @@ function Navbar() {
   };
 
   const handleHomeClicked = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleRubricsClicked = () => {
-    navigate('/rubrics');
+    navigate("/rubrics");
   };
 
   const handleClustersClicked = () => {
-    navigate('/clusters');
+    navigate("/clusters");
   };
 
   const handleBuilderClicked = () => {
-    navigate('/rubric-builder');
+    navigate("/rubric-builder");
   };
 
   return (
@@ -68,8 +68,8 @@ function Navbar() {
         </div>
         <div className="hidden sm:block">
           <button
-            disabled={location.pathname == '/rubrics'}
-            className={`px-3 py-5 ${onRubrics ? 'underline' : 'no-underline hover:opacity-80 transition duration-300 transform hover:scale-105'}`}
+            disabled={location.pathname == "/rubrics"}
+            className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
             onClick={handleRubricsClicked}
           >
             RUBRICS
@@ -77,8 +77,8 @@ function Navbar() {
         </div>
         <div className="hidden sm:block">
           <button
-            disabled={location.pathname == '/clusters'}
-            className={`px-3 py-5 ${onTemplates ? 'underline' : 'no-underline hover:opacity-80 transition duration-300 transform hover:scale-105'}`}
+            disabled={location.pathname == "/clusters"}
+            className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
             onClick={handleClustersClicked}
           >
             TEMPLATES
@@ -86,8 +86,8 @@ function Navbar() {
         </div>
         <div className="flex-grow hidden sm:block">
           <button
-            disabled={location.pathname == '/rubric-builder'}
-            className={`px-3 py-5 ${onBuilder ? 'underline' : 'no-underline hover:opacity-80 transition duration-300 transform hover:scale-105'}`}
+            disabled={location.pathname == "/rubric-builder"}
+            className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
             onClick={handleBuilderClicked}
           >
             BUILDER
@@ -103,17 +103,17 @@ function Navbar() {
         </div>
 
         <Menu
-          sx={{ mt: '45px' }}
+          sx={{ mt: "45px" }}
           id="hamburger-menu"
           anchorEl={anchorElNav}
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           keepMounted
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           open={Boolean(anchorElNav)}
           onClose={handleClosenNavMenu}
@@ -124,17 +124,17 @@ function Navbar() {
         </Menu>
 
         <Menu
-          sx={{ mt: '45px' }}
+          sx={{ mt: "45px" }}
           id="user-menu"
           anchorEl={anchorElUser}
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           keepMounted
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right",
           }}
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}

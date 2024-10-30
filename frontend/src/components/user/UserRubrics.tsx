@@ -2,22 +2,10 @@
 Main view for the Rubric Builder feature.
  */
 
-import {
-  ChangeEvent,
-  MouseEvent,
-  ReactElement,
-  useEffect,
-  useState,
-} from 'react';
+import { ReactElement } from "react";
 
-import CriteriaInput from '../rubric-builder/CriteriaInput.tsx';
-import Dialog from '../util/Dialog.tsx';
-import Header from '../util/Header.tsx';
-import Footer from '../util/Footer.tsx';
-import { Rubric } from '../../models/types/rubric.ts';
-import createRubric from '../../models/Rubric.ts';
-import { Criteria } from '../../models/types/criteria.ts';
-import createCriterion from '../../models/Criteria.ts';
+import Header from "../util/Header.tsx";
+import Footer from "../util/Footer.tsx";
 
 export default function RubricBuilder(): ReactElement {
   return (

@@ -8,10 +8,10 @@ import {
   ReactElement,
   useEffect,
   useState,
-} from 'react';
+} from "react";
 
-import Header from '../util/Header.tsx';
-import Footer from '../util/Footer.tsx';
+import Header from "../util/Header.tsx";
+import Footer from "../util/Footer.tsx";
 
 export default function ClusterBuilder(): ReactElement {
   return (
