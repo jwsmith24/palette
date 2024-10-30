@@ -2,13 +2,7 @@
 Main view for the Criteria Cluster feature.
  */
 
-import {
-  ChangeEvent,
-  MouseEvent,
-  ReactElement,
-  useEffect,
-  useState,
-} from "react";
+import { ReactElement } from "react";
 
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
