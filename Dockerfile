@@ -10,8 +10,12 @@ COPY package-lock.json ./
 COPY frontend/package.json ./frontend/
 COPY backend/package.json ./backend/
 
+# Manually install the correct binary for rollup-linux-arm64-gnu (macOS fix)
+RUN npm install @rollup/rollup-linux-arm64-gnu --platform=linux/arm64
+
 # clean install dependencies
 RUN npm ci
+
 
 # copy the rest of the project files
 COPY . .
