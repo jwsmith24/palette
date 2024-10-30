@@ -23,7 +23,7 @@ function Navbar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleClosenNavMenu = () => {
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
@@ -116,7 +116,7 @@ function Navbar() {
             horizontal: "right",
           }}
           open={Boolean(anchorElNav)}
-          onClose={handleClosenNavMenu}
+          onClose={handleCloseNavMenu}
         >
           <MenuItem onClick={handleRubricsClicked}>Rubrics</MenuItem>
           <MenuItem onClick={handleClustersClicked}>Templates</MenuItem>
