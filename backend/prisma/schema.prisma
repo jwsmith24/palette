@@ -6,7 +6,7 @@ datasource db {
   url      = env("DATABASE_URL") // connection string stored in local .env file
 }
 
-generator client {git
+generator client {
   provider = "prisma-client-js"
 }
 
