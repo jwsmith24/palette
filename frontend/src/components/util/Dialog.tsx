@@ -1,6 +1,6 @@
 // generic dialog component. Pass children to it that you want to display.
 
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface DialogProps {
   isOpen: boolean;

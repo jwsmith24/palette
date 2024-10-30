@@ -10,19 +10,10 @@
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
     "allowImportingTsExtensions": true,
-    "types": [
-      "node",
-      "express",
-      "react",
-      "vite/client"
-    ]
+    "types": ["node", "express", "react", "vite/client", "jest"]
   },
-  "include": [
-    "src",
-    "vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "vite.config.ts", "src/**/*.test.ts", "src/**/*.test.tsx"],
+  "exclude": ["node_modules"]
 }

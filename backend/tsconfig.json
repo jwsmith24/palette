@@ -12,8 +12,9 @@
     },
     "strict": true,
     "esModuleInterop": true,
+    "sourceMap": true,
     "skipLibCheck": true,
-    "types": ["node", "express", "@prisma/client"],
+    "types": ["node", "express", "@prisma/client", "jest"],
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],

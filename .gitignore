@@ -29,3 +29,6 @@ env
 *.njsproj
 *.sln
 *.sw?
+
+# jest reports
+coverage/

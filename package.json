@@ -1,14 +1,21 @@
 {
   "name": "palette",
   "private": true,
+  "type": "module",
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "palette-types"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev --workspace frontend\" \"npm run dev --workspace backend\"",
+    "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
+    "migrate": "npm run migrate -w backend",
     "build": "npm run build --workspaces",
-    "install:all": "npm install --workspaces"
+    "lint": "eslint . --no-cache",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "generate": "npm run generate -w backend",
+    "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\""
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
