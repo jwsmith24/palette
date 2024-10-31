@@ -17,7 +17,7 @@ export default function Home(): ReactElement {
   };
 
   const handleLogin = () => {
-    navigate("/rubric-builder");
+    navigate("/rubrics");
   };
 
   const handleSignUp = () => {
@@ -27,7 +27,7 @@ export default function Home(): ReactElement {
   return (
     <div className="h-screen w-full bg-gradient-to-br from-gray-800 via-gray-900 to-black flex flex-col justify-between">
       {/* Header Bar */}
-      <div className="h-12 bg-gradient-to-r from-red-500 via-green-500 to-purple-500"></div>
+      <div className="min-h-12 h-16 bg-gradient-to-r from-red-500 via-green-500 to-purple-500"></div>
 
       {/* Main Content Section */}
       <div className="flex flex-col items-center justify-center text-white text-center">
