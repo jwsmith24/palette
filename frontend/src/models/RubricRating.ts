@@ -9,6 +9,9 @@ export interface RubricRating extends BaseRating {
   key: string;
 }
 
+/**
+ * Rating factory function.
+ */
 export default function createRating(
   points: number = 0,
   description: string = "",
