@@ -1,6 +1,13 @@
 import { v4 as uuid } from "uuid";
-import { RubricRating } from "../../../palette-types/src";
+import { RubricRating as BaseRating } from "../../../palette-types/src";
 import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
+
+/**
+ * Ensures key field is required within the frontend scope.
+ */
+export interface RubricRating extends BaseRating {
+  key: string;
+}
 
 export default function createRating(
   points: number = 0,

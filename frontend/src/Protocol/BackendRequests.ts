@@ -1,4 +1,4 @@
-import { Rubric } from "../../../palette-types/src";
+import { Rubric } from "../models/Rubric.ts";
 
 /**
  * Define base Request to communicate with the backend API.

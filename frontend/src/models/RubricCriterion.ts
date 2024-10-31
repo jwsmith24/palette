@@ -1,17 +1,17 @@
-import {
-  RubricCriterion as BaseCriterion,
-  RubricRating,
-} from "../../../palette-types/src";
 import { v4 as uuidv4 } from "uuid";
 import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
+import { RubricRating } from "./RubricRating.ts";
+import { RubricCriterion as BaseCriterion } from "../../../palette-types/src";
 
 /**
  * Frontend extension of RubricCriterion
  *
- * Adds the updatePoints function to the type definition.
+ * Adds the updatePoints function to the type definition and ensures frontend implementation of RubricRating is used.
  */
 export interface RubricCriterion extends BaseCriterion {
   updatePoints: () => void;
+  key: string;
+  ratings: RubricRating[];
 }
 
 /**
