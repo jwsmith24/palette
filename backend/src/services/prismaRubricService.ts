@@ -1,6 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { RubricService } from './rubricService';
-import { Rubric, RubricCriterion, RubricRating } from '../routes/rubricRouter';
+import {
+  Rubric,
+  RubricCriterion,
+  RubricRating,
+} from '../../../palette-types/src/DatabaseSafeTypes';
+import util from 'util';
 
 /**
  * This class is responsible for handling all the business logic for rubrics.
@@ -10,12 +15,12 @@ export default class PrismaRubricService implements RubricService {
   private prisma = new PrismaClient();
 
   async createRubric(rubric: Rubric): Promise<Rubric | null> {
-    const createdRubric = this.prisma.rubric.create({
+    const createdRubric = await this.prisma.rubric.create({
       data: {
         title: rubric.title,
+        pointsPossible: rubric.pointsPossible,
         rubricCriteria: {
-          // get the criteria (if any)
-          create: rubric.rubricCriteria?.map((criterion) => ({
+          create: rubric.rubricCriteria.map((criterion) => ({
             description: criterion.description,
             longDescription: criterion.longDescription,
             points: criterion.points,
@@ -29,16 +34,25 @@ export default class PrismaRubricService implements RubricService {
           })),
         },
       },
+      include: {
+        rubricCriteria: {
+          include: {
+            ratings: true,
+          },
+        },
+      },
     });
 
-    if (!createdRubric) {
-      return null;
-    }
-    return this.toRubricDTO(createdRubric);
+    // log the rubric (printing 4 nested objects deep)
+    console.log(
+      "Created rubric:",
+      util.inspect(createdRubric, { depth: 4, colors: true }),
+    );
+    return (createdRubric as Rubric) || null;
   }
 
   async getRubricById(id: number): Promise<Rubric | null> {
-    const rubric = this.prisma.rubric.findUnique({
+    const returnedRubric = await this.prisma.rubric.findUnique({
       where: { id },
       include: {
         rubricCriteria: {
@@ -47,27 +61,40 @@ export default class PrismaRubricService implements RubricService {
           },
         },
       },
-    })
+    });
 
-    // if rubric is null, return null, else return the mapped rubric
-    return rubric ? this.toRubricDTO(rubric) : null;
+    // log the rubric (printing 4 nested objects deep)
+    console.log(
+      "Retrieved rubric:",
+      util.inspect(returnedRubric, { depth: 4, colors: true }),
+    );
+    return returnedRubric as Rubric | null;
   }
 
   async getAllRubrics(): Promise<Rubric[]> {
-    // return this.prisma.rubric.findMany({
-    //   include: {
-    //     rubricCriteria: {
-    //       include: {
-    //         ratings: true,
-    //       },
-    //     },
-    //   },
-    // }) as Rubric[];
-    throw new Error("Method not implemented.");
+    const fetchedRubrics = await this.prisma.rubric.findMany({
+      include: {
+        rubricCriteria: {
+          include: {
+            ratings: true,
+          },
+        },
+      },
+    });
+
+    // log the rubrics (printing 4 nested objects deep)
+    console.log(
+      "Fetched rubrics:",
+      util.inspect(fetchedRubrics, { depth: 4, colors: true }),
+    );
+    return fetchedRubrics as Rubric[];
   }
 
-  async updateRubric(id: number, data: Rubric): Promise<void> {
-    await this.prisma.rubric.update({
+  async updateRubric(id: number, data: Rubric): Promise<Rubric | null> {
+    // delete the rubrics criterion first
+    await this.deleteAllCriteria(id);
+
+    const updatedRubric = await this.prisma.rubric.update({
       where: { id: Number(id) },
       data: {
         title: data.title,
@@ -96,42 +123,41 @@ export default class PrismaRubricService implements RubricService {
         },
       },
     });
+
+    // log the updated rubric (printing 4 nested objects deep)
+    console.log(
+      "Updated rubric:",
+      util.inspect(updatedRubric, { depth: 4, colors: true }),
+    );
+    return updatedRubric as Rubric | null;
   }
 
   async deleteAllCriteria(rubricId: number): Promise<void> {
     await this.prisma.rubricCriterion.deleteMany({
       where: { rubricId },
     });
+    console.log("Deleted all criteria for rubric ID:", rubricId);
   }
 
   async deleteRubric(id: number): Promise<void> {
     await this.prisma.rubric.delete({
       where: { id },
     });
+    console.log("Deleted rubric with ID:", id);
   }
 
   async getRubricIdByTitle(title: string): Promise<{ id: number } | null> {
-    return this.prisma.rubric.findFirst({
+    const rubricId = await this.prisma.rubric.findFirst({
       where: { title },
       select: { id: true },
     });
-  }
 
-  private toRubricDTO(rubric: any): Rubric {
-    return {
-      id: rubric.id,
-      title: rubric.title,
-      pointsPossible: rubric.pointsPossible,
-      rubricCriteria: rubric.rubricCriteria.map((criterion: any) => ({
-        description: criterion.description,
-        longDescription: criterion.longDescription,
-        points: criterion.points,
-        ratings: criterion.ratings.map((rating: any) => ({
-          description: rating.description,
-          longDescription: rating.longDescription,
-          points: rating.points,
-        })),
-      })),
-    };
+    if (rubricId) {
+      console.log("Found rubric with ID:", rubricId);
+      return rubricId as { id: number };
+    }
+
+    console.log("Rubric not found with title:", title);
+    return null;
   }
 }

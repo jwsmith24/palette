@@ -6,58 +6,47 @@ import asyncHandler from 'express-async-handler';
 import { RubricService } from '../services/rubricService';
 import PrismaRubricService from '../services/prismaRubricService.js';
 import validateRubric from '../validators/rubricValidator.js';
+import { Rubric } from '../../../palette-types/src/DatabaseSafeTypes';
+import { StatusCodes } from 'http-status-codes';
 
 const router = express.Router();
 const rubricService: RubricService = new PrismaRubricService();
 
-export interface Rubric {
-  id?: number;
-  title: string; // required
-  contextId?: number | null;
-  pointsPossible: number; // required
-  reusable?: boolean | null;
-  readOnly?: boolean | null;
-  freeFormCriterionComments?: boolean | null;
-  hideScoreTotal?: boolean | null;
-  content?: string | null;
-  published?: boolean;
-  authorId?: number | null;
-  rubricCriteria: RubricCriterion[]; // required
-  key?: string;
-}
-
-export interface RubricCriterion {
-  description: string;
-  longDescription?: string;
-  points: number;
-  ratings: RubricRating[];
-}
-
-export interface RubricRating {
-  description: string;
-  longDescription?: string;
-  points: number;
-}
-
+/**
+ * Create a new rubric in the database.
+ * @route POST /rubrics
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.post(
   "/",
   validateRubric,
   asyncHandler(async (req: Request, res: Response) => {
     const errors: Result<ValidationError> = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log(errors);
-      res.status(400).send({ errors: errors.array() });
+      console.error(errors);
+      res.status(StatusCodes.BAD_REQUEST).send({ errors: errors.array() });
       return;
     }
 
-    await rubricService.createRubric(req.body as Rubric);
-    // respond with the rubric without the key and id fields
+    const createdRubric = await rubricService.createRubric(req.body as Rubric);
 
-    res.status(201).json(req.body as Rubric);
+    if (createdRubric) {
+      res.status(StatusCodes.CREATED).json(createdRubric);
+    } else {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to create rubric" });
+    }
   }),
 );
 
-// fetch a specific rubric by ID
+/**
+ * Fetch a specific rubric by ID.
+ * @route GET /rubrics/:id
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.get(
   "/:id",
   asyncHandler(async (req: Request, res: Response) => {
@@ -65,36 +54,42 @@ router.get(
     const rubric = await rubricService.getRubricById(Number(id));
     // Check if the rubric was found
     if (!rubric) {
-      res.status(404).send({ error: "Rubric not found" });
+      res.status(StatusCodes.NOT_FOUND).send({ error: "Rubric not found" });
       return;
     }
 
-    res.status(200).send(rubric); // Send the found rubric back
+    res.status(StatusCodes.OK).send(rubric); // Send the found rubric back
   }),
 );
 
 /**
  * Return all rubrics from the database.
- *
- * "_" is added in front of req to tell eslint that it's not being used but still has to be there anyway.
+ * @route GET /rubrics
+ * @param {Request} _req - The request object (not used).
+ * @param {Response} res - The response object.
  */
 router.get(
   "/",
   asyncHandler(async (_req: Request, res: Response) => {
-    // gets all rubrics with their criteria and ratings
-    const rubrics: Rubric[] = await rubricService.getAllRubrics();
-    res.status(200).send(rubrics);
+    // this always returns an array, even if empty
+    const rubrics = await rubricService.getAllRubrics();
+    res.status(StatusCodes.OK).send(rubrics);
   }),
 );
 
-// update an existing rubric
+/**
+ * Update an existing rubric.
+ * @route PUT /rubrics/:id
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.put(
   "/:id",
   validateRubric,
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.status(400).send({ errors: errors.array() });
+      res.status(StatusCodes.BAD_REQUEST).send({ errors: errors.array() });
       return;
     }
 
@@ -107,39 +102,62 @@ router.put(
     // if not, create a new rubric
     if (!existingRubric) {
       const newRubric = await rubricService.createRubric(req.body as Rubric);
-      res.status(201).json(newRubric);
+      res.status(StatusCodes.CREATED).json(newRubric);
       return;
     }
 
     // Otherwise, update the existing rubric
-    await rubricService.updateRubric(Number(id), req.body as Rubric);
+    const updatedRubric = await rubricService.updateRubric(
+      Number(id),
+      req.body as Rubric,
+    );
+
+    if (!updatedRubric) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to update rubric" });
+      return;
+    }
+
     // No error, send back the updated rubric
-    res.status(200).send(req.body as Rubric);
+    res.status(StatusCodes.OK).send(updatedRubric);
   }),
 );
 
-// get a rubric by title
+/**
+ * Get a rubric id by title.
+ * @route GET /rubrics/title/:title
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.get(
   "/title/:title",
   asyncHandler(async (req: Request, res: Response) => {
     const { title } = req.params;
 
     if (!title) {
-      res.status(400).json({ error: "Rubric title is required!" });
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Rubric title is required!" });
       return;
     }
 
     const rubric = await rubricService.getRubricIdByTitle(title);
 
     if (rubric) {
-      res.status(200).json({ exists: true, id: rubric.id });
+      res.status(StatusCodes.OK).json({ exists: true, id: rubric.id });
     } else {
-      res.status(404).json({ exists: false, id: null });
+      res.status(StatusCodes.NOT_FOUND).json({ exists: false, id: -1 });
     }
   }),
 );
 
-// delete an existing rubric
+/**
+ * Delete an existing rubric.
+ * @route DELETE /rubrics/:id
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.delete(
   "/:id",
   asyncHandler(async (req: Request, res: Response) => {
@@ -147,7 +165,7 @@ router.delete(
 
     // delete the rubric
     await rubricService.deleteRubric(Number(id));
-    res.status(204).send(); // Deletion was successful
+    res.status(StatusCodes.NO_CONTENT).send(); // Deletion was successful
   }),
 );
 
