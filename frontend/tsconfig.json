@@ -15,5 +15,5 @@
     "types": ["node", "express", "react", "vite/client", "jest"]
   },
   "include": ["src", "vite.config.ts", "src/**/*.test.ts", "src/**/*.test.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
