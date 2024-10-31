@@ -1,6 +1,8 @@
-import { Rubric } from "../models/Rubric.ts";
+import { Rubric } from "../../../palette-types/src";
 
-// Constants
+/**
+ * Define base Request to communicate with the backend API.
+ */
 const API_CONFIG = {
   baseURL: "http://localhost:3000/api",
   headers: {
@@ -15,6 +17,9 @@ export interface APIError {
   msg: string;
 }
 
+/**
+ * Used to trim down the Response object received from the backend to the essentials needed by the frontend.
+ */
 export interface APIResponse<T> {
   success: boolean;
   data?: T;
@@ -22,7 +27,10 @@ export interface APIResponse<T> {
   errors?: string[];
 }
 
-// Error handling utility
+/**
+ * Error handler helper function. Will likely replace with node util tool.
+ * @param errors
+ */
 const handleAPIErrors = (errors: APIError[]): string[] => {
   return errors.map(({ msg }) => msg); // extract messages from each error object
 };
@@ -60,7 +68,7 @@ async function fetchAPI<T>(
       return {
         success: false,
         error: errorData.error,
-        errors, // todo: maybe update naming convention here to not be so confusing
+        errors,
       };
     }
 
