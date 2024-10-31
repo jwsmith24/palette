@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import Navbar from "../util/Navbar.tsx";
+import Navbar from "./Navbar.tsx";
 
 export default function Header(): ReactElement {
   return (

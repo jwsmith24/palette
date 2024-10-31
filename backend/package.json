@@ -6,13 +6,14 @@
   "main": "src/app.ts",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"nodemon dist/app.js\"",
+    "dev": "concurrently \"tsc --watch\" \"nodemon dist/backend/src/app.js\"",
     "build": "tsc",
     "start": "node dist/app.js",
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
     "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "clean": "sudo rm -rf dist"
   },
   "keywords": [],
   "author": "Your Name",

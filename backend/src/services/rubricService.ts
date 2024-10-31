@@ -1,4 +1,4 @@
-import { Rubric } from "../../../palette-types/src/DatabaseSafeTypes";
+import { CanvasRubric } from "../../../palette-types/src/canvasTypes";
 
 /**
  * This file contains the interface for the RubricService class.
@@ -8,23 +8,23 @@ import { Rubric } from "../../../palette-types/src/DatabaseSafeTypes";
 export interface RubricService {
   /**
    * Creates a new rubric in the datastore.
-   * @param {Rubric} data - The rubric object to be created.
-   * @returns {Promise<Rubric | null>} - The created rubric object or null if creation failed.
+   * @param {CanvasRubric} data - The rubric object to be created.
+   * @returns {Promise<CanvasRubric | null>} - The created rubric object or null if creation failed.
    */
-  createRubric(data: Rubric): Promise<Rubric | null>;
+  createRubric(data: CanvasRubric): Promise<CanvasRubric | null>;
 
   /**
    * Retrieves a rubric by its ID.
    * @param {number} id - The ID of the rubric to retrieve.
-   * @returns {Promise<Rubric | null>} - The retrieved rubric object or null if not found.
+   * @returns {Promise<CanvasRubric | null>} - The retrieved rubric object or null if not found.
    */
-  getRubricById(id: number): Promise<Rubric | null>;
+  getRubricById(id: number): Promise<CanvasRubric | null>;
 
   /**
    * Retrieves all rubrics from the datastore.
-   * @returns {Promise<Rubric[]>} - An array of all rubric objects.
+   * @returns {Promise<CanvasRubric[]>} - An array of all rubric objects.
    */
-  getAllRubrics(): Promise<Rubric[]>;
+  getAllRubrics(): Promise<CanvasRubric[]>;
 
   /**
    * Retrieves the ID of a rubric by its title.
@@ -36,10 +36,10 @@ export interface RubricService {
   /**
    * Updates an existing rubric in the datastore.
    * @param {number} id - The ID of the rubric to update.
-   * @param {Rubric} data - The updated rubric data.
-   * @returns {Promise<Rubric | null>} - The updated rubric object or null if update failed.
+   * @param {CanvasRubric} data - The updated rubric data.
+   * @returns {Promise<CanvasRubric | null>} - The updated rubric object or null if update failed.
    */
-  updateRubric(id: number, data: Rubric): Promise<Rubric | null>;
+  updateRubric(id: number, data: CanvasRubric): Promise<CanvasRubric | null>;
 
   /**
    * Deletes a rubric from the datastore.

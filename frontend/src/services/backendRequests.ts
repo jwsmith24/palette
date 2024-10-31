@@ -1,29 +1,26 @@
-import { Rubric } from "../models/Rubric.ts";
+import { Rubric } from "../features/rubricBuilder/Rubric.ts";
+import {
+  PaletteAPIError,
+  PaletteAPIRequest,
+  PaletteAPIResponse,
+} from "../../../palette-types/src/paletteApiTypes.ts";
 
-// Constants
+/**
+ * Define base Request to communicate with the backend API.
+ */
 const API_CONFIG = {
   baseURL: "http://localhost:3000/api",
   headers: {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
   },
-} as const; // enforce immutability
+} as PaletteAPIRequest;
 
-// Types
-export interface APIError {
-  param: string;
-  msg: string;
-}
-
-export interface APIResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  errors?: string[];
-}
-
-// Error handling utility
-const handleAPIErrors = (errors: APIError[]): string[] => {
+/**
+ * Error handler helper function. Will likely replace with node util tool.
+ * @param errors
+ */
+const handleAPIErrors = (errors: PaletteAPIError[]): string[] => {
   return errors.map(({ msg }) => msg); // extract messages from each error object
 };
 
@@ -36,8 +33,8 @@ const handleAPIErrors = (errors: APIError[]): string[] => {
  */
 async function fetchAPI<T>(
   endpoint: string,
-  options: RequestInit = {}, // used for extend
-): Promise<APIResponse<T>> {
+  options: PaletteAPIRequest = {},
+): Promise<PaletteAPIResponse<T>> {
   try {
     const url = `${API_CONFIG.baseURL}${endpoint}`;
     const response = await fetch(url, {
@@ -53,14 +50,14 @@ async function fetchAPI<T>(
     if (!response.ok) {
       const errorData = (await response.json()) as {
         error?: string;
-        errors?: APIError[]; // define response.json structure we expect
+        errors?: PaletteAPIError[]; // define response.json structure we expect
       };
       const errors = errorData.errors ? handleAPIErrors(errorData.errors) : [];
 
       return {
         success: false,
         error: errorData.error,
-        errors, // todo: maybe update naming convention here to not be so confusing
+        errors,
       };
     }
 
@@ -86,7 +83,7 @@ export const BackendAPI = {
    * Create a new rubric in the database.
    * @param rubric The rubric data to save
    */
-  async create(rubric: Rubric): Promise<APIResponse<Rubric>> {
+  async create(rubric: Rubric): Promise<PaletteAPIResponse<Rubric>> {
     const result = await fetchAPI<Rubric>("/rubrics", {
       method: "POST",
       body: JSON.stringify(rubric),
@@ -103,7 +100,10 @@ export const BackendAPI = {
    * @param id The ID of the rubric to update
    * @param rubric The updated rubric data
    */
-  async update(id: number, rubric: Rubric): Promise<APIResponse<Rubric>> {
+  async update(
+    id: number,
+    rubric: Rubric,
+  ): Promise<PaletteAPIResponse<Rubric>> {
     const result = await fetchAPI<Rubric>(
       `/rubrics/${encodeURIComponent(id)}`,
       {

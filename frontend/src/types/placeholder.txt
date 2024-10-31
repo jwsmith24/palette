@@ -1,0 +1,1 @@
+This directory will contain frontend specific types such as component props.

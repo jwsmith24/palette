@@ -10,8 +10,8 @@ services:
     volumes:
       - .:/app # mounts project files for live changes without needing to rebuild container
     environment:
-      - NODE_ENV=development
       - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
+      - NODE_ENV=development
     command: sh -c "npm run migrate && npm run dev"
 
   db:

@@ -3,7 +3,8 @@
  */
 
 // Mock uuid to ensure predictable values
-import createRating from "../models/RubricRating.ts";
+import createRating from "../features/rubricBuilder/RubricRating.ts";
+import { UNASSIGNED } from "../utils/constants.ts";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),
@@ -17,7 +18,7 @@ describe("RubricRating", () => {
       expect(rating.points).toBe(0);
       expect(rating.description).toBe("");
       expect(rating.longDescription).toBe("");
-      expect(rating.id).toBeUndefined();
+      expect(rating.id).toEqual(UNASSIGNED);
       expect(rating.key).toBe("test-uuid"); // mocked UUID
     });
 

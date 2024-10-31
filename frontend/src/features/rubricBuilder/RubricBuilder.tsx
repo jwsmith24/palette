@@ -10,24 +10,23 @@ import React, {
   useState,
 } from "react";
 
-import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
-import Dialog from "../util/Dialog.tsx";
+import CriteriaInput from "./CriteriaInput.tsx";
+import Dialog from "../../components/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
-import Header from "../util/Header.tsx";
-import Footer from "../util/Footer.tsx";
-import createRubric, { Rubric } from "../../models/Rubric.ts";
+import Header from "../../components/Header.tsx";
+import Footer from "../../components/Footer.tsx";
+import { Rubric, createRubric } from "./Rubric.ts";
 
-import createRubricCriterion, {
-  RubricCriterion,
-} from "../../models/RubricCriterion.ts";
+import createRubricCriterion, { RubricCriterion } from "./RubricCriterion.ts";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import createRating from "../../models/RubricRating.ts";
-import { APIResponse, BackendAPI } from "../../Protocol/BackendRequests.ts";
-import ModalChoiceDialog from "../util/ModalChoiceDialog.tsx";
+import createRating from "./RubricRating.ts";
+import { BackendAPI } from "../../services/backendRequests.ts";
+import ModalChoiceDialog from "../../components/ModalChoiceDialog.tsx";
+import { PaletteAPIResponse } from "../../../../palette-types/src/paletteApiTypes.ts";
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
@@ -144,7 +143,7 @@ export default function RubricBuilder(): ReactElement {
 
   // Helper function to handle API responses
   const handleApiResponse = (
-    result: APIResponse<Rubric>,
+    result: PaletteAPIResponse<Rubric>,
     rubricToSet: Rubric,
   ) => {
     if (result.success) {
@@ -421,7 +420,7 @@ export default function RubricBuilder(): ReactElement {
         <Dialog
           isOpen={fileInputActive}
           onClose={() => setFileInputActive(false)}
-          title={"THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED"}
+          title={"Import a CSV Template"}
         >
           {renderFileImport()}
         </Dialog>

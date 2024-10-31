@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "clean": "sudo rm -rf dist"
   },
   "keywords": [],
   "type": "module",
