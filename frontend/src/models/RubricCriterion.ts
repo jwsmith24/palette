@@ -1,18 +1,21 @@
-import { RubricRating } from "./RubricRating";
+import {
+  RubricCriterion as BaseCriterion,
+  RubricRating,
+} from "../../../palette-types/src";
 import { v4 as uuidv4 } from "uuid";
+import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
 
-export interface RubricCriterion {
-  description: string;
-  longDescription: string;
-  ratings: RubricRating[];
-  id?: number; // id is only assigned when the rubric is saved to the database
-  points: number;
+/**
+ * Frontend extension of RubricCriterion
+ *
+ * Adds the updatePoints function to the type definition.
+ */
+export interface RubricCriterion extends BaseCriterion {
   updatePoints: () => void;
-  key: string; // UUID for React
 }
 
 /**
- * Helper function to calculate a criterion's max point value on creation
+ * Helper function to calculate a criterion's max point value when it's pulled in from the backend.
  * @param ratings - array of rating options for target criterion
  */
 export const calcMaxPoints = (ratings: RubricRating[]): number => {
@@ -29,13 +32,20 @@ export const calcMaxPoints = (ratings: RubricRating[]): number => {
 
 /**
  * Criterion factory function.
+ * Sets default values for dynamically added elements but allows to pass in existing values for imports coming from
+ * the backend.
+ *
+ * Generates a unique key for React with a universally unique identifier (UUID).
+ *
+ * id defaults to -1 to indicate that it was dynamically generated and needs to be assigned an ID when it reaches
+ * the backend.
  */
 export default function createRubricCriterion(
   description: string = "",
   longDescription: string = "",
   points: number = 0,
   ratings: RubricRating[] = [],
-  id: number | undefined = undefined,
+  id: number = UNASSIGNED,
 ): RubricCriterion {
   return {
     ratings,

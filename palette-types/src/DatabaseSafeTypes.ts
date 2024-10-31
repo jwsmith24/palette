@@ -15,14 +15,18 @@ export interface Rubric {
 }
 
 export interface RubricCriterion {
+  id: number;
   description: string;
   longDescription?: string | null;
   points: number;
   ratings: RubricRating[];
+  key?: string;
 }
 
 export interface RubricRating {
+  id: number;
   description: string;
   longDescription?: string | null;
   points: number;
+  key?: string;
 }

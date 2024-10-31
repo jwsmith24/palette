@@ -1,18 +1,12 @@
 import { v4 as uuid } from "uuid";
-
-export interface RubricRating {
-  points: number;
-  description: string;
-  longDescription: string;
-  id?: number;
-  key: string; // UUID for React
-}
+import { RubricRating } from "../../../palette-types/src";
+import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
 
 export default function createRating(
   points: number = 0,
   description: string = "",
   longDescription: string = "",
-  id: number | undefined = undefined,
+  id: number = UNASSIGNED,
 ): RubricRating {
   return {
     points,
