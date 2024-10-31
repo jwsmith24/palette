@@ -1,305 +1,171 @@
 // Router for all /rubrics requests
 import express, { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import {
-  body,
-  Result,
-  ValidationError,
-  validationResult,
-} from "express-validator";
+import { Result, ValidationError, validationResult } from "express-validator";
 import asyncHandler from "express-async-handler";
+//import validateRubric from '../validators/rubricValidator';
+import { RubricService } from "../services/rubricService";
+import PrismaRubricService from "../services/prismaRubricService.js";
+import validateRubric from "../validators/rubricValidator.js";
+import { Rubric } from "../../../palette-types/src/DatabaseSafeTypes";
+import { StatusCodes } from "http-status-codes";
 
 const router = express.Router();
-const prisma = new PrismaClient();
-
-interface RubricRequest extends Request {
-  body: {
-    title: string;
-    contextId?: number;
-    contextType?: string;
-    pointsPossible: number;
-    reusable?: boolean;
-    readOnly?: boolean;
-    freeFormCriterionComments?: boolean;
-    hideScoreTotal?: boolean;
-    content?: string;
-    published?: boolean;
-    authorId?: number;
-    rubricCriteria: RubricCriterion[];
-  };
-}
-
-interface RubricCriterion {
-  description: string;
-  longDescription?: string;
-  points: number;
-  ratings: RubricRating[];
-  criterionUseRange?: number;
-}
-
-interface RubricRating {
-  description: string;
-  longDescription?: string;
-  points: number;
-  criterionUseRange?: number;
-}
+const rubricService: RubricService = new PrismaRubricService();
 
 /**
- * define validation for rubrics before being stored on the database
+ * Create a new rubric in the database.
+ * @route POST /rubrics
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
  */
-const validateRubric = [
-  body("title")
-    .isString()
-    .trim()
-    .notEmpty()
-    .withMessage("Rubric does not have a title")
-    .isLength({ max: 255 }) // max length: 255 characters
-    .withMessage("Rubric title must not exceed 255 characters."),
-  body("rubricCriteria")
-    .isArray({ min: 1 })
-    .withMessage("Rubric must have at least one criterion."),
-  body("rubricCriteria.*.description") // * === all objects in the criteria array
-    .isString()
-    .trim()
-    .notEmpty()
-    .withMessage("Each criterion must have a description"),
-  body("rubricCriteria.*.longDescription").optional().isString(),
-  body("rubricCriteria.*.points")
-    .isNumeric()
-    .withMessage("points field must be numeric"),
-  body("rubricCriteria.*.ratings")
-    .isArray({ min: 1 })
-    .withMessage("Criterion must have at least one rating."),
-  body("rubricCriteria.*.ratings.*.description")
-    .isString()
-    .trim()
-    .notEmpty()
-    .withMessage("Ratings must have a description."),
-];
-
 router.post(
   "/",
   validateRubric,
-  asyncHandler(async (req: RubricRequest, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const errors: Result<ValidationError> = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log(errors);
-      res.status(400).send({ errors: errors.array() });
+      console.error(errors);
+      res.status(StatusCodes.BAD_REQUEST).send({ errors: errors.array() });
       return;
     }
 
-    const { title, rubricCriteria } = req.body;
+    const createdRubric = await rubricService.createRubric(req.body as Rubric);
 
-    const newRubric = await prisma.rubric.create({
-      data: {
-        title,
-        rubricCriteria: {
-          create: rubricCriteria.map((criterion: RubricCriterion) => ({
-            description: criterion.description,
-            longDescription: criterion.longDescription, // Make sure to include this if it's required
-            points: criterion.points,
-            ratings: {
-              create: criterion.ratings.map((rating: RubricRating) => ({
-                description: rating.description,
-                points: rating.points,
-              })),
-            },
-          })),
-        },
-      },
-    });
-    res.status(201).send(newRubric);
+    if (createdRubric) {
+      res.status(StatusCodes.CREATED).json(createdRubric);
+    } else {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to create rubric" });
+    }
   }),
 );
 
-// fetch a specific rubric by ID
+/**
+ * Fetch a specific rubric by ID.
+ * @route GET /rubrics/:id
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.get(
   "/:id",
   asyncHandler(async (req: Request, res: Response) => {
-    console.log(req.params);
     const { id } = req.params;
-    console.log(`trying to fetch rubric with id=${id}`);
-    const rubric = await prisma.rubric.findUnique({
-      where: { id: Number(id) },
-      include: {
-        rubricCriteria: {
-          include: {
-            ratings: true,
-          },
-        },
-      },
-    });
-
-    console.log("found ", rubric);
-
+    const rubric = await rubricService.getRubricById(Number(id));
     // Check if the rubric was found
     if (!rubric) {
-      res.status(404).send({ error: "Rubric not found" });
+      res.status(StatusCodes.NOT_FOUND).send({ error: "Rubric not found" });
       return;
     }
 
-    res.status(200).send(rubric); // Send the found rubric back
+    res.status(StatusCodes.OK).send(rubric); // Send the found rubric back
   }),
 );
 
 /**
  * Return all rubrics from the database.
- *
- * "_" is added in front of req to tell eslint that it's not being used but still has to be there anyway.
+ * @route GET /rubrics
+ * @param {Request} _req - The request object (not used).
+ * @param {Response} res - The response object.
  */
 router.get(
   "/",
   asyncHandler(async (_req: Request, res: Response) => {
-    // gets all rubrics with their criteria and ratings
-    const rubrics = await prisma.rubric.findMany({
-      include: {
-        rubricCriteria: {
-          include: {
-            ratings: true,
-          },
-        },
-      },
-    });
-    res.status(200).send(rubrics); // Send back list of all rubrics
+    // this always returns an array, even if empty
+    const rubrics = await rubricService.getAllRubrics();
+    res.status(StatusCodes.OK).send(rubrics);
   }),
 );
 
-// update an existing rubric
-
+/**
+ * Update an existing rubric.
+ * @route PUT /rubrics/:id
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.put(
   "/:id",
   validateRubric,
-  asyncHandler(async (req: RubricRequest, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.status(400).send({ errors: errors.array() });
+      res.status(StatusCodes.BAD_REQUEST).send({ errors: errors.array() });
       return;
     }
 
+    // get the params
     const { id } = req.params;
-    const { title, pointsPossible, rubricCriteria } = req.body;
 
-    try {
-      // First, check if the rubric exists
-      const existingRubric = await prisma.rubric.findUnique({
-        where: { id: Number(id) },
-        include: {
-          rubricCriteria: {
-            include: {
-              ratings: true,
-            },
-          },
-        },
-      });
+    // does the rubric already exist?
+    const existingRubric = await rubricService.getRubricById(Number(id));
 
-      if (!existingRubric) {
-        // Create new rubric if it doesn't exist
-        const newRubric = await prisma.rubric.create({
-          data: {
-            title,
-            pointsPossible,
-            rubricCriteria: {
-              create: rubricCriteria.map((criterion: RubricCriterion) => ({
-                description: criterion.description,
-                longDescription: criterion.longDescription,
-                points: criterion.points,
-                criterionUseRange: criterion.criterionUseRange,
-                ratings: {
-                  create: criterion.ratings.map((rating: RubricRating) => ({
-                    description: rating.description,
-                    longDescription: rating.longDescription,
-                    points: rating.points,
-                    criterionUseRange: rating.criterionUseRange,
-                  })),
-                },
-              })),
-            },
-          },
-        });
-        res.status(201).json(newRubric);
-        return;
-      }
-
-      // If rubric exists, update it with new data
-      // First, delete all existing criteria and their ratings
-      await prisma.rubricCriterion.deleteMany({
-        where: { rubricId: Number(id) },
-      });
-
-      // Then create new criteria and ratings
-      const updatedRubric = await prisma.rubric.update({
-        where: { id: Number(id) },
-        data: {
-          title,
-          pointsPossible,
-          rubricCriteria: {
-            create: rubricCriteria.map((criterion: RubricCriterion) => ({
-              description: criterion.description,
-              longDescription: criterion.longDescription,
-              points: criterion.points,
-              criterionUseRange: criterion.criterionUseRange,
-              ratings: {
-                create: criterion.ratings.map((rating: RubricRating) => ({
-                  description: rating.description,
-                  longDescription: rating.longDescription,
-                  points: rating.points,
-                  criterionUseRange: rating.criterionUseRange,
-                })),
-              },
-            })),
-          },
-        },
-        include: {
-          rubricCriteria: {
-            include: {
-              ratings: true,
-            },
-          },
-        },
-      });
-
-      res.status(200).json(updatedRubric);
-    } catch (error) {
-      console.error("Error updating rubric:", error);
-      res.status(500).json({ error: "Failed to update rubric" });
+    // if not, create a new rubric
+    if (!existingRubric) {
+      const newRubric = await rubricService.createRubric(req.body as Rubric);
+      res.status(StatusCodes.CREATED).json(newRubric);
+      return;
     }
+
+    // Otherwise, update the existing rubric
+    const updatedRubric = await rubricService.updateRubric(
+      Number(id),
+      req.body as Rubric,
+    );
+
+    if (!updatedRubric) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Failed to update rubric" });
+      return;
+    }
+
+    // No error, send back the updated rubric
+    res.status(StatusCodes.OK).send(updatedRubric);
   }),
 );
 
-// get a rubric by title
+/**
+ * Get a rubric id by title.
+ * @route GET /rubrics/title/:title
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.get(
   "/title/:title",
   asyncHandler(async (req: Request, res: Response) => {
     const { title } = req.params;
 
     if (!title) {
-      res.status(400).json({ error: "Rubric title is required!" });
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ error: "Rubric title is required!" });
       return;
     }
 
-    const rubric = await prisma.rubric.findFirst({
-      where: { title }, // find first rubric with matching title
-      select: { id: true }, // return only the id to minimize response payload
-    });
+    const rubric = await rubricService.getRubricIdByTitle(title);
 
     if (rubric) {
-      res.json({ exists: true, id: rubric.id });
+      res.status(StatusCodes.OK).json({ exists: true, id: rubric.id });
     } else {
-      res.json({ exists: false, id: null });
+      res.status(StatusCodes.NOT_FOUND).json({ exists: false, id: -1 });
     }
   }),
 );
 
-// delete an existing rubric
+/**
+ * Delete an existing rubric.
+ * @route DELETE /rubrics/:id
+ * @param {Request} req - The request object.
+ * @param {Response} res - The response object.
+ */
 router.delete(
   "/:id",
   asyncHandler(async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    await prisma.rubric.delete({
-      where: { id: Number(id) },
-    });
-    res.status(204).send(); // Deletion was successful
+    // delete the rubric
+    await rubricService.deleteRubric(Number(id));
+    res.status(StatusCodes.NO_CONTENT).send(); // Deletion was successful
   }),
 );
 
