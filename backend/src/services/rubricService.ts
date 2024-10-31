@@ -1,4 +1,4 @@
-import { Rubric } from '../../../palette-types/src/DatabaseSafeTypes';
+import { Rubric } from "../../../palette-types/src/DatabaseSafeTypes";
 
 /**
  * This file contains the interface for the RubricService class.

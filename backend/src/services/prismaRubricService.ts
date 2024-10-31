@@ -1,11 +1,11 @@
-import { PrismaClient } from '@prisma/client';
-import { RubricService } from './rubricService';
+import { PrismaClient } from "@prisma/client";
+import { RubricService } from "./rubricService";
 import {
   Rubric,
   RubricCriterion,
   RubricRating,
-} from '../../../palette-types/src/DatabaseSafeTypes';
-import util from 'util';
+} from "../../../palette-types/src/DatabaseSafeTypes";
+import util from "util";
 
 /**
  * This class is responsible for handling all the business logic for rubrics.

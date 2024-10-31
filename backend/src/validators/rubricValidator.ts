@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body } from "express-validator";
 
 /**
  * define validation for rubrics before being stored on the database

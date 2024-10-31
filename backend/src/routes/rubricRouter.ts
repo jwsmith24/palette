@@ -1,13 +1,13 @@
 // Router for all /rubrics requests
-import express, { Request, Response } from 'express';
-import { Result, ValidationError, validationResult } from 'express-validator';
-import asyncHandler from 'express-async-handler';
+import express, { Request, Response } from "express";
+import { Result, ValidationError, validationResult } from "express-validator";
+import asyncHandler from "express-async-handler";
 //import validateRubric from '../validators/rubricValidator';
-import { RubricService } from '../services/rubricService';
-import PrismaRubricService from '../services/prismaRubricService.js';
-import validateRubric from '../validators/rubricValidator.js';
-import { Rubric } from '../../../palette-types/src/DatabaseSafeTypes';
-import { StatusCodes } from 'http-status-codes';
+import { RubricService } from "../services/rubricService";
+import PrismaRubricService from "../services/prismaRubricService.js";
+import validateRubric from "../validators/rubricValidator.js";
+import { Rubric } from "../../../palette-types/src/DatabaseSafeTypes";
+import { StatusCodes } from "http-status-codes";
 
 const router = express.Router();
 const rubricService: RubricService = new PrismaRubricService();
