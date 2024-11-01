@@ -48,45 +48,47 @@ function Navbar() {
   };
 
   return (
-    <div className="flex justify-normal sm h-16 display: {}">
-      <button
-        className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
-        onClick={handleHomeClicked}
-      >
-        HOME
-      </button>
-      <div className="flex-grow sm:hidden">
+    <div className="flex justify-between items-centersm h-16 display: {} mx-4">
+      <div className={"flex"}>
         <button
           className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
-          onClick={handleOpenNavMenu}
+          onClick={handleHomeClicked}
         >
-          <FontAwesomeIcon icon={faBars} />
+          HOME
+        </button>
+        <div className="flex-grow sm:hidden">
+          <button
+            className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
+            onClick={handleOpenNavMenu}
+          >
+            <FontAwesomeIcon icon={faBars} />
+          </button>
+        </div>
+
+        <button
+          disabled={location.pathname == "/rubrics"}
+          className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          onClick={handleRubricsClicked}
+        >
+          RUBRICS
+        </button>
+
+        <button
+          disabled={location.pathname == "/clusters"}
+          className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          onClick={handleClustersClicked}
+        >
+          TEMPLATES
+        </button>
+
+        <button
+          disabled={location.pathname == "/rubric-builder"}
+          className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          onClick={handleBuilderClicked}
+        >
+          BUILDER
         </button>
       </div>
-
-      <button
-        disabled={location.pathname == "/rubrics"}
-        className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
-        onClick={handleRubricsClicked}
-      >
-        RUBRICS
-      </button>
-
-      <button
-        disabled={location.pathname == "/clusters"}
-        className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
-        onClick={handleClustersClicked}
-      >
-        TEMPLATES
-      </button>
-
-      <button
-        disabled={location.pathname == "/rubric-builder"}
-        className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
-        onClick={handleBuilderClicked}
-      >
-        BUILDER
-      </button>
 
       <button
         className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
