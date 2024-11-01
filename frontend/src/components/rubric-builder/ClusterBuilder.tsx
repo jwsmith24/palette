@@ -126,10 +126,11 @@ export default function ClusterBuilder(): ReactElement {
       {/* Sticky Header with Gradient */}
       <Header />
 
-        <br/>
-        <h1 className="font-extrabold text-2xl mb-2 text-center">
-          Group common criteria together into a Criteria Cluster and use them later in your rubrics for faster assembly!
-        </h1>
+      <br />
+      <h1 className="font-extrabold text-2xl mb-2 text-center">
+        Group common criteria together into a Criteria Cluster and use them
+        later in your rubrics for faster assembly!
+      </h1>
 
       {/* Form Section */}
       <form className="my-4 self-center grid p-10 w-full max-w-3xl gap-6 bg-gray-800 shadow-lg rounded-lg">
