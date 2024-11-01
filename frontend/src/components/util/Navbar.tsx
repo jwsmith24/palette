@@ -10,7 +10,12 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // map url paths to label
+  /**
+   * Map paths to nav button labels.
+   *
+   * To add a new nav button, add a new pair to the list and ensure the route is setup to display the corresponding
+   * page.
+   */
   const navOptions = {
     "/rubrics": "Rubrics",
     "/clusters": "Templates",
