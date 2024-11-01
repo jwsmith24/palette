@@ -45,7 +45,33 @@ docker-compose --version
 _Note: when running in detached mode, stop the container with `docker-compose down`. Follow instructions below for
 cleaning up afterward._
 
-This will build and start the container, running the application with all dependencies included on any OS.
+This will build and start the container, running the application with all dependencies (including a postgres database)
+on any operating system.
+
+### Alternative Startup
+
+The application can also be started without Docker if the local system has [Node.js](https://nodejs.org/en)
+(version 18 or later) and [PostgreSQL](https://www.postgresql.org/) installed. 
+
+- After cloning the repository, navigate to the project root and run:
+
+```bash
+  npm install && npm run dev
+```
+
+- This will download all dependencies and then start up both the frontend and backend services in development mode.
+  - Development mode supports helpful features such as live reloading on changes.
+
+- Check out the `package.json` located in the project root to see additional script options.
+
+#### Local Database Connection
+- If using a local PostgreSQL database, you'll need to add a local `.env` file with your connection string. Navigate to 
+  the project root and run:
+
+```bash
+   touch backend/.env
+   echo "DATABASE_URL=postgres://<username>:<password>@localhost:5432/<database_name>" >> backend/.env
+```
 
 ## Shutting Down
 
@@ -106,3 +132,4 @@ This will build and start the container, running the application with all depend
 
 4. **Network Issues**:
    - If the application isn't accessible, ensure port 5173 is not being used by another application.
+
