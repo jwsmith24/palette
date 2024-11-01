@@ -44,7 +44,7 @@ describe("Rubric", () => {
       ];
 
       const rubric: Rubric = createRubric("Test Rubric", mockCriteria, 123);
-
+      console.log(rubric);
       // Assertions for specified values
       expect(rubric.title).toBe("Test Rubric");
       expect(rubric.rubricCriteria).toEqual(mockCriteria);

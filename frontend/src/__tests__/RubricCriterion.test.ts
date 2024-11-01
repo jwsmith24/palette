@@ -7,6 +7,7 @@ import createRubricCriterion, {
   calcMaxPoints,
 } from "../models/RubricCriterion.ts";
 import createRating, { RubricRating } from "../models/RubricRating.ts";
+import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),
@@ -23,7 +24,7 @@ describe("RubricCriterion", () => {
       expect(criterion.longDescription).toBe("");
       expect(criterion.points).toBe(0);
       expect(criterion.ratings).toEqual([]);
-      expect(criterion.id).toBeUndefined();
+      expect(criterion.id).toEqual(UNASSIGNED);
       expect(criterion.key).toBe("test-uuid"); // Mocked UUID
     });
 

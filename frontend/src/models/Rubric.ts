@@ -17,8 +17,8 @@ export interface Rubric extends BaseRubric {
 export function createRubric(
   title: string = "",
   rubricCriteria: RubricCriterion[] = [],
-  pointsPossible: number = 0,
   id: number = UNASSIGNED,
+  pointsPossible: number = 0,
 ): Rubric {
   return {
     title,
