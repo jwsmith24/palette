@@ -1,6 +1,6 @@
 // generic dialog component. Pass children to it that you want to display.
 
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface DialogProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ export default function Dialog({
         <h2 className="text-xl text-black font-semibold mb-4">{title}</h2>
         <div>{children}</div>
         <button
-          className="absolute top-2 right-2 text-black font-bold"
+          className="absolute top-3 right-4 text-black font-bold"
           onClick={onClose}
         >
           ✕

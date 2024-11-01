@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from "uuid";
 
 export interface RubricRating {
   points: number;
@@ -10,15 +10,15 @@ export interface RubricRating {
 
 export default function createRating(
   points: number = 0,
-  description: string = '',
-  longDescription: string = '',
-  id: number | undefined = undefined
+  description: string = "",
+  longDescription: string = "",
+  id: number | undefined = undefined,
 ): RubricRating {
   return {
     points,
     description,
     longDescription,
     id,
-    key: uuidv4(),
+    key: uuid(),
   };
 }

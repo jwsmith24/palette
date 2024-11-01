@@ -1,9 +1,9 @@
-import React from 'react';
-import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
+import React from "react";
+import Papa from "papaparse";
+import { CSVRow } from "./RubricBuilder.tsx";
 
 interface CSVUploadProps {
-  onDataChange: (data: unknown[]) => void;
+  onDataChange: (data: CSVRow[]) => void;
   closeImportCard: () => void; // callback to close the import card
 }
 
@@ -15,14 +15,12 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-    if (fileExtension === 'csv') {
+    if (fileExtension === "csv") {
       parseCSV(file);
-    } else if (fileExtension === 'xlsx') {
-      parseXLSX(file);
     } else {
-      alert('Unsupported file format. Please upload a CSV or XLSX file.');
+      alert("Unsupported file format. Please upload a CSV or XLSX file.");
     }
   };
 
@@ -30,34 +28,25 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     Papa.parse(file, {
       header: false, // keeps the output an array to sync with parsing xlsx files
       complete: (results) => {
-        console.log('Parsed CSV data:', results.data);
-        onDataChange(results.data); // Pass parsed data to parent
-      },
-      error: (error) => {
-        console.error('Error parsing CSV:', error);
+        console.log("Parsed CSV data:", results.data);
+
+        // Validate each row to ensure it matches CSVRow type
+        const parsedData = results.data.filter((row): row is CSVRow => {
+          return (
+            Array.isArray(row) &&
+            typeof row[0] === "string" &&
+            row
+              .slice(1)
+              .every(
+                (cell) => typeof cell === "string" || typeof cell === "number",
+              )
+          );
+        });
+        console.log("Validated CSV data:", results.data);
+        onDataChange(parsedData); // Pass validated data to parent
       },
     });
     closeImportCard();
-  };
-
-  const parseXLSX = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target?.result as ArrayBuffer);
-      const workbook = XLSX.read(data, { type: 'array' });
-
-      // First sheet of the rubric data
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-
-      // Convert the sheet to JSON format
-      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-      console.log('Parsed XLSX data:', jsonData); // Log parsed XLSX data
-      onDataChange(jsonData); // Pass parsed data to parent
-      closeImportCard();
-    };
-
-    reader.readAsArrayBuffer(file);
   };
 
   return (
@@ -65,7 +54,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       <h2 className="text-2xl font-bold text-gray-200 mb-4">
         Import CSV or XLSX
       </h2>
-      <div className={'flex justify-between items-center'}>
+      <div className={"flex justify-between items-center"}>
         <input
           type="file"
           accept=".csv,.xlsx"

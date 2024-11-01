@@ -14,10 +14,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # runs action for each module (since each one has its own package.json
-        module: [frontend, backend, palette-types]
     steps:
       # checkout repo
       - name: Checkout code
@@ -27,25 +23,36 @@ jobs:
       - name: Node setup
         uses: actions/setup-node@v3
         with:
-            node-version: '22'
+          node-version: '22'
 
       # install dependencies
       - name: Install dependencies
-        run: |
-          cd ${{matrix.module}}
-          npm ci
+        run: npm ci
+
+      # generate Prisma client
+      - name: Generate prisma client
+        run: npm run generate
 
       # run ESLint
-      - name: Run ESLint (Frontend/Backend)
-        run: |
-          cd ${{ matrix.module }}
-          npm run lint
+      - name: Run ESLint
+        run: npm run lint
 
-      # run Prettier
-      - name: Run Prettier (Frontend/Backend)
-        run: |
-          cd ${{ matrix.module }}
-          npm run prettier-check 
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Node setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Prettier
+        run: npm run prettier:check
 
 
 

@@ -1,5 +1,5 @@
-import { RubricRating } from './RubricRating';
-import { v4 as uuidv4 } from 'uuid';
+import { RubricRating } from "./RubricRating";
+import { v4 as uuidv4 } from "uuid";
 
 export interface RubricCriterion {
   description: string;
@@ -31,11 +31,12 @@ export const calcMaxPoints = (ratings: RubricRating[]): number => {
  * Criterion factory function.
  */
 export default function createRubricCriterion(
-  description: string = '',
-  longDescription: string = '',
+  description: string = "",
+  longDescription: string = "",
   points: number = 0,
   ratings: RubricRating[] = [],
-  id: number | undefined = undefined
+  id: number | undefined = undefined,
+  template: string = ""
 ): RubricCriterion {
   return {
     ratings,
@@ -45,7 +46,7 @@ export default function createRubricCriterion(
     id,
     key: uuidv4(),
     updatePoints() {
-      this.points = calcMaxPoints(this.ratings);
+      this.points = Number(calcMaxPoints(this.ratings));
     },
   };
 }

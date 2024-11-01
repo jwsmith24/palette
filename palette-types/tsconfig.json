@@ -3,10 +3,8 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist",
-    "strict": true
+    "strict": true,
+    "sourceMap": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
