@@ -14,7 +14,7 @@ export interface Rubric extends BaseRubric {
 /**
  * Rubric factory function. Assigns a unique key with uuid.
  */
-export default function createRubric(
+export function createRubric(
   title: string = "",
   rubricCriteria: RubricCriterion[] = [],
   pointsPossible: number = 0,

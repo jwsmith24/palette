@@ -15,7 +15,7 @@ export interface Rubric {
 }
 
 export interface RubricCriterion {
-  id: number;
+  id?: number;
   description: string;
   longDescription?: string | null;
   points: number;
@@ -24,7 +24,7 @@ export interface RubricCriterion {
 }
 
 export interface RubricRating {
-  id: number;
+  id?: number;
   description: string;
   longDescription?: string | null;
   points: number;
