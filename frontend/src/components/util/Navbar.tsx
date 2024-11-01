@@ -5,124 +5,68 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 
 function Navbar() {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const onRubrics = location.pathname === "/rubrics";
-  const onTemplates = location.pathname === "/clusters";
-  const onBuilder = location.pathname === "/rubric-builder";
-  const onGrading = location.pathname === "/grading";
+
+  // map url paths to label
+  const navOptions = {
+    "/rubrics": "Rubrics",
+    "/clusters": "Templates",
+    "/rubric-builder": "Builder",
+    "/grading": "Grading",
+  };
+  const currentPath = location.pathname;
+  const isActive = (path: string) => currentPath === path;
+
+  const renderNavButtons = () => (
+    <div className={"flex justify-between items-center gap-6 mx-4"}>
+      {Object.entries(navOptions).map(([path, label]) => (
+        <button
+          key={path}
+          disabled={isActive(path)}
+          className={
+            isActive(path)
+              ? "underline"
+              : "no-underline hover:opacity-80 transition duration-300 transform" +
+                " hover:scale-105"
+          }
+          onClick={() => navigate(path)}
+        >
+          {label.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleClosenNavMenu = () => {
-    setAnchorElNav(null);
+    setUserAnchor(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    setUserAnchor(null);
   };
 
   const handleHomeClicked = () => {
     navigate("/");
   };
 
-  const handleRubricsClicked = () => {
-    navigate("/rubrics");
-  };
-
-  const handleClustersClicked = () => {
-    navigate("/clusters");
-  };
-
-  const handleBuilderClicked = () => {
-    navigate("/rubric-builder");
-  };
-
-  const handleGradingClicked = () => {
-    navigate("/grading");
-  };
-
-  const getNavButtonStyle = (isActive: boolean) =>
-    `px-3 py-5 ${isActive ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`;
-
   return (
     <div className="flex justify-between items-center h-16 mx-4">
-      <div className={"flex"}>
-        <button
-          className="px-6 py-4 text-2xl font-bold text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
-          onClick={handleHomeClicked}
-        >
-          HOME
-        </button>
-        <button
-          disabled={onRubrics}
-          className={getNavButtonStyle(onRubrics)}
-          onClick={handleRubricsClicked}
-        >
-          RUBRICS
-        </button>
-
-        <button
-          disabled={onTemplates}
-          className={getNavButtonStyle(onTemplates)}
-          onClick={handleClustersClicked}
-        >
-          TEMPLATES
-        </button>
-
-        <button
-          disabled={onBuilder}
-          className={getNavButtonStyle(onBuilder)}
-          onClick={handleBuilderClicked}
-        >
-          BUILDER
-        </button>
-        <button
-          disabled={onGrading}
-          className={getNavButtonStyle(onGrading)}
-          onClick={handleGradingClicked}
-        >
-          GRADING
-        </button>
-      </div>
+      {renderNavButtons()}
 
       <button
         className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
         onClick={handleOpenUserMenu}
       >
-        U
+        P
       </button>
 
       <Menu
         sx={{ mt: "45px" }}
-        id="hamburger-menu"
-        anchorEl={anchorElNav}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={Boolean(anchorElNav)}
-        onClose={handleClosenNavMenu}
-      >
-        <MenuItem onClick={handleRubricsClicked}>Rubrics</MenuItem>
-        <MenuItem onClick={handleClustersClicked}>Templates</MenuItem>
-        <MenuItem onClick={handleBuilderClicked}>Builder</MenuItem>
-      </Menu>
-
-      <Menu
-        sx={{ mt: "45px" }}
         id="user-menu"
-        anchorEl={anchorElUser}
+        anchorEl={userAnchor}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -132,7 +76,7 @@ function Navbar() {
           vertical: "top",
           horizontal: "right",
         }}
-        open={Boolean(anchorElUser)}
+        open={Boolean(userAnchor)}
         onClose={handleCloseUserMenu}
       >
         <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
