@@ -1,135 +1,126 @@
 # Palette :art:
 
+[![Build Checks](https://github.com/jwsmith24/palette/actions/workflows/ci-checks.yml/badge.svg)](https://github.com/jwsmith24/palette/actions/workflows/ci-checks.yml)
+![Docker](https://img.shields.io/badge/Docker-Compatible-blue)
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green)
+
 An interactive rubric builder and grading assistant tool to improve the group project grading experience on Canvas.
 
 ## Table of Contents
 
 1. [Requirements](#requirements)
 2. [Startup Instructions](#startup-instructions)
+   - [Running with Docker](#running-with-docker)
+   - [Running without Docker](#running-without-docker)
 3. [Shutting Down](#shutting-down)
 4. [Troubleshooting](#troubleshooting)
 
+---
+
 ## Requirements
 
-The application runs inside a Docker container that provides the necessary Node environment. Make sure you have the
-following installed:
+Palette runs in a Docker container, providing the necessary Node environment. Make sure you have the following installed:
 
 - **Docker**: [Install Docker](https://docs.docker.com/get-docker/)
 - **Docker Compose**: [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-Check for Docker and Docker Compose with:
+Check your installations with:
 
 ```bash
 docker --version
 docker-compose --version
 ```
 
+---
+
 ## Startup Instructions
 
-1. Clone the repository to your local machine:
+### Running with Docker
+
+1. Clone the repository and navigate to the root folder:
 
    ```bash
    git clone <repository-url>
    cd palette
    ```
 
-2. Ensure you're in the root directory containing the `docker-compose.yml` file.
+2. Run one of the following commands to start the services:
 
-3. Run one of the following commands to start your services:
+   ```bash
+   docker-compose up        # Attached mode
+   docker-compose up -d     # Detached mode
+   ```
 
-```bash
-  docker-compose up # run in attached mode (blocks the active shell session)
-  docker-compose up -d # run in detached mode (does not block the active shell session)
-```
+   This will build and start the container, including a **PostgreSQL** database, on any OS.
 
-_Note: when running in detached mode, stop the container with `docker-compose down`. Follow instructions below for
-cleaning up afterward._
+3. **Stopping the Containers**
+   - Use `CTRL + C` if in attached mode or `docker-compose down` if detached.
 
-This will build and start the container, running the application with all dependencies (including a postgres database)
-on any operating system.
+### Running without Docker
 
-### Alternative Startup
+If you have [Node.js](https://nodejs.org/en) (version 18+) and [PostgreSQL](https://www.postgresql.org/) installed:
 
-The application can also be started without Docker if the local system has [Node.js](https://nodejs.org/en)
-(version 18 or later) and [PostgreSQL](https://www.postgresql.org/) installed. 
+1. After cloning the repo, run:
 
-- After cloning the repository, navigate to the project root and run:
+   ```bash
+   npm install && npm run dev
+   ```
 
-```bash
-  npm install && npm run dev
-```
+2. For local PostgreSQL, create a `.env` file:
+   ```bash
+   echo "DATABASE_URL=postgres://<username>:<password>@localhost:5432/<database_name>" > backend/.env
+   ```
 
-- This will download all dependencies and then start up both the frontend and backend services in development mode.
-  - Development mode supports helpful features such as live reloading on changes.
-
-- Check out the `package.json` located in the project root to see additional script options.
-
-#### Local Database Connection
-- If using a local PostgreSQL database, you'll need to add a local `.env` file with your connection string. Navigate to 
-  the project root and run:
-
-```bash
-   touch backend/.env
-   echo "DATABASE_URL=postgres://<username>:<password>@localhost:5432/<database_name>" >> backend/.env
-```
+---
 
 ## Shutting Down
 
-### Graceful Shutdown:
+### Stopping Containers
 
-- To stop the services and remove the containers, run:
+- To stop services and remove containers:
+
   ```bash
   docker-compose down
   ```
-- _If running in attached mode, you can shut down the container with `CTRL + C`._
 
-### Cleaning Up:
+- **Removing Volumes and Images**  
+  For a complete cleanup:
 
-1. If you want to remove the volumes as well, run:
+  ```bash
+  docker-compose down --volumes --rmi all
+  ```
 
-   ```bash
-   docker-compose down --volumes
-   ```
-
-2. To remove all related images:
-   ```bash
-   docker-compose down --rmi all
-   ```
-
-### Optional Cleanup:
-
-- To remove unused containers, networks, volumes, and images, use:
+- **Optional:**  
+  To remove unused resources:
   ```bash
   docker system prune --all --volumes
   ```
 
+---
+
 ## Troubleshooting
 
-1. **Docker Permissions Issues**:
+1. **Permissions Issues**  
+   Ensure Docker is running, and check that your user is in the `docker` group. For persistent issues, run with `sudo`.
 
-   - Docker should automatically add your user account to the docker group
-   - If you encounter permission errors, ensure Docker is running and your user has permission to run Docker commands
-     (added to the docker group).
-   - You can check your current groups by running `groups` in the terminal.
-   - For a temporary solution, run with `sudo`.
-   - To add your user account to the docker group (permanent fix) run `sudo groupadd docker`.
-
-2. **Check Logs**:
-
-   - To check logs for debugging purposes:
+2. **Checking Logs**
 
    ```bash
    docker-compose logs
    ```
 
-3. **Rebuilding Containers**:
-
-   - If changes are made, and you need to rebuild the containers:
+3. **Rebuild Containers**  
+   After changes:
 
    ```bash
    docker-compose up --build
    ```
 
-4. **Network Issues**:
-   - If the application isn't accessible, ensure port 5173 is not being used by another application.
+4. **Network Issues**  
+   Verify port `5173` is free.
 
+---
+
+## Usage
+
+Once up and running, you can interact with the application on http://localhost:5173. Check out the rubrics builder to add and manage grading rubrics directly within Canvas.
