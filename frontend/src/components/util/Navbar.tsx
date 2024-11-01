@@ -12,9 +12,10 @@ function Navbar() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const onRubrics = location.pathname == "/rubrics";
-  const onTemplates = location.pathname == "/clusters";
-  const onBuilder = location.pathname == "/rubric-builder";
+  const onRubrics = location.pathname === "/rubrics";
+  const onTemplates = location.pathname === "/clusters";
+  const onBuilder = location.pathname === "/rubric-builder";
+  const onGrading = location.pathname === "/grading";
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -51,6 +52,12 @@ function Navbar() {
     navigate("/grading");
   };
 
+  // define string constants to ensure tailwind always loads necessary styles and reduces repetitive class names
+  const SELECTED = "underline";
+  const NOT_SELECTED =
+    "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105";
+  const NAV_BUTTON_STYLE = `px-3 py-5 ${onRubrics ? SELECTED : NOT_SELECTED}`;
+
   return (
     <div className="flex justify-between items-centersm h-16 display: {} mx-4">
       <div className={"flex"}>
@@ -60,18 +67,9 @@ function Navbar() {
         >
           HOME
         </button>
-        <div className="flex-grow sm:hidden">
-          <button
-            className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
-            onClick={handleOpenNavMenu}
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-        </div>
-
         <button
           disabled={location.pathname === "/rubrics"}
-          className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          className={NAV_BUTTON_STYLE}
           onClick={handleRubricsClicked}
         >
           RUBRICS
@@ -94,7 +92,12 @@ function Navbar() {
         </button>
         <button
           disabled={location.pathname === "/grading"}
-          className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          className={`px-3 py-5 ${
+            onGrading
+              ? "underline"
+              : "no-underline hover:opacity-80 transition duration-300" +
+                " transform hover:scale-105"
+          }`}
           onClick={handleGradingClicked}
         >
           GRADING
