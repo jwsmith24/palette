@@ -1,5 +1,5 @@
-import { RubricCriterion } from './RubricCriterion.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { RubricCriterion } from "./RubricCriterion.ts";
+import { v4 as uuidv4 } from "uuid";
 
 export interface Template {
   title: string;
@@ -11,10 +11,10 @@ export interface Template {
 }
 
 export default function createTemplate(
-  title: string = '',
+  title: string = "",
   criteria: RubricCriterion[] = [],
-  description: string = 'Enter description',
-  id: number = -1
+  description: string = "Enter description",
+  id: number = -1,
 ): Template {
   return {
     title,

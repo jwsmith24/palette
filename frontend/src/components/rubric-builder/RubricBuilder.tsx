@@ -85,7 +85,7 @@ export default function RubricBuilder(): ReactElement {
     try {
       // Check if the rubric already exists
       const { exists, id, error } = await BackendAPI.checkTitleExists(
-        rubric.title
+        rubric.title,
       );
 
       if (error) {
@@ -95,7 +95,7 @@ export default function RubricBuilder(): ReactElement {
 
       if (exists) {
         setModalMessage(
-          `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
+          `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
         );
 
         setModalChoices([
@@ -146,7 +146,7 @@ export default function RubricBuilder(): ReactElement {
   // Helper function to handle API responses
   const handleApiResponse = (
     result: APIResponse<Rubric>,
-    rubricToSet: Rubric
+    rubricToSet: Rubric,
   ) => {
     if (result.success) {
       setLastSentRubric(rubricToSet);
@@ -169,8 +169,8 @@ export default function RubricBuilder(): ReactElement {
   const buildCriteriaDescriptionSet = () =>
     new Set(
       rubric.rubricCriteria.map((criterion) =>
-        criterion.description.trim().toLowerCase()
-      )
+        criterion.description.trim().toLowerCase(),
+      ),
     );
 
   // Update state with the new CSV/XLSX data
@@ -187,7 +187,7 @@ export default function RubricBuilder(): ReactElement {
         // ensures title is a string and non-empty otherwise throw out the entry
         if (typeof row[0] !== "string" || !row[0].trim()) {
           console.warn(
-            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`
+            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`,
           );
           return null;
         }
@@ -196,7 +196,7 @@ export default function RubricBuilder(): ReactElement {
         // check for duplicates
         if (existingCriteriaDescriptions.has(criteriaDescription)) {
           console.warn(
-            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`
+            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`,
           );
           return null; //skip adding the duplicate criterion
         }
@@ -235,7 +235,7 @@ export default function RubricBuilder(): ReactElement {
         }
         return sum + Number(criterion.points); // ensure points aren't treated as a string
       },
-      0
+      0,
     ); // Initialize sum as 0
     console.log(total);
     setTotalPoints(total); // Update state with the total points
@@ -288,10 +288,10 @@ export default function RubricBuilder(): ReactElement {
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
       const oldIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.active.id
+        (criterion) => criterion.key === event.active.id,
       );
       const newIndex = rubric.rubricCriteria.findIndex(
-        (criterion) => criterion.key === event.over!.id // assert not null for type safety
+        (criterion) => criterion.key === event.over!.id, // assert not null for type safety
       );
 
       const updatedCriteria = [...rubric.rubricCriteria];
