@@ -48,101 +48,93 @@ function Navbar() {
   };
 
   return (
-    <div>
-      <div className="flex justify-normal sm h-16 display: {}">
-        <div className="">
-          <button
-            className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
-            onClick={handleHomeClicked}
-          >
-            HOME
-          </button>
-        </div>
-        <div className="flex-grow sm:hidden">
-          <button
-            className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
-            onClick={handleOpenNavMenu}
-          >
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-        </div>
-        <div className="hidden sm:block">
-          <button
-            disabled={location.pathname == "/rubrics"}
-            className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
-            onClick={handleRubricsClicked}
-          >
-            RUBRICS
-          </button>
-        </div>
-        <div className="hidden sm:block">
-          <button
-            disabled={location.pathname == "/clusters"}
-            className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
-            onClick={handleClustersClicked}
-          >
-            TEMPLATES
-          </button>
-        </div>
-        <div className="flex-grow hidden sm:block">
-          <button
-            disabled={location.pathname == "/rubric-builder"}
-            className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
-            onClick={handleBuilderClicked}
-          >
-            BUILDER
-          </button>
-        </div>
-        <div className="flex justify-end px-2 py-2">
-          <button
-            className={`px-5 py-1 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
-            onClick={handleOpenUserMenu}
-          >
-            U
-          </button>
-        </div>
-
-        <Menu
-          sx={{ mt: "45px" }}
-          id="hamburger-menu"
-          anchorEl={anchorElNav}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(anchorElNav)}
-          onClose={handleClosenNavMenu}
+    <div className="flex justify-normal sm h-16 display: {}">
+      <button
+        className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
+        onClick={handleHomeClicked}
+      >
+        HOME
+      </button>
+      <div className="flex-grow sm:hidden">
+        <button
+          className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
+          onClick={handleOpenNavMenu}
         >
-          <MenuItem onClick={handleRubricsClicked}>Rubrics</MenuItem>
-          <MenuItem onClick={handleClustersClicked}>Templates</MenuItem>
-          <MenuItem onClick={handleBuilderClicked}>Builder</MenuItem>
-        </Menu>
-
-        <Menu
-          sx={{ mt: "45px" }}
-          id="user-menu"
-          anchorEl={anchorElUser}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(anchorElUser)}
-          onClose={handleCloseUserMenu}
-        >
-          <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
-          <MenuItem onClick={handleHomeClicked}>Logout</MenuItem>
-        </Menu>
+          <FontAwesomeIcon icon={faBars} />
+        </button>
       </div>
+
+      <button
+        disabled={location.pathname == "/rubrics"}
+        className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+        onClick={handleRubricsClicked}
+      >
+        RUBRICS
+      </button>
+
+      <button
+        disabled={location.pathname == "/clusters"}
+        className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+        onClick={handleClustersClicked}
+      >
+        TEMPLATES
+      </button>
+
+      <button
+        disabled={location.pathname == "/rubric-builder"}
+        className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+        onClick={handleBuilderClicked}
+      >
+        BUILDER
+      </button>
+
+      <button
+        className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
+        onClick={handleOpenUserMenu}
+      >
+        U
+      </button>
+
+      <Menu
+        sx={{ mt: "45px" }}
+        id="hamburger-menu"
+        anchorEl={anchorElNav}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorElNav)}
+        onClose={handleClosenNavMenu}
+      >
+        <MenuItem onClick={handleRubricsClicked}>Rubrics</MenuItem>
+        <MenuItem onClick={handleClustersClicked}>Templates</MenuItem>
+        <MenuItem onClick={handleBuilderClicked}>Builder</MenuItem>
+      </Menu>
+
+      <Menu
+        sx={{ mt: "45px" }}
+        id="user-menu"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
+        <MenuItem onClick={handleHomeClicked}>Logout</MenuItem>
+      </Menu>
     </div>
   );
 }

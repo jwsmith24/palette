@@ -3,6 +3,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist",
+    "sourceRoot": "./src",
     "strict": true,
     "sourceMap": true
   },
