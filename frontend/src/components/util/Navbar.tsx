@@ -1,8 +1,6 @@
 import * as React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 
@@ -17,9 +15,6 @@ function Navbar() {
   const onBuilder = location.pathname === "/rubric-builder";
   const onGrading = location.pathname === "/grading";
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -52,52 +47,44 @@ function Navbar() {
     navigate("/grading");
   };
 
-  // define string constants to ensure tailwind always loads necessary styles and reduces repetitive class names
-  const SELECTED = "underline";
-  const NOT_SELECTED =
-    "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105";
-  const NAV_BUTTON_STYLE = `px-3 py-5 ${onRubrics ? SELECTED : NOT_SELECTED}`;
+  const getNavButtonStyle = (isActive: boolean) =>
+    `px-3 py-5 ${isActive ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`;
 
   return (
-    <div className="flex justify-between items-centersm h-16 display: {} mx-4">
+    <div className="flex justify-between items-center h-16 mx-4">
       <div className={"flex"}>
         <button
-          className="px-6 py-4 text-2xl font-bond text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
+          className="px-6 py-4 text-2xl font-bold text-gray-950 hover:opacity-80 transition duration-300 transform hover:scale-105"
           onClick={handleHomeClicked}
         >
           HOME
         </button>
         <button
-          disabled={location.pathname === "/rubrics"}
-          className={NAV_BUTTON_STYLE}
+          disabled={onRubrics}
+          className={getNavButtonStyle(onRubrics)}
           onClick={handleRubricsClicked}
         >
           RUBRICS
         </button>
 
         <button
-          disabled={location.pathname === "/clusters"}
-          className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          disabled={onTemplates}
+          className={getNavButtonStyle(onTemplates)}
           onClick={handleClustersClicked}
         >
           TEMPLATES
         </button>
 
         <button
-          disabled={location.pathname === "/rubric-builder"}
-          className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          disabled={onBuilder}
+          className={getNavButtonStyle(onBuilder)}
           onClick={handleBuilderClicked}
         >
           BUILDER
         </button>
         <button
-          disabled={location.pathname === "/grading"}
-          className={`px-3 py-5 ${
-            onGrading
-              ? "underline"
-              : "no-underline hover:opacity-80 transition duration-300" +
-                " transform hover:scale-105"
-          }`}
+          disabled={onGrading}
+          className={getNavButtonStyle(onGrading)}
           onClick={handleGradingClicked}
         >
           GRADING
