@@ -47,6 +47,10 @@ function Navbar() {
     navigate("/rubric-builder");
   };
 
+  const handleGradingClicked = () => {
+    navigate("/grading");
+  };
+
   return (
     <div className="flex justify-between items-centersm h-16 display: {} mx-4">
       <div className={"flex"}>
@@ -66,7 +70,7 @@ function Navbar() {
         </div>
 
         <button
-          disabled={location.pathname == "/rubrics"}
+          disabled={location.pathname === "/rubrics"}
           className={`px-3 py-5 ${onRubrics ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
           onClick={handleRubricsClicked}
         >
@@ -74,7 +78,7 @@ function Navbar() {
         </button>
 
         <button
-          disabled={location.pathname == "/clusters"}
+          disabled={location.pathname === "/clusters"}
           className={`px-3 py-5 ${onTemplates ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
           onClick={handleClustersClicked}
         >
@@ -82,11 +86,18 @@ function Navbar() {
         </button>
 
         <button
-          disabled={location.pathname == "/rubric-builder"}
+          disabled={location.pathname === "/rubric-builder"}
           className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
           onClick={handleBuilderClicked}
         >
           BUILDER
+        </button>
+        <button
+          disabled={location.pathname === "/grading"}
+          className={`px-3 py-5 ${onBuilder ? "underline" : "no-underline hover:opacity-80 transition duration-300 transform hover:scale-105"}`}
+          onClick={handleGradingClicked}
+        >
+          GRADING
         </button>
       </div>
 

@@ -12,6 +12,7 @@ import RubricBuilder from "./components/rubric-builder/RubricBuilder.tsx";
 import NotFoundPage from "./components/util/NotFoundPage.tsx";
 import UserRubrics from "./components/user/UserRubrics.tsx";
 import UserClusters from "./components/user/UserClusters.tsx";
+import GradingView from "./components/grading/GradingView.tsx";
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
 createRoot(document.getElementById("root")!).render(
@@ -20,10 +21,11 @@ createRoot(document.getElementById("root")!).render(
     <Router>
       <div>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/rubric-builder" element={<RubricBuilder />} />
-          <Route path="/rubrics" element={<UserRubrics />} />
-          <Route path="/clusters" element={<UserClusters />} />
+          <Route path={"/"} element={<Home />} />
+          <Route path={"/rubric-builder"} element={<RubricBuilder />} />
+          <Route path={"/rubrics"} element={<UserRubrics />} />
+          <Route path={"/clusters"} element={<UserClusters />} />
+          <Route path={"/grading"} element={<GradingView />} />
           {/*Any route that doesn't match the routes defined above will go to the 404 page*/}
           <Route path={"*"} element={<NotFoundPage />} />
         </Routes>
