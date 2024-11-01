@@ -2,10 +2,18 @@
  * Test suite for the BackendAPI module
  */
 
-import { BackendAPI } from "../Protocol/BackendRequests.ts";
 import { Rubric } from "../models/Rubric.ts";
+import { BackendAPI } from "../Protocol/BackendRequests.ts";
 
 global.fetch = jest.fn(); // mock fetch to avoid making actual HTTP requests
+
+const testRubric = {
+  id: 1,
+  title: "Test Rubric",
+  rubricCriteria: [],
+  pointsPossible: 0,
+  key: "test",
+};
 
 describe("BackendAPI", () => {
   afterEach(() => {
@@ -14,12 +22,7 @@ describe("BackendAPI", () => {
 
   describe("create", () => {
     it("should create a rubric and return true if successful", async () => {
-      const mockRubric: Rubric = {
-        id: 1,
-        title: "Test Rubric",
-        rubricCriteria: [],
-        description: "",
-      };
+      const mockRubric: Rubric = testRubric;
       (fetch as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => mockRubric,
@@ -42,12 +45,7 @@ describe("BackendAPI", () => {
         json: () => ({ error: "Failed to create rubric" }),
       });
 
-      const result = await BackendAPI.create({
-        id: 1,
-        title: "Test Rubric",
-        rubricCriteria: [],
-        description: "",
-      });
+      const result = await BackendAPI.create(testRubric);
       expect(result.success).toBe(false);
     });
   });
@@ -59,12 +57,7 @@ describe("BackendAPI", () => {
         status: 204,
       });
 
-      const result = await BackendAPI.update(1, {
-        id: 1,
-        title: "Updated Rubric",
-        rubricCriteria: [],
-        description: "",
-      });
+      const result = await BackendAPI.update(1, testRubric);
       expect(result.success).toBe(true);
       expect(fetch).toHaveBeenCalledWith(
         "http://localhost:3000/api/rubrics/1",
@@ -80,12 +73,7 @@ describe("BackendAPI", () => {
         json: () => ({ error: "Failed to update rubric" }),
       });
 
-      const result = await BackendAPI.update(1, {
-        id: 1,
-        title: "Updated Rubric",
-        rubricCriteria: [],
-        description: "",
-      });
+      const result = await BackendAPI.update(1, testRubric);
       expect(result.success).toBe(false);
     });
   });
