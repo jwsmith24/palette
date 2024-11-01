@@ -1,4 +1,5 @@
 import { RubricRating } from "./RubricRating";
+import { Template } from "./Template";
 import { v4 as uuidv4 } from "uuid";
 
 export interface RubricCriterion {
@@ -7,6 +8,7 @@ export interface RubricCriterion {
   ratings: RubricRating[];
   id?: number; // id is only assigned when the rubric is saved to the database
   points: number;
+  templates: Template[];
   updatePoints: () => void;
   key: string; // UUID for React
 }
@@ -20,7 +22,7 @@ export const calcMaxPoints = (ratings: RubricRating[]): number => {
   if (ratings.length > 0) {
     return ratings.reduce(
       (max, current) => (current.points > max.points ? current : max),
-      ratings[0],
+      ratings[0]
     ).points;
   } else {
     return 0;
@@ -36,7 +38,7 @@ export default function createRubricCriterion(
   points: number = 0,
   ratings: RubricRating[] = [],
   id: number | undefined = undefined,
-  template: string = "",
+  templates: Template[] = []
 ): RubricCriterion {
   return {
     ratings,
@@ -44,6 +46,7 @@ export default function createRubricCriterion(
     longDescription,
     points,
     id,
+    templates,
     key: uuidv4(),
     updatePoints() {
       this.points = Number(calcMaxPoints(this.ratings));

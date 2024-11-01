@@ -15,6 +15,8 @@ import {
 import createRating, { RubricRating } from "../../models/RubricRating.ts";
 import RatingInput from "./RatingInput.tsx";
 import TemplateSetter from "./TemplateSetter.tsx";
+import { Template } from "../../models/Template.ts";
+import createTemplate from "../../models/Template.ts";
 import Dialog from "../util/Dialog.tsx";
 
 export default function CriteriaInput({
@@ -24,7 +26,6 @@ export default function CriteriaInput({
   handleCriteriaUpdate,
   removeCriterion,
   setActiveCriterionIndex,
-  setActiveCriterionTemplate,
 }: {
   index: number;
   activeCriterionIndex: number;
@@ -32,14 +33,12 @@ export default function CriteriaInput({
   handleCriteriaUpdate: (index: number, criterion: RubricCriterion) => void;
   removeCriterion: (index: number) => void;
   setActiveCriterionIndex: (index: number) => void;
-  setActiveCriterionTemplate: (template: string) => void;
 }): ReactElement {
   const [ratings, setRatings] = useState<RubricRating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState<number>(0); // Initialize state for max points
   const [templateSetterActive, setTemplateSetterActive] = useState(false); // file input display is open or not
-  const [template, setTemplate] = useState(""); // file input display is open or not
   const [criteriaDescription, setCriteriaDescription] = useState(
-    criterion.description || "",
+    criterion.description || ""
   );
   /**
    * Whenever ratings change, recalculate criterion's max points
@@ -61,7 +60,7 @@ export default function CriteriaInput({
 
   const handleRemoveCriteriaButton = (
     event: ReactMouseEvent,
-    index: number,
+    index: number
   ) => {
     console.log("removing the criterion!");
     event.preventDefault();
@@ -74,10 +73,10 @@ export default function CriteriaInput({
   // Update criterion when ratings change.
   const handleRatingChange = (
     ratingIndex: number,
-    updatedRating: RubricRating,
+    updatedRating: RubricRating
   ) => {
     const updatedRatings = ratings.map((rating, index) =>
-      index === ratingIndex ? updatedRating : rating,
+      index === ratingIndex ? updatedRating : rating
     );
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
@@ -109,7 +108,7 @@ export default function CriteriaInput({
 
   const handleAddRating = (
     event: ReactMouseEvent<HTMLButtonElement>,
-    index: number,
+    index: number
   ) => {
     event.preventDefault();
     const updatedRatings = [...ratings, createRating()];
@@ -123,16 +122,12 @@ export default function CriteriaInput({
   };
 
   const handleTemplateSetterPress = (
-    event: ReactMouseEvent<HTMLButtonElement>,
+    event: ReactMouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     if (!templateSetterActive) {
       setTemplateSetterActive(true);
     }
-  };
-
-  const handleCloseTemplateSetter = () => {
-    setTemplateSetterActive(false); // hides the template setter
   };
 
   // Use the useSortable hook to handle criteria ordering
@@ -146,10 +141,21 @@ export default function CriteriaInput({
     transition,
   };
 
+  const buildCriteriaDescriptionSet = () =>
+    new Set(
+      criterion.templates.map((template) =>
+        template.description.trim().toLowerCase()
+      )
+    );
+
   const renderTemplateSetter = () => {
     if (templateSetterActive) {
-      return <TemplateSetter />;
+      return <TemplateSetter closeTemplateCard={handleCloseTemplateSetter} />;
     }
+  };
+
+  const handleCloseTemplateSetter = () => {
+    setTemplateSetterActive(false); // hides the template setter
   };
 
   const renderCondensedView = () => {
@@ -169,7 +175,7 @@ export default function CriteriaInput({
         <div className={"flex gap-3"}>
           <button
             onPointerDown={(
-              event: ReactMouseEvent, // Change to onPointerDown
+              event: ReactMouseEvent // Change to onPointerDown
             ) => handleRemoveCriteriaButton(event, index)}
             type={"button"}
             className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
