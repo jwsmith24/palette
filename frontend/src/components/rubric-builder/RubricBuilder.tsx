@@ -15,7 +15,7 @@ import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
-import createRubric, { Rubric } from "../../models/Rubric.ts";
+import { Rubric, createRubric } from "../../models/Rubric.ts";
 
 import createRubricCriterion, {
   RubricCriterion,
