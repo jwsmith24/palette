@@ -1,7 +1,7 @@
 import { RubricCriterion } from "./RubricCriterion.ts"; // frontend extension defined locally
 import { v4 as uuidv4 } from "uuid";
-import { Rubric as BaseRubric } from "../../../palette-types/src";
-import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
+import { Rubric as BaseRubric } from "../../../../palette-types/src";
+import { UNASSIGNED } from "../../utils/constants.ts";
 
 /**
  * Extend global rubric type but ensure key is a required field for the frontend.

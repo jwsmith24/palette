@@ -4,8 +4,8 @@
 
 // Mock uuid to ensure the key is predictable for testing
 
-import { Rubric, createRubric } from "../models/Rubric.ts";
-import { RubricCriterion } from "../models/RubricCriterion.ts";
+import { Rubric, createRubric } from "../features/rubricBuilder/Rubric.ts";
+import { RubricCriterion } from "../features/rubricBuilder/RubricCriterion.ts";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),

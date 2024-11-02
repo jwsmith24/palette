@@ -8,11 +8,8 @@ import {
 
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-import {
-  calcMaxPoints,
-  RubricCriterion,
-} from "../../models/RubricCriterion.ts";
-import createRating, { RubricRating } from "../../models/RubricRating.ts";
+import { calcMaxPoints, RubricCriterion } from "./RubricCriterion.ts";
+import createRating, { RubricRating } from "./RubricRating.ts";
 import RatingInput from "./RatingInput.tsx";
 
 export default function CriteriaInput({

@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
-import { RubricRating as BaseRating } from "../../../palette-types/src";
-import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
+import { RubricRating as BaseRating } from "../../../../palette-types/src";
+import { UNASSIGNED } from "../../utils/constants.ts";
 
 /**
  * Ensures key field is required within the frontend scope.

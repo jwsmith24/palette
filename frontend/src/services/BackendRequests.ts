@@ -1,4 +1,9 @@
-import { Rubric } from "../models/Rubric.ts";
+import { Rubric } from "../features/rubricBuilder/Rubric.ts";
+import {
+  APIError,
+  APIRequest,
+  APIResponse,
+} from "../../../palette-types/src/apiTypes.ts";
 
 /**
  * Define base Request to communicate with the backend API.
@@ -9,23 +14,7 @@ const API_CONFIG = {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
   },
-} as const; // enforce immutability
-
-// Types
-export interface APIError {
-  param: string;
-  msg: string;
-}
-
-/**
- * Used to trim down the Response object received from the backend to the essentials needed by the frontend.
- */
-export interface APIResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  errors?: string[];
-}
+} as APIRequest;
 
 /**
  * Error handler helper function. Will likely replace with node util tool.
@@ -44,7 +33,7 @@ const handleAPIErrors = (errors: APIError[]): string[] => {
  */
 async function fetchAPI<T>(
   endpoint: string,
-  options: RequestInit = {}, // used for extend
+  options: APIRequest = {},
 ): Promise<APIResponse<T>> {
   try {
     const url = `${API_CONFIG.baseURL}${endpoint}`;

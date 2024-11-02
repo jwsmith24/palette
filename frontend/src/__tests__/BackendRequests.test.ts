@@ -2,8 +2,8 @@
  * Test suite for the BackendAPI module
  */
 
-import { Rubric } from "../models/Rubric.ts";
-import { BackendAPI } from "../Protocol/BackendRequests.ts";
+import { Rubric } from "../features/rubricBuilder/Rubric.ts";
+import { BackendAPI } from "../services/BackendRequests.ts";
 
 global.fetch = jest.fn(); // mock fetch to avoid making actual HTTP requests
 

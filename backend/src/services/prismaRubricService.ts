@@ -4,7 +4,7 @@ import {
   Rubric,
   RubricCriterion,
   RubricRating,
-} from "../../../palette-types/src/DatabaseSafeTypes";
+} from "../../../palette-types/src/canvasTypes";
 import util from "util";
 
 /**

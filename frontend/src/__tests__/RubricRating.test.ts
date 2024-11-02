@@ -3,8 +3,8 @@
  */
 
 // Mock uuid to ensure predictable values
-import createRating from "../models/RubricRating.ts";
-import { UNASSIGNED } from "../../../palette-types/src/constants.ts";
+import createRating from "../features/rubricBuilder/RubricRating.ts";
+import { UNASSIGNED } from "../utils/constants.ts";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),

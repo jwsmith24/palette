@@ -5,10 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { RubricRating } from "../../models/RubricRating.ts";
+import { RubricRating } from "./RubricRating.ts";
 
-import editDescriptionIcon from "../../assets/description-icon.webp";
-import removeIcon from "../../assets/x-icon2.webp";
+import editDescriptionIcon from "../../resources/description-icon.webp";
+import removeIcon from "../../resources/x-icon2.webp";
 
 export default function RatingInput({
   ratingIndex,
