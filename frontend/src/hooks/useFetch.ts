@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from "react";
 import {
-  PaletteAPIBaseRequest,
+  PaletteAPIRequest,
   PaletteAPIResponse,
 } from "../../../palette-types/src/paletteApiTypes.ts";
 
@@ -17,7 +17,9 @@ const requestTemplate = {
     "Cache-Control": "no-cache",
   },
   baseURL: "http://localhost:3000/api",
-} as PaletteAPIBaseRequest;
+  body: "",
+  method: "GET",
+} as PaletteAPIRequest;
 
 export default function useFetch<T>(
   url: string,

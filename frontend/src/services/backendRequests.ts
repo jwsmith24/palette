@@ -1,7 +1,7 @@
 import { Rubric } from "../features/rubricBuilder/Rubric.ts";
 import {
   PaletteAPIError,
-  PaletteAPIBaseRequest,
+  PaletteAPIRequest,
   PaletteAPIResponse,
 } from "../../../palette-types/src/paletteApiTypes.ts";
 
@@ -14,7 +14,7 @@ const API_CONFIG = {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
   },
-} as PaletteAPIBaseRequest;
+} as PaletteAPIRequest;
 
 /**
  * Error handler helper function. Will likely replace with node util tool.
@@ -33,7 +33,7 @@ const handleAPIErrors = (errors: PaletteAPIError[]): string[] => {
  */
 async function fetchAPI<T>(
   endpoint: string,
-  options: PaletteAPIBaseRequest = {},
+  options: PaletteAPIRequest = {},
 ): Promise<PaletteAPIResponse<T>> {
   try {
     const url = `${API_CONFIG.baseURL}${endpoint}`;
