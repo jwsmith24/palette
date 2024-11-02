@@ -13,7 +13,7 @@ function Navbar() {
   /**
    * Map paths to nav button labels.
    *
-   * To add a new nav button, add a new pair to the list and ensure the route is setup to display the corresponding
+   * To add a new nav button, add a new pair to the list and ensure the route is set up to display the corresponding
    * page.
    */
   const navOptions = {
@@ -53,7 +53,7 @@ function Navbar() {
     setUserAnchor(null);
   };
 
-  const handleHomeClicked = () => {
+  const handleLogoutClicked = () => {
     navigate("/");
   };
 
@@ -85,7 +85,7 @@ function Navbar() {
         onClose={handleCloseUserMenu}
       >
         <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
-        <MenuItem onClick={handleHomeClicked}>Logout</MenuItem>
+        <MenuItem onClick={handleLogoutClicked}>Logout</MenuItem>
       </Menu>
     </div>
   );

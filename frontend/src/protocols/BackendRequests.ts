@@ -60,7 +60,7 @@ async function fetchAPI<T>(
       return {
         success: false,
         error: errorData.error,
-        errors, // todo: maybe update naming convention here to not be so confusing
+        errors,
       };
     }
 
@@ -81,7 +81,7 @@ async function fetchAPI<T>(
 /**
  * Backend API methods for Rubric CRUD operations.
  */
-export const BackendAPI = {
+export const RubricAPI = {
   /**
    * Create a new rubric in the database.
    * @param rubric The rubric data to save

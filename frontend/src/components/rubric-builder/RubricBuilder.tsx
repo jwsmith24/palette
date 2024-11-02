@@ -16,7 +16,6 @@ import CSVUpload from "./CSVUpload.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
 import createRubric, { Rubric } from "../../models/Rubric.ts";
-
 import createRubricCriterion, {
   RubricCriterion,
 } from "../../models/RubricCriterion.ts";
@@ -26,7 +25,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import createRating from "../../models/RubricRating.ts";
-import { APIResponse, BackendAPI } from "../../Protocol/BackendRequests.ts";
+import { APIResponse, RubricAPI } from "../../protocols/BackendRequests.ts";
+
 import ModalChoiceDialog from "../util/ModalChoiceDialog.tsx";
 
 // add type for to define our csv rows for the data field in papa parse
@@ -83,7 +83,7 @@ export default function RubricBuilder(): ReactElement {
 
     try {
       // Check if the rubric already exists
-      const { exists, id, error } = await BackendAPI.checkTitleExists(
+      const { exists, id, error } = await RubricAPI.checkTitleExists(
         rubric.title,
       );
 
@@ -103,7 +103,7 @@ export default function RubricBuilder(): ReactElement {
             action: async () => {
               closeModal();
               try {
-                const result = await BackendAPI.update(id, rubric);
+                const result = await RubricAPI.update(id, rubric);
                 handleApiResponse(result, rubric);
               } catch (error) {
                 console.error("Failed to overwrite:", error);
@@ -120,7 +120,7 @@ export default function RubricBuilder(): ReactElement {
                   ...rubric,
                   title: `${rubric.title} - Copy ${formatDate()}`,
                 };
-                const result = await BackendAPI.create(newRubric);
+                const result = await RubricAPI.create(newRubric);
                 handleApiResponse(result, newRubric);
               } catch (error) {
                 console.error("Failed to create a copy:", error);
@@ -133,7 +133,7 @@ export default function RubricBuilder(): ReactElement {
         openModal();
       } else {
         // Create a new rubric if it doesn’t exist
-        const result = await BackendAPI.create(rubric);
+        const result = await RubricAPI.create(rubric);
         handleApiResponse(result, rubric);
       }
     } catch (error) {
