@@ -11,51 +11,71 @@ import {
   PaletteAPIResponse,
 } from "../../../palette-types/src/paletteApiTypes.ts";
 
-const requestTemplate = {
+const DEFAULT_REQUEST = {
   headers: {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
   },
   baseURL: "http://localhost:3000/api",
-  body: "",
   method: "GET",
 } as PaletteAPIRequest;
 
 export default function useFetch<T>(
-  url: string,
-  options: RequestInit,
-): PaletteAPIResponse<T> {
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  endpoint: string, // url path to target endpoint
+  options: Partial<PaletteAPIRequest> = {}, // use defaults if nothing is provided
+) {
+  const [response, setResponse] = useState<PaletteAPIResponse<T>>({
+    data: null,
+    success: false,
+    error: null,
+    errors: [],
+    loading: true,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      // display loading indication while request is processing
+      setResponse((prev) => ({ ...prev, loading: true }));
+
       try {
-        const response = await fetch(`${requestTemplate.baseURL}${url}`, {
-          ...requestTemplate.headers,
-          ...options,
+        const response = await fetch(`${DEFAULT_REQUEST.baseURL}${endpoint}`, {
+          // safer/explicit spreading
+          headers: {
+            ...DEFAULT_REQUEST.headers, // use default headers, allow functions to overwrite
+            ...(options.headers || {}),
+          },
+          method: options.method || DEFAULT_REQUEST.method, // use specified method, otherwise default to GET
+          body: options.body || null, // use specified body or default to an empty body
         });
+
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
 
-        const json = (await response.json()) as T;
-        setData(json);
+        const json = (await response.json()) as T; //
+        setResponse({
+          data: json,
+          success: true,
+          error: null,
+          errors: [],
+          loading: false,
+        });
       } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An unknown error occurred");
-        }
-      } finally {
-        setLoading(false);
+        setResponse({
+          data: null,
+          success: false,
+          // error message added by express
+          error:
+            error instanceof Error
+              ? error.message
+              : "An unknown error occurred",
+          errors: [], // array of errors
+          loading: false,
+        });
       }
     };
+    void fetchData(); // tell es lint that we are in fact intentionally ignoring the promise
+  }, [endpoint, options]); // re-run if endpoint or options change
 
-    void fetchData();
-  }, [url, options]);
-
-  return { data, loading, error };
+  return response;
 }

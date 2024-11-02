@@ -1,3 +1,6 @@
+/**
+ * Defines a consistent error type for use within the application.
+ */
 export interface PaletteAPIError {
   param: string;
   msg: string;
@@ -10,9 +13,10 @@ export interface PaletteAPIError {
  */
 export interface PaletteAPIResponse<T> {
   data: T | null;
-  loading: boolean; // added by the useFetch hook to trigger loading effects
+  success: boolean;
   error: string | null;
-  errors?: string[];
+  errors: PaletteAPIError[];
+  loading?: boolean; // added by the useFetch hook to trigger loading effects
 }
 
 /**
@@ -20,7 +24,7 @@ export interface PaletteAPIResponse<T> {
  */
 export interface PaletteAPIRequest {
   baseURL: string;
-  headers: HeadersInit;
+  headers?: HeadersInit; // optional because some requests not require any custom headers
   method: string;
-  body: string;
+  body?: string; // optional since GET requests don't need a body
 }

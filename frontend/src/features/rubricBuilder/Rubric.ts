@@ -1,6 +1,6 @@
 import { RubricCriterion } from "./RubricCriterion.ts"; // frontend extension defined locally
 import { v4 as uuidv4 } from "uuid";
-import { Rubric as BaseRubric } from "../../../../palette-types/src";
+import { CanvasRubric as BaseRubric } from "../../../../palette-types/src";
 import { UNASSIGNED } from "../../utils/constants.ts";
 
 /**

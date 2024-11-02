@@ -1,4 +1,9 @@
-export interface Rubric {
+/**
+ * Defines the types used when communicating with the Canvas API. Seperated from the core application types to
+ * ensure the application can easily adapt if the Canvas API changes or if we want to support an additional LMS.
+ */
+
+export interface CanvasRubric {
   id?: number;
   title: string; // required
   contextId?: number | null;
@@ -10,20 +15,20 @@ export interface Rubric {
   content?: string | null;
   published?: boolean;
   authorId?: number | null;
-  rubricCriteria: RubricCriterion[]; // required
+  rubricCriteria: CanvasCriterion[]; // required
   key?: string;
 }
 
-export interface RubricCriterion {
+export interface CanvasCriterion {
   id?: number;
   description: string;
   longDescription?: string | null;
   points: number;
-  ratings: RubricRating[];
+  ratings: CanvasRating[];
   key?: string;
 }
 
-export interface RubricRating {
+export interface CanvasRating {
   id?: number;
   description: string;
   longDescription?: string | null;

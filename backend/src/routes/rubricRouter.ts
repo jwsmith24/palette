@@ -5,7 +5,7 @@ import asyncHandler from "express-async-handler";
 import { RubricService } from "../services/rubricService";
 import PrismaRubricService from "../services/prismaRubricService.js";
 import validateRubric from "../validators/rubricValidator.js";
-import { Rubric } from "../../../palette-types/src";
+import { CanvasRubric } from "../../../palette-types/src";
 import { StatusCodes } from "http-status-codes";
 
 const router = express.Router();
@@ -28,7 +28,9 @@ router.post(
       return;
     }
 
-    const createdRubric = await rubricService.createRubric(req.body as Rubric);
+    const createdRubric = await rubricService.createRubric(
+      req.body as CanvasRubric,
+    );
 
     if (createdRubric) {
       res.status(StatusCodes.CREATED).json(createdRubric);
@@ -100,7 +102,9 @@ router.put(
 
     // if not, create a new rubric
     if (!existingRubric) {
-      const newRubric = await rubricService.createRubric(req.body as Rubric);
+      const newRubric = await rubricService.createRubric(
+        req.body as CanvasRubric,
+      );
       res.status(StatusCodes.CREATED).json(newRubric);
       return;
     }
@@ -108,7 +112,7 @@ router.put(
     // Otherwise, update the existing rubric
     const updatedRubric = await rubricService.updateRubric(
       Number(id),
-      req.body as Rubric,
+      req.body as CanvasRubric,
     );
 
     if (!updatedRubric) {

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { UNASSIGNED } from "../../utils/constants.ts";
 import { RubricRating } from "./RubricRating.ts";
-import { RubricCriterion as BaseCriterion } from "../../../../palette-types/src";
+import { CanvasCriterion as BaseCriterion } from "../../../../palette-types/src";
 
 /**
  * Frontend extension of RubricCriterion
