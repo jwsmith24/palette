@@ -327,14 +327,14 @@ export default function RubricBuilder(): ReactElement {
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
-  
+
         {/* Form Section */}
         <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
           {/* Main Heading */}
           <h1 className="font-extrabold text-5xl mb-2 text-center">
             Create a new rubric
           </h1>
-  
+
           <div className="flex justify-between items-center">
             {/* Import and Export Buttons Container with Reduced Spacing */}
             <div className="flex gap-2">
@@ -344,7 +344,7 @@ export default function RubricBuilder(): ReactElement {
               >
                 Import CSV
               </button>
-  
+
               <button
                 className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onClick={(event) => event.preventDefault()} // Placeholder
@@ -352,13 +352,13 @@ export default function RubricBuilder(): ReactElement {
                 Export to CSV
               </button>
             </div>
-  
+
             {/* Rubric Total Points */}
             <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
               {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
             </h2>
           </div>
-  
+
           {/* Rubric Title Input */}
           <input
             type="text"
@@ -369,12 +369,12 @@ export default function RubricBuilder(): ReactElement {
             value={rubric.title}
             onChange={handleRubricTitleChange}
           />
-  
+
           {/* Criteria Section */}
           <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
             {renderCriteria()}
           </div>
-  
+
           {/* Buttons */}
           <div className="grid gap-4 mt-6">
             <button
@@ -395,7 +395,7 @@ export default function RubricBuilder(): ReactElement {
             </button>
           </div>
         </form>
-  
+
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog
           show={isModalOpen}
@@ -404,7 +404,7 @@ export default function RubricBuilder(): ReactElement {
           message={modalMessage}
           choices={modalChoices}
         />
-  
+
         {/* Rubric Sending Dialog */}
         <Dialog
           isOpen={isDialogOpen}
@@ -415,7 +415,7 @@ export default function RubricBuilder(): ReactElement {
             {JSON.stringify(lastSentRubric, null, 2)}
           </pre>
         </Dialog>
-  
+
         {/* CSV/XLSX Import Dialog */}
         <Dialog
           isOpen={fileInputActive}
@@ -424,10 +424,10 @@ export default function RubricBuilder(): ReactElement {
         >
           {renderFileImport()}
         </Dialog>
-  
+
         {/* Sticky Footer with Gradient */}
         <Footer />
       </div>
     </DndContext>
   );
-}  
+}
