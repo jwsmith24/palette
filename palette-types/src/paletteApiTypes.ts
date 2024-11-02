@@ -7,10 +7,10 @@ export interface PaletteAPIError {
  * Defines the response the frontend will use.
  */
 export interface PaletteAPIResponse<T> {
-  success: boolean;
-  data?: T;
+  success?: boolean;
+  data?: T | null;
   loading?: boolean;
-  error?: string;
+  error?: string | null;
   errors?: string[];
 }
 

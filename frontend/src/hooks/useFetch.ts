@@ -6,13 +6,10 @@
  */
 
 import { useState, useEffect } from "react";
-import { PaletteAPIBaseRequest } from "../../../palette-types/src/paletteApiTypes.ts";
-
-interface FetchReturn<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
+import {
+  PaletteAPIBaseRequest,
+  PaletteAPIResponse,
+} from "../../../palette-types/src/paletteApiTypes.ts";
 
 const requestTemplate = {
   headers: {
@@ -25,7 +22,7 @@ const requestTemplate = {
 export default function useFetch<T>(
   url: string,
   options: RequestInit,
-): FetchReturn<T> {
+): PaletteAPIResponse<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
