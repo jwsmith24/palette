@@ -12,9 +12,8 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
-      - CHOKIDAR_USEPOLLING=true # enables polling for consistent file watching on macOS
     command: sh -c "npm run migrate && npm run dev"
-    platform: linux/arm64
+    platform: linux/arm64/v8
 
   db:
     image: postgres:latest

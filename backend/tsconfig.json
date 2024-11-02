@@ -6,10 +6,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./",
-    "paths": {
-      "@models/types/*": ["../frontend/src/models/types/*"]
-      // Include frontend models (we can remove if we relocate common models to a shared folder)
-    },
+    "paths": {},
     "strict": true,
     "esModuleInterop": true,
     "sourceMap": true,
