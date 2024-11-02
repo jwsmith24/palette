@@ -420,7 +420,7 @@ export default function RubricBuilder(): ReactElement {
         <Dialog
           isOpen={fileInputActive}
           onClose={() => setFileInputActive(false)}
-          title={"THIS IS A VERY COOL DIALOG THAT WILL BE UPDATED"}
+          title={"Import a CSV Template"}
         >
           {renderFileImport()}
         </Dialog>
