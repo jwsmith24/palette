@@ -334,18 +334,24 @@ export default function RubricBuilder(): ReactElement {
             Create a new rubric
           </h1>
 
-          <div className={"flex justify-between"}>
-            {/*Import CSV/XLSX File*/}
-            <button
-              className={
-                "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4" +
-                " hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2" +
-                " focus:ring-violet-500"
-              }
-              onClick={handleImportFilePress}
-            >
-              Import CSV
-            </button>
+          <div className="flex justify-between items-center">
+            {/* Import and Export Buttons Container with Reduced Spacing */}
+            <div className="flex gap-2"> {/* Adjust gap size as needed */}
+              <button
+                className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                onClick={handleImportFilePress}
+              >
+                Import CSV
+              </button>
+
+              <button
+                className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onClick={(event) => event.preventDefault()} // Placeholder
+              >
+                Export to CSV
+              </button>
+            </div>
+
             {/* Rubric Total Points */}
             <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
               {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
