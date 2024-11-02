@@ -1,4 +1,4 @@
-export interface APIError {
+export interface PaletteAPIError {
   param: string;
   msg: string;
 }
@@ -6,9 +6,10 @@ export interface APIError {
 /**
  * Defines the response the frontend will use.
  */
-export interface APIResponse<T> {
+export interface PaletteAPIResponse<T> {
   success: boolean;
   data?: T;
+  loading?: boolean;
   error?: string;
   errors?: string[];
 }
@@ -16,7 +17,7 @@ export interface APIResponse<T> {
 /**
  * Defines the requests sent to the backend.
  */
-export interface APIRequest {
+export interface PaletteAPIBaseRequest {
   baseURL?: string;
   headers?: HeadersInit;
   method?: string;

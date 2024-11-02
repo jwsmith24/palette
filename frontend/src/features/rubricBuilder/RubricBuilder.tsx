@@ -24,9 +24,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import createRating from "./RubricRating.ts";
-import { BackendAPI } from "../../services/BackendRequests.ts";
+import { BackendAPI } from "../../services/backendRequests.ts";
 import ModalChoiceDialog from "../../components/ModalChoiceDialog.tsx";
-import { APIResponse } from "../../../../palette-types/src/apiTypes.ts";
+import { PaletteAPIResponse } from "../../../../palette-types/src/paletteApiTypes.ts";
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
@@ -143,7 +143,7 @@ export default function RubricBuilder(): ReactElement {
 
   // Helper function to handle API responses
   const handleApiResponse = (
-    result: APIResponse<Rubric>,
+    result: PaletteAPIResponse<Rubric>,
     rubricToSet: Rubric,
   ) => {
     if (result.success) {
