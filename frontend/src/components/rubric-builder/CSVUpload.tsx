@@ -20,7 +20,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     if (fileExtension === "csv") {
       parseCSV(file);
     } else {
-      alert("Unsupported file format. Please upload a CSV or XLSX file.");
+      alert("Unsupported file format. Please upload a CSV file.");
     }
   };
 
@@ -50,26 +50,21 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
   };
 
   return (
-    <div className="border border-gray-700 p-6 rounded-lg shadow-xl bg-gray-700">
-      <h2 className="text-2xl font-bold text-gray-200 mb-4">
-        Import CSV or XLSX
-      </h2>
-      <div className={"flex justify-between items-center"}>
-        <input
-          type="file"
-          accept=".csv,.xlsx"
-          onChange={handleFileChange}
-          className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
-        />
+    <div className={"flex justify-center items-center gap-10"}>
+      <input
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
+      />
 
-        {/* Cancel Button */}
-        <button
-          onClick={closeImportCard}
-          className="h-10 mt-4 bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
-          Cancel
-        </button>
-      </div>
+      {/* Cancel Button */}
+      <button
+        onClick={closeImportCard}
+        className=" mt-4 bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+      >
+        Cancel
+      </button>
     </div>
   );
 };
