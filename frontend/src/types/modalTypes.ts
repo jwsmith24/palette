@@ -3,5 +3,5 @@
  */
 export interface ModalChoice {
   label: string;
-  action: () => Promise<void>;
+  action: () => Promise<void> | void;
 }

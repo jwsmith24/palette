@@ -44,8 +44,10 @@ export default function RubricBuilder(): ReactElement {
   const [modalMessage, setModalMessage] = useState("");
   const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
     {
-      label: "",
-      action: async () => {}, // define action to expect async function
+      label: "OK",
+      action: () => {
+        closeModal();
+      },
     },
   ]);
 
@@ -87,6 +89,7 @@ export default function RubricBuilder(): ReactElement {
   );
 
   const handleExistingRubric = () => {
+    setModalTitle("Duplicate Rubric Detected");
     setModalMessage(
       `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
     );
@@ -147,10 +150,12 @@ export default function RubricBuilder(): ReactElement {
       handleExistingRubric();
     } else if (postRubricResponse.success) {
       // handle successful submission
+      setModalTitle("Success!");
       setModalMessage(`Rubric for ${rubric.title} submitted successfully!`);
       openModal();
     } else {
       // handle any other errors
+      setModalTitle("A MYSTERIOUS ERROR OCCURRED");
       setModalMessage(postRubricResponse.error!);
       openModal();
     }
