@@ -46,7 +46,7 @@ export default class PrismaRubricService implements RubricService {
     // log the rubric (printing 4 nested objects deep)
     console.log(
       "Created rubric:",
-      util.inspect(createdRubric, { depth: 4, colors: true })
+      util.inspect(createdRubric, { depth: 4, colors: true }),
     );
     return (createdRubric as Rubric) || null;
   }
@@ -66,7 +66,7 @@ export default class PrismaRubricService implements RubricService {
     // log the rubric (printing 4 nested objects deep)
     console.log(
       "Retrieved rubric:",
-      util.inspect(returnedRubric, { depth: 4, colors: true })
+      util.inspect(returnedRubric, { depth: 4, colors: true }),
     );
     return returnedRubric as Rubric | null;
   }
@@ -85,7 +85,7 @@ export default class PrismaRubricService implements RubricService {
     // log the rubrics (printing 4 nested objects deep)
     console.log(
       "Fetched rubrics:",
-      util.inspect(fetchedRubrics, { depth: 4, colors: true })
+      util.inspect(fetchedRubrics, { depth: 4, colors: true }),
     );
     return fetchedRubrics as Rubric[];
   }
@@ -127,7 +127,7 @@ export default class PrismaRubricService implements RubricService {
     // log the updated rubric (printing 4 nested objects deep)
     console.log(
       "Updated rubric:",
-      util.inspect(updatedRubric, { depth: 4, colors: true })
+      util.inspect(updatedRubric, { depth: 4, colors: true }),
     );
     return updatedRubric as Rubric | null;
   }

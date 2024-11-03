@@ -49,10 +49,6 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     closeImportCard();
   };
 
-  const handleTemp = () => {
-    console.log("templateJson");
-  };
-
   return (
     <div className={"flex justify-center items-center gap-10"}>
       <input

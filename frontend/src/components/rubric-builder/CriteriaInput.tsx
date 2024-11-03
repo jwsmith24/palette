@@ -15,8 +15,6 @@ import {
 import createRating, { RubricRating } from "../../models/RubricRating.ts";
 import RatingInput from "./RatingInput.tsx";
 import TemplateSetter from "./TemplateSetter.tsx";
-import { Template } from "../../models/Template.ts";
-import createTemplate from "../../models/Template.ts";
 import Dialog from "../util/Dialog.tsx";
 
 export default function CriteriaInput({
@@ -41,7 +39,6 @@ export default function CriteriaInput({
     criterion.description || ""
   );
   const [templateTitle, setTemplatetitle] = useState(criterion.template || "");
-  const [showingUserTemplates, setShowingUserTemplates] = useState(false); // file input display is open or not
 
   /**
    * Whenever ratings change, recalculate criterion's max points
@@ -66,7 +63,7 @@ export default function CriteriaInput({
     const newTitle = event.target.value;
     setTemplatetitle(newTitle);
 
-    const newCriterion = { ...criterion, template: newTitle };
+    const newCriterion = { ...criterion, template: templateTitle };
     handleCriteriaUpdate(index, newCriterion);
   };
 
