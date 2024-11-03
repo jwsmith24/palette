@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
-import Header from "../util/Header.tsx";
-import Footer from "../util/Footer.tsx";
+import Header from "../../components/Header.tsx";
+import Footer from "../../components/Footer.tsx";
 
 export default function GradingView(): ReactElement {
   //const handleGetCourses = () => {};
