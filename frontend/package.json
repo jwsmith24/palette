@@ -10,7 +10,7 @@
     "prettier-check": "prettier --check 'src/**/*.{js,ts,jsx,tsx,json,md}'",
     "preview": "vite preview",
     "test": "jest",
-    "clean": "sudo rm -rf dist"
+    "clean": "sudo rm -rf dist && sudo rm -rf node_modules && npm install"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

@@ -235,7 +235,6 @@ export default function RubricBuilder(): ReactElement {
       },
       0,
     ); // Initialize sum as 0
-    console.log(total);
     setTotalPoints(total); // Update state with the total points
   };
 
