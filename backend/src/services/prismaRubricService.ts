@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { RubricService } from "./rubricService";
 import {
-  CanvasRubric,
-  CanvasCriterion,
-  CanvasRating,
-} from "../../../palette-types/src/canvasTypes";
+  PrismaRubric,
+  PrismaRubricCriterion,
+  PrismaRubricRating,
+} from "../../../palette-types/src/DatabaseSafeTypes";
 import util from "util";
 
 /**
@@ -14,7 +14,7 @@ import util from "util";
 export default class PrismaRubricService implements RubricService {
   private prisma = new PrismaClient();
 
-  async createRubric(rubric: CanvasRubric): Promise<CanvasRubric | null> {
+  async createRubric(rubric: PrismaRubric): Promise<PrismaRubric | null> {
     const createdRubric = await this.prisma.rubric.create({
       data: {
         title: rubric.title,
@@ -48,10 +48,10 @@ export default class PrismaRubricService implements RubricService {
       "Created rubric:",
       util.inspect(createdRubric, { depth: 4, colors: true }),
     );
-    return (createdRubric as CanvasRubric) || null;
+    return (createdRubric as PrismaRubric) || null;
   }
 
-  async getRubricById(id: number): Promise<CanvasRubric | null> {
+  async getRubricById(id: number): Promise<PrismaRubric | null> {
     const returnedRubric = await this.prisma.rubric.findUnique({
       where: { id },
       include: {
@@ -68,10 +68,10 @@ export default class PrismaRubricService implements RubricService {
       "Retrieved rubric:",
       util.inspect(returnedRubric, { depth: 4, colors: true }),
     );
-    return returnedRubric as CanvasRubric | null;
+    return returnedRubric as PrismaRubric | null;
   }
 
-  async getAllRubrics(): Promise<CanvasRubric[]> {
+  async getAllRubrics(): Promise<PrismaRubric[]> {
     const fetchedRubrics = await this.prisma.rubric.findMany({
       include: {
         rubricCriteria: {
@@ -87,13 +87,13 @@ export default class PrismaRubricService implements RubricService {
       "Fetched rubrics:",
       util.inspect(fetchedRubrics, { depth: 4, colors: true }),
     );
-    return fetchedRubrics as CanvasRubric[];
+    return fetchedRubrics as PrismaRubric[];
   }
 
   async updateRubric(
     id: number,
-    data: CanvasRubric,
-  ): Promise<CanvasRubric | null> {
+    data: PrismaRubric,
+  ): Promise<PrismaRubric | null> {
     // delete the rubrics criterion first
     await this.deleteAllCriteria(id);
 
@@ -104,18 +104,20 @@ export default class PrismaRubricService implements RubricService {
         pointsPossible: data.pointsPossible,
         rubricCriteria: {
           // update the criteria, if any
-          create: data.rubricCriteria?.map((criterion: CanvasCriterion) => ({
-            description: criterion.description,
-            longDescription: criterion.longDescription,
-            points: criterion.points,
-            ratings: {
-              create: criterion.ratings.map((rating: CanvasRating) => ({
-                description: rating.description,
-                longDescription: rating.longDescription,
-                points: rating.points,
-              })),
-            },
-          })),
+          create: data.rubricCriteria?.map(
+            (criterion: PrismaRubricCriterion) => ({
+              description: criterion.description,
+              longDescription: criterion.longDescription,
+              points: criterion.points,
+              ratings: {
+                create: criterion.ratings.map((rating: PrismaRubricRating) => ({
+                  description: rating.description,
+                  longDescription: rating.longDescription,
+                  points: rating.points,
+                })),
+              },
+            }),
+          ),
         },
       },
       include: {
@@ -132,7 +134,7 @@ export default class PrismaRubricService implements RubricService {
       "Updated rubric:",
       util.inspect(updatedRubric, { depth: 4, colors: true }),
     );
-    return updatedRubric as CanvasRubric | null;
+    return updatedRubric as PrismaRubric | null;
   }
 
   async deleteAllCriteria(rubricId: number): Promise<void> {
