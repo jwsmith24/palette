@@ -10,7 +10,7 @@ export * from "./Types/Criteria";
 export * from "./Types/Rating";
 export * from "./Types/Rubric";
 
-export * from "./Protocol/PaletteAPIError";
+export * from "./Protocol/PaletteAPIErrorData";
 export * from "./Protocol/PaletteAPIRequest";
 export * from "./Protocol/PaletteAPIResponse";
 

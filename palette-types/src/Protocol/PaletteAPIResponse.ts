@@ -1,4 +1,4 @@
-import { PaletteAPIError } from "./PaletteAPIError";
+import { PaletteAPIErrorData } from "./PaletteAPIErrorData";
 
 /**
  * Used by the useFetch React hook embedded within components that need to make fetch requests to the backend.
@@ -10,6 +10,6 @@ export interface PaletteAPIResponse<T> {
   success: boolean;
   message?: string; // optional message field to indicate result of action
   error: string | null;
-  errors: PaletteAPIError[];
+  errors: PaletteAPIErrorData[];
   loading?: boolean; // added by the useFetch hook to trigger loading effects
 }
