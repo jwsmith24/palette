@@ -22,6 +22,8 @@
     "generate": "npm run generate -w backend"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
     "concurrently": "^9.0.1"
   }
 }
