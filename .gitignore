@@ -12,12 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Ignore all .env files. Not doing so is a security leak
-.env
-
-# python
-__pycache__
-env
+# env files
+*.env
 
 # Editor directories and files
 .vscode/*

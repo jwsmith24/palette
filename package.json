@@ -2,6 +2,9 @@
   "name": "palette",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "workspaces": [
     "frontend",
     "backend",
@@ -9,15 +12,19 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
-    "migrate": "npm run migrate -w backend",
     "build": "npm run build --workspaces",
+    "clean": "npm run clean --workspaces",
     "lint": "eslint . --no-cache",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "generate": "npm run generate -w backend",
-    "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\""
+    "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\"",
+    "migrate": "npm run migrate -w backend",
+    "generate": "npm run generate -w backend"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
     "concurrently": "^9.0.1"
   }
 }
