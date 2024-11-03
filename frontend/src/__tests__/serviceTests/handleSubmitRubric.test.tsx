@@ -1,6 +1,7 @@
 // RubricBuilder.test.tsx
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+
 import RubricBuilder from "../../features/rubricBuilder/RubricBuilder";
 import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
