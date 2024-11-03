@@ -322,6 +322,7 @@ export default function RubricBuilder(): ReactElement {
       </SortableContext>
     );
   };
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
