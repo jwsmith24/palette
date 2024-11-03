@@ -1,5 +1,5 @@
-import { RequestFormattedCriteria } from './CreateRubricRequest';
-import { CanvasAssociation } from '../CanvasAPITypes/CanvasAssociation';
+import { RequestFormattedCriteria } from "./CreateRubricRequest";
+import { CanvasAssociation } from "../CanvasAPITypes/CanvasAssociation";
 
 /**
  * This type represents the request body for updating a CanvasRubric.

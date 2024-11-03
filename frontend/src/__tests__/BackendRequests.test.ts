@@ -3,7 +3,7 @@
  */
 
 import { Rubric } from "../features/rubricBuilder/Rubric.ts";
-import { BackendAPI } from "../services/backendRequests.ts";
+import { BackendAPI } from "../Protocol/backendRequests.ts";
 
 global.fetch = jest.fn(); // mock fetch to avoid making actual HTTP requests
 

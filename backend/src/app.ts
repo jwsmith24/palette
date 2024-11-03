@@ -7,6 +7,10 @@ import rubricRouter from "./routes/rubricRouter.js"; // !! required js extension
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+export const config = dotenv.config();
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);

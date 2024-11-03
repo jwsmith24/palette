@@ -1,10 +1,10 @@
 import { config } from "../app";
-import { CreateRubricRequest } from "@types/CanvasAPIProtocol/CreateRubricRequest";
-import { CreateRubricResponse } from "@types/CanvasAPIProtocol/CreateRubricResponse";
-import { GetRubricRequest } from "@types/CanvasAPIProtocol/GetRubricRequest";
-import { CanvasRubric } from "@types/CanvasAPITypes/CanvasRubric";
-import { UpdateRubricResponse } from "@types/CanvasAPIProtocol/UpdateRubricResponse";
-import { DeleteRubricRequest } from "@types/CanvasAPIProtocol/DeleteRubricRequest";
+import { CreateRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/CreateRubricRequest";
+import { CreateRubricResponse } from "../../../palette-types/src/CanvasAPIProtocol/CreateRubricResponse";
+import { GetRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/GetRubricRequest";
+import { CanvasRubric } from "../../../palette-types/src/CanvasAPITypes/CanvasRubric";
+import { UpdateRubricResponse } from "../../../palette-types/src/CanvasAPIProtocol/UpdateRubricResponse";
+import { DeleteRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/DeleteRubricRequest";
 
 const API_CONFIG = {
   baseURL: "https://canvas.instructure.com/api/v1",

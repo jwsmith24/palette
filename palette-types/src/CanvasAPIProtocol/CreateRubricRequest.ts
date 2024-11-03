@@ -31,17 +31,15 @@ interface CreatedRubric {
  * The required format for criteria when creating or updating a rubric.
  *
  */
-export type RequestFormattedCriteria = Record<number, Omit<CanvasCriterion, "ratings"> & { ratings: RequestFormattedRatings}> | null;
+export type RequestFormattedCriteria = Record<
+  number,
+  Omit<CanvasCriterion, "ratings"> & { ratings: RequestFormattedRatings }
+> | null;
 
 /**
  * The required format for ratings when creating or updating a rubric criterion.
  */
 export type RequestFormattedRatings = Record<number, CanvasRating> | null;
-
-// A rubric criterion whose ratings are also a RubricRatingHash
-export type CreatedRubricCriterion = Omit<CanvasCriterion, "ratings"> & {
-  ratings: RequestFormattedRatings;
-};
 
 /**
  * The CreatedRubricAssociation defines the rubric association fields that can be created (according to the API).
