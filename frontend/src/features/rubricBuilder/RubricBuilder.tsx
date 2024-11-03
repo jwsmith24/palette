@@ -27,6 +27,7 @@ import createRating from "./RubricRating.ts";
 import ModalChoiceDialog from "../../components/ModalChoiceDialog.tsx";
 import formatDate from "../../utils/formatDate.ts";
 import useFetch from "../../hooks/useFetch.ts";
+import { ModalChoice } from "../../types/modalTypes.ts";
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
@@ -37,14 +38,9 @@ export default function RubricBuilder(): ReactElement {
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
-  // Define type for modal choices
-  interface ModalChoice {
-    label: string;
-    action: () => Promise<void>;
-  }
-
-  // For ModalChoiceDialog state
+  // Modal State
   const [isModalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
     {
@@ -398,7 +394,7 @@ export default function RubricBuilder(): ReactElement {
         <ModalChoiceDialog
           show={isModalOpen}
           onHide={closeModal}
-          title={"Rubric Already Exists"}
+          title={modalTitle}
           message={modalMessage}
           choices={modalChoices}
         />
