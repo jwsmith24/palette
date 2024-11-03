@@ -7,7 +7,7 @@
     "rootDir": "./src",
     "strict": true,
     "sourceMap": true,
-    "baseUrl": "./",
+    "baseUrl": "./"
   },
   "include": ["src/**/*.ts"]
 }

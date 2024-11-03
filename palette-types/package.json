@@ -6,7 +6,9 @@
     "build": "tsc",
     "clean": "sudo rm -rf dist && sudo rm -rf node_modules && npm install"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "type": "module",
   "author": "",

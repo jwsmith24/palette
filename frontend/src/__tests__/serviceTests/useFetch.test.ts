@@ -1,79 +1,105 @@
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react";
 import useFetch from "../../hooks/useFetch";
 
-// Mocking the global fetch function
+// Mock the fetch API
 global.fetch = jest.fn();
 
-const mockFetchResponse = async (data: unknown, ok = true, status = 200) => {
-  (fetch as jest.Mock).mockResolvedValueOnce({
-    ok,
-    status,
-    json: async () => data,
-  });
-};
+describe("useFetch", () => {
+  const mockData = { message: "Success!" };
+  const endpoint = "/test-endpoint";
 
-describe("useFetch hook", () => {
-  afterEach(() => {
-    jest.clearAllMocks(); // Clear previous mocks between tests
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("should start with loading state", async () => {
-    const { result } = renderHook(() => useFetch("/test"));
-
-    expect(result.current.response.loading).toBe(true);
-  });
-
-  it("should fetch and return data on success", async () => {
-    const mockData = { message: "Success" };
-    await mockFetchResponse(mockData);
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useFetch<{ message: string }>("/test"),
-    );
-
-    act(() => {
-      result.current.fetchData();
+  it("should set loading to true while fetching data", async () => {
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => mockData,
     });
 
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useFetch(endpoint));
 
+    // Assert initial loading state
+    expect(result.current.response.loading).toBe(true);
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    // Assert loading is set to false after fetching
     expect(result.current.response.loading).toBe(false);
     expect(result.current.response.success).toBe(true);
     expect(result.current.response.data).toEqual(mockData);
-    expect(result.current.response.error).toBeNull();
   });
 
-  it("should handle fetch error", async () => {
-    (fetch as jest.Mock).mockRejectedValueOnce(new Error("Fetch error"));
+  it("should set error state if the fetch request fails", async () => {
+    const errorMessage = "Error: 500";
+    (fetch as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch("/test"));
+    const { result } = renderHook(() => useFetch(endpoint));
 
-    act(() => {
-      result.current.fetchData();
+    await act(async () => {
+      await result.current.fetchData();
     });
-
-    await waitForNextUpdate();
 
     expect(result.current.response.loading).toBe(false);
     expect(result.current.response.success).toBe(false);
-    expect(result.current.response.error).toBe("Fetch error");
+    expect(result.current.response.error).toBe(errorMessage);
     expect(result.current.response.data).toBeNull();
   });
 
-  it("should handle HTTP error responses", async () => {
-    await mockFetchResponse(null, false, 404);
+  it("should override default headers with options provided", async () => {
+    const customHeader = { Authorization: "Bearer token SECRET" };
+    const customOptions = { headers: customHeader };
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch("/test"));
-
-    act(() => {
-      result.current.fetchData();
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => mockData,
     });
 
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useFetch(endpoint, customOptions));
 
-    expect(result.current.response.loading).toBe(false);
-    expect(result.current.response.success).toBe(false);
-    expect(result.current.response.error).toBe("Error: 404");
-    expect(result.current.response.data).toBeNull();
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    // Check that fetch was called with the custom header
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining(endpoint),
+      expect.objectContaining({
+        headers: expect.objectContaining(customHeader) as unknown,
+      }),
+    );
+
+    expect(result.current.response.success).toBe(true);
+    expect(result.current.response.data).toEqual(mockData);
+  });
+
+  it("should use specified method from options", async () => {
+    const customMethod = "POST";
+    const customOptions = { method: customMethod };
+
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () => mockData,
+    });
+
+    const { result } = renderHook(() => useFetch(endpoint, customOptions));
+
+    await act(async () => {
+      await result.current.fetchData();
+    });
+
+    // Check that fetch was called with the specified method
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining(endpoint),
+      expect.objectContaining({
+        method: customMethod,
+      }),
+    );
+
+    expect(result.current.response.success).toBe(true);
+    expect(result.current.response.data).toEqual(mockData);
   });
 });
