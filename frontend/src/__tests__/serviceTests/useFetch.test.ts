@@ -5,17 +5,21 @@ import useFetch from "../../hooks/useFetch";
 global.fetch = jest.fn();
 
 describe("useFetch", () => {
-  const mockData = { message: "Success!" };
-  const endpoint = "/test-endpoint";
+  const mockData = { message: "Success!" }; // returns whenever fetch is called
+  const endpoint = "/test-endpoint"; // simulated endpoint
 
   beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   it("should set loading to true while fetching data", async () => {
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: () => mockData,
+      json: () => Promise.resolve(mockData),
     });
 
     const { result } = renderHook(() => useFetch(endpoint));
@@ -55,7 +59,7 @@ describe("useFetch", () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: () => mockData,
+      json: () => Promise.resolve(mockData),
     });
 
     const { result } = renderHook(() => useFetch(endpoint, customOptions));
@@ -68,7 +72,10 @@ describe("useFetch", () => {
     expect(fetch).toHaveBeenCalledWith(
       expect.stringContaining(endpoint),
       expect.objectContaining({
-        headers: expect.objectContaining(customHeader) as unknown,
+        headers: expect.objectContaining(customHeader) as Record<
+          string,
+          string
+        >,
       }),
     );
 
@@ -82,7 +89,7 @@ describe("useFetch", () => {
 
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: () => mockData,
+      json: () => Promise.resolve(mockData),
     });
 
     const { result } = renderHook(() => useFetch(endpoint, customOptions));
