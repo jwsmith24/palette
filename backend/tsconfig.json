@@ -15,6 +15,6 @@
     "types": ["node", "express", "@prisma/client", "jest"],
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "palette-types/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/prisma/**"]
 }

@@ -27,13 +27,13 @@ import formatDate from "../../utils/formatDate";
 import useFetch from "../../hooks/useFetch";
 import { ModalChoice } from "../../types/modalTypes";
 
-import { Rubric, Criteria } from "palette-types";
 import {
   createCriterion,
   createRating,
   createRubric,
 } from "../../utils/rubricFactory.ts";
 import { CSVRow } from "../../types/csvRow.ts";
+import { Criteria, Rubric } from "palette-types";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
