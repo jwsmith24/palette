@@ -4,8 +4,10 @@ import MenuItem from "@mui/material/MenuItem";
 import createTemplate, { Template } from "../../models/Template";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
+  onTemplatesOpen: () => void;
   handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -15,7 +17,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate());
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null,
+    null
   );
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -26,6 +28,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
     setAnchorElTemplate(event.currentTarget);
     console.log("here");
   };
@@ -74,7 +77,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           onClose={handleCloseTemplates}
         >
           <MenuItem onClick={handleSave}>Mock Template 1</MenuItem>
-          <MenuItem onClick={handleSave}>Mock Template 1</MenuItem>
+          <MenuItem onClick={handleSave}>Mock Template 2</MenuItem>
         </Menu>
 
         <button
