@@ -8,7 +8,7 @@ import React, {
 
 import editDescriptionIcon from "../../resources/description-icon.webp";
 import removeIcon from "../../resources/x-icon2.webp";
-import { Rating } from "../../../../palette-types/src";
+import { Rating } from "palette-types";
 
 export default function RatingInput({
   ratingIndex,

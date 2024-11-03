@@ -4,9 +4,10 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "sourceRoot": "./",
-    "rootDir": "./",
+    "rootDir": "./src",
     "strict": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "./",
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }

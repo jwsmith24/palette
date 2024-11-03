@@ -1,5 +1,5 @@
-import { CanvasRubric } from "../CanvasAPITypes/CanvasRubric";
-import { CanvasAssociation } from "../CanvasAPITypes/CanvasAssociation";
+import { CanvasRubric } from "../canvasTypes/CanvasRubric";
+import { CanvasAssociation } from "../canvasTypes/CanvasAssociation";
 
 /**
  * This type represents the response body for creating a new CanvasRubric.

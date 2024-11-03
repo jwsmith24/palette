@@ -1,6 +1,6 @@
-import { CanvasAssociation } from "../CanvasAPITypes/CanvasAssociation";
-import { CanvasCriterion } from "../CanvasAPITypes/CanvasCriterion";
-import { CanvasRating } from "../CanvasAPITypes/CanvasRating";
+import { CanvasCriterion } from "../canvasTypes/CanvasCriterion";
+import { CanvasRating } from "../canvasTypes/CanvasRating";
+import { CanvasAssociation } from "../canvasTypes/CanvasAssociation";
 
 /**
  * This type represents the request body for creating a new CanvasRubric.

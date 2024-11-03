@@ -1,28 +1,28 @@
 /**
- * Entry point for type definitions.
+ * Barrel file for type definitions. Allows easy importing from a single 'palette-types' alias without any messy config.
  */
 
-/**
- * This is messy right now, will eventually adding a barreling tool or something to simplify exports.
- */
+// Export everything from canvasProtocol
+export * from "./canvasProtocol/CreateRubricRequest";
+export * from "./canvasProtocol/CreateRubricResponse";
+export * from "./canvasProtocol/DeleteRubricRequest";
+export * from "./canvasProtocol/GetRubricRequest";
+export * from "./canvasProtocol/UpdateRubricRequest";
+export * from "./canvasProtocol/UpdateRubricResponse";
 
-export * from "./Types/Criteria";
-export * from "./Types/Rating";
-export * from "./Types/Rubric";
+// Export everything from canvasTypes
+export * from "./canvasTypes/CanvasAssessment";
+export * from "./canvasTypes/CanvasAssociation";
+export * from "./canvasTypes/CanvasCriterion";
+export * from "./canvasTypes/CanvasRating";
+export * from "./canvasTypes/CanvasRubric";
 
-export * from "./Protocol/PaletteAPIErrorData";
-export * from "./Protocol/PaletteAPIRequest";
-export * from "./Protocol/PaletteAPIResponse";
+// Export everything from protocol
+export * from "./protocol/PaletteAPIErrorData";
+export * from "./protocol/PaletteAPIRequest";
+export * from "./protocol/PaletteAPIResponse";
 
-export * from "./CanvasAPIProtocol/CreateRubricRequest";
-export * from "./CanvasAPIProtocol/CreateRubricResponse";
-export * from "./CanvasAPIProtocol/DeleteRubricRequest";
-export * from "./CanvasAPIProtocol/GetRubricRequest";
-export * from "./CanvasAPIProtocol/UpdateRubricRequest";
-export * from "./CanvasAPIProtocol/UpdateRubricResponse";
-
-export * from "./CanvasAPITypes/CanvasAssessment";
-export * from "./CanvasAPITypes/CanvasAssociation";
-export * from "./CanvasAPITypes/CanvasCriterion";
-export * from "./CanvasAPITypes/CanvasRating";
-export * from "./CanvasAPITypes/CanvasRubric";
+// Export everything from types
+export * from "./types/Criteria";
+export * from "./types/Rating";
+export * from "./types/Rubric";

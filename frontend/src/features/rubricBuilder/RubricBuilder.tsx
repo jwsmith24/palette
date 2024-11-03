@@ -1,5 +1,5 @@
-/*
-Main view for the Rubric Builder feature.
+/**
+ * Rubric Builder view.
  */
 
 import {
@@ -26,15 +26,14 @@ import ModalChoiceDialog from "../../components/ModalChoiceDialog";
 import formatDate from "../../utils/formatDate";
 import useFetch from "../../hooks/useFetch";
 import { ModalChoice } from "../../types/modalTypes";
-import { Criteria, Rubric } from "../../../../palette-types/src";
+
+import { Rubric, Criteria } from "palette-types";
 import {
   createCriterion,
   createRating,
   createRubric,
 } from "../../utils/rubricFactory.ts";
-
-// add type for to define our csv rows for the data field in papa parse
-export type CSVRow = [string, ...(number | string)[]];
+import { CSVRow } from "../../types/csvRow.ts";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());

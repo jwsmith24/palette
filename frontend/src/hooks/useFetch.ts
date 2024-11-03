@@ -6,10 +6,7 @@
  */
 
 import { useState, useCallback } from "react";
-import {
-  PaletteAPIRequest,
-  PaletteAPIResponse,
-} from "../../../palette-types/src";
+import { PaletteAPIRequest, PaletteAPIResponse } from "palette-types";
 
 const DEFAULT_REQUEST = {
   headers: {

@@ -1,6 +1,6 @@
 import React from "react";
 import Papa from "papaparse";
-import { CSVRow } from "./RubricBuilder.tsx";
+import { CSVRow } from "../../types/csvRow.ts";
 
 interface CSVUploadProps {
   onDataChange: (data: CSVRow[]) => void;

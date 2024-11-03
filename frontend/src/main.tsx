@@ -8,10 +8,10 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import Home from "./features/home/Home.tsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import RubricBuilder from "./features/rubricBuilder/RubricBuilder.tsx";
-import NotFoundPage from "./components/NotFoundPage.tsx";
-import UserRubrics from "./features/user/UserRubrics.tsx";
-import UserClusters from "./features/user/UserClusters.tsx";
+import RubricBuilder from "./features/rubricBuilder/RubricBuilder";
+import NotFoundPage from "./components/NotFoundPage";
+import UserRubrics from "./features/user/UserRubrics";
+import UserClusters from "./features/user/UserClusters";
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
 createRoot(document.getElementById("root")!).render(
