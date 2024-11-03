@@ -4,8 +4,8 @@
 
 // Mock uuid to ensure the key is predictable for testing
 
-import { Rubric, createRubric } from "../../features/rubricBuilder/Rubric.ts";
-import { RubricCriterion } from "../../features/rubricBuilder/RubricCriterion.ts";
+import { createRubric } from "../../utils/rubricFactory.ts";
+import { Criteria, Rubric } from "../../../../palette-types/src";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),
@@ -18,13 +18,13 @@ describe("Rubric", () => {
 
       // Assertions for default values
       expect(rubric.title).toBe("");
-      expect(rubric.rubricCriteria).toEqual([]);
+      expect(rubric.criteria).toEqual([]);
       expect(rubric.id).toBe(-1);
       expect(rubric.key).toBe("test-uuid"); // Mocked UUID
     });
 
     it("should create a Rubric with specified values", () => {
-      const mockCriteria: RubricCriterion[] = [
+      const mockCriteria: Criteria[] = [
         {
           description: "Criterion 1",
           longDescription: "Description for Criterion 1",
@@ -47,7 +47,7 @@ describe("Rubric", () => {
       console.log(rubric);
       // Assertions for specified values
       expect(rubric.title).toBe("Test Rubric");
-      expect(rubric.rubricCriteria).toEqual(mockCriteria);
+      expect(rubric.criteria).toEqual(mockCriteria);
       expect(rubric.id).toBe(123);
       expect(rubric.key).toBe("test-uuid"); // Mocked UUID
     });

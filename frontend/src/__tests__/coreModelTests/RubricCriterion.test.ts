@@ -1,16 +1,12 @@
 /**
  * Unit tests for RubricCriterion.ts
  */
+import { UNASSIGNED } from "../../utils/constants.ts";
+import { createCriterion, createRating } from "../../utils/rubricFactory.ts";
+import { Rating } from "../../../../palette-types/src";
+import { calcMaxPoints } from "../../utils/calculateMaxPoints.ts";
 
 // Mock uuid to ensure predictable values
-import createRubricCriterion, {
-  calcMaxPoints,
-} from "../../features/rubricBuilder/RubricCriterion.ts";
-import createRating, {
-  RubricRating,
-} from "../../features/rubricBuilder/RubricRating.ts";
-import { UNASSIGNED } from "../../utils/constants.ts";
-
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),
 }));
@@ -20,7 +16,7 @@ describe("RubricCriterion", () => {
   // each describe is a unit test
   describe("createRubricCriterion", () => {
     it("should create a RubricCriterion with default values", () => {
-      const criterion = createRubricCriterion();
+      const criterion = createCriterion();
 
       expect(criterion.description).toBe("");
       expect(criterion.longDescription).toBe("");
@@ -31,11 +27,11 @@ describe("RubricCriterion", () => {
     });
 
     it("should create a RubricCriterion with specified values", () => {
-      const mockRatings: RubricRating[] = [
+      const mockRatings: Rating[] = [
         createRating(5, "Rating 1"),
         createRating(10, "Rating 2"),
       ];
-      const criterion = createRubricCriterion(
+      const criterion = createCriterion(
         "Criterion Title",
         "Detailed description",
         15,
@@ -54,7 +50,7 @@ describe("RubricCriterion", () => {
 
   describe("calcMaxPoints", () => {
     it("should return the maximum points value from the ratings", () => {
-      const ratings: RubricRating[] = [
+      const ratings: Rating[] = [
         createRating(5, "Low"),
         createRating(15, "Medium"),
         createRating(10, "High"),
@@ -72,11 +68,11 @@ describe("RubricCriterion", () => {
 
   describe("updatePoints", () => {
     it("should update the points to the maximum rating points in the ratings array", () => {
-      const ratings: RubricRating[] = [
+      const ratings: Rating[] = [
         createRating(8, "Average"),
         createRating(20, "Excellent"),
       ];
-      const criterion = createRubricCriterion(
+      const criterion = createCriterion(
         "Criterion with Ratings",
         "Long Description",
         0,
