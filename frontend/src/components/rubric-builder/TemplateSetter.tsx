@@ -15,7 +15,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate());
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null
+    null,
   );
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -38,7 +38,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
             row
               .slice(1)
               .every(
-                (cell) => typeof cell === "string" || typeof cell === "number"
+                (cell) => typeof cell === "string" || typeof cell === "number",
               )
           );
         });
