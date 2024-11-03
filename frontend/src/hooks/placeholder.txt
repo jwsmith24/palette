@@ -1,1 +1,0 @@
-This directory will hold custom hooks used across the frontend.

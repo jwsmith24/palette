@@ -30,7 +30,7 @@ export function createRubric(
  * id defaults to -1 to indicate that it was dynamically generated and needs to be assigned an ID when it reaches
  * the backend.
  */
-export function createRubricCriterion(
+export function createCriterion(
   description: string = "",
   longDescription: string = "",
   points: number = 0,

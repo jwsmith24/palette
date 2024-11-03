@@ -15,19 +15,23 @@ import Dialog from "../../components/Dialog";
 import CSVUpload from "./CSVUpload";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { Rubric, createRubric } from "./Rubric";
 
-import createRubricCriterion, { RubricCriterion } from "./RubricCriterion";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import createRating from "./RubricRating";
+
 import ModalChoiceDialog from "../../components/ModalChoiceDialog";
 import formatDate from "../../utils/formatDate";
 import useFetch from "../../hooks/useFetch";
 import { ModalChoice } from "../../types/modalTypes";
+import { Criteria, Rubric } from "../../../../palette-types/src";
+import {
+  createCriterion,
+  createRating,
+  createRubric,
+} from "../../utils/rubricFactory.ts";
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
@@ -168,7 +172,7 @@ export default function RubricBuilder(): ReactElement {
    */
   const buildCriteriaDescriptionSet = () =>
     new Set(
-      rubric.rubricCriteria.map((criterion) =>
+      rubric.criteria.map((criterion) =>
         criterion.description.trim().toLowerCase(),
       ),
     );
@@ -202,7 +206,7 @@ export default function RubricBuilder(): ReactElement {
         }
 
         // Create new criterion if unique
-        const criterion: RubricCriterion = createRubricCriterion(row[0]); // use the original format
+        const criterion: Criteria = createCriterion(row[0]); // use the original format
 
         // process ratings in their column pairs
         for (let i = 1; i < row.length; i += 2) {
@@ -222,14 +226,14 @@ export default function RubricBuilder(): ReactElement {
     // update rubric state
     setRubric((prevRubric) => ({
       ...prevRubric,
-      rubricCriteria: [...prevRubric.rubricCriteria, ...newCriteria],
+      rubricCriteria: [...prevRubric.criteria, ...newCriteria],
     }));
   };
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
-    const total: number = rubric.rubricCriteria.reduce(
-      (sum: number, criterion: RubricCriterion) => {
+    const total: number = rubric.criteria.reduce(
+      (sum: number, criterion: Criteria) => {
         if (isNaN(criterion.points)) {
           return sum; // do not add bad value
         }
@@ -243,22 +247,22 @@ export default function RubricBuilder(): ReactElement {
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.rubricCriteria, createRubricCriterion()];
-    setRubric({ ...rubric, rubricCriteria: newCriteria });
+    const newCriteria = [...rubric.criteria, createCriterion()];
+    setRubric({ ...rubric, criteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
   };
 
   const handleRemoveCriterion = (index: number) => {
-    const newCriteria = [...rubric.rubricCriteria];
+    const newCriteria = [...rubric.criteria];
     newCriteria.splice(index, 1); // remove the target criterion from the array
-    setRubric({ ...rubric, rubricCriteria: newCriteria });
+    setRubric({ ...rubric, criteria: newCriteria });
   };
 
   // update criterion at given index
-  const handleUpdateCriterion = (index: number, criterion: RubricCriterion) => {
-    const newCriteria = [...rubric.rubricCriteria]; // copy criteria to new array
+  const handleUpdateCriterion = (index: number, criterion: Criteria) => {
+    const newCriteria = [...rubric.criteria]; // copy criteria to new array
     newCriteria[index] = criterion; // update the criterion with changes;
-    setRubric({ ...rubric, rubricCriteria: newCriteria }); // update rubric to have new criteria
+    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
   };
 
   const renderFileImport = () => {
@@ -286,18 +290,18 @@ export default function RubricBuilder(): ReactElement {
   // Fires when drag event is over to re-sort criteria
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
-      const oldIndex = rubric.rubricCriteria.findIndex(
+      const oldIndex = rubric.criteria.findIndex(
         (criterion) => criterion.key === event.active.id,
       );
-      const newIndex = rubric.rubricCriteria.findIndex(
+      const newIndex = rubric.criteria.findIndex(
         (criterion) => criterion.key === event.over!.id, // assert not null for type safety
       );
 
-      const updatedCriteria = [...rubric.rubricCriteria];
+      const updatedCriteria = [...rubric.criteria];
       const [movedCriterion] = updatedCriteria.splice(oldIndex, 1);
       updatedCriteria.splice(newIndex, 0, movedCriterion);
 
-      setRubric({ ...rubric, rubricCriteria: updatedCriteria });
+      setRubric({ ...rubric, criteria: updatedCriteria });
     }
   };
 
@@ -305,10 +309,10 @@ export default function RubricBuilder(): ReactElement {
   const renderCriteria = () => {
     return (
       <SortableContext
-        items={rubric.rubricCriteria.map((criterion) => criterion.key)}
+        items={rubric.criteria.map((criterion) => criterion.key)}
         strategy={verticalListSortingStrategy}
       >
-        {rubric.rubricCriteria.map((criterion, index) => (
+        {rubric.criteria.map((criterion, index) => (
           <CriteriaInput
             key={criterion.key}
             index={index}

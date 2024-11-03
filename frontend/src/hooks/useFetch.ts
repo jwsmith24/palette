@@ -9,7 +9,7 @@ import { useState, useCallback } from "react";
 import {
   PaletteAPIRequest,
   PaletteAPIResponse,
-} from "../../../palette-types/src/paletteApiTypes.ts";
+} from "../../../palette-types/src";
 
 const DEFAULT_REQUEST = {
   headers: {
