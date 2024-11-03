@@ -6,7 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 
 export default tseslint.config(
   {
-    ignores: ["**/build/**", "**/dist/**", "**/node_modules"],
+    ignores: ["**/build/**", "**/dist/**", "**/node_modules/**"],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
