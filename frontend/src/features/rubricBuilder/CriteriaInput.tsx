@@ -8,9 +8,11 @@ import {
 
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-import { calcMaxPoints, RubricCriterion } from "./RubricCriterion.ts";
-import createRating, { RubricRating } from "./RubricRating.ts";
+
 import RatingInput from "./RatingInput.tsx";
+import { Criteria, Rating } from "../../../../palette-types/src";
+import { calcMaxPoints } from "../../utils/calculateMaxPoints.ts";
+import { createRating } from "../../utils/rubricFactory.ts";
 
 export default function CriteriaInput({
   index,
@@ -22,12 +24,12 @@ export default function CriteriaInput({
 }: {
   index: number;
   activeCriterionIndex: number;
-  criterion: RubricCriterion;
-  handleCriteriaUpdate: (index: number, criterion: RubricCriterion) => void;
+  criterion: Criteria;
+  handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
   removeCriterion: (index: number) => void;
   setActiveCriterionIndex: (index: number) => void;
 }): ReactElement {
-  const [ratings, setRatings] = useState<RubricRating[]>(criterion.ratings);
+  const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState<number>(0); // Initialize state for max points
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || "",
@@ -63,10 +65,7 @@ export default function CriteriaInput({
   };
 
   // Update criterion when ratings change.
-  const handleRatingChange = (
-    ratingIndex: number,
-    updatedRating: RubricRating,
-  ) => {
+  const handleRatingChange = (ratingIndex: number, updatedRating: Rating) => {
     const updatedRatings = ratings.map((rating, index) =>
       index === ratingIndex ? updatedRating : rating,
     );
@@ -85,7 +84,7 @@ export default function CriteriaInput({
   };
 
   const renderRatingOptions = () => {
-    return ratings.map((rating: RubricRating, ratingIndex: number) => {
+    return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
         <RatingInput
           key={rating.key}

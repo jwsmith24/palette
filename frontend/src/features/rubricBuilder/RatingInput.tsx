@@ -5,10 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { RubricRating } from "./RubricRating.ts";
 
 import editDescriptionIcon from "../../resources/description-icon.webp";
 import removeIcon from "../../resources/x-icon2.webp";
+import { Rating } from "../../../../palette-types/src";
 
 export default function RatingInput({
   ratingIndex,
@@ -17,8 +17,8 @@ export default function RatingInput({
   handleRemoveRating, // callback to handle rating removal
 }: {
   ratingIndex: number;
-  rating: RubricRating;
-  handleRatingChange: (index: number, updatedRating: RubricRating) => void;
+  rating: Rating;
+  handleRatingChange: (index: number, updatedRating: Rating) => void;
   handleRemoveRating: (ratingIndex: number) => void;
 }): ReactElement {
   const [ratingValue, setRatingValue] = useState(rating.points || 0); // initialize with saved point value or
