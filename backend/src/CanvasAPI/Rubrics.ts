@@ -1,13 +1,25 @@
-import { config } from "../app";
-import { CreateRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/CreateRubricRequest";
-import { CreateRubricResponse } from "../../../palette-types/src/CanvasAPIProtocol/CreateRubricResponse";
-import { GetRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/GetRubricRequest";
-import { CanvasRubric } from "../../../palette-types/src/CanvasAPITypes/CanvasRubric";
-import { UpdateRubricResponse } from "../../../palette-types/src/CanvasAPIProtocol/UpdateRubricResponse";
-import { DeleteRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/DeleteRubricRequest";
+import { config } from '../app';
+import {
+  CreateRubricRequest,
+} from '../../../palette-types/src/CanvasAPIProtocol/CreateRubricRequest';
+import {
+  CreateRubricResponse,
+} from '../../../palette-types/src/CanvasAPIProtocol/CreateRubricResponse';
+import {
+  GetRubricRequest,
+} from '../../../palette-types/src/CanvasAPIProtocol/GetRubricRequest';
+import {
+  CanvasRubric,
+} from '../../../palette-types/src/CanvasAPITypes/CanvasRubric';
+import {
+  UpdateRubricResponse,
+} from '../../../palette-types/src/CanvasAPIProtocol/UpdateRubricResponse';
+import {
+  DeleteRubricRequest,
+} from '../../../palette-types/src/CanvasAPIProtocol/DeleteRubricRequest';
 
 const API_CONFIG = {
-  baseURL: "https://canvas.instructure.com/api/v1",
+  baseURL: "https://canvas.asu.edu/api/v1",
   headers: {
     // get the token from the environment variables
     Authorization: `Bearer ${config.parsed?.CANVAS_API_TOKEN}`,
@@ -50,7 +62,7 @@ async function fetchAPI<T>(
       // add the API_CONFIG headers and modify the request body for the specific request
       headers: {
         ...API_CONFIG.headers,
-        ...options.headers,
+        ...(options.headers || {}),
       },
     });
 

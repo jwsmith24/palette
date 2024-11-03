@@ -8,25 +8,27 @@ import React, {
   ReactElement,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import CriteriaInput from "./CriteriaInput.tsx";
-import Dialog from "../../components/Dialog.tsx";
-import CSVUpload from "./CSVUpload.tsx";
-import Header from "../../components/Header.tsx";
-import Footer from "../../components/Footer.tsx";
-import { createRubric, Rubric } from "./Rubric.ts";
+import CriteriaInput from './CriteriaInput.tsx';
+import Dialog from '../../components/Dialog.tsx';
+import CSVUpload from './CSVUpload.tsx';
+import Header from '../../components/Header.tsx';
+import Footer from '../../components/Footer.tsx';
+import { createRubric, Rubric } from './Rubric.ts';
 
-import createRubricCriterion, { RubricCriterion } from "./RubricCriterion.ts";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import createRubricCriterion, { RubricCriterion } from './RubricCriterion.ts';
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import createRating from "./RubricRating.ts";
-import { BackendAPI } from "../../Protocol/backendRequests.ts";
-import ModalChoiceDialog from "../../components/ModalChoiceDialog.tsx";
-import { PaletteAPIResponse } from "../../../../palette-types/src/paletteApiTypes.ts";
+} from '@dnd-kit/sortable';
+import createRating from './RubricRating.ts';
+import { BackendAPI } from '../../Protocol/backendRequests.ts';
+import ModalChoiceDialog from '../../components/ModalChoiceDialog.tsx';
+import {
+  PaletteAPIResponse,
+} from '../../../../palette-types/src/paletteApiTypes.ts';
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
