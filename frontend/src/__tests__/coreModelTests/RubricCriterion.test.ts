@@ -5,11 +5,11 @@
 // Mock uuid to ensure predictable values
 import createRubricCriterion, {
   calcMaxPoints,
-} from "../features/rubricBuilder/RubricCriterion.ts";
+} from "../../features/rubricBuilder/RubricCriterion.ts";
 import createRating, {
   RubricRating,
-} from "../features/rubricBuilder/RubricRating.ts";
-import { UNASSIGNED } from "../utils/constants.ts";
+} from "../../features/rubricBuilder/RubricRating.ts";
+import { UNASSIGNED } from "../../utils/constants.ts";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "test-uuid"),

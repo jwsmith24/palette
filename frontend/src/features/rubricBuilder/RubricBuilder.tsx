@@ -44,6 +44,7 @@ export default function RubricBuilder(): ReactElement {
   const [modalMessage, setModalMessage] = useState("");
   const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
     {
+      // default button option to just acknowledge the message and close modal
       label: "OK",
       action: () => {
         closeModal();
