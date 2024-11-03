@@ -49,7 +49,7 @@ describe("Rubric", () => {
         "Test Rubric",
         mockCriteria,
         "Test Description",
-        123
+        123,
       );
 
       // Assertions for specified values
