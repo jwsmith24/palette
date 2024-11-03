@@ -5,7 +5,7 @@
  * error, and response states.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {
   PaletteAPIRequest,
   PaletteAPIResponse,
@@ -32,50 +32,45 @@ export default function useFetch<T>(
     loading: true,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // display loading indication while request is processing
-      setResponse((prev) => ({ ...prev, loading: true }));
+  const fetchData = useCallback(async () => {
+    // display loading indication while request is processing
+    setResponse((prev) => ({ ...prev, loading: true }));
 
-      try {
-        const response = await fetch(`${DEFAULT_REQUEST.baseURL}${endpoint}`, {
-          // safer/explicit spreading
-          headers: {
-            ...DEFAULT_REQUEST.headers, // use default headers, allow functions to overwrite
-            ...(options.headers || {}),
-          },
-          method: options.method || DEFAULT_REQUEST.method, // use specified method, otherwise default to GET
-          body: options.body || null, // use specified body or default to an empty body
-        });
+    try {
+      const response = await fetch(`${DEFAULT_REQUEST.baseURL}${endpoint}`, {
+        // safer/explicit spreading
+        headers: {
+          ...DEFAULT_REQUEST.headers, // use default headers, allow functions to overwrite
+          ...(options.headers || {}),
+        },
+        method: options.method || DEFAULT_REQUEST.method, // use specified method, otherwise default to GET
+        body: options.body || null, // use specified body or default to an empty body
+      });
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const json = (await response.json()) as T; //
-        setResponse({
-          data: json,
-          success: true,
-          error: null,
-          errors: [],
-          loading: false,
-        });
-      } catch (error) {
-        setResponse({
-          data: null,
-          success: false,
-          // error message added by express
-          error:
-            error instanceof Error
-              ? error.message
-              : "An unknown error occurred",
-          errors: [], // array of errors
-          loading: false,
-        });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
       }
-    };
-    void fetchData(); // tell es lint that we are in fact intentionally ignoring the promise
-  }, [endpoint, options]); // re-run if endpoint or options change
 
-  return response;
+      const json = (await response.json()) as T; //
+      setResponse({
+        data: json,
+        success: true,
+        error: null,
+        errors: [],
+        loading: false,
+      });
+    } catch (error) {
+      setResponse({
+        data: null,
+        success: false,
+        // error message added by express
+        error:
+          error instanceof Error ? error.message : "An unknown error occurred",
+        errors: [], // array of errors
+        loading: false,
+      });
+    }
+  }, [endpoint, options]); // only updates the callback when endpoint or options change
+
+  return { response, fetchData };
 }

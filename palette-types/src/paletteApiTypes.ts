@@ -14,6 +14,7 @@ export interface PaletteAPIError {
 export interface PaletteAPIResponse<T> {
   data: T | null;
   success: boolean;
+  message?: string; // optional message field to indicate result of action
   error: string | null;
   errors: PaletteAPIError[];
   loading?: boolean; // added by the useFetch hook to trigger loading effects
