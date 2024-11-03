@@ -2,7 +2,7 @@
 Main view for the Rubric Builder feature.
  */
 
-import React, {
+import {
   ChangeEvent,
   MouseEvent,
   ReactElement,
@@ -10,24 +10,24 @@ import React, {
   useState,
 } from "react";
 
-import CriteriaInput from "./CriteriaInput.tsx";
-import Dialog from "../../components/Dialog.tsx";
-import CSVUpload from "./CSVUpload.tsx";
-import Header from "../../components/Header.tsx";
-import Footer from "../../components/Footer.tsx";
-import { Rubric, createRubric } from "./Rubric.ts";
+import CriteriaInput from "./CriteriaInput";
+import Dialog from "../../components/Dialog";
+import CSVUpload from "./CSVUpload";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import { Rubric, createRubric } from "./Rubric";
 
-import createRubricCriterion, { RubricCriterion } from "./RubricCriterion.ts";
+import createRubricCriterion, { RubricCriterion } from "./RubricCriterion";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import createRating from "./RubricRating.ts";
-import ModalChoiceDialog from "../../components/ModalChoiceDialog.tsx";
-import formatDate from "../../utils/formatDate.ts";
-import useFetch from "../../hooks/useFetch.ts";
-import { ModalChoice } from "../../types/modalTypes.ts";
+import createRating from "./RubricRating";
+import ModalChoiceDialog from "../../components/ModalChoiceDialog";
+import formatDate from "../../utils/formatDate";
+import useFetch from "../../hooks/useFetch";
+import { ModalChoice } from "../../types/modalTypes";
 
 // add type for to define our csv rows for the data field in papa parse
 export type CSVRow = [string, ...(number | string)[]];
