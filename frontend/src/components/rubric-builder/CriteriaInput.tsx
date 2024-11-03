@@ -40,6 +40,7 @@ export default function CriteriaInput({
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || ""
   );
+  const [templateTitle, setTemplatetitle] = useState(criterion.template || "");
   /**
    * Whenever ratings change, recalculate criterion's max points
    */
@@ -55,6 +56,14 @@ export default function CriteriaInput({
     setCriteriaDescription(newDescription);
 
     const newCriterion = { ...criterion, description: newDescription };
+    handleCriteriaUpdate(index, newCriterion);
+  };
+
+  const handleSetTemplateTitle = (event: ChangeEvent<HTMLInputElement>) => {
+    const newTitle = event.target.value;
+    setTemplatetitle(newTitle);
+
+    const newCriterion = { ...criterion, template: newTitle };
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -141,16 +150,14 @@ export default function CriteriaInput({
     transition,
   };
 
-  const buildCriteriaDescriptionSet = () =>
-    new Set(
-      criterion.templates.map((template) =>
-        template.description.trim().toLowerCase()
-      )
-    );
-
   const renderTemplateSetter = () => {
     if (templateSetterActive) {
-      return <TemplateSetter closeTemplateCard={handleCloseTemplateSetter} />;
+      return (
+        <TemplateSetter
+          closeTemplateCard={handleCloseTemplateSetter}
+          handleSetTemplateTitle={handleSetTemplateTitle}
+        />
+      );
     }
   };
 

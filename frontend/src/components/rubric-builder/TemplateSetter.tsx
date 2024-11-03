@@ -9,13 +9,14 @@ import ListItem from "@mui/material/ListItem";
 import { TurnedInRounded } from "@mui/icons-material";
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
+  handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const TemplateSetter: React.FC<TemplateSetterProps> = ({
   closeTemplateCard,
+  handleSetTemplateTitle,
 }) => {
   const [template, setTemplate] = useState<Template>(createTemplate());
-  const [templateSetterActive, setTemplateSetterActive] = useState(false); // file input display is open or not
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
@@ -35,12 +36,19 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     closeTemplateCard();
   };
 
+  const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newTemplate = { ...template };
+    newTemplate.title = event.target.value;
+    setTemplate(newTemplate);
+    handleSetTemplateTitle(event);
+  };
+
   return (
     <div className="border border-gray-700 p-6 rounded-lg shadow-xl bg-gray-700">
       <div className={"flex justify-between items-center"}>
         <input
           placeholder="New Template Name"
-          onChange={handleTemp}
+          onChange={handleTemplateTitleChange}
           className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
         />
 
