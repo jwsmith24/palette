@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,6 +14,11 @@ function Navbar() {
   const onRubrics = location.pathname == "/rubrics";
   const onTemplates = location.pathname == "/clusters";
   const onBuilder = location.pathname == "/rubric-builder";
+
+  // Effect hook to update total points display on initial mount and anytime the rubric state changes
+  useEffect(() => {
+    console.log("navbar");
+  });
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);

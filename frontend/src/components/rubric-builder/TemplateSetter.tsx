@@ -1,17 +1,20 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, ChangeEvent, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import createTemplate, { Template } from "../../models/Template";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { TurnedInRounded } from "@mui/icons-material";
+interface TemplateSetterProps {
+  closeTemplateCard: () => void; // callback to close the import card
+}
 
-export default function TemplateSetter({
+const TemplateSetter: React.FC<TemplateSetterProps> = ({
   closeTemplateCard,
-}: {
-  closeTemplateCard: () => void;
-}): ReactElement {
+}) => {
+  const [template, setTemplate] = useState<Template>(createTemplate());
   const [templateSetterActive, setTemplateSetterActive] = useState(false); // file input display is open or not
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
@@ -19,6 +22,7 @@ export default function TemplateSetter({
 
   const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElTemplate(event.currentTarget);
+    closeTemplateCard();
   };
 
   const handleCloseTemplates = () => {
@@ -26,7 +30,9 @@ export default function TemplateSetter({
   };
 
   const handleTemp = () => {
-    console.log("");
+    const templateJson = JSON.stringify(template, null, 2);
+    console.log(templateJson);
+    closeTemplateCard();
   };
 
   return (
@@ -34,6 +40,7 @@ export default function TemplateSetter({
       <div className={"flex justify-between items-center"}>
         <input
           placeholder="New Template Name"
+          onChange={handleTemp}
           className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
         />
 
@@ -45,29 +52,13 @@ export default function TemplateSetter({
         </button>
 
         <button
-          onClick={handleCloseTemplates}
+          onClick={handleTemp}
           className="h-10 mt-4 bg-green-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           Save
         </button>
-
-        <Menu
-          sx={{ mt: "45px" }}
-          id="hamburger-menu"
-          anchorEl={anchorElTemlate}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={Boolean(anchorElTemlate)}
-          onClose={handleCloseTemplates}
-        ></Menu>
       </div>
     </div>
   );
-}
+};
+export default TemplateSetter;

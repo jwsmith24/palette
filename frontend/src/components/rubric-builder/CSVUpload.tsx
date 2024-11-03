@@ -38,7 +38,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
             row
               .slice(1)
               .every(
-                (cell) => typeof cell === "string" || typeof cell === "number",
+                (cell) => typeof cell === "string" || typeof cell === "number"
               )
           );
         });
@@ -47,6 +47,10 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       },
     });
     closeImportCard();
+  };
+
+  const handleTemp = () => {
+    console.log("templateJson");
   };
 
   return (
@@ -64,7 +68,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
 
         {/* Cancel Button */}
         <button
-          onClick={closeImportCard}
+          onClick={handleTemp}
           className="h-10 mt-4 bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
         >
           Cancel

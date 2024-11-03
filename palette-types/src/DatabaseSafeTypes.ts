@@ -17,6 +17,7 @@ export interface Rubric {
 export interface RubricCriterion {
   description: string;
   longDescription?: string | null;
+  templateID?: number;
   points: number;
   ratings: RubricRating[];
 }
