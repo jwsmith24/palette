@@ -154,7 +154,7 @@ export default function RubricBuilder(): ReactElement {
     } else if (result.errors && result.errors.length > 0) {
       alert(result.errors[0]);
     } else {
-      alert("Operation failed.");
+      alert("Operation failed!");
     }
   };
 

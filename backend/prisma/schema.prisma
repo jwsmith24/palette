@@ -10,6 +10,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Template {
+  id                 Int     @id @default(autoincrement())
+  rubricCriteria            RubricCriterion[]
+
+}
+
+
+
+
+
 model Rubric {
   id                        Int               @id @default(autoincrement())
   title                     String            @db.VarChar(255)
@@ -38,7 +48,9 @@ model RubricCriterion {
   criterionUseRange Int?
   ratings           RubricRating[]
   rubric            Rubric         @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  template          Template         @relation(fields: [tempateId], references: [id], onDelete: Cascade)
   rubricId          Int
+  tempateId         Int
 }
 
 model RubricRating {
@@ -75,3 +87,5 @@ model RubricAssociation {
   hidePoints         Boolean
   hideOutcomeResults Boolean
 }
+
+
