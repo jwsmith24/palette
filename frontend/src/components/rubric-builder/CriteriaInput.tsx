@@ -41,10 +41,13 @@ export default function CriteriaInput({
     criterion.description || ""
   );
   const [templateTitle, setTemplatetitle] = useState(criterion.template || "");
+  const [showingUserTemplates, setShowingUserTemplates] = useState(false); // file input display is open or not
+
   /**
    * Whenever ratings change, recalculate criterion's max points
    */
   useEffect(() => {
+    console.log("rerender");
     const maxRating = calcMaxPoints(ratings);
     setMaxPoints(maxRating);
     const newCriterion = { ...criterion, points: maxRating };

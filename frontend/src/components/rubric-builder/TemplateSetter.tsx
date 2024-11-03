@@ -4,9 +4,6 @@ import MenuItem from "@mui/material/MenuItem";
 import createTemplate, { Template } from "../../models/Template";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import { TurnedInRounded } from "@mui/icons-material";
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
   handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -15,32 +12,33 @@ interface TemplateSetterProps {
 const TemplateSetter: React.FC<TemplateSetterProps> = ({
   closeTemplateCard,
   handleSetTemplateTitle,
-}) => {
+}: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate());
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
-
-  const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElTemplate(event.currentTarget);
-    closeTemplateCard();
-  };
-
-  const handleCloseTemplates = () => {
-    setAnchorElTemplate(null);
-  };
-
-  const handleTemp = () => {
-    const templateJson = JSON.stringify(template, null, 2);
-    console.log(templateJson);
-    closeTemplateCard();
-  };
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newTemplate = { ...template };
     newTemplate.title = event.target.value;
     setTemplate(newTemplate);
     handleSetTemplateTitle(event);
+  };
+
+  const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElTemplate(event.currentTarget);
+    console.log("here");
+  };
+
+  const handleCloseTemplates = () => {
+    setAnchorElTemplate(null);
+    closeTemplateCard();
+  };
+
+  const handleSave = () => {
+    const templateJson = JSON.stringify(template, null, 2);
+    console.log(templateJson);
+    closeTemplateCard();
   };
 
   return (
@@ -59,8 +57,28 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           <FontAwesomeIcon icon={faBars} />
         </button>
 
+        <Menu
+          sx={{ mt: "45px" }}
+          id="user-menu"
+          anchorEl={anchorElTemlate}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={Boolean(anchorElTemlate)}
+          onClose={handleCloseTemplates}
+        >
+          <MenuItem onClick={handleSave}>Mock Template 1</MenuItem>
+          <MenuItem onClick={handleSave}>Mock Template 1</MenuItem>
+        </Menu>
+
         <button
-          onClick={handleTemp}
+          onClick={handleSave}
           className="h-10 mt-4 bg-green-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           Save
