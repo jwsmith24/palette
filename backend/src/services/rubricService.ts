@@ -1,4 +1,4 @@
-import { PrismaRubric } from '@types/DatabaseSafeTypes';
+import { PrismaRubric } from "../../../palette-types/src/DatabaseSafeTypes";
 
 /**
  * This file contains the interface for the RubricService class.

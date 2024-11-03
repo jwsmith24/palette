@@ -1,6 +1,6 @@
-import { CanvasAssociation } from '../CanvasAPITypes/CanvasAssociation';
-import { CanvasCriterion } from '../CanvasAPITypes/CanvasCriterion';
-import { CanvasRating } from '../CanvasAPITypes/CanvasRating';
+import { CanvasAssociation } from "../CanvasAPITypes/CanvasAssociation";
+import { CanvasCriterion } from "../CanvasAPITypes/CanvasCriterion";
+import { CanvasRating } from "../CanvasAPITypes/CanvasRating";
 
 /**
  * This type represents the request body for creating a new CanvasRubric.
@@ -31,7 +31,10 @@ interface CreatedRubric {
  * The required format for criteria when creating or updating a rubric.
  *
  */
-export type RequestFormattedCriteria = Record<number, Omit<CanvasCriterion, "ratings"> & { ratings: RequestFormattedRatings}> | null;
+export type RequestFormattedCriteria = Record<
+  number,
+  Omit<CanvasCriterion, "ratings"> & { ratings: RequestFormattedRatings }
+> | null;
 
 /**
  * The required format for ratings when creating or updating a rubric criterion.
