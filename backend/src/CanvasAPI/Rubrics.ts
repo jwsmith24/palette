@@ -1,22 +1,10 @@
-import { config } from '../app';
-import {
-  CreateRubricRequest,
-} from '../../../palette-types/src/CanvasAPIProtocol/CreateRubricRequest';
-import {
-  CreateRubricResponse,
-} from '../../../palette-types/src/CanvasAPIProtocol/CreateRubricResponse';
-import {
-  GetRubricRequest,
-} from '../../../palette-types/src/CanvasAPIProtocol/GetRubricRequest';
-import {
-  CanvasRubric,
-} from '../../../palette-types/src/CanvasAPITypes/CanvasRubric';
-import {
-  UpdateRubricResponse,
-} from '../../../palette-types/src/CanvasAPIProtocol/UpdateRubricResponse';
-import {
-  DeleteRubricRequest,
-} from '../../../palette-types/src/CanvasAPIProtocol/DeleteRubricRequest';
+import { config } from "../app";
+import { CreateRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/CreateRubricRequest";
+import { CreateRubricResponse } from "../../../palette-types/src/CanvasAPIProtocol/CreateRubricResponse";
+import { GetRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/GetRubricRequest";
+import { CanvasRubric } from "../../../palette-types/src/CanvasAPITypes/CanvasRubric";
+import { UpdateRubricResponse } from "../../../palette-types/src/CanvasAPIProtocol/UpdateRubricResponse";
+import { DeleteRubricRequest } from "../../../palette-types/src/CanvasAPIProtocol/DeleteRubricRequest";
 
 const API_CONFIG = {
   baseURL: "https://canvas.asu.edu/api/v1",
