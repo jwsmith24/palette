@@ -2,7 +2,6 @@
 import express, { Request, Response } from "express";
 import { Result, ValidationError, validationResult } from "express-validator";
 import asyncHandler from "express-async-handler";
-//import validateRubric from '../validators/rubricValidator';
 import { RubricService } from "../services/rubricService";
 import PrismaRubricService from "../services/prismaRubricService.js";
 import validateRubric from "../validators/rubricValidator.js";
