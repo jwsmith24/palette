@@ -25,7 +25,6 @@ import {
 } from "@dnd-kit/sortable";
 import createRating from "./RubricRating.ts";
 import ModalChoiceDialog from "../../components/ModalChoiceDialog.tsx";
-import { PaletteAPIResponse } from "../../../../palette-types/src/paletteApiTypes.ts";
 import formatDate from "../../utils/formatDate.ts";
 import useFetch from "../../hooks/useFetch.ts";
 
@@ -35,8 +34,6 @@ export type CSVRow = [string, ...(number | string)[]];
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
-  const [isDialogOpen, setDialogOpen] = useState(false); // dialog when rubrics send. just for debugging/playing around.
-  const [lastSentRubric, setLastSentRubric] = useState<Rubric>(createRubric()); // last rubric sent to server (for displaying in dialog)
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
@@ -56,10 +53,6 @@ export default function RubricBuilder(): ReactElement {
     },
   ]);
 
-  // shorthand functions for opening and closing the dialog
-  const openDialog = () => setDialogOpen(true);
-  const closeDialog = () => setDialogOpen(false);
-
   // shorthand functions for opening and closing the modal
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
@@ -76,6 +69,27 @@ export default function RubricBuilder(): ReactElement {
     calculateTotalPoints();
   }, [rubric]);
 
+  /**
+   * Custom fetch hook provides a `fetchData` callback to send any type of fetch request.
+   *
+   * See PaletteAPIRequest for options structure.
+   */
+  const { response: postRubricResponse, fetchData: postRubric } = useFetch(
+    "/rubrics",
+    {
+      method: "POST",
+      body: JSON.stringify(rubric), // use latest rubric data
+    },
+  );
+
+  const { response: putRubricResponse, fetchData: putRubric } = useFetch(
+    `rubrics/${rubric.id}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(rubric),
+    },
+  );
+
   const handleExistingRubric = () => {
     setModalMessage(
       `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
@@ -86,30 +100,36 @@ export default function RubricBuilder(): ReactElement {
         label: "Overwrite",
         action: async () => {
           closeModal();
-          try {
-            const result = await BackendAPI.update(id, rubric);
-            handleApiResponse(result, rubric);
-          } catch (error) {
-            console.error("Failed to overwrite:", error);
-            alert("An error occurred while overwriting the rubric.");
+          await putRubric();
+
+          if (putRubricResponse.success) {
+            setModalMessage("Rubric was overwritten successfully!");
+          } else {
+            setModalMessage(
+              `Error overwriting the rubric: ${putRubricResponse.error}`,
+            );
           }
+          openModal(); // show modal with response
         },
       },
       {
         label: "Make a Copy",
         action: async () => {
           closeModal();
-          try {
-            const newRubric: Rubric = {
-              ...rubric,
-              title: `${rubric.title} - Copy ${formatDate()}`,
-            };
-            const result = await BackendAPI.create(newRubric);
-            handleApiResponse(result, newRubric);
-          } catch (error) {
-            console.error("Failed to create a copy:", error);
-            alert("An error occurred while creating a copy of the rubric.");
+          // update title
+          const newRubric = {
+            ...rubric,
+            title: `${rubric.title} - Copy ${formatDate()}`,
+          };
+          setRubric(newRubric); // update state with latest before using hook
+          await postRubric();
+
+          if (postRubricResponse.success) {
+            setModalMessage(`Rubric ${newRubric.title} created successfully!`);
+          } else {
+            setModalMessage(`Error creating copy: ${postRubricResponse.error}`);
           }
+          openModal();
         },
       },
     ]);
@@ -120,21 +140,23 @@ export default function RubricBuilder(): ReactElement {
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
-  };
+    await postRubric(); // triggers the POST request for the active rubric
 
-  // Helper function to handle API responses
-  const handleApiResponse = (
-    result: PaletteAPIResponse<Rubric>,
-    rubricToSet: Rubric,
-  ) => {
-    if (result.success) {
-      setLastSentRubric(rubricToSet);
-      openDialog();
-      alert("Success!");
-    } else if (result.errors && result.errors.length > 0) {
-      alert(result.errors[0]);
+    // check the response for errors
+    if (
+      postRubricResponse.error &&
+      postRubricResponse.error.includes("already exists")
+    ) {
+      // handle duplicate title (prompt overwrite, make a copy, or cancel)
+      handleExistingRubric();
+    } else if (postRubricResponse.success) {
+      // handle successful submission
+      setModalMessage(`Rubric for ${rubric.title} submitted successfully!`);
+      openModal();
     } else {
-      alert("Operation failed.");
+      // handle any other errors
+      setModalMessage(postRubricResponse.error!);
+      openModal();
     }
   };
 
@@ -382,19 +404,7 @@ export default function RubricBuilder(): ReactElement {
           choices={modalChoices}
         />
 
-        {/* Rubric Sending Dialog */}
-        <Dialog
-          isOpen={isDialogOpen}
-          onClose={closeDialog}
-          title={"Sending Rubric!"}
-        >
-          <pre className="text-black bg-gray-100 p-4 rounded-lg max-h-96 overflow-auto">
-            {JSON.stringify(lastSentRubric, null, 2)}
-          </pre>
-        </Dialog>
-
         {/*CSV/XLSX Import Dialog*/}
-        {/*todo: probably need to break this into its own component for styling*/}
         <Dialog
           isOpen={fileInputActive}
           onClose={() => setFileInputActive(false)}
