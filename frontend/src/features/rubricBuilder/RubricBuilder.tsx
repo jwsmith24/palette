@@ -27,7 +27,7 @@ import formatDate from "../../utils/formatDate";
 import useFetch from "../../hooks/useFetch";
 import { ModalChoice } from "../../types/modalTypes";
 
-import { Rubric, Criteria } from "palette-types";
+import { Criteria, Rubric } from "palette-types";
 import {
   createCriterion,
   createRating,
