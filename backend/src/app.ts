@@ -1,23 +1,16 @@
-// main entry point for backend application
-
 import express, { NextFunction, Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
+
 import dotenv from "dotenv";
 import { PaletteAPIResponse, Course } from "palette-types";
-import asyncHandler from "express-async-handler";
 
 // Load environment variables from .env file
 export const config = dotenv.config();
 
-// Get the directory name
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
-const PORT = process.env.SERVER_PORT || 3000; // use environment variable, falls back to 3000
+const PORT = process.env.SERVER_PORT || 3000;
 
 // CORS config
 const corsOptions = {
@@ -26,7 +19,7 @@ const corsOptions = {
 };
 
 // Dummy course data
-const courses = [
+const courses: Course[] = [
   {
     id: 1,
     name: "Introduction to Computer Science",
@@ -68,60 +61,56 @@ const courses = [
   },
 ];
 
-app.use(cors(corsOptions)); // enable CORS with above configuration
-app.use(express.json()); // middleware to parse json requests
-app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(
+  express.static(path.join(import.meta.dirname, "../../../../frontend/dist")),
+);
 
-// logging middleware function
+// Logging middleware function
 app.use((req, _res, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
 // Health check route
 app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).json({ status: "UP" });
+  res.status(200).json({ status: "HEALTHY" });
 });
 
-// test endpoint for grading
-app.get(
-  "/api/courses",
-  asyncHandler((req: Request, res: Response) => {
-    console.log("Sending course data: ", courses);
-    const apiResponse: PaletteAPIResponse<Course[]> = {
-      data: courses,
-      success: true,
-      message: "here are the courses",
-    };
+// Courses endpoint (test)
+app.get("/api/courses", (_req: Request, res: Response) => {
+  const apiResponse: PaletteAPIResponse<Course[]> = {
+    data: courses,
+    success: true,
+    message: "Here are the courses",
+  };
 
-    res.json(apiResponse);
-  }),
-);
+  res.json(apiResponse);
+});
 
 // API routes
 app.use("/api/rubrics", rubricRouter);
 
-//Wildcard route should only handle frontend routes
-//It should not handle any routes under /api or other server-side routes.
+// Wildcard route for frontend
 app.get("*", (req: Request, res: Response) => {
-  // If a developer messes up the api routes, send a 404 error with informative error
   if (req.originalUrl.startsWith("/api")) {
     res.status(404).send({ error: "API route not found" });
   } else {
-    // If the client tries to navigate to an unknown page, send them the index.html file
     res.sendFile(
-      path.join(__dirname, "../../../../frontend/dist/", "index.html"),
+      path.join(import.meta.dirname, "../../../../frontend/dist", "index.html"),
     );
   }
 });
 
+// Global error-handling middleware
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error("Server Error:", err);
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// Start the server and listen on port defined in .env file
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is up on port: ${PORT}`);
+  console.log(`Server is up on http://localhost:${PORT}`);
 });
