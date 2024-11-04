@@ -5,7 +5,7 @@ import asyncHandler from "express-async-handler";
 import { RubricService } from "../services/rubricService";
 import PrismaRubricService from "../services/prismaRubricService.js";
 import validateRubric from "../validators/rubricValidator.js";
-import { PrismaRubric } from "../../../palette-types/src/DatabaseSafeTypes";
+import { PrismaRubric } from "palette-types";
 import { StatusCodes } from "http-status-codes";
 
 const router = express.Router();
