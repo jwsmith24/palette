@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import createTemplate, { Template } from "../../models/Template";
@@ -21,11 +21,18 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     null
   );
   const [userTemplates, setUserTemplates] = useState(templatesJson);
+  const [templateSelected, setTemplateSelected] = useState(false);
+  const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
+
+  useEffect(() => {
+    console.log("builder");
+  });
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newTemplate = { ...template };
     newTemplate.title = event.target.value;
     setTemplate(newTemplate);
+    // write to the json file here. needs criteria info.
     handleSetTemplateTitle(event);
   };
 
@@ -38,20 +45,45 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 
   const handleCloseTemplates = () => {
     setAnchorElTemplate(null);
-    closeTemplateCard();
   };
 
   const handleSave = () => {
-    const templateJson = JSON.stringify(template, null, 2);
+    const newTemplate = { ...template };
+    newTemplate.title = selectedTemplateTitle;
+
+    const templateJson = JSON.stringify(newTemplate, null, 2);
     console.log(templateJson);
     closeTemplateCard();
+  };
+
+  const handleSelectedExistingTemplate = (
+    event: React.MouseEvent<HTMLElement>
+  ) => {
+    event.preventDefault();
+    const selectedTemplateTitle = event.currentTarget.textContent;
+    const selectedTemplateJson = templatesJson.find(
+      (tmplt) => tmplt.title === selectedTemplateTitle
+    );
+
+    const selectedTemplate = { ...template };
+    selectedTemplate.id = selectedTemplateJson?.id;
+
+    console.log(selectedTemplateJson);
+    if (selectedTemplateTitle != null) {
+      setTemplateSelected(true);
+      console.log(selectedTemplateTitle);
+      setSelectedTemplateTitle(selectedTemplateTitle);
+    }
+    handleCloseTemplates();
   };
 
   return (
     <div className="border border-gray-700 p-6 rounded-lg shadow-xl bg-gray-700">
       <div className={"flex justify-between items-center"}>
         <input
-          placeholder="New Template Name"
+          placeholder={
+            templateSelected ? `${selectedTemplateTitle}` : "New Template Name"
+          }
           onChange={handleTemplateTitleChange}
           className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
         />
@@ -79,8 +111,10 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           open={Boolean(anchorElTemlate)}
           onClose={handleCloseTemplates}
         >
-          {userTemplates.map((t) => (
-            <MenuItem onClick={handleSave}>{t.title}</MenuItem>
+          {userTemplates.map((t, tKey) => (
+            <MenuItem key={tKey} onClick={handleSelectedExistingTemplate}>
+              {t.title}
+            </MenuItem>
           ))}
         </Menu>
 
