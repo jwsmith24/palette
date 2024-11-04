@@ -20,7 +20,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
-  const [userTemplates, setUserTemplates] = useState(templatesJson);
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
@@ -40,7 +39,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     event.preventDefault();
     setAnchorElTemplate(event.currentTarget);
 
-    console.log(userTemplates);
+    console.log(templatesJson);
   };
 
   const handleCloseTemplates = () => {
@@ -111,7 +110,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           open={Boolean(anchorElTemlate)}
           onClose={handleCloseTemplates}
         >
-          {userTemplates.map((t, tKey) => (
+          {templatesJson.map((t, tKey) => (
             <MenuItem key={tKey} onClick={handleSelectedExistingTemplate}>
               {t.title}
             </MenuItem>
