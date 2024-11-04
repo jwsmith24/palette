@@ -4,6 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import createTemplate, { Template } from "../../models/Template";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import templatesJson from "./templates.json";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
@@ -19,6 +20,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
+  const [userTemplates, setUserTemplates] = useState(templatesJson);
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newTemplate = { ...template };
@@ -30,7 +32,8 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     setAnchorElTemplate(event.currentTarget);
-    console.log("here");
+
+    console.log(userTemplates);
   };
 
   const handleCloseTemplates = () => {
@@ -76,8 +79,9 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           open={Boolean(anchorElTemlate)}
           onClose={handleCloseTemplates}
         >
-          <MenuItem onClick={handleSave}>Mock Template 1</MenuItem>
-          <MenuItem onClick={handleSave}>Mock Template 2</MenuItem>
+          {userTemplates.map((t) => (
+            <MenuItem onClick={handleSave}>{t.title}</MenuItem>
+          ))}
         </Menu>
 
         <button
