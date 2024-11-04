@@ -6,6 +6,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import { PaletteAPIResponse, Course } from "palette-types";
 
 // Load environment variables from .env file
 export const config = dotenv.config();
@@ -23,6 +24,49 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
+// Dummy course data
+const courses = [
+  {
+    id: 1,
+    name: "Introduction to Computer Science",
+    description:
+      "An introductory course on the fundamentals of computer science.",
+    credits: 3,
+    key: "CS101",
+  },
+  {
+    id: 2,
+    name: "Data Structures and Algorithms",
+    description:
+      "Learn about data structures, algorithms, and their applications.",
+    credits: 4,
+    key: "CS201",
+  },
+  {
+    id: 3,
+    name: "Web Development Basics",
+    description:
+      "A beginner-friendly course on front-end and back-end web development.",
+    credits: 3,
+    key: "WD101",
+  },
+  {
+    id: 4,
+    name: "Database Management Systems",
+    description:
+      "Explore relational databases, SQL, and database design principles.",
+    credits: 3,
+    key: "DB301",
+  },
+  {
+    id: 5,
+    name: "Machine Learning Fundamentals",
+    description: "An introductory course to the concepts of machine learning.",
+    credits: 4,
+    key: "ML101",
+  },
+];
+
 app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
@@ -36,6 +80,20 @@ app.use((req, _res, next) => {
 // Health check route
 app.get("/health", (_req: Request, res: Response) => {
   res.status(200).json({ status: "UP" });
+});
+
+// test endpoint for grading
+app.get("/courses", (req: Request, res: Response) => {
+  console.log(req.body);
+  console.log(req.body, "hi");
+
+  const apiResponse: PaletteAPIResponse<Course[]> = {
+    data: courses,
+    success: true,
+    message: "here are the courses",
+  };
+
+  res.json(apiResponse);
 });
 
 // API routes
