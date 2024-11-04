@@ -1,12 +1,13 @@
 // main entry point for backend application
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import { PaletteAPIResponse, Course } from "palette-types";
+import asyncHandler from "express-async-handler";
 
 // Load environment variables from .env file
 export const config = dotenv.config();
@@ -83,32 +84,41 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 // test endpoint for grading
-app.get("/courses", (req: Request, res: Response) => {
-  console.log(req.body);
-  console.log(req.body, "hi");
+app.get(
+  "/api/courses",
+  asyncHandler((req: Request, res: Response) => {
+    console.log("Sending course data: ", courses);
+    const apiResponse: PaletteAPIResponse<Course[]> = {
+      data: courses,
+      success: true,
+      message: "here are the courses",
+    };
 
-  const apiResponse: PaletteAPIResponse<Course[]> = {
-    data: courses,
-    success: true,
-    message: "here are the courses",
-  };
-
-  res.json(apiResponse);
-});
+    res.json(apiResponse);
+  }),
+);
 
 // API routes
 app.use("/api/rubrics", rubricRouter);
 
-// Wildcard route should only handle frontend routes
-// It should not handle any routes under /api or other server-side routes.
+//Wildcard route should only handle frontend routes
+//It should not handle any routes under /api or other server-side routes.
 app.get("*", (req: Request, res: Response) => {
   // If a developer messes up the api routes, send a 404 error with informative error
   if (req.originalUrl.startsWith("/api")) {
     res.status(404).send({ error: "API route not found" });
   } else {
     // If the client tries to navigate to an unknown page, send them the index.html file
-    res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
+    res.sendFile(
+      path.join(__dirname, "../../../../frontend/dist/", "index.html"),
+    );
   }
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+  console.error("Server Error:", err);
+  res.status(500).json({ error: "Internal Server Error" });
 });
 
 // Start the server and listen on port defined in .env file

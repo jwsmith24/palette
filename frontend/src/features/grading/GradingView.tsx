@@ -7,7 +7,8 @@ export default function GradingView(): ReactElement {
   const [message, setMessage] = useState("WANT TO SEE COURSES?");
 
   // useFetch hook for get all courses
-  const { response: getAllCoursesResponse, fetchData: getCourses } = useFetch(
+  // we can deconstruct the response out if we need it in state
+  const { fetchData: getCourses } = useFetch(
     "/courses",
     {}, // no extra options for GET
   );
@@ -15,26 +16,24 @@ export default function GradingView(): ReactElement {
   const handleGetCourses = (event: MouseEvent<HTMLButtonElement>): void => {
     event.preventDefault();
 
-    // Immediately invoke an async function to handle the async logic
     void (async () => {
       // use void to tell typescript we're not going to use the promise since we update state with
       // everything we need.
       try {
-        await getCourses(); // Trigger the GET request
+        const response = await getCourses(); // Trigger the GET request
+        console.log(response);
 
         // Set the message based on the response
-        if (getAllCoursesResponse.success) {
-          setMessage(
-            JSON.stringify(getAllCoursesResponse.data ?? "No courses found"),
-          );
+        if (response.success) {
+          setMessage(JSON.stringify(response.data ?? "No courses found"));
         } else {
-          setMessage(getAllCoursesResponse.error || "Failed to get courses");
+          setMessage(response.error || "Failed to get courses");
         }
       } catch (error) {
         console.error("Error getting courses: ", error);
         setMessage("An error occurred while fetching courses.");
       }
-    })();
+    })(); // IIFE since onClick needs a void instead of Promise<void>
   };
 
   return (

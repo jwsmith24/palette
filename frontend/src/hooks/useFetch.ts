@@ -24,8 +24,6 @@ export default function useFetch<T>(
   const [response, setResponse] = useState<PaletteAPIResponse<T>>({
     data: null,
     success: false,
-    error: null,
-    errors: [],
     loading: true,
   });
 
@@ -48,26 +46,25 @@ export default function useFetch<T>(
         throw new Error(`Error: ${response.status}`);
       }
 
-      const json = (await response.json()) as T; //
-      setResponse({
+      const json = (await response.json()) as T;
+      const newResponse: PaletteAPIResponse<T> = {
         data: json,
         success: true,
-        error: null,
-        errors: [],
         loading: false,
-      });
+      };
+      setResponse(newResponse);
+      return newResponse;
     } catch (error) {
-      setResponse({
+      const errorResponse: PaletteAPIResponse<T> = {
         data: null,
         success: false,
-        // error message added by express
         error:
           error instanceof Error ? error.message : "An unknown error occurred",
-        errors: [], // array of errors
         loading: false,
-      });
+      };
+      setResponse(errorResponse);
+      return errorResponse;
     }
   }, [endpoint, options]); // only updates the callback when endpoint or options change
-
   return { response, fetchData };
 }
