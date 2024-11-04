@@ -5,18 +5,25 @@ import createTemplate, { Template } from "../../models/Template";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import templatesJson from "./templates.json";
+import createRubricCriterion, {
+  RubricCriterion,
+} from "../../models/RubricCriterion.ts";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
   onTemplatesOpen: () => void;
   handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
+  onTemplateSelected: (t: Template) => void;
+  criterion: RubricCriterion;
 }
 
 const TemplateSetter: React.FC<TemplateSetterProps> = ({
   closeTemplateCard,
   handleSetTemplateTitle,
+  onTemplateSelected,
+  criterion,
 }: TemplateSetterProps) => {
-  const [template, setTemplate] = useState<Template>(createTemplate());
+  const [template, setTemplate] = useState<Template>(createTemplate() || null);
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
@@ -25,7 +32,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
   useEffect(() => {
-    console.log("builder");
+    console.log("refresh");
   });
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +46,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     setAnchorElTemplate(event.currentTarget);
-
+    console.log("userTemplates");
     console.log(userTemplates);
   };
 
@@ -49,10 +56,13 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 
   const handleSave = () => {
     const newTemplate = { ...template };
-    newTemplate.title = selectedTemplateTitle;
+    newTemplate.title = template.title;
+    newTemplate.id = template?.id;
+    newTemplate.key = template?.key;
+    newTemplate.templateCriteria.push(criterion);
+    console.log("newTemplate");
+    onTemplateSelected(newTemplate);
 
-    const templateJson = JSON.stringify(newTemplate, null, 2);
-    console.log(templateJson);
     closeTemplateCard();
   };
 
@@ -65,13 +75,15 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       (tmplt) => tmplt.title === selectedTemplateTitle
     );
 
-    const selectedTemplate = { ...template };
-    selectedTemplate.id = selectedTemplateJson?.id;
+    //TODO: turn it into an object to be so that the current criteria can be added to it
 
-    console.log(selectedTemplateJson);
     if (selectedTemplateTitle != null) {
+      template.title = selectedTemplateJson?.title;
+      template.id = selectedTemplateJson?.id;
+      template.key = selectedTemplateJson?.key;
       setTemplateSelected(true);
-      console.log(selectedTemplateTitle);
+      console.log("selectedTemplate");
+      onTemplateSelected(template);
       setSelectedTemplateTitle(selectedTemplateTitle);
     }
     handleCloseTemplates();

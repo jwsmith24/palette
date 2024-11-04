@@ -16,6 +16,7 @@ import createRating, { RubricRating } from "../../models/RubricRating.ts";
 import RatingInput from "./RatingInput.tsx";
 import TemplateSetter from "./TemplateSetter.tsx";
 import Dialog from "../util/Dialog.tsx";
+import { Template } from "src/models/Template.ts";
 
 export default function CriteriaInput({
   index,
@@ -162,9 +163,16 @@ export default function CriteriaInput({
           closeTemplateCard={handleCloseTemplateSetter}
           onTemplatesOpen={handleTemplatesOpen}
           handleSetTemplateTitle={handleSetTemplateTitle}
+          onTemplateSelected={getTemplate}
+          criterion={criterion}
         />
       );
     }
+  };
+
+  const getTemplate = (data: Template) => {
+    console.log("hello from the parent component");
+    console.log(data);
   };
 
   const handleCloseTemplateSetter = () => {
