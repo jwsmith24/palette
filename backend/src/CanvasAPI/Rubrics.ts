@@ -1,4 +1,4 @@
-import { config } from "../app";
+import config from "../config.js";
 import {
   CanvasRubric,
   CreateRubricRequest,
@@ -8,21 +8,21 @@ import {
   UpdateRubricResponse,
 } from "palette-types";
 
-const API_CONFIG = {
+const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
   headers: {
     // get the token from the environment variables
-    Authorization: `Bearer ${config.parsed?.CANVAS_API_TOKEN}`,
+    Authorization: `Bearer ${config!.CANVAS_API_TOKEN}`,
     Accept: "application/json",
   },
 } as const;
 
-interface APIError {
+export interface CanvasAPIError {
   param: string;
   msg: string;
 }
 
-interface APIResponse<T> {
+export interface CanvasAPIResponse<T> {
   success: boolean;
   data?: T;
   error?: string;
@@ -30,7 +30,7 @@ interface APIResponse<T> {
 }
 
 // Error handling utility
-const handleAPIErrors = (errors: APIError[]): string[] => {
+const handleAPIErrors = (errors: CanvasAPIError[]): string[] => {
   return errors.map(({ msg }) => msg); // extract messages from each error object
 };
 
@@ -44,14 +44,16 @@ const handleAPIErrors = (errors: APIError[]): string[] => {
 async function fetchAPI<T>(
   endpoint: string,
   options: RequestInit = {}, // used for extend
-): Promise<APIResponse<T>> {
+): Promise<CanvasAPIResponse<T>> {
   try {
-    const url = `${API_CONFIG.baseURL}${endpoint}`;
+    const url = `${CanvasAPIConfig.baseURL}${endpoint}`;
+    // log the request method and endpoint
+    console.log(`${options.method || "GET"} ${endpoint}`);
     const response = await fetch(url, {
       ...options,
       // add the API_CONFIG headers and modify the request body for the specific request
       headers: {
-        ...API_CONFIG.headers,
+        ...CanvasAPIConfig.headers,
         ...(options.headers || {}),
       },
     });
@@ -60,7 +62,7 @@ async function fetchAPI<T>(
     if (!response.ok) {
       const errorData = (await response.json()) as {
         error?: string;
-        errors?: APIError[]; // define response.json structure we expect
+        errors?: CanvasAPIError[]; // define response.json structure we expect
       };
       const errors = errorData.errors ? handleAPIErrors(errorData.errors) : [];
 
@@ -69,11 +71,6 @@ async function fetchAPI<T>(
         error: errorData.error,
         errors, // todo: maybe update naming convention here to not be so confusing
       };
-    }
-
-    // Handle 204 No Content responses
-    if (response.status === 204) {
-      return { success: true };
     }
 
     // parse response if not an error
@@ -92,9 +89,9 @@ export const RubricsAPI = {
   async createRubric(
     request: CreateRubricRequest,
     courseID: number,
-  ): Promise<APIResponse<CreateRubricResponse>> {
+  ): Promise<CanvasAPIResponse<CreateRubricResponse>> {
     return fetchAPI<CreateRubricResponse>(
-      `${API_CONFIG.baseURL}/courses/${courseID}/rubrics`,
+      `${CanvasAPIConfig.baseURL}/courses/${courseID}/rubrics`,
       {
         method: "POST",
         body: JSON.stringify(request),
@@ -104,15 +101,15 @@ export const RubricsAPI = {
 
   async getRubric(
     request: GetRubricRequest,
-  ): Promise<APIResponse<CanvasRubric>> {
+  ): Promise<CanvasAPIResponse<CanvasRubric>> {
     if (request.type === "course") {
       return fetchAPI<CanvasRubric>(
-        `${API_CONFIG.baseURL}/courses/${request.course_id}/rubrics/${request.id}`,
+        `${CanvasAPIConfig.baseURL}/courses/${request.course_id}/rubrics/${request.id}`,
       );
     } else {
       // request type is account
       return fetchAPI<CanvasRubric>(
-        `${API_CONFIG.baseURL}/accounts/${request.account_id}/rubrics/${request.id}`,
+        `${CanvasAPIConfig.baseURL}/accounts/${request.account_id}/rubrics/${request.id}`,
       );
     }
   },
@@ -120,9 +117,9 @@ export const RubricsAPI = {
   async updateRubric(
     request: CreateRubricRequest,
     courseID: number,
-  ): Promise<APIResponse<UpdateRubricResponse>> {
+  ): Promise<CanvasAPIResponse<UpdateRubricResponse>> {
     return fetchAPI<UpdateRubricResponse>(
-      `${API_CONFIG.baseURL}/courses/${courseID}/rubrics`,
+      `${CanvasAPIConfig.baseURL}/courses/${courseID}/rubrics`,
       {
         method: "PUT",
         body: JSON.stringify(request),
@@ -132,9 +129,9 @@ export const RubricsAPI = {
 
   async deleteRubric(
     request: DeleteRubricRequest,
-  ): Promise<APIResponse<CanvasRubric>> {
+  ): Promise<CanvasAPIResponse<CanvasRubric>> {
     return fetchAPI<CanvasRubric>(
-      `${API_CONFIG.baseURL}/courses/${request.course_id}/rubrics/${request.id}`,
+      `${CanvasAPIConfig.baseURL}/courses/${request.course_id}/rubrics/${request.id}`,
       {
         method: "DELETE",
       },

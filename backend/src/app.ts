@@ -1,14 +1,12 @@
 // main entry point for backend application
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
-
-// Load environment variables from .env file
-export const config = dotenv.config();
+import { StatusCodes } from "http-status-codes";
+import { rubricFieldErrorHandler } from "./middleware/rubricFieldErrorHandler.js";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -33,9 +31,21 @@ app.use((req, _res, next) => {
   next();
 });
 
+// field validation error handling middleware
+app.use(rubricFieldErrorHandler);
+
+// handle all unhandled errors
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res
+    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+    .json({ error: "Something went wrong!" });
+  next();
+});
+
 // Health check route
 app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).json({ status: "UP" });
+  res.status(StatusCodes.OK).json({ status: "UP" });
 });
 
 // API routes
@@ -46,7 +56,7 @@ app.use("/api/rubrics", rubricRouter);
 app.get("*", (req: Request, res: Response) => {
   // If a developer messes up the api routes, send a 404 error with informative error
   if (req.originalUrl.startsWith("/api")) {
-    res.status(404).send({ error: "API route not found" });
+    res.status(StatusCodes.NOT_FOUND).send({ error: "API route not found" });
   } else {
     // If the client tries to navigate to an unknown page, send them the index.html file
     res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));

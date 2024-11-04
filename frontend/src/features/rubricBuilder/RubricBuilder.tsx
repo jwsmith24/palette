@@ -143,6 +143,7 @@ export default function RubricBuilder(): ReactElement {
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
+    console.log("rubric:", rubric);
     await postRubric(); // triggers the POST request for the active rubric
 
     // check the response for errors

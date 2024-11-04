@@ -11,22 +11,22 @@ const validateRubric = [
     .withMessage("Rubric does not have a title")
     .isLength({ max: 255 }) // max length: 255 characters
     .withMessage("Rubric title must not exceed 255 characters."),
-  body("rubricCriteria")
+  body("criteria")
     .isArray({ min: 1 })
     .withMessage("Rubric must have at least one criterion."),
-  body("rubricCriteria.*.description") // * === all objects in the criteria array
+  body("criteria.*.description") // * === all objects in the criteria array
     .isString()
     .trim()
     .notEmpty()
     .withMessage("Each criterion must have a description"),
-  body("rubricCriteria.*.longDescription").optional().isString(),
-  body("rubricCriteria.*.points")
+  body("criteria.*.longDescription").optional().isString(),
+  body("criteria.*.points")
     .isNumeric()
     .withMessage("points field must be numeric"),
-  body("rubricCriteria.*.ratings")
+  body("criteria.*.ratings")
     .isArray({ min: 1 })
     .withMessage("Criterion must have at least one rating."),
-  body("rubricCriteria.*.ratings.*.description")
+  body("criteria.*.ratings.*.description")
     .isString()
     .trim()
     .notEmpty()
