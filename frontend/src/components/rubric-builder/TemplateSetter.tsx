@@ -81,9 +81,20 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       template.title = selectedTemplateJson?.title;
       template.id = selectedTemplateJson?.id;
       template.key = selectedTemplateJson?.key;
+      if (selectedTemplateJson?.templateCriteria != undefined) {
+        selectedTemplateJson?.templateCriteria.forEach((key) => {
+          console.log("key");
+
+          console.log(key);
+        });
+      }
+
+      template.templateCriteria.push(criterion); //add the current criteria to the database template
+
       setTemplateSelected(true);
       console.log("selectedTemplate");
-      onTemplateSelected(template);
+      console.log(selectedTemplateJson?.templateCriteria);
+      // onTemplateSelected(template);
       setSelectedTemplateTitle(selectedTemplateTitle);
     }
     handleCloseTemplates();
