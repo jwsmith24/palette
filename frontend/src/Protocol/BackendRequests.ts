@@ -60,7 +60,7 @@ async function fetchAPI<T>(
       return {
         success: false,
         error: errorData.error,
-        errors, // todo: maybe update naming convention here to not be so confusing
+        errors,
       };
     }
 
