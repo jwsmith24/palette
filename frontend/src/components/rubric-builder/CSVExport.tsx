@@ -7,7 +7,7 @@ interface CSVExportProps {
 
 const CSVExport: React.FC<CSVExportProps> = ({ rubric }) => {
   const handleExportToCSV = () => {
-    // Prepare header with alternating "Rating" and "Reason" columns
+    // Prepare header 
     const header = ["Criteria/Title", "Rating", "Reason", "Rating", "Reason", "Rating", "Reason"];
 
     // Prepare data rows based on the rubric structure
