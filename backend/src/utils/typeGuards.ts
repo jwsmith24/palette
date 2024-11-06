@@ -36,6 +36,7 @@ export function isCanvasAPIErrorResponse(
     typeof obj === "object" &&
     obj !== null &&
     "errors" in obj &&
+    obj.errors !== null &&
     Array.isArray(obj.errors) &&
     (obj.errors.length === 0 || obj.errors.every(isCanvasAPIError))
   );

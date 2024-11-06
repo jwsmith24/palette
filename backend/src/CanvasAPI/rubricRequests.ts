@@ -21,7 +21,6 @@ const CanvasAPIConfig = {
     Authorization: `Bearer ${config!.CANVAS_API_TOKEN}`,
     Accept: "application/json",
     "Content-Type": "application/json", // must be a string!
-
   },
 } as const;
 
@@ -37,28 +36,37 @@ async function fetchAPI<T>(
   options: RequestInit = {}, // default options (none)
 ): Promise<T> {
   try {
+    // build a Request object to pass to fetch
     const url = `${CanvasAPIConfig.baseURL}${endpoint}`;
-    logCanvasAPIRequest(options, url);
-
-    // send the request and handle the response using promise chaining
-    const response = await fetch(url, {
-      ...options,
+    const requestInit: RequestInit = {
+      ...options, //
       headers: {
         ...CanvasAPIConfig.headers,
         ...(options.headers || {}),
       } as HeadersInit,
-    });
+    };
+    // build a request object to pass to fetch, then make the request and log it
+    const request = new Request(url, requestInit);
+    logCanvasAPIRequest(request, options, true);
+    const response = await fetch(request);
 
     // parse and log the JSON response
     const json = (await response.json()) as unknown; // who knows what Canvas will return...
-    logCanvasAPIResponse(response, json);
+    logCanvasAPIResponse(response, json, true);
 
     // handle errors
     if (!response.ok) {
       // check if the error response is a Canvas API error
       if (isCanvasAPIErrorResponse(json)) {
         // pass the first error to the error handling middleware
-        throw new Error(json.errors[0].message);
+        // this type assertion says: "Because of the type guard, I know that
+        // the json object has the shape of a CanvasAPIErrorResponse"
+        const errorMsg = (
+          (json as { errors: CanvasAPIError[] }).errors[0] as {
+            message: string;
+          }
+        ).message;
+        throw new Error(errorMsg);
       } else {
         // if the error response is not a Canvas API error, throw a generic error
         // and log the response for debugging
@@ -75,7 +83,7 @@ async function fetchAPI<T>(
     if (error instanceof Error) {
       console.error(`Canvas API Error: ${error.message}`);
     }
-      throw error; // rethrow the error for the caller to handle
+    throw error; // rethrow the error for the caller to handle
   }
 }
 
@@ -156,34 +164,68 @@ export const RubricsAPI = {
 
 /**
  * Utility function to log API requests to the console.
+ * @param request the request object
  * @param options the request options
- * @param url the target URL
+ * @param verbose whether to log the full request object or just the method and URL
  */
-function logCanvasAPIRequest(options: RequestInit, url: string) {
-  console.log(`\nCanvas API Request: ${options.method} ${url}`);
-  if (options.body) {
+function logCanvasAPIRequest(
+  request: Request,
+  options: RequestInit,
+  verbose: boolean = false,
+) {
+  if (verbose) {
+    // log the entire request (up to 50 levels deep) for debugging
     console.log(
-      `Canvas API Request Body (parsed JSON): ${util.inspect(
-        JSON.parse(options.body as string),
-        {
-          depth: 50,
-          colors: true,
-        },
-      )}`,
+      "\nCanvas API Request:\n",
+      util.inspect(request, {
+        depth: 50,
+        colors: true,
+      }),
     );
+  } else {
+    // log just the method and URL for debugging
+    console.log(`\nCanvas API Request: ${request.method} ${request.url}`);
   }
+
+  // log the request body (up to 50 levels deep) for debugging
+  console.log(
+    `Canvas API Request Body (parsed JSON):\n 
+    ${util.inspect(JSON.parse(options.body as string), {
+      depth: 50,
+      colors: true,
+    })}`,
+  );
 }
 
 /**
  * Utility function to log API responses to the console.
  * @param response the response object
- * @param data the response data
+ * @param body the response body
+ * @param verbose whether to log the full response object or just the status code
  */
-function logCanvasAPIResponse<T>(response: Response, data: T) {
-  console.log("\nCanvas API Status:", response.status);
+function logCanvasAPIResponse<T>(
+  response: Response,
+  body: T,
+  verbose: boolean = false,
+) {
+  if (verbose) {
+    // log the whole response (up to 50 levels deep) for debugging
+    console.log(
+      "\nCanvas API Response:\n",
+      util.inspect(response, {
+        depth: 50,
+        colors: true,
+      }),
+    );
+  } else {
+    // log just the status code for debugging
+    console.log(`\nCanvas API Response Status: ${response.status}`);
+  }
+
+  // log the response body (up to 50 levels deep) for debugging
   console.log(
-    "Canvas API Response Data:\n",
-    util.inspect(data, {
+    "Canvas API Response Body:\n",
+    util.inspect(body, {
       depth: 50,
       colors: true,
     }),
