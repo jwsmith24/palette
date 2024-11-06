@@ -1,12 +1,15 @@
 // main entry point for backend application
 
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { StatusCodes } from "http-status-codes";
 import { rubricFieldErrorHandler } from "./middleware/rubricFieldErrorHandler.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { responseLogger } from "./middleware/responseLogger.js";
+import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -25,31 +28,19 @@ app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-// logging middleware function
-app.use((req, _res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
+// Request logging
+app.use(requestLogger);
 
-// field validation error handling middleware
-app.use(rubricFieldErrorHandler);
+// Response logging
+app.use(responseLogger);
 
-// handle all unhandled errors
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res
-    .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    .json({ error: "Something went wrong!" });
-  next();
-});
+// API routes
+app.use("/api/rubrics", rubricRouter);
 
 // Health check route
 app.get("/health", (_req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ status: "UP" });
 });
-
-// API routes
-app.use("/api/rubrics", rubricRouter);
 
 // Wildcard route should only handle frontend routes
 // It should not handle any routes under /api or other server-side routes.
@@ -62,6 +53,12 @@ app.get("*", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
   }
 });
+
+// field validation error handling middleware
+app.use(rubricFieldErrorHandler);
+
+// handle all unhandled errors
+app.use(fallbackErrorHandler);
 
 // Start the server and listen on port defined in .env file
 app.listen(PORT, () => {

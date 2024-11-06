@@ -8,7 +8,7 @@ const validateRubric = [
     .isString()
     .trim()
     .notEmpty()
-    .withMessage("Rubric does not have a title")
+    .withMessage("Rubric must have a title")
     .isLength({ max: 255 }) // max length: 255 characters
     .withMessage("Rubric title must not exceed 255 characters."),
   body("criteria")
@@ -22,7 +22,7 @@ const validateRubric = [
   body("criteria.*.longDescription").optional().isString(),
   body("criteria.*.points")
     .isNumeric()
-    .withMessage("points field must be numeric"),
+    .withMessage("Points field must be numeric"),
   body("criteria.*.ratings")
     .isArray({ min: 1 })
     .withMessage("Criterion must have at least one rating."),

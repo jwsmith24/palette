@@ -156,7 +156,7 @@ export default function RubricBuilder(): ReactElement {
     } else if (postRubricResponse.success) {
       // handle successful submission
       setModalTitle("Success!");
-      setModalMessage(`Rubric for ${rubric.title} submitted successfully!`);
+      setModalMessage(`Rubric "${rubric.title}" submitted successfully!`);
       openModal();
     } else {
       // handle any other errors

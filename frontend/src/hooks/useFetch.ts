@@ -45,7 +45,9 @@ export default function useFetch<T>(
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorResponse =
+          (await response.json()) as PaletteAPIResponse<null>;
+        throw new Error(`Error: ${errorResponse.error}`);
       }
 
       const json = (await response.json()) as T; //
