@@ -17,7 +17,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   handleSetTemplateTitle,
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate());
-  const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
+  const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
   const [templateSelected, setTemplateSelected] = useState(false);
@@ -97,7 +97,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
         <Menu
           sx={{ mt: "45px" }}
           id="user-menu"
-          anchorEl={anchorElTemlate}
+          anchorEl={anchorElTemplate}
           anchorOrigin={{
             vertical: "top",
             horizontal: "right",
@@ -107,7 +107,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
             vertical: "top",
             horizontal: "right",
           }}
-          open={Boolean(anchorElTemlate)}
+          open={Boolean(anchorElTemplate)}
           onClose={handleCloseTemplates}
         >
           {templatesJson.map((t, tKey) => (
