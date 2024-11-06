@@ -40,6 +40,9 @@ jobs:
       - name: Generate Prisma client # required to generate types for lint checks
         run: npm run generate
 
+      - name: Build project
+        run: npm run build
+
       - name: Run ESLint
         run: npm run lint
 
@@ -98,11 +101,14 @@ jobs:
       - name: Generate Prisma client
         run: npm run generate
 
+      - name: Build project
+        run: npm run build
+
       - name: Test Suites
         run: npm run test
 
 
-# Check for accidental root dependencies
+  # Check for accidental root dependencies
   check-dependencies:
     runs-on: ubuntu-latest
     steps:
