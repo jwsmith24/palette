@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { newPaletteErrorResponse } from '../utils/paletteResponseFactories.js';
+import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { newPaletteErrorResponse } from "../utils/paletteResponseFactories.js";
 
 /**
  * Middleware to handle any uncaught errors.

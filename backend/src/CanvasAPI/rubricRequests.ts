@@ -8,11 +8,11 @@ import {
   GetRubricRequest,
   GetRubricResponse,
   UpdateRubricResponse,
-} from 'palette-types';
-import { isCanvasAPIErrorResponse } from '../utils/typeGuards.js';
-import config from '../config.js';
-import util from 'util';
-import { CanvasAPIUnexpectedError } from '../errors/UnknownCanvasError';
+} from "palette-types";
+import { isCanvasAPIErrorResponse } from "../utils/typeGuards.js";
+import config from "../config.js";
+import util from "util";
+import { CanvasAPIUnexpectedError } from "../errors/UnknownCanvasError";
 
 const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",

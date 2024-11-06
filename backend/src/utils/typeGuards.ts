@@ -1,14 +1,10 @@
-import {
-  CanvasAPIErrorResponse,
-} from 'palette-types/dist/canvasProtocol/CanvasAPIErrorResponse';
-import {
-  CanvasAPIError,
-} from 'palette-types/dist/canvasProtocol/CanvasAPIError';
+import { CanvasAPIErrorResponse } from "palette-types/dist/canvasProtocol/CanvasAPIErrorResponse";
+import { CanvasAPIError } from "palette-types/dist/canvasProtocol/CanvasAPIError";
 import {
   CanvasAssociation,
   CanvasRubric,
   RubricObjectHash,
-} from 'palette-types';
+} from "palette-types";
 
 /**
  * Type guard to check if an object is a CanvasAPIError.

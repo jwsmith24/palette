@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
-import { Result, ValidationError, validationResult } from 'express-validator';
-import { PaletteAPIErrorData, PaletteAPIResponse } from 'palette-types';
-import { StatusCodes } from 'http-status-codes';
-import { newPaletteErrorResponse } from '../utils/paletteResponseFactories.js';
+import { NextFunction, Request, Response } from "express";
+import { Result, ValidationError, validationResult } from "express-validator";
+import { PaletteAPIErrorData, PaletteAPIResponse } from "palette-types";
+import { StatusCodes } from "http-status-codes";
+import { newPaletteErrorResponse } from "../utils/paletteResponseFactories.js";
 
 /**
  * Middleware to handle express-validator errors and return them in the
