@@ -15,11 +15,6 @@ function Navbar() {
   const onTemplates = location.pathname == "/clusters";
   const onBuilder = location.pathname == "/rubric-builder";
 
-  // Effect hook to update total points display on initial mount and anytime the rubric state changes
-  useEffect(() => {
-    console.log("navbar");
-  });
-
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
