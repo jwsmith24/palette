@@ -6,9 +6,13 @@
 export * from "./canvasProtocol/CreateRubricRequest";
 export * from "./canvasProtocol/CreateRubricResponse";
 export * from "./canvasProtocol/DeleteRubricRequest";
+export * from "./canvasProtocol/DeleteRubricResponse";
 export * from "./canvasProtocol/GetRubricRequest";
+export * from "./canvasProtocol/GetRubricResponse";
 export * from "./canvasProtocol/UpdateRubricRequest";
 export * from "./canvasProtocol/UpdateRubricResponse";
+export * from "./canvasProtocol/CanvasAPIError";
+export * from "./canvasProtocol/CanvasAPIErrorResponse";
 
 // Export everything from canvasTypes
 export * from "./canvasTypes/CanvasAssessment";
@@ -16,6 +20,7 @@ export * from "./canvasTypes/CanvasAssociation";
 export * from "./canvasTypes/CanvasCriterion";
 export * from "./canvasTypes/CanvasRating";
 export * from "./canvasTypes/CanvasRubric";
+export * from "./canvasTypes/RubricObjectHash";
 
 // Export everything from protocol
 export * from "./protocol/PaletteAPIErrorData";

@@ -5,7 +5,7 @@
  * error, and response states.
  */
 
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { PaletteAPIRequest, PaletteAPIResponse } from "palette-types";
 
 const DEFAULT_REQUEST = {
@@ -43,7 +43,9 @@ export default function useFetch<T>(
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const errorResponse =
+          (await response.json()) as PaletteAPIResponse<null>;
+        throw new Error(`Error: ${errorResponse.error}`);
       }
 
       const json = (await response.json()) as T;
@@ -55,6 +57,7 @@ export default function useFetch<T>(
       setResponse(newResponse);
       return newResponse;
     } catch (error) {
+        console.log("API Request failed:", error);
       const errorResponse: PaletteAPIResponse<T> = {
         data: null,
         success: false,

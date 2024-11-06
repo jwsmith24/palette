@@ -143,6 +143,7 @@ export default function RubricBuilder(): ReactElement {
   // Build rubric object with latest state values and send to server
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
+    console.log("rubric:", rubric);
     await postRubric(); // triggers the POST request for the active rubric
 
     // check the response for errors
@@ -155,7 +156,7 @@ export default function RubricBuilder(): ReactElement {
     } else if (postRubricResponse.success) {
       // handle successful submission
       setModalTitle("Success!");
-      setModalMessage(`Rubric for ${rubric.title} submitted successfully!`);
+      setModalMessage(`Rubric "${rubric.title}" submitted successfully!`);
       openModal();
     } else {
       // handle any other errors

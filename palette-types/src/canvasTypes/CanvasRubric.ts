@@ -27,9 +27,6 @@ export interface CanvasRubric {
 
   hide_score_total?: boolean;
 
-  // // this will only be present if we are creating the rubric
-  // criteria?: CanvasCriterion[] | CreatedRubricCriterion[]; //
-
   /**
    * An array with all of this CanvasRubric's grading Criteria.
    *
@@ -37,7 +34,7 @@ export interface CanvasRubric {
    * is inconsistent about the actual name of this field - it is sometimes called
    * 'criteria' and others 'data'.
    */
-  data?: CanvasCriterion[] | null;
+  data: CanvasCriterion[] | null;
 
   /**
    * (Optional) If an assessment type is included in the 'include' parameter, includes an

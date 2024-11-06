@@ -1,12 +1,9 @@
-import { CanvasRubric } from "../canvasTypes/CanvasRubric";
-import { CanvasAssociation } from "../canvasTypes/CanvasAssociation";
+import { RubricObjectHash } from "../canvasTypes/RubricObjectHash";
+import { CanvasAPIErrorResponse } from "./CanvasAPIErrorResponse";
 
 /**
  * This type represents the response body for creating a new CanvasRubric.
  *
  * https://canvas.instructure.com/doc/api/rubrics.html#method.rubrics.create
  */
-export interface CreateRubricResponse {
-  rubric: CanvasRubric;
-  rubric_association: CanvasAssociation;
-}
+export type CreateRubricResponse = RubricObjectHash | CanvasAPIErrorResponse;

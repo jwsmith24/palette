@@ -10,15 +10,15 @@ import { CanvasAssociation } from "../canvasTypes/CanvasAssociation";
 export interface CreateRubricRequest {
   id?: number; // The ID of the rubric
   rubric_association_id: number; // The ID of the object associated with the rubric
-  rubric: CreatedRubric;
-  rubric_association: CreatedRubricAssociation;
+  rubric: RequestFormattedRubric;
+  rubric_association: RequestFormattedAssociation;
 }
 
 /**
- * The CreatedRubric defines the rubric fields that can be created (according to the API).
+ * Defines the rubric fields that can be created (according to the API).
  * All fields appear to be required.
  */
-interface CreatedRubric {
+export interface RequestFormattedRubric {
   title: string;
   free_form_criterion_comments: boolean;
   criteria: RequestFormattedCriteria;
@@ -42,15 +42,13 @@ export type RequestFormattedCriteria = Record<
 export type RequestFormattedRatings = Record<number, CanvasRating> | null;
 
 /**
- * The CreatedRubricAssociation defines the rubric association fields that can be created (according to the API).
+ * Defines the rubric association fields that can be created (according to the API).
  */
-type CreatedRubricAssociation = Partial<
-  Pick<
-    CanvasAssociation,
-    | "association_id"
-    | "association_type"
-    | "use_for_grading"
-    | "hide_score_total"
-    | "purpose"
-  >
+export type RequestFormattedAssociation = Pick<
+  CanvasAssociation,
+  | "association_id"
+  | "association_type"
+  | "use_for_grading"
+  | "hide_score_total"
+  | "purpose"
 >;

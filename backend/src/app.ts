@@ -1,13 +1,17 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
+import { StatusCodes } from "http-status-codes";
+import { rubricFieldErrorHandler } from "./middleware/rubricFieldErrorHandler.js";
+import { requestLogger } from "./middleware/requestLogger.js";
+import { responseLogger } from "./middleware/responseLogger.js";
+import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
 
-import dotenv from "dotenv";
-import { PaletteAPIResponse, Course } from "palette-types";
-
-// Load environment variables from .env file
-export const config = dotenv.config();
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
@@ -60,22 +64,17 @@ const courses: Course[] = [
     key: "ML101",
   },
 ];
+app.use(cors(corsOptions)); // enable CORS with above configuration
+app.use(express.json()); // middleware to parse json requests
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+// Request logging
+app.use(requestLogger);
 
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(
-  express.static(path.join(import.meta.dirname, "../../../../frontend/dist")),
-);
-
-// Logging middleware function
-app.use((req, _res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
-
+// Response logging
+app.use(responseLogger);
 // Health check route
 app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).json({ status: "HEALTHY" });
+  res.status(StatusCodes.OK).json({ status: "HEALTHY" });
 });
 
 // Courses endpoint (test)
@@ -92,25 +91,24 @@ app.get("/api/courses", (_req: Request, res: Response) => {
 // API routes
 app.use("/api/rubrics", rubricRouter);
 
-// Wildcard route for frontend
+// Wildcard route should only handle frontend routes
+// It should not handle any routes under /api or other server-side routes.
 app.get("*", (req: Request, res: Response) => {
   if (req.originalUrl.startsWith("/api")) {
-    res.status(404).send({ error: "API route not found" });
+    res.status(StatusCodes.NOT_FOUND).send({ error: "API route not found" });
   } else {
-    res.sendFile(
-      path.join(import.meta.dirname, "../../../../frontend/dist", "index.html"),
-    );
+    // If the client tries to navigate to an unknown page, send them the index.html file
+    res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
   }
 });
 
-// Global error-handling middleware
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error("Server Error:", err);
-  res.status(500).json({ error: "Internal Server Error" });
-});
+// field validation error handling middleware
+app.use(rubricFieldErrorHandler);
 
-// Start the server
+// handle all unhandled errors
+app.use(fallbackErrorHandler);
+
+// Start the server and listen on port defined in .env file
 app.listen(PORT, () => {
   console.log(`Server is up on http://localhost:${PORT}`);
 });
