@@ -8,6 +8,7 @@ import { rubricFieldErrorHandler } from "./middleware/rubricFieldErrorHandler.js
 import { requestLogger } from "./middleware/requestLogger.js";
 import { responseLogger } from "./middleware/responseLogger.js";
 import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
+import { Course, PaletteAPIResponse } from "palette-types";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);

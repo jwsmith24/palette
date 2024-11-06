@@ -57,7 +57,7 @@ export default function useFetch<T>(
       setResponse(newResponse);
       return newResponse;
     } catch (error) {
-        console.log("API Request failed:", error);
+      console.log("API Request failed:", error);
       const errorResponse: PaletteAPIResponse<T> = {
         data: null,
         success: false,

@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
-import { Result, ValidationError, validationResult } from 'express-validator';
-import { PaletteAPIErrorData, PaletteAPIResponse } from 'palette-types';
-import { StatusCodes } from 'http-status-codes';
-import { newPaletteErrorResponse } from '../utils/paletteResponseFactories.js';
+import { NextFunction, Request, Response } from "express";
+import { Result, ValidationError, validationResult } from "express-validator";
+import { PaletteAPIErrorData, PaletteAPIResponse } from "palette-types";
+import { StatusCodes } from "http-status-codes";
+import { createErrorResponse } from "../utils/paletteResponseFactories.js";
 
 /**
  * Middleware to handle express-validator errors and return them in the
@@ -24,7 +24,7 @@ export const rubricFieldErrorHandler = (
       .filter((error) => error.type === "field") as PaletteAPIErrorData[];
 
     // construct the error response with the first error message
-    const response: PaletteAPIResponse<null> = newPaletteErrorResponse(
+    const response: PaletteAPIResponse<null> = createErrorResponse(
       paletteErrors[0]?.msg || "Invalid field",
       paletteErrors,
     );

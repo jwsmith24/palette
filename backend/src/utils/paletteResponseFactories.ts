@@ -6,7 +6,7 @@ import { PaletteAPIErrorData, PaletteAPIResponse } from "palette-types";
  * @param message Optional message to include in the response.
  * @returns A PaletteAPIResponse object indicating success.
  */
-export function newPaletteSuccessResponse<T>(
+export function createSuccessResponse<T>(
   data: T,
   message?: string,
 ): PaletteAPIResponse<T> {
@@ -14,8 +14,6 @@ export function newPaletteSuccessResponse<T>(
     data,
     success: true,
     message: message || "Request successful",
-    error: null,
-    errors: [],
   };
 }
 
@@ -25,7 +23,7 @@ export function newPaletteSuccessResponse<T>(
  * @param errors Optional array of PaletteAPIErrorData to include in the response.
  * @returns A PaletteAPIResponse object indicating failure.
  */
-export function newPaletteErrorResponse(
+export function createErrorResponse(
   error: string,
   errors?: PaletteAPIErrorData[],
 ): PaletteAPIResponse<null> {

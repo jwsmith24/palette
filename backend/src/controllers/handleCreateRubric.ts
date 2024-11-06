@@ -1,21 +1,19 @@
 // a controller for the express endpoint that creates a new rubric
 
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import {
   CanvasRubric,
   CreateRubricRequest,
   CreateRubricResponse,
   Rubric,
-} from 'palette-types';
-import {
-  newPaletteSuccessResponse,
-} from '../utils/paletteResponseFactories.js';
-import { RubricsAPI } from '../CanvasAPI/rubricRequests.js';
-import config from '../config.js';
-import asyncHandler from 'express-async-handler';
-import { StatusCodes } from 'http-status-codes';
-import { isRubricObjectHash } from '../utils/typeGuards.js';
-import RubricUtils from '../utils/rubricUtils.js';
+} from "palette-types";
+import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
+import { RubricsAPI } from "../CanvasAPI/rubricRequests.js";
+import config from "../config.js";
+import asyncHandler from "express-async-handler";
+import { StatusCodes } from "http-status-codes";
+import { isRubricObjectHash } from "../utils/typeGuards.js";
+import RubricUtils from "../utils/rubricUtils.js";
 
 /**
  * Handles the creation of a new rubric.
@@ -36,8 +34,10 @@ export const handleCreateRubric = asyncHandler(
 
     // if the response is successful, the type is a RubricObjectHash
     if (isRubricObjectHash(canvasResponse)) {
-      const data: Rubric = RubricUtils.toPaletteFormat(canvasResponse.rubric as CanvasRubric);
-      const paletteResponse = newPaletteSuccessResponse(
+      const data: Rubric = RubricUtils.toPaletteFormat(
+        canvasResponse.rubric as CanvasRubric,
+      );
+      const paletteResponse = createSuccessResponse(
         data,
         "Rubric created successfully",
       );

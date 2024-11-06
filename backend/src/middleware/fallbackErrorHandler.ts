@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { newPaletteErrorResponse } from '../utils/paletteResponseFactories.js';
+import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { createErrorResponse } from "../utils/paletteResponseFactories.js";
 
 /**
  * Middleware to handle any uncaught errors.
@@ -18,7 +18,7 @@ export const fallbackErrorHandler = (
   _next: NextFunction,
 ): void => {
   console.error(`Uncaught error: ${err.message}`);
-  const paletteResponse = newPaletteErrorResponse(
+  const paletteResponse = createErrorResponse(
     err.message || "An unexpected error occurred",
   );
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(paletteResponse);

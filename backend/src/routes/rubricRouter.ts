@@ -1,17 +1,13 @@
 // Router for all /rubrics requests
-import express from 'express';
-import validateRubric from '../validators/rubricValidator.js';
-import { handleCreateRubric } from '../controllers/handleCreateRubric.js';
-import {
-  rubricFieldErrorHandler,
-} from '../middleware/rubricFieldErrorHandler.js';
-import { handleGetAllRubrics } from '../controllers/handleGetAllRubrics.js';
-import { handleGetRubricById } from '../controllers/handleGetRubricById.js';
-import { handleUpdateRubric } from '../controllers/handleUpdateRubric.js';
-import { handleDeleteRubric } from '../controllers/handleDeleteRubric.js';
-import {
-  handleGetRubricIdByTitle,
-} from '../controllers/handleGetRubricIdByTitle.js';
+import express from "express";
+import validateRubric from "../validators/rubricValidator.js";
+import { handleCreateRubric } from "../controllers/handleCreateRubric.js";
+import { rubricFieldErrorHandler } from "../middleware/rubricFieldErrorHandler.js";
+import { handleGetAllRubrics } from "../controllers/handleGetAllRubrics.js";
+import { handleGetRubricById } from "../controllers/handleGetRubricById.js";
+import { handleUpdateRubric } from "../controllers/handleUpdateRubric.js";
+import { handleDeleteRubric } from "../controllers/handleDeleteRubric.js";
+import { handleGetRubricIdByTitle } from "../controllers/handleGetRubricIdByTitle.js";
 
 const router = express.Router();
 

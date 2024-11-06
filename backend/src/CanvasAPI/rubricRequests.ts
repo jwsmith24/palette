@@ -7,10 +7,10 @@ import {
   GetRubricRequest,
   GetRubricResponse,
   UpdateRubricResponse,
-} from 'palette-types';
-import { isCanvasAPIErrorResponse } from '../utils/typeGuards.js';
-import config from '../config.js';
-import util from 'util';
+} from "palette-types";
+import { isCanvasAPIErrorResponse } from "../utils/typeGuards.js";
+import config from "../config.js";
+import util from "util";
 
 const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
@@ -19,7 +19,6 @@ const CanvasAPIConfig = {
     Authorization: `Bearer ${config!.CANVAS_API_TOKEN}`,
     Accept: "application/json",
     "Content-Type": "application/json", // must be a string!
-
   },
 } as const;
 
@@ -70,7 +69,7 @@ async function fetchAPI<T>(
     if (error instanceof Error) {
       console.error(`Canvas API Error: ${error.message}`);
     }
-      throw error; // rethrow the error for the caller to handle
+    throw error; // rethrow the error for the caller to handle
   }
 }
 
