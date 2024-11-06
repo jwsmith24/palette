@@ -13,7 +13,7 @@ export default function createTemplate(
   title: string = "",
   criteria: RubricCriterion[] = [],
   description: string = "Enter description",
-  id: number = -1
+  id: number = -1,
 ): Template {
   return {
     title,
