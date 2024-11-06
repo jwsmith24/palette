@@ -74,6 +74,7 @@ export default function RubricBuilder(): ReactElement {
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
+    console.log("builder");
     calculateTotalPoints();
   }, [rubric]);
 
@@ -132,9 +133,8 @@ export default function RubricBuilder(): ReactElement {
 
         openModal();
       } else {
-        // Create a new rubric if it doesn’t exist
-        const result = await BackendAPI.create(rubric);
-        handleApiResponse(result, rubric);
+        const rubricJson = JSON.stringify(rubric, null, 2);
+        console.log(rubricJson);
       }
     } catch (error) {
       console.error("Error during rubric submission:", error);
@@ -154,7 +154,7 @@ export default function RubricBuilder(): ReactElement {
     } else if (result.errors && result.errors.length > 0) {
       alert(result.errors[0]);
     } else {
-      alert("Operation failed.");
+      alert("Operation failed!");
     }
   };
 
@@ -236,7 +236,7 @@ export default function RubricBuilder(): ReactElement {
       },
       0,
     ); // Initialize sum as 0
-    console.log(total);
+    // console.log(total);
     setTotalPoints(total); // Update state with the total points
   };
 

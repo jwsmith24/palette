@@ -39,6 +39,7 @@ model RubricCriterion {
   ratings           RubricRating[]
   rubric            Rubric         @relation(fields: [rubricId], references: [id], onDelete: Cascade)
   rubricId          Int
+  tempateId         Int
 }
 
 model RubricRating {
@@ -75,3 +76,5 @@ model RubricAssociation {
   hidePoints         Boolean
   hideOutcomeResults Boolean
 }
+
+

@@ -30,6 +30,7 @@ describe("Rubric", () => {
           longDescription: "Description for Criterion 1",
           ratings: [],
           points: 10,
+          template: "",
           updatePoints: jest.fn(), // mocks the function
           key: "key-1",
         },
@@ -38,6 +39,7 @@ describe("Rubric", () => {
           longDescription: "Description for Criterion 2",
           ratings: [],
           points: 20,
+          template: "",
           updatePoints: jest.fn(),
           key: "key-2",
         },

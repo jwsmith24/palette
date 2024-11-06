@@ -14,6 +14,8 @@ import {
 } from "../../models/RubricCriterion.ts";
 import createRating, { RubricRating } from "../../models/RubricRating.ts";
 import RatingInput from "./RatingInput.tsx";
+import TemplateSetter from "./TemplateSetter.tsx";
+import Dialog from "../util/Dialog.tsx";
 
 export default function CriteriaInput({
   index,
@@ -32,13 +34,17 @@ export default function CriteriaInput({
 }): ReactElement {
   const [ratings, setRatings] = useState<RubricRating[]>(criterion.ratings);
   const [maxPoints, setMaxPoints] = useState<number>(0); // Initialize state for max points
+  const [templateSetterActive, setTemplateSetterActive] = useState(false); // file input display is open or not
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || "",
   );
+  const [templateTitle, setTemplatetitle] = useState(criterion.template || "");
+
   /**
    * Whenever ratings change, recalculate criterion's max points
    */
   useEffect(() => {
+    console.log("rerender");
     const maxRating = calcMaxPoints(ratings);
     setMaxPoints(maxRating);
     const newCriterion = { ...criterion, points: maxRating };
@@ -50,6 +56,14 @@ export default function CriteriaInput({
     setCriteriaDescription(newDescription);
 
     const newCriterion = { ...criterion, description: newDescription };
+    handleCriteriaUpdate(index, newCriterion);
+  };
+
+  const handleSetTemplateTitle = (event: ChangeEvent<HTMLInputElement>) => {
+    const newTitle = event.target.value;
+    setTemplatetitle(newTitle);
+
+    const newCriterion = { ...criterion, template: templateTitle };
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -116,6 +130,15 @@ export default function CriteriaInput({
     setActiveCriterionIndex(index);
   };
 
+  const handleTemplateSetterPress = (
+    event: ReactMouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    if (!templateSetterActive) {
+      setTemplateSetterActive(true);
+    }
+  };
+
   // Use the useSortable hook to handle criteria ordering
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -126,6 +149,28 @@ export default function CriteriaInput({
     transform: CSS.Transform.toString(transform),
     transition,
   };
+
+  const handleTemplatesOpen = () => {
+    console.log("Templates open");
+  };
+
+  const renderTemplateSetter = () => {
+    console.log("Test");
+    if (templateSetterActive) {
+      return (
+        <TemplateSetter
+          closeTemplateCard={handleCloseTemplateSetter}
+          onTemplatesOpen={handleTemplatesOpen}
+          handleSetTemplateTitle={handleSetTemplateTitle}
+        />
+      );
+    }
+  };
+
+  const handleCloseTemplateSetter = () => {
+    setTemplateSetterActive(false); // hides the template setter
+  };
+
   const renderCondensedView = () => {
     return (
       <div
@@ -207,6 +252,16 @@ export default function CriteriaInput({
             >
               Collapse
             </button>
+            <button
+              className={
+                "transition-all ease-in-out duration-300 bg-slate-600 rounded-full px-2" +
+                " py-2 hover:bg-slate-700 focus:ring-2 focus:ring-slate-500 focus:outline-none"
+              }
+              onClick={handleTemplateSetterPress}
+              type={"button"}
+            >
+              +
+            </button>
           </div>
 
           <button
@@ -221,6 +276,16 @@ export default function CriteriaInput({
           >
             Add Rating
           </button>
+
+          <Dialog
+            isOpen={templateSetterActive}
+            onClose={() => setTemplateSetterActive(false)}
+            title={
+              "Add common criteria to a Template for faster building in the future!"
+            }
+          >
+            {renderTemplateSetter()}
+          </Dialog>
         </div>
       </div>
     );

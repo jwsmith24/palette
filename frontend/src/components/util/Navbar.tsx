@@ -9,7 +9,6 @@ import Menu from "@mui/material/Menu";
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-
   const navigate = useNavigate();
   const location = useLocation();
   const onRubrics = location.pathname == "/rubrics";
