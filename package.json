@@ -6,9 +6,9 @@
     "node": ">=18"
   },
   "workspaces": [
+    "palette-types",
     "frontend",
-    "backend",
-    "palette-types"
+    "backend"
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",

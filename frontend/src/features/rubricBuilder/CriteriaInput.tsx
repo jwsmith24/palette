@@ -10,10 +10,10 @@ import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import RatingInput from "./RatingInput.tsx";
 import { Criteria, Rating } from "palette-types";
-import { calcMaxPoints } from "../../utils/calculateMaxPoints.ts";
-import { createRating } from "../../utils/rubricFactory.ts";
+import { calcMaxPoints } from "@utils/calculateMaxPoints.ts";
+import { createRating } from "@utils/rubricFactory.ts";
 import TemplateSetter from "./TemplateSetter.tsx";
-import Dialog from "../../components/Dialog.tsx";
+import Dialog from "@components/Dialog.tsx";
 
 export default function CriteriaInput({
   index,
@@ -36,7 +36,7 @@ export default function CriteriaInput({
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || "",
   );
-  const [templateTitle, setTemplatetitle] = useState(criterion.template || "");
+  const [templateTitle, setTemplateTitle] = useState(criterion.template || "");
 
   /**
    * Whenever ratings change, recalculate criterion's max points
@@ -58,7 +58,7 @@ export default function CriteriaInput({
 
   const handleSetTemplateTitle = (event: ChangeEvent<HTMLInputElement>) => {
     const newTitle = event.target.value;
-    setTemplatetitle(newTitle);
+    setTemplateTitle(newTitle);
 
     const newCriterion = { ...criterion, template: templateTitle };
     handleCriteriaUpdate(index, newCriterion);

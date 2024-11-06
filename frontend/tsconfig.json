@@ -13,7 +13,11 @@
     "sourceMap": true,
     "allowImportingTsExtensions": true,
     "types": ["node", "express", "react", "vite/client", "jest"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@utils/*": ["src/utils/*"],
+      "@components/*": ["src/components/*"]
+    }
   },
   "include": ["src", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]
