@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 export interface Template {
   title: string | undefined;
   templateCriteria: RubricCriterion[];
-  description: string;
+  description: string | undefined;
   points?: number;
   id?: number; // will be assigned by the backend once rubric is persisted
   key: string | undefined; // unique key for React DOM (with uuid)

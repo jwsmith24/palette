@@ -46,22 +46,22 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     setAnchorElTemplate(event.currentTarget);
-    console.log("userTemplates");
-    console.log(userTemplates);
+    console.log("before copy: open all");
+    console.log(template);
   };
 
   const handleCloseTemplates = () => {
     setAnchorElTemplate(null);
   };
 
+  // set the template name field of the current criterion and add it to the template.
+  // send the template up to the criterion input so that it can detect changes and update the
+  // criterion within the template.
   const handleSave = () => {
-    const newTemplate = { ...template };
-    newTemplate.title = template.title;
-    newTemplate.id = template?.id;
-    newTemplate.key = template?.key;
-    newTemplate.templateCriteria.push(criterion);
-    console.log("newTemplate");
-    onTemplateSelected(newTemplate);
+    criterion.template = selectedTemplateTitle;
+    const newCriteria = [...template.templateCriteria, criterion];
+    setTemplate({ ...template, templateCriteria: newCriteria });
+    onTemplateSelected(template);
 
     closeTemplateCard();
   };
@@ -70,30 +70,42 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     event: React.MouseEvent<HTMLElement>
   ) => {
     event.preventDefault();
+
     const selectedTemplateTitle = event.currentTarget.textContent;
     const selectedTemplateJson = templatesJson.find(
       (tmplt) => tmplt.title === selectedTemplateTitle
     );
 
-    //TODO: turn it into an object to be so that the current criteria can be added to it
+    //set the header info to the current template using the bd template.
+    template.id = selectedTemplateJson?.id;
+    template.key = selectedTemplateJson?.key;
+    template.title = selectedTemplateJson?.title;
+    template.description = selectedTemplateJson?.description;
 
     if (selectedTemplateTitle != null) {
-      template.title = selectedTemplateJson?.title;
-      template.id = selectedTemplateJson?.id;
-      template.key = selectedTemplateJson?.key;
+      // if this template exist in the db
+      // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
       if (selectedTemplateJson?.templateCriteria != undefined) {
-        selectedTemplateJson?.templateCriteria.forEach((key) => {
-          console.log("key");
+        selectedTemplateJson?.templateCriteria.forEach((existingCriterion) => {
+          const copyCriterion = createRubricCriterion();
 
-          console.log(key);
+          copyCriterion.description = existingCriterion.description;
+          copyCriterion.id = existingCriterion.id;
+          copyCriterion.key = existingCriterion.key;
+          copyCriterion.longDescription = existingCriterion.longDescription;
+          copyCriterion.points = existingCriterion.points;
+          copyCriterion.ratings = existingCriterion.ratings;
+          copyCriterion.template = existingCriterion.template;
+          template.templateCriteria.push(copyCriterion);
         });
       }
 
-      template.templateCriteria.push(criterion); //add the current criteria to the database template
+      const newCriteria = [...template.templateCriteria, criterion];
+      setTemplate({ ...template, templateCriteria: newCriteria });
 
       setTemplateSelected(true);
       console.log("selectedTemplate");
-      console.log(selectedTemplateJson?.templateCriteria);
+      console.log(template);
       // onTemplateSelected(template);
       setSelectedTemplateTitle(selectedTemplateTitle);
     }
