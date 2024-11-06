@@ -1,4 +1,5 @@
 import {
+  CanvasAPIError,
   CanvasRubric,
   CreateRubricRequest,
   CreateRubricResponse,
@@ -11,6 +12,7 @@ import {
 import { isCanvasAPIErrorResponse } from '../utils/typeGuards.js';
 import config from '../config.js';
 import util from 'util';
+import { CanvasAPIUnexpectedError } from '../errors/UnknownCanvasError';
 
 const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
@@ -67,6 +69,9 @@ async function fetchAPI<T>(
 
     return json as T;
   } catch (error: unknown) {
+    if (error instanceof CanvasAPIUnexpectedError) {
+      error.logCause(); // log the unexpected error response
+    }
     if (error instanceof Error) {
       console.error(`Canvas API Error: ${error.message}`);
     }
