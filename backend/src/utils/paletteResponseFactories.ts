@@ -1,4 +1,4 @@
-import { PaletteAPIErrorData, PaletteAPIResponse } from "palette-types";
+import {PaletteAPIErrorData, PaletteAPIResponse} from "palette-types";
 
 /**
  * Creates a success response for the Palette API.
