@@ -19,7 +19,7 @@ const CSVExport: React.FC<CSVExportProps> = ({ rubric }) => {
 
       // Fill any remaining cells if there are fewer than 3 ratings per criterion
       while (row.length < header.length) {
-        row.push("", ""); // Empty "Rating" and "Reason" cells
+        row.push("", ""); // Empty "Rating" and "Reason" cell
       }
 
       return row;
