@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import createTemplate, { Template } from "../../models/Template";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import templatesJson from "./templates.json";
+import templatesJson from "../../resources/templates.json";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
@@ -18,7 +18,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate());
   const [anchorElTemlate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null,
+    null
   );
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
@@ -56,12 +56,12 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleSelectedExistingTemplate = (
-    event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLElement>
   ) => {
     event.preventDefault();
     const selectedTemplateTitle = event.currentTarget.textContent;
     const selectedTemplateJson = templatesJson.find(
-      (tmplt) => tmplt.title === selectedTemplateTitle,
+      (tmplt) => tmplt.title === selectedTemplateTitle
     );
 
     const selectedTemplate = { ...template };
