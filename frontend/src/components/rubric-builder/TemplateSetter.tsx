@@ -23,10 +23,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
-  useEffect(() => {
-    console.log("builder");
-  });
-
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newTemplate = { ...template };
     newTemplate.title = event.target.value;
