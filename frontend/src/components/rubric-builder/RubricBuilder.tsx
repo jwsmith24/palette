@@ -9,10 +9,12 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import * as Papa from "papaparse";
 
 import CriteriaInput from "../rubric-builder/CriteriaInput.tsx";
 import Dialog from "../util/Dialog.tsx";
 import CSVUpload from "./CSVUpload.tsx";
+import CSVExport from "./CSVExport.tsx";
 import Header from "../util/Header.tsx";
 import Footer from "../util/Footer.tsx";
 import createRubric, { Rubric } from "../../models/Rubric.ts";
@@ -225,6 +227,29 @@ export default function RubricBuilder(): ReactElement {
     }));
   };
 
+    // CSV Export Function
+    const handleExportToCSV = () => {
+      const data = rubric.rubricCriteria.map((criterion) => {
+        const ratingsData = criterion.ratings.map((rating) => [
+          rating.points,
+          rating.description,
+        ]);
+        return {
+          Description: criterion.description,
+          Points: criterion.points,
+          Ratings: JSON.stringify(ratingsData),
+        };
+      });
+  
+      const csv = Papa.unparse(data, { header: true });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${rubric.title || "Rubric"}.csv`);
+      link.click();
+    };
+
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
     const total: number = rubric.rubricCriteria.reduce(
@@ -336,7 +361,7 @@ export default function RubricBuilder(): ReactElement {
           </h1>
 
           <div className="flex justify-between items-center">
-            {/* Import and Export Buttons Container with Reduced Spacing */}
+            {/* Import and Export Buttons Container */}
             <div className="flex gap-2">
               <button
                 className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -345,14 +370,9 @@ export default function RubricBuilder(): ReactElement {
                 Import CSV
               </button>
 
-              <button
-                className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onClick={(event) => event.preventDefault()} // Placeholder
-              >
-                Export to CSV
-              </button>
+              {/* CSVExport button */}
+              <CSVExport rubric={rubric} />
             </div>
-
             {/* Rubric Total Points */}
             <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
               {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
