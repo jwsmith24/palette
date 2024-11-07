@@ -8,32 +8,32 @@ import {
   ReactElement,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import CriteriaInput from "./CriteriaInput";
-import Dialog from "../../components/Dialog";
-import CSVUpload from "./CSVUpload";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import CriteriaInput from './CriteriaInput';
+import Dialog from '../../components/Dialog';
+import CSVUpload from './CSVUpload';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+} from '@dnd-kit/sortable';
 
-import ModalChoiceDialog from "../../components/ModalChoiceDialog";
-import formatDate from "../../utils/formatDate";
-import useFetch from "../../hooks/useFetch";
-import { ModalChoice } from "../../types/modalTypes";
+import ModalChoiceDialog from '../../components/ModalChoiceDialog';
+import formatDate from '../../utils/formatDate';
+import useFetch from '../../hooks/useFetch';
+import { ModalChoice } from '../../types/modalTypes';
 
 import {
   createCriterion,
   createRating,
   createRubric,
-} from "../../utils/rubricFactory.ts";
-import { CSVRow } from "../../types/csvRow.ts";
-import { Criteria, Rubric } from "palette-types";
+} from '../../utils/rubricFactory.ts';
+import { CSVRow } from '../../types/csvRow.ts';
+import { Criteria, Rubric } from 'palette-types';
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -92,6 +92,27 @@ export default function RubricBuilder(): ReactElement {
     },
   );
 
+  useEffect(() => {
+    if (postRubricResponse.loading) {
+      return; // do nothing if still loading
+    }
+    // we've got a response, check if it was successful
+    if (postRubricResponse.success) {
+      setModalTitle("Success!");
+      setModalMessage(`Rubric "${rubric.title}" submitted successfully!`);
+      openModal();
+    } else {
+      // success and error fields are mutually exclusive
+      if (postRubricResponse.error!.includes("already exists")) {
+        handleExistingRubric();
+      } else {
+        setModalTitle("A MYSTERIOUS ERROR OCCURRED");
+        setModalMessage(postRubricResponse.error!);
+        openModal();
+      }
+    }
+  }, [postRubricResponse]);
+
   const handleExistingRubric = () => {
     setModalTitle("Duplicate Rubric Detected");
     setModalMessage(
@@ -147,23 +168,7 @@ export default function RubricBuilder(): ReactElement {
     await postRubric(); // triggers the POST request for the active rubric
 
     // check the response for errors
-    if (
-      postRubricResponse.error &&
-      postRubricResponse.error.includes("already exists")
-    ) {
-      // handle duplicate title (prompt overwrite, make a copy, or cancel)
-      handleExistingRubric();
-    } else if (postRubricResponse.success) {
-      // handle successful submission
-      setModalTitle("Success!");
-      setModalMessage(`Rubric "${rubric.title}" submitted successfully!`);
-      openModal();
-    } else {
-      // handle any other errors
-      setModalTitle("A MYSTERIOUS ERROR OCCURRED");
-      setModalMessage(postRubricResponse.error!);
-      openModal();
-    }
+    // moved to the hook in order to handle the response dynamically
   };
 
   /**

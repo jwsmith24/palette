@@ -40,12 +40,14 @@ export default function useFetch<T>(
         },
         method: options.method || DEFAULT_REQUEST.method, // use specified method, otherwise default to GET
         body: options.body || null, // use specified body or default to an empty body
-      });
+      } as RequestInit);
 
       if (!response.ok) {
         const errorResponse =
           (await response.json()) as PaletteAPIResponse<null>;
-        throw new Error(`Error: ${errorResponse.error}`);
+        setResponse(errorResponse);
+        return errorResponse;
+        //throw new Error(`Error: ${errorResponse.error}`);
       }
 
       const json = (await response.json()) as T;
@@ -58,7 +60,7 @@ export default function useFetch<T>(
       return newResponse;
     } catch (error) {
       console.log("API Request failed:", error);
-      const errorResponse: PaletteAPIResponse<T> = {
+      const errorResponse: PaletteAPIResponse<null> = {
         data: null,
         success: false,
         error:
