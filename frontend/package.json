@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "prettier-check": "prettier --check 'src/**/*.{js,ts,jsx,tsx,json,md}'",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest --run",
     "clean": "rm -rf dist && sudo rm -rf node_modules && npm install"
   },
   "dependencies": {
