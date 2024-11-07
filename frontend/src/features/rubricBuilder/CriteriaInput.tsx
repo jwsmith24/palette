@@ -8,12 +8,12 @@ import {
 
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-import RatingInput from "./RatingInput.tsx";
+import RatingInput from "./RatingInput";
 import { Criteria, Rating } from "palette-types";
-import { calcMaxPoints } from "@utils/calculateMaxPoints.ts";
-import { createRating } from "@utils/rubricFactory.ts";
-import TemplateSetter from "./TemplateSetter.tsx";
-import Dialog from "@components/Dialog.tsx";
+import { calcMaxPoints } from "@utils/calculateMaxPoints";
+import { createRating } from "@utils/rubricFactory";
+import TemplateSetter from "./TemplateSetter";
+import Dialog from "@components/Dialog";
 
 export default function CriteriaInput({
   index,
