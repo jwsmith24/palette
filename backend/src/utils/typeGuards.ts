@@ -32,6 +32,7 @@ export function isCanvasAPIErrorResponse(
     typeof obj === "object" &&
     obj !== null &&
     "errors" in obj &&
+    obj.errors !== null &&
     Array.isArray(obj.errors) &&
     (obj.errors.length === 0 || obj.errors.every(isCanvasAPIError))
   );
@@ -57,7 +58,7 @@ function isCanvasRubric(obj: unknown): obj is CanvasRubric {
  * @param obj - The object to check.
  * @returns True if the object is a CanvasAssociation, false otherwise.
  */
-function isCanvasAssociation(obj: unknown): obj is CanvasAssociation {
+export function isCanvasAssociation(obj: unknown): obj is CanvasAssociation {
   return (
     typeof obj === "object" &&
     obj !== null &&

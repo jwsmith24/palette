@@ -1,13 +1,16 @@
 // Router for all /rubrics requests
-import express from "express";
-import validateRubric from "../validators/rubricValidator.js";
-import { handleCreateRubric } from "../controllers/handleCreateRubric.js";
-import { rubricFieldErrorHandler } from "../middleware/rubricFieldErrorHandler.js";
-import { handleGetAllRubrics } from "../controllers/handleGetAllRubrics.js";
-import { handleGetRubricById } from "../controllers/handleGetRubricById.js";
-import { handleUpdateRubric } from "../controllers/handleUpdateRubric.js";
-import { handleDeleteRubric } from "../controllers/handleDeleteRubric.js";
-import { handleGetRubricIdByTitle } from "../controllers/handleGetRubricIdByTitle.js";
+import express from 'express';
+import validateRubric from '../validators/rubricValidator.js';
+import { rubricFieldErrorHandler } from '@middleware';
+import {
+  handleCreateRubric,
+  handleCreateRubricAssociation,
+  handleDeleteRubric,
+  handleGetAllRubrics,
+  handleGetRubricById,
+  handleGetRubricIdByTitle,
+  handleUpdateRubric,
+} from '@controllers';
 
 const router = express.Router();
 
@@ -15,6 +18,12 @@ const router = express.Router();
  * @route POST /rubrics
  */
 router.post("/", validateRubric, rubricFieldErrorHandler, handleCreateRubric);
+
+/**
+ * @route POST /rubric_associations
+ */
+router.post("/rubric_associations", handleCreateRubricAssociation);
+
 
 /**
  * @route GET /rubrics/:id
