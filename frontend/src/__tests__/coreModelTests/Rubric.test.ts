@@ -4,11 +4,13 @@
 
 // Mock uuid to ensure the key is predictable for testing
 
-import { createRubric } from "../../utils/rubricFactory.ts";
-import { Criteria, Rubric } from "../../../../palette-types/src";
+import { createRubric } from "@utils/rubricFactory.ts";
+import { Criteria, Rubric } from "palette-types";
+import { describe, expect, it, vi } from "vitest";
 
-jest.mock("uuid", () => ({
-  v4: jest.fn(() => "test-uuid"),
+// Mock `uuid` library to ensure consistent UUID for testing
+vi.mock("uuid", () => ({
+  v4: vi.fn(() => "test-uuid"),
 }));
 
 describe("Rubric", () => {
@@ -31,7 +33,7 @@ describe("Rubric", () => {
           ratings: [],
           points: 10,
           template: "",
-          updatePoints: jest.fn(), // mocks the function
+          updatePoints: vi.fn(), // mocks the function
           key: "key-1",
         },
         {
@@ -40,13 +42,13 @@ describe("Rubric", () => {
           ratings: [],
           points: 20,
           template: "",
-          updatePoints: jest.fn(),
+          updatePoints: vi.fn(),
           key: "key-2",
         },
       ];
 
       const rubric: Rubric = createRubric("Test Rubric", mockCriteria, 123);
-      console.log(rubric);
+
       // Assertions for specified values
       expect(rubric.title).toBe("Test Rubric");
       expect(rubric.criteria).toEqual(mockCriteria);

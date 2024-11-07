@@ -2,12 +2,13 @@
  * Unit tests for RubricRating.ts
  */
 
-import { UNASSIGNED } from "../../utils/constants.ts";
-import { createRating } from "../../utils/rubricFactory.ts";
+import { UNASSIGNED } from "@utils/constants";
+import { createRating } from "@utils/rubricFactory";
+import { describe, expect, it, vi } from "vitest";
 
 // Mock uuid to ensure predictable values
-jest.mock("uuid", () => ({
-  v4: jest.fn(() => "test-uuid"),
+vi.mock("uuid", () => ({
+  v4: vi.fn(() => "test-uuid"),
 }));
 
 describe("RubricRating", () => {

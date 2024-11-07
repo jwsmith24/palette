@@ -10,7 +10,7 @@ export interface Criteria {
   longDescription: string;
   points: number;
   ratings: Rating[];
-  template: string; // placeholder
+  template?: string; // placeholder
   key: string;
   updatePoints: () => void;
 }

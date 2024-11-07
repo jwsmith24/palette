@@ -31,7 +31,7 @@ import {
   createCriterion,
   createRating,
   createRubric,
-} from "../../utils/rubricFactory.ts";
+} from "@utils/rubricFactory.ts";
 import { CSVRow } from "../../types/csvRow.ts";
 import { Criteria, Rubric } from "palette-types";
 
