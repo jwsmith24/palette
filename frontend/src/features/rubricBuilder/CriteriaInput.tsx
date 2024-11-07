@@ -149,7 +149,7 @@ export default function CriteriaInput({
   };
 
   const renderTemplateSetter = () => {
-    console.log("Test");
+    //console.log("Test");
     if (templateSetterActive) {
       return (
         <TemplateSetter
