@@ -32,3 +32,4 @@ export * from "./types/Criteria";
 export * from "./types/Rating";
 export * from "./types/Rubric";
 export * from "./types/Course";
+export * from "./types/Template";

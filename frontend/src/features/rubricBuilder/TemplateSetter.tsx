@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-
+import useFetch from "../../hooks/useFetch";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Template } from "../../../../palette-types/src/types/Template";
@@ -32,6 +32,22 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
+  const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
+    "/templates",
+    {
+      method: "POST",
+      body: JSON.stringify(template), // use latest rubric data
+    }
+  );
+
+  const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
+    `templates/${template.id}`,
+    {
+      method: "GET",
+      body: JSON.stringify(template),
+    }
+  );
+
   useEffect(() => {
     console.log("refresh");
   });
@@ -62,7 +78,8 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     criterion.template = selectedTemplateTitle;
     const newCriteria = [...template.criteria, criterion];
     setTemplate({ ...template, criteria: newCriteria });
-    onTemplateSelected(template);
+    postTemplate();
+    // onTemplateSelected(template);
     closeTemplateCard();
   };
 
