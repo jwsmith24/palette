@@ -6,12 +6,13 @@ import { handleGetTemplateById } from "src/controllers/handleGetTemplateById.js"
 import { handleUpdateTemplate } from "src/controllers/handleUpdateTemplate.js";
 import { handleDeleteTemplate } from "src/controllers/handleDeleteTemplates.js";
 import { handleGetTempalteIdByTitle } from "src/controllers/handleGetTemplateByTitle.js";
+import { handleGetAllTemplates } from "src/controllers/handleGetAllTemplates.js";
 const router = express.Router();
 
 /**
  * @route POST /templates
  */
-router.post("/", validateRubric, rubricFieldErrorHandler, handleCreateTemplate);
+// router.post("/", validateRubric, rubricFieldErrorHandler, handleCreateTemplate);
 
 /**
  * @route GET /templates/:id
@@ -21,17 +22,12 @@ router.get("/:id", handleGetTemplateById);
 /**
  * @route GET /templates
  */
-router.get("/", handleGetAllRubrics);
+router.get("/", handleGetAllTemplates);
 
 /**
  * @route PUT /templates/:id
  */
-router.put(
-  "/:id",
-  validateRubric,
-  rubricFieldErrorHandler,
-  handleUpdateTemplate
-);
+// router.put("/:id", validateRubric, rubricFieldErrorHandler, handleUpdateTemplate);
 
 /**
  * @route GET /templates/title/:title

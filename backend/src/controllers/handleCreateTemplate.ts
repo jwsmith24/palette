@@ -14,4 +14,5 @@ export const handleCreateTemplate = asyncHandler(
   async (req: Request, res: Response) => {}
 
   // TODO: Prisma model / Postgres
+  // Return a promise of type postreg/
 );
