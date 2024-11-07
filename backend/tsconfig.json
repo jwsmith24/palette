@@ -4,6 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "./dist",
+    "sourceRoot": "./src",
     "rootDir": "../",
     "baseUrl": "./",
     "paths": {},
