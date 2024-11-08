@@ -22,9 +22,9 @@ export const responseLogger = (
 
   // Override the `send` method
   res.send = function (body: unknown) {
-    console.log(`\nTo Palette Response Status: ${res.statusCode}`);
+    console.log(`\nTo Palette --> Response Status: ${res.statusCode}`);
     console.log(
-      `To Palette Response Body: ${util.inspect(body, { depth: 10, colors: true })}`,
+      `To Palette --> Response Body: ${util.inspect(body, { depth: 10, colors: true })}`,
     );
 
     // Call the original `send` method with the body

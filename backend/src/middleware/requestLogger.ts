@@ -17,7 +17,9 @@ export const requestLogger = (
   next: NextFunction,
 ): void => {
   console.log();
-  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  console.log(
+    `Incoming Request [${req.hostname} on ${req.ip} ]: ${req.method} ${req.url}`,
+  );
   // console.log(
   //   `Headers: ${util.inspect(req.headers, { depth: 10, colors: true })}`,
   // );
