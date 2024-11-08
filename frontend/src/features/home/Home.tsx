@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { randomColor } from "@utils";
 
 export default function Home(): ReactElement {
-  const [color, setColor] = useState("red");
+  const [color, setColor] = useState("bg-red-500");
   const navigate = useNavigate();
 
   const handleMouseEnter = () => {
@@ -46,7 +46,7 @@ export default function Home(): ReactElement {
         {/* Action Buttons */}
         <div className="flex gap-4">
           <button
-            className={`bg-${color}-500 text-white rounded-lg px-8 py-3 font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
+            className={`${color} text-white rounded-lg px-8 py-3 font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
             onMouseEnter={handleMouseEnter}
             onClick={handleLogin}
           >

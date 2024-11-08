@@ -10,6 +10,7 @@ import { Course } from "palette-types";
 
 export default function CourseSelection(): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [courses, setCourses] = useState<Course[]>([]);
 
   const { fetchData: getCourses } = useFetch(
@@ -33,7 +34,7 @@ export default function CourseSelection(): ReactElement {
       console.log(response);
 
       // Set the message based on the response
-      // todo: parse response into course objects and display!
+      // todo: parse response into course objects and display
       if (response.success) {
         setErrorMessage(JSON.stringify(response.data ?? "No courses found"));
       } else {
