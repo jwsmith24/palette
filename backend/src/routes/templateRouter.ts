@@ -1,9 +1,9 @@
 // Router for all /rubrics requests
 import express from "express";
-import { handleGetTemplateById } from "../controllers/handleGetTemplateById";
-import { handleGetAllTemplates } from "../controllers/handleGetAllTemplates";
-import { handleGetTempalteIdByTitle } from "../controllers/handleGetTemplateByTitle";
-import { handleDeleteTemplate } from "../controllers/handleDeleteTemplates";
+import { handleGetTemplateById } from "../controllers/rubricControllers/handleGetTemplateById";
+import { handleGetAllTemplates } from "../controllers/rubricControllers/handleGetAllTemplates";
+import { handleGetTempalteIdByTitle } from "../controllers/rubricControllers/handleGetTemplateByTitle";
+import { handleDeleteTemplate } from "../controllers/rubricControllers/handleDeleteTemplates";
 
 const router = express.Router();
 

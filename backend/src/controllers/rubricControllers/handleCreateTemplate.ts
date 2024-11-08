@@ -2,8 +2,8 @@
 
 import { Request, Response } from "express";
 import { Template } from "palette-types";
-import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
-import config from "../config.js";
+import { createSuccessResponse } from "../../utils/paletteResponseFactories";
+import config from "../../config";
 import asyncHandler from "express-async-handler";
 
 /*

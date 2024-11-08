@@ -21,6 +21,7 @@ export * from "./canvasTypes/CanvasCriterion";
 export * from "./canvasTypes/CanvasRating";
 export * from "./canvasTypes/CanvasRubric";
 export * from "./canvasTypes/RubricObjectHash";
+export * from "./canvasTypes/CanvasCourse";
 
 // Export everything from protocol
 export * from "./protocol/PaletteAPIErrorData";

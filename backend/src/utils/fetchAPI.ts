@@ -1,5 +1,5 @@
-import config from "../config";
-import { isCanvasAPIErrorResponse } from "./typeGuards";
+import config from "../config.js";
+import { isCanvasAPIErrorResponse } from "./typeGuards.js";
 
 export const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
