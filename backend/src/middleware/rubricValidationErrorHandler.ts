@@ -11,7 +11,7 @@ import { createErrorResponse } from "../utils/paletteResponseFactories.js";
  * @param res - The Express response object.
  * @param next - The next middleware function in the stack.
  */
-export const rubricFieldErrorHandler = (
+export const rubricValidationErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction,

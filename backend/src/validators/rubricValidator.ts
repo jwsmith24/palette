@@ -3,7 +3,7 @@ import { body } from "express-validator";
 /**
  * define validation for rubrics before being stored on the database
  */
-const validateRubric = [
+const createRubricValidator = () => [
   body("title")
     .isString()
     .trim()
@@ -33,4 +33,4 @@ const validateRubric = [
     .withMessage("Ratings must have a description."),
 ];
 
-export default validateRubric;
+export default createRubricValidator;
