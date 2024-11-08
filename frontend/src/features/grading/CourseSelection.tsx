@@ -55,12 +55,16 @@ export default function CourseSelection(): ReactElement {
     if (loading) {
       return <p>Loading...</p>;
     }
-    if (courses.length === 0) {
+    if (!errorMessage && courses.length === 0) {
       return <div>No courses available to display</div>;
     }
 
     if (errorMessage) {
-      return <p>Error occurred while fetching courses: {errorMessage}</p>;
+      return (
+        <p className={"text-red-500 font-normal"}>
+          Error occurred while fetching courses: {errorMessage}
+        </p>
+      );
     }
 
     return (
