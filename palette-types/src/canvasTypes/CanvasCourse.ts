@@ -1,5 +1,8 @@
 /**
- * Canvas Course object represents a Course within the CanvasAPI.
+ * Canvas Course object represents a Course within the canvasAPI.
+ *
+ * This type is simplified from the Canvas API documentation to include only what we'll need in the program. Will
+ * likely be trimmed down even more.
  *
  * Docs: https://canvas.instructure.com/doc/api/courses.html
  */

@@ -8,7 +8,7 @@ import {
   Rubric,
 } from "palette-types";
 import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
-import { RubricsAPI } from "../CanvasAPI/rubricRequests.js";
+import { RubricsAPI } from "../canvasAPI/rubricRequests";
 import config from "../config.js";
 import asyncHandler from "express-async-handler";
 import { StatusCodes } from "http-status-codes";

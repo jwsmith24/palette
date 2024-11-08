@@ -8,12 +8,12 @@ import util from "util";
  * It is useful for debugging and monitoring purposes.
  *
  * @param {Request} req - The Express request object.
- * @param {Response} res - The Express response object.
+ * @param {Response} _res - The Express response object.
  * @param {NextFunction} next - The next middleware function in the stack.
  */
 export const requestLogger = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ): void => {
   console.log(
