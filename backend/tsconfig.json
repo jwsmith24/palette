@@ -8,8 +8,8 @@
     "rootDir": "../",
     "baseUrl": "./",
     "paths": {
-      "@controllers": ["src/controllers"],
-      "@middleware": ["src/middleware"],
+      //      "@controllers": ["src/controllers"],
+      //      "@middleware": ["src/middleware"],
     },
     "strict": true,
     "esModuleInterop": true,
