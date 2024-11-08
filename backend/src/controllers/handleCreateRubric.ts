@@ -29,22 +29,22 @@ export const handleCreateRubric = asyncHandler(
     // make the request to the Canvas API
     const canvasResponse: CreateRubricResponse = await RubricsAPI.createRubric(
       canvasRequest,
-      Number(config!.COURSE_ID), // dummy course id for testing
+      Number(config!.COURSE_ID) // dummy course id for testing
     );
 
     // if the response is successful, the type is a RubricObjectHash
     if (isRubricObjectHash(canvasResponse)) {
       const data: Rubric = RubricUtils.toPaletteFormat(
-        canvasResponse.rubric as CanvasRubric,
+        canvasResponse.rubric as CanvasRubric
       );
       const paletteResponse = createSuccessResponse(
         data,
-        "Rubric created successfully",
+        "Rubric created successfully"
       );
       res.status(StatusCodes.CREATED).json(paletteResponse);
       return;
     }
-  },
+  }
 );
 
 /**

@@ -1,16 +1,10 @@
 import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { randomColor } from "@utils";
 
 export default function Home(): ReactElement {
-  const options: string[] = ["red", "yellow", "green", "blue", "purple"];
   const [color, setColor] = useState("red");
   const navigate = useNavigate();
-
-  function randomColor(): string {
-    const max = options.length;
-    const randomInt = Math.floor(Math.random() * max);
-    return options[randomInt];
-  }
 
   const handleMouseEnter = () => {
     setColor(randomColor());

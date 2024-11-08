@@ -4,9 +4,9 @@
 
 // Mock uuid to ensure the key is predictable for testing
 
-import { createRubric } from "@utils/rubricFactory.ts";
+import { createRubric } from "@utils";
 import { Criteria, Rubric } from "palette-types";
-import { describe, expect, it, vi } from "vitest";
+import { vi } from "vitest";
 
 // Mock `uuid` library to ensure consistent UUID for testing
 vi.mock("uuid", () => ({

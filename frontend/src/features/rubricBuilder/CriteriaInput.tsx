@@ -10,10 +10,9 @@ import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import RatingInput from "./RatingInput";
 import { Criteria, Rating } from "palette-types";
-import { calcMaxPoints } from "@utils/calculateMaxPoints";
-import { createRating } from "@utils/rubricFactory";
+import { calcMaxPoints, createRating } from "@utils";
 import TemplateSetter from "./TemplateSetter";
-import Dialog from "@components/Dialog";
+import { Dialog } from "@components";
 
 export default function CriteriaInput({
   index,
@@ -36,6 +35,7 @@ export default function CriteriaInput({
   const [criteriaDescription, setCriteriaDescription] = useState(
     criterion.description || "",
   );
+
   const [templateTitle, setTemplateTitle] = useState(criterion.template || "");
 
   /**
@@ -156,9 +156,16 @@ export default function CriteriaInput({
           closeTemplateCard={handleCloseTemplateSetter}
           onTemplatesOpen={handleTemplatesOpen}
           handleSetTemplateTitle={handleSetTemplateTitle}
+          onTemplateSelected={getTemplate}
+          criterion={criterion}
         />
       );
     }
+  };
+
+  const getTemplate = (data: Template) => {
+    console.log("hello from the parent component");
+    console.log(data);
   };
 
   const handleCloseTemplateSetter = () => {

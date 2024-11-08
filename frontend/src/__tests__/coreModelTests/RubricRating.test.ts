@@ -2,8 +2,7 @@
  * Unit tests for RubricRating.ts
  */
 
-import { UNASSIGNED } from "@utils/constants";
-import { createRating } from "@utils/rubricFactory";
+import { createRating, UNASSIGNED } from "@utils";
 import { describe, expect, it, vi } from "vitest";
 
 // Mock uuid to ensure predictable values

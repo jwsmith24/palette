@@ -1,27 +1,54 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import createTemplate, { Template } from "../../models/Template";
+import { createTemplate, createCriterion } from "@utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import templatesJson from "../../resources/templates.json";
+import templatesJson from "../user/templates.json";
+import { Criteria, Template } from "palette-types";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
   onTemplatesOpen: () => void;
   handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
+  onTemplateSelected: (t: Template) => void;
+  criterion: Criteria;
 }
 
 const TemplateSetter: React.FC<TemplateSetterProps> = ({
   closeTemplateCard,
   handleSetTemplateTitle,
+  onTemplateSelected,
+  criterion,
 }: TemplateSetterProps) => {
-  const [template, setTemplate] = useState<Template>(createTemplate());
+  const [template, setTemplate] = useState<Template>(createTemplate() || null);
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null,
   );
+  const [userTemplates, setUserTemplates] = useState(templatesJson);
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
+
+  const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
+    "/templates",
+    {
+      method: "POST",
+      body: JSON.stringify(template), // use latest rubric data
+    },
+  );
+
+  const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
+    `templates/${template.id}`,
+    {
+      method: "GET",
+      body: JSON.stringify(template),
+    },
+  );
+
+  useEffect(() => {
+    console.log("refresh");
+  });
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newTemplate = { ...template };
@@ -34,20 +61,23 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const handleOpenTemplates = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     setAnchorElTemplate(event.currentTarget);
-
-    console.log(templatesJson);
+    console.log("before copy: open all");
+    console.log(template);
   };
 
   const handleCloseTemplates = () => {
     setAnchorElTemplate(null);
   };
 
+  // set the template name field of the current criterion and add it to the template.
+  // send the template up to the criterion input so that it can detect changes and update the
+  // criterion within the template.
   const handleSave = () => {
-    const newTemplate = { ...template };
-    newTemplate.title = selectedTemplateTitle;
-
-    const templateJson = JSON.stringify(newTemplate, null, 2);
-    console.log(templateJson);
+    criterion.template = selectedTemplateTitle;
+    const newCriteria = [...template.criteria, criterion];
+    setTemplate({ ...template, criteria: newCriteria });
+    postTemplate();
+    // onTemplateSelected(template);
     closeTemplateCard();
   };
 
@@ -55,18 +85,44 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     event: React.MouseEvent<HTMLElement>,
   ) => {
     event.preventDefault();
+
     const selectedTemplateTitle = event.currentTarget.textContent;
     const selectedTemplateJson = templatesJson.find(
       (tmplt) => tmplt.title === selectedTemplateTitle,
     );
 
-    const selectedTemplate = { ...template };
-    selectedTemplate.id = selectedTemplateJson?.id;
+    //set the header info to the current template using the bd template.
+    // template.id = selectedTemplateJson?.id;
+    // template.key = selectedTemplateJson?.key;
+    // template.title = selectedTemplateJson?.title;
+    // template.description = selectedTemplateJson?.description;
 
-    console.log(selectedTemplateJson);
     if (selectedTemplateTitle != null) {
+      // if this template exist in the db
+      // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
+      if (selectedTemplateJson?.templateCriteria != undefined) {
+        selectedTemplateJson?.templateCriteria.forEach((existingCriterion) => {
+          const copyCriterion = createCriterion();
+
+          copyCriterion.description = existingCriterion.description;
+          copyCriterion.id = existingCriterion.id;
+          copyCriterion.key = existingCriterion.key;
+          copyCriterion.longDescription = existingCriterion.longDescription;
+          copyCriterion.points = existingCriterion.points;
+          copyCriterion.ratings = existingCriterion.ratings;
+          copyCriterion.template = existingCriterion.template;
+          template.criteria.push(copyCriterion);
+        });
+      }
+
+      const newCriteria = [...template.criteria, criterion];
+      setTemplate({ ...template, criteria: newCriteria });
+
       setTemplateSelected(true);
-      console.log(selectedTemplateTitle);
+      console.log("selectedTemplate");
+      console.log(template);
+      // onTemplateSelected(template);
+
       setSelectedTemplateTitle(selectedTemplateTitle);
     }
     handleCloseTemplates();

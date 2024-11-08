@@ -1,7 +1,12 @@
+/**
+ * Collection of factory functions for the Rubric Builder feature.
+ */
+
 import { UNASSIGNED } from "./constants.ts";
-import { Rubric, Criteria, Rating } from "../../../palette-types/src";
+import { Rubric, Criteria, Rating, Template } from "../../../palette-types/src";
 import { calcMaxPoints } from "./calculateMaxPoints.ts";
 import { v4 as uuid } from "uuid";
+
 /**
  * Rubric factory function. Assigns a unique key with uuid.
  */
@@ -63,6 +68,22 @@ export function createRating(
     points,
     description,
     longDescription,
+    id,
+    key: uuid(),
+  };
+}
+
+/**
+ * Template factory function.
+ */
+export function createTemplate(
+  title: string = "",
+  criteria: Criteria[] = [],
+  id: number = UNASSIGNED,
+): Template {
+  return {
+    title,
+    criteria: criteria,
     id,
     key: uuid(),
   };

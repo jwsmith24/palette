@@ -1,11 +1,16 @@
 /**
  * Unit tests for RubricCriterion.ts
  */
-import { UNASSIGNED } from "@utils/constants.ts";
-import { createCriterion, createRating } from "@utils/rubricFactory.ts";
+
 import { Rating } from "palette-types";
-import { calcMaxPoints } from "@utils/calculateMaxPoints.ts";
+
 import { describe, expect, it, vi } from "vitest";
+import {
+  calcMaxPoints,
+  createCriterion,
+  createRating,
+  UNASSIGNED,
+} from "@utils";
 
 // Mock uuid to ensure predictable values
 vi.mock("uuid", () => ({

@@ -1,7 +1,6 @@
 import { MouseEvent, ReactElement, useState } from "react";
-import Header from "../../components/Header.tsx";
-import Footer from "../../components/Footer.tsx";
-import useFetch from "../../hooks/useFetch.ts";
+import { Header, Footer } from "@components";
+import { useFetch } from "@hooks";
 
 export default function GradingView(): ReactElement {
   const [message, setMessage] = useState("WANT TO SEE COURSES?");

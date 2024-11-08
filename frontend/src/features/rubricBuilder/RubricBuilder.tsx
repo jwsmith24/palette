@@ -11,10 +11,8 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import Dialog from "../../components/Dialog";
+import { Dialog, Footer, Header } from "@components";
 import CSVUpload from "./CSVUpload";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -27,11 +25,7 @@ import formatDate from "../../utils/formatDate";
 import useFetch from "../../hooks/useFetch";
 import { ModalChoice } from "../../types/modalTypes";
 
-import {
-  createCriterion,
-  createRating,
-  createRubric,
-} from "@utils/rubricFactory.ts";
+import { createCriterion, createRating, createRubric } from "@utils";
 import { CSVRow } from "../../types/csvRow.ts";
 import { Criteria, Rubric } from "palette-types";
 
@@ -64,10 +58,12 @@ export default function RubricBuilder(): ReactElement {
     const newRubric = { ...rubric };
     newRubric.title = event.target.value;
     setRubric(newRubric);
+    console.log(newRubric);
   };
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
+    console.log("builder");
     calculateTotalPoints();
   }, [rubric]);
 
@@ -81,7 +77,7 @@ export default function RubricBuilder(): ReactElement {
     {
       method: "POST",
       body: JSON.stringify(rubric), // use latest rubric data
-    },
+    }
   );
 
   const { response: putRubricResponse, fetchData: putRubric } = useFetch(
@@ -89,7 +85,7 @@ export default function RubricBuilder(): ReactElement {
     {
       method: "PUT",
       body: JSON.stringify(rubric),
-    },
+    }
   );
 
   useEffect(() => {
@@ -116,7 +112,7 @@ export default function RubricBuilder(): ReactElement {
   const handleExistingRubric = () => {
     setModalTitle("Duplicate Rubric Detected");
     setModalMessage(
-      `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
+      `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`
     );
 
     setModalChoices([
@@ -130,7 +126,7 @@ export default function RubricBuilder(): ReactElement {
             setModalMessage("Rubric was overwritten successfully!");
           } else {
             setModalMessage(
-              `Error overwriting the rubric: ${putRubricResponse.error}`,
+              `Error overwriting the rubric: ${putRubricResponse.error}`
             );
           }
           openModal(); // show modal with response
@@ -175,8 +171,8 @@ export default function RubricBuilder(): ReactElement {
   const buildCriteriaDescriptionSet = () =>
     new Set(
       rubric.criteria.map((criterion) =>
-        criterion.description.trim().toLowerCase(),
-      ),
+        criterion.description.trim().toLowerCase()
+      )
     );
 
   // Update state with the new CSV/XLSX data
@@ -193,7 +189,7 @@ export default function RubricBuilder(): ReactElement {
         // ensures title is a string and non-empty otherwise throw out the entry
         if (typeof row[0] !== "string" || !row[0].trim()) {
           console.warn(
-            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`,
+            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`
           );
           return null;
         }
@@ -202,7 +198,7 @@ export default function RubricBuilder(): ReactElement {
         // check for duplicates
         if (existingCriteriaDescriptions.has(criteriaDescription)) {
           console.warn(
-            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`,
+            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`
           );
           return null; //skip adding the duplicate criterion
         }
@@ -241,7 +237,7 @@ export default function RubricBuilder(): ReactElement {
         }
         return sum + Number(criterion.points); // ensure points aren't treated as a string
       },
-      0,
+      0
     ); // Initialize sum as 0
     setTotalPoints(total); // Update state with the total points
   };
@@ -293,10 +289,10 @@ export default function RubricBuilder(): ReactElement {
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over) {
       const oldIndex = rubric.criteria.findIndex(
-        (criterion) => criterion.key === event.active.id,
+        (criterion) => criterion.key === event.active.id
       );
       const newIndex = rubric.criteria.findIndex(
-        (criterion) => criterion.key === event.over!.id, // assert not null for type safety
+        (criterion) => criterion.key === event.over!.id // assert not null for type safety
       );
 
       const updatedCriteria = [...rubric.criteria];

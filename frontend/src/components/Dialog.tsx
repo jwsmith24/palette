@@ -9,12 +9,7 @@ interface DialogProps {
   children: ReactNode;
 }
 
-export default function Dialog({
-  isOpen,
-  onClose,
-  title,
-  children,
-}: DialogProps) {
+export function Dialog({ isOpen, onClose, title, children }: DialogProps) {
   if (!isOpen) {
     return null; // Don't render anything if the dialog is closed
   }

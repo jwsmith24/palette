@@ -54,6 +54,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       <input
         type="file"
         accept=".csv"
+        data-testid={"file-upload"}
         onChange={handleFileChange}
         className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
       />

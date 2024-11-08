@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import rubricRouter from "./routes/rubricRouter.js";
+import templateRouter from "./routes/templateRouter.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -91,6 +92,7 @@ app.get("/api/courses", (_req: Request, res: Response) => {
 
 // API routes
 app.use("/api/rubrics", rubricRouter);
+app.use("/api/templates", templateRouter);
 
 // Wildcard route should only handle frontend routes
 // It should not handle any routes under /api or other server-side routes.
