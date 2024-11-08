@@ -48,11 +48,10 @@ export function useFetch<T>(
         //throw new Error(`Error: ${errorResponse.error}`);
       }
 
-      const json = (await response.json()) as T;
+      const backendResponse = (await response.json()) as PaletteAPIResponse<T>;
 
       const newResponse: PaletteAPIResponse<T> = {
-        data: json,
-        success: true,
+        ...backendResponse,
         loading: false,
       };
 

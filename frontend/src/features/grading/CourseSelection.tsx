@@ -6,7 +6,7 @@
  */
 import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
-import { Course } from "palette-types";
+import { Course, PaletteAPIResponse } from "palette-types";
 
 export default function CourseSelection(): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -30,8 +30,8 @@ export default function CourseSelection(): ReactElement {
    */
   const fetchCourses = async () => {
     try {
-      const response = await getCourses(); // Trigger the GET request
-      console.log(response);
+      const response = (await getCourses()) as PaletteAPIResponse<Course[]>; // Trigger the GET request
+      console.log("response: ", response);
 
       // Set the message based on the response
       // todo: parse response into course objects and display
