@@ -47,6 +47,15 @@ export default function CourseSelection(): ReactElement {
   };
 
   /**
+   * transformCourses
+   *
+   * Converts course data from the Canvas API and parses it into course objects to be rendered for the user to
+   * select their course.
+   */
+
+  const transformCourses = async () => {};
+
+  /**
    * Wrapper for fetchCourses when triggered by a click event on the refresh button.
    * @param event - user clicks the "refresh" button
    */

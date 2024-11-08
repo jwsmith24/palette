@@ -15,7 +15,7 @@ export default function GradingView(): ReactElement {
           className={"text-3xl font-bold"}
           onClick={() => setCourseDialogOpen(true)}
         >
-          Click This
+          Click for Courses!
         </button>
       </div>
       <Footer />
