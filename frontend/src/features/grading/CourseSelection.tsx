@@ -10,8 +10,8 @@ import { Course, PaletteAPIResponse } from "palette-types";
 
 export default function CourseSelection(): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { fetchData: getCourses } = useFetch(
     "/courses",
@@ -29,6 +29,7 @@ export default function CourseSelection(): ReactElement {
    * Get all courses the user is authorized to grade.
    */
   const fetchCourses = async () => {
+    setLoading(true);
     try {
       const response = (await getCourses()) as PaletteAPIResponse<Course[]>; // Trigger the GET request
       console.log("response: ", response);
@@ -36,7 +37,7 @@ export default function CourseSelection(): ReactElement {
       // Set the message based on the response
       // todo: parse response into course objects and display
       if (response.success) {
-        setErrorMessage(JSON.stringify(response.data ?? "No courses found"));
+        setCourses(response.data!);
       } else {
         setErrorMessage(response.error || "Failed to get courses");
       }
@@ -44,6 +45,42 @@ export default function CourseSelection(): ReactElement {
       console.error("Error getting courses: ", error);
       setErrorMessage("An error occurred while fetching courses.");
     }
+    setLoading(false);
+  };
+
+  /**
+   * Render courses on the ui for user to select from.
+   */
+  const renderCourses = () => {
+    if (loading) {
+      return <p>Loading...</p>;
+    }
+    if (courses.length === 0) {
+      return <div>No courses available to display</div>;
+    }
+
+    return (
+      <div className={"grid gap-2 mt-0.5"}>
+        Select the course you'd like to grade!
+        <div>
+          {courses.map((course: Course) => (
+            <div
+              key={course.id}
+              className={
+                "flex gap-4 bg-gray-600 hover:bg-gray-500 px-3 py-1 cursor-pointer rounded-full text-2xl font-bold"
+              }
+              onClick={() => handleCourseSelection(course.name)}
+            >
+              <h3>{course.name}</h3>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const handleCourseSelection = (name: string) => {
+    alert(`Course Selected: ${name}`);
   };
 
   /**
@@ -55,10 +92,16 @@ export default function CourseSelection(): ReactElement {
     void fetchCourses();
   };
   return (
-    <div>
-      <div>{errorMessage}</div>
-      <div></div>
-      <button onClick={handleGetCourses}>Refresh</button>
+    <div className={"grid gap-2"}>
+      <div>{renderCourses()}</div>
+      <button
+        onClick={handleGetCourses}
+        className={
+          "justify-self-end bg-blue-500 px-2 py-1 rounded-full hover:opacity-80 active:opacity-70"
+        }
+      >
+        Refresh
+      </button>
     </div>
   );
 }

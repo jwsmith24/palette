@@ -13,5 +13,4 @@ export interface Course {
     type: "teacher" | "ta"; // Enrollment type filtered to include only teachers or TAs
     enrollmentState: "active"; // Ensures only active enrollments are included
   }>;
-  key: string; // Unique key used for React rendering
 }
