@@ -59,6 +59,10 @@ export default function CourseSelection(): ReactElement {
       return <div>No courses available to display</div>;
     }
 
+    if (errorMessage) {
+      return <p>Error occurred while fetching courses: {errorMessage}</p>;
+    }
+
     return (
       <div className={"grid gap-2 mt-0.5"}>
         Select the course you'd like to grade!

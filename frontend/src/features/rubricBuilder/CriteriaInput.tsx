@@ -11,8 +11,6 @@ import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import RatingInput from "./RatingInput";
 import { Criteria, Rating } from "palette-types";
 import { calcMaxPoints, createRating } from "@utils";
-import TemplateSetter from "./TemplateSetter";
-import { Dialog } from "@components";
 
 export default function CriteriaInput({
   index,
@@ -36,8 +34,6 @@ export default function CriteriaInput({
     criterion.description || "",
   );
 
-  const [templateTitle, setTemplateTitle] = useState(criterion.template || "");
-
   /**
    * Whenever ratings change, recalculate criterion's max points
    */
@@ -53,14 +49,6 @@ export default function CriteriaInput({
     setCriteriaDescription(newDescription);
 
     const newCriterion = { ...criterion, description: newDescription };
-    handleCriteriaUpdate(index, newCriterion);
-  };
-
-  const handleSetTemplateTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    const newTitle = event.target.value;
-    setTemplateTitle(newTitle);
-
-    const newCriterion = { ...criterion, template: templateTitle };
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -142,34 +130,6 @@ export default function CriteriaInput({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
-
-  const handleTemplatesOpen = () => {
-    console.log("Templates open");
-  };
-
-  const renderTemplateSetter = () => {
-    //console.log("Test");
-    if (templateSetterActive) {
-      return (
-        <TemplateSetter
-          closeTemplateCard={handleCloseTemplateSetter}
-          onTemplatesOpen={handleTemplatesOpen}
-          handleSetTemplateTitle={handleSetTemplateTitle}
-          onTemplateSelected={getTemplate}
-          criterion={criterion}
-        />
-      );
-    }
-  };
-
-  const getTemplate = (data: Template) => {
-    console.log("hello from the parent component");
-    console.log(data);
-  };
-
-  const handleCloseTemplateSetter = () => {
-    setTemplateSetterActive(false); // hides the template setter
   };
 
   const renderCondensedView = () => {
@@ -277,16 +237,6 @@ export default function CriteriaInput({
           >
             Add Rating
           </button>
-
-          <Dialog
-            isOpen={templateSetterActive}
-            onClose={() => setTemplateSetterActive(false)}
-            title={
-              "Add common criteria to a Template for faster building in the future!"
-            }
-          >
-            {renderTemplateSetter()}
-          </Dialog>
         </div>
       </div>
     );
