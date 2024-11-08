@@ -4,15 +4,16 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { StatusCodes } from "http-status-codes";
-import { rubricFieldErrorHandler } from "./middleware/rubricFieldErrorHandler.js";
+import { rubricValidationErrorHandler } from "./middleware/rubricValidationErrorHandler.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { responseLogger } from "./middleware/responseLogger.js";
 import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
 import { Course, PaletteAPIResponse } from "palette-types";
+import { wildcardRouter } from "./routes/wildcardRouter.js";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
@@ -68,11 +69,11 @@ const courses: Course[] = [
 app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
-// Request logging
-app.use(requestLogger);
 
-// Response logging
+// Logging middleware (goes before routes)
+app.use(requestLogger);
 app.use(responseLogger);
+
 // Health check route
 app.get("/health", (_req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ status: "HEALTHY" });
@@ -91,20 +92,10 @@ app.get("/api/courses", (_req: Request, res: Response) => {
 
 // API routes
 app.use("/api/rubrics", rubricRouter);
-
-// Wildcard route should only handle frontend routes
-// It should not handle any routes under /api or other server-side routes.
-app.get("*", (req: Request, res: Response) => {
-  if (req.originalUrl.startsWith("/api")) {
-    res.status(StatusCodes.NOT_FOUND).send({ error: "API route not found" });
-  } else {
-    // If the client tries to navigate to an unknown page, send them the index.html file
-    res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
-  }
-});
+app.get("*", wildcardRouter);
 
 // field validation error handling middleware
-app.use(rubricFieldErrorHandler);
+app.use(rubricValidationErrorHandler);
 
 // handle all unhandled errors
 app.use(fallbackErrorHandler);
