@@ -2,6 +2,8 @@
  * Utility constants to be used for consistency and readability across the project.
  */
 
+// current placeholder for ID
+// todo: probably can drop id field to be optional to simplify data structure
 export const UNASSIGNED = -1;
 
 // color classes for login button in home view

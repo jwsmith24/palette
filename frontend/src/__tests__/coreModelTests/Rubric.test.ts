@@ -21,7 +21,7 @@ describe("Rubric", () => {
       // Assertions for default values
       expect(rubric.title).toBe("");
       expect(rubric.criteria).toEqual([]);
-      expect(rubric.id).toBe(-1);
+      expect(rubric.id).toBeUndefined();
       expect(rubric.key).toBe("test-uuid"); // Mocked UUID
     });
 

@@ -5,12 +5,7 @@
 import { Rating } from "palette-types";
 
 import { describe, expect, it, vi } from "vitest";
-import {
-  calcMaxPoints,
-  createCriterion,
-  createRating,
-  UNASSIGNED,
-} from "@utils";
+import { calcMaxPoints, createCriterion, createRating } from "@utils";
 
 // Mock uuid to ensure predictable values
 vi.mock("uuid", () => ({
@@ -20,19 +15,19 @@ vi.mock("uuid", () => ({
 // rubric criterion test suite
 describe("RubricCriterion", () => {
   // each describe is a unit test
-  describe("createRubricCriterion", () => {
-    it("should create a RubricCriterion with default values", () => {
+  describe("createCriterion", () => {
+    it("should create a Criterion object with default values", () => {
       const criterion = createCriterion();
 
       expect(criterion.description).toBe("");
       expect(criterion.longDescription).toBe("");
       expect(criterion.points).toBe(0);
       expect(criterion.ratings).toEqual([]);
-      expect(criterion.id).toEqual(UNASSIGNED);
+      expect(criterion.id).toBeUndefined(); // criterion created on the frontend should not have an id yet
       expect(criterion.key).toBe("test-uuid"); // Mocked UUID
     });
 
-    it("should create a RubricCriterion with specified values", () => {
+    it("should create a Criterion object with specified values to simulate an import from Canvas", () => {
       const mockRatings: Rating[] = [
         createRating(5, "Rating 1"),
         createRating(10, "Rating 2"),
