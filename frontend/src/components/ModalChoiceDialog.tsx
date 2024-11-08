@@ -21,7 +21,7 @@ interface ModalChoiceDialogProps {
   choices: Choice[]; // The button choices (not including cancel) to present to the user
 }
 
-const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
+export const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
   show,
   onHide,
   title,
@@ -72,5 +72,3 @@ const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
     </div>
   );
 };
-
-export default ModalChoiceDialog;
