@@ -7,13 +7,13 @@ import {
   CreateRubricResponse,
   Rubric,
 } from "palette-types";
-import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
-import { RubricsAPI } from "../CanvasAPI/rubricRequests.js";
-import config from "../config.js";
+import { createSuccessResponse } from "../../utils/paletteResponseFactories.js";
+import { RubricsAPI } from "../../CanvasAPI/rubricRequests.js";
+import config from "../../config.js";
 import asyncHandler from "express-async-handler";
 import { StatusCodes } from "http-status-codes";
-import { isRubricObjectHash } from "../utils/typeGuards.js";
-import RubricUtils from "../utils/rubricUtils.js";
+import { isRubricObjectHash } from "../../utils/typeGuards.js";
+import RubricUtils from "../../utils/rubricUtils.js";
 
 /**
  * Handles the creation of a new rubric.
@@ -44,6 +44,8 @@ export const handleCreateRubric = asyncHandler(
       res.status(StatusCodes.CREATED).json(paletteResponse);
       return;
     }
+
+    throw new Error("Something went wrong");
   },
 );
 
@@ -55,7 +57,7 @@ export const handleCreateRubric = asyncHandler(
  */
 function createCanvasRequest(rubric: Rubric): CreateRubricRequest {
   // todo: this makes a canned request for a specific assignment. Will need updating
-  const dummyAssignmentID = Number(config!.ASSIGNMENT_ID);
+  const dummyAssignmentID = Number(config!.TEST_ASSIGNMENT_ID);
   return {
     rubric_association_id: dummyAssignmentID,
     rubric: RubricUtils.toCanvasFormat(rubric),
