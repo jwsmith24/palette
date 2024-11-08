@@ -7,16 +7,15 @@ import util from "util";
  * This middleware intercepts the response before it is sent to the client,
  * logs the status code and the response body, and then proceeds to send the response.
  *
- * @param {Request} req - The Express request object.
+ * @param {Request} _req - The Express request object.
  * @param {Response} res - The Express response object.
  * @param {NextFunction} next - The next middleware function in the stack.
  */
 export const responseLogger = (
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ): void => {
-  console.log();
   // Store the original `send` method
   const originalSend = res.send.bind(res);
 
