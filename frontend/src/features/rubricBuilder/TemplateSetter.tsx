@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
+import { useFetch } from "@hooks";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { createTemplate, createCriterion } from "@utils";
