@@ -34,16 +34,17 @@ export default function CourseSelection(): ReactElement {
       const response = (await getCourses()) as PaletteAPIResponse<Course[]>; // Trigger the GET request
       console.log("response: ", response);
 
-      // Set the message based on the response
-      // todo: parse response into course objects and display
       if (response.success) {
         setCourses(response.data!);
       } else {
         setErrorMessage(response.error || "Failed to get courses");
       }
     } catch (error) {
-      console.error("Error getting courses: ", error);
-      setErrorMessage("An error occurred while fetching courses.");
+      console.error(
+        "An unexpected error occurred while getting courses: ",
+        error,
+      );
+      setErrorMessage("An unexpected error occurred while fetching courses.");
     }
     setLoading(false);
   };

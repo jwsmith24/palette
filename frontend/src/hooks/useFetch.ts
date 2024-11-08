@@ -45,7 +45,6 @@ export function useFetch<T>(
         const errorResponse = (await response.json()) as PaletteAPIResponse<T>;
         setResponse(errorResponse);
         return errorResponse;
-        //throw new Error(`Error: ${errorResponse.error}`);
       }
 
       const backendResponse = (await response.json()) as PaletteAPIResponse<T>;
