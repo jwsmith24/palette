@@ -8,9 +8,11 @@ import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
 
-export default function CourseSelection(
-  selectCourse: (course: Course) => void,
-): ReactElement {
+export default function CourseSelection({
+  selectCourse,
+}: {
+  selectCourse: (course: Course) => void;
+}): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

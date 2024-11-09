@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Header, Footer, Dialog } from "@components";
 
 import CourseSelection from "@features/grading/CourseSelection.tsx";
@@ -14,25 +14,39 @@ export default function GradingView(): ReactElement {
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
     setCourse(course);
+    console.log(course);
   };
+
+  // dynamically adjust dialog title
+  useEffect(() => {
+    if (isCourseSelected && !isAssignmentSelected) {
+      setDialogTitle("Assignment Selection");
+    } else if (isCourseSelected && isAssignmentSelected) {
+      setDialogTitle("Assignment Grading View");
+    }
+  }, [isCourseSelected, isAssignmentSelected]);
 
   const renderContent = () => {
     if (!isCourseSelected) {
       return <CourseSelection selectCourse={selectCourse} />;
-    } else if (!isAssignmentSelected) {
-      return <div>choose assignments</div>;
     }
+    if (!isAssignmentSelected) {
+      return <div>Assignment Selection</div>;
+    }
+
+    return <div>Assignment Grading View</div>;
   };
   return (
     <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
       <div className={"grid gap-10"}>
+        {course && <div>Active Course: {course.name}</div>}
         <div className={"font-bold text-center text-5xl"}>Grading View</div>
         <button
           className={"text-3xl font-bold"}
           onClick={() => setCourseDialogOpen(true)}
         >
-          Click for Courses!
+          {isCourseSelected ? "Change Course" : "Select a Course"}
         </button>
       </div>
       <Footer />
