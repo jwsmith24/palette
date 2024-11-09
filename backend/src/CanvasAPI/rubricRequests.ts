@@ -37,20 +37,13 @@ export const RubricsAPI = {
 
   /**
    * Get a rubric by its ID.
-   * @param request - The request object containing rubric ID and type (course or account).
+   * @param request - The request object containing rubric ID and type (course).
    * @returns A promise that resolves to the retrieved rubric response.
    */
   async getRubric(request: GetRubricRequest): Promise<GetRubricResponse> {
-    if (request.type === "course") {
-      return fetchAPI<CanvasRubric>(
-        `/courses/${request.course_id}/rubrics/${request.id}`,
-      );
-    } else {
-      // request type is account
-      return fetchAPI<CanvasRubric>(
-        `/accounts/${request.account_id}/rubrics/${request.id}`,
-      );
-    }
+    return fetchAPI<CanvasRubric>(
+      `/courses/${request.course_id}/rubrics/${request.id}`,
+    );
   },
 
   /**
@@ -88,11 +81,16 @@ export const RubricsAPI = {
     );
   },
 
-  async listAllRubrics(
+  /**
+   * Get all rubrics in a specific course.
+   * @param {GetAllRubricsRequest} request - The request object containing course ID.
+   * @returns {Promise<GetAllRubricsResponse>} A promise that resolves to the retrieved rubrics response.
+   */
+  async getAllRubrics(
     request: GetAllRubricsRequest,
   ): Promise<GetAllRubricsResponse> {
     return fetchAPI<GetAllRubricsResponse>(
-      `/courses/${request.courseID}/rubrics`,
+      `/courses/${request.courseID}/rubrics?per_page=100`,
     );
   },
 

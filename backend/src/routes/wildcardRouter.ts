@@ -14,13 +14,11 @@ import { __dirname } from "../app.js";
  * @param {Request} req - The Express request object.
  * @param {Response} res - The Express response object.
  */
-export const wildcardRouter = asyncHandler(
-  async (req: Request, res: Response) => {
-    if (req.originalUrl.startsWith("/api")) {
-      res.status(StatusCodes.NOT_FOUND).send({ error: "API route not found" });
-    } else {
-      // If the client tries to navigate to an unknown page, send them the index.html file
-      res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
-    }
-  },
-);
+export const wildcardRouter = asyncHandler((req: Request, res: Response) => {
+  if (req.originalUrl.startsWith("/api")) {
+    res.status(StatusCodes.NOT_FOUND).send({ error: "API route not found" });
+  } else {
+    // If the client tries to navigate to an unknown page, send them the index.html file
+    res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
+  }
+});

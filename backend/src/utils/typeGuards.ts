@@ -2,6 +2,8 @@ import {
   CanvasAPIError,
   CanvasAPIErrorResponse,
   CanvasAssociation,
+  CanvasCriterion,
+  CanvasRating,
   CanvasRubric,
   RubricObjectHash,
 } from "palette-types";
@@ -34,7 +36,8 @@ export function isCanvasAPIErrorResponse(
     "errors" in obj &&
     obj.errors !== null &&
     Array.isArray(obj.errors) &&
-    (obj.errors.length === 0 || obj.errors.every(isCanvasAPIError))
+    obj.errors.length !== 0 &&
+    obj.errors.every(isCanvasAPIError)
   );
 }
 
@@ -43,13 +46,40 @@ export function isCanvasAPIErrorResponse(
  * @param obj - The object to check.
  * @returns True if the object is a CanvasRubric, false otherwise.
  */
-function isCanvasRubric(obj: unknown): obj is CanvasRubric {
+export function isCanvasRubric(obj: unknown): obj is CanvasRubric {
   return (
     typeof obj === "object" &&
     obj !== null &&
     "title" in obj &&
     "points_possible" in obj &&
-    "data" in obj
+    "data" in obj &&
+    // data can be null, an empty array, or an array of CanvasCriterion
+    (obj.data === null ||
+      (Array.isArray(obj.data) &&
+        (obj.data.length === 0 || obj.data.every(isCanvasCriterion))))
+  );
+}
+
+export function isCanvasCriterion(obj: unknown): obj is CanvasCriterion {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "description" in obj &&
+    "points" in obj &&
+    "ratings" in obj &&
+    // ratings can be null, an empty array, or an array of CanvasRating
+    (obj.ratings === null ||
+      (Array.isArray(obj.ratings) &&
+        (obj.ratings.length === 0 || obj.ratings.every(isCanvasRating))))
+  );
+}
+
+export function isCanvasRating(obj: unknown): obj is CanvasRating {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "description" in obj &&
+    "points" in obj
   );
 }
 

@@ -4,7 +4,7 @@ import { CanvasAPIError } from "palette-types";
 import { CanvasAPIUnexpectedError } from "../errors/UnknownCanvasError.js";
 import util from "util";
 
-const CanvasAPIConfig = {
+export const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
   headers: {
     // get the token from the environment variables
@@ -34,6 +34,7 @@ export async function fetchAPI<T>(
         ...(options.headers || {}),
       } as HeadersInit,
     };
+
     // build a request object to pass to fetch, then make the request and log it
     const request = new Request(url, requestInit);
     logCanvasAPIRequest(request, options, true);
@@ -102,13 +103,15 @@ function logCanvasAPIRequest(
   }
 
   // log the request body (up to 50 levels deep) for debugging
-  console.log(
-    `Canvas API Request Body (parsed JSON):\n 
+  if (options.body) {
+    console.log(
+      `Canvas API Request Body (parsed JSON):\n 
     ${util.inspect(JSON.parse(options.body as string), {
       depth: 50,
       colors: true,
     })}`,
-  );
+    );
+  }
 }
 
 /**
@@ -137,11 +140,14 @@ function logCanvasAPIResponse<T>(
   }
 
   // log the response body (up to 50 levels deep) for debugging
-  console.log(
-    "Canvas API Response Body:\n",
-    util.inspect(body, {
+  // only if there's a body
+  if (body) {
+    console.log(
+      `Canvas API Response Body (parsed JSON):\n 
+    ${util.inspect(body, {
       depth: 50,
       colors: true,
-    }),
-  );
+    })}`,
+    );
+  }
 }

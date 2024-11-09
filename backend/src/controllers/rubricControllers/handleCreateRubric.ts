@@ -29,7 +29,7 @@ export const handleCreateRubric = asyncHandler(
     // make the request to the Canvas API
     const canvasResponse: CreateRubricResponse = await RubricsAPI.createRubric(
       canvasRequest,
-      Number(config!.COURSE_ID), // dummy course id for testing
+      Number(config!.TEST_COURSE_ID), // dummy course id for testing
     );
 
     // if the response is successful, the type is a RubricObjectHash
