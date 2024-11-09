@@ -34,12 +34,12 @@ export interface RequestFormattedRubric {
 export type RequestFormattedCriteria = Record<
   number,
   Omit<CanvasCriterion, "ratings"> & { ratings: RequestFormattedRatings }
-> | null;
+>;
 
 /**
  * The required format for ratings when creating or updating a rubric criterion.
  */
-export type RequestFormattedRatings = Record<number, CanvasRating> | null;
+export type RequestFormattedRatings = Record<number, CanvasRating>;
 
 /**
  * Defines the rubric association fields that can be created (according to the API).

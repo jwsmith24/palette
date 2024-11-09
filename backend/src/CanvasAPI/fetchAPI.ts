@@ -8,7 +8,7 @@ export const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
   headers: {
     // get the token from the environment variables
-    Authorization: `Bearer ${config!.CANVAS_API_TOKEN}`,
+    Authorization: `Bearer ${config!.CANVAS_API_TOKEN || "REDACTED"}`,
     Accept: "application/json",
     "Content-Type": "application/json", // must be a string!
   },

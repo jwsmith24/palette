@@ -1,15 +1,37 @@
 // Router for all /rubrics requests
-import express from "express";
-import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
-import { handleCreateRubricAssociation } from "../controllers/rubricControllers/handleCreateRubricAssociation.js";
-import { handleGetRubricById } from "../controllers/rubricControllers/handleGetRubricById.js";
-import { handleGetAllRubrics } from "../controllers/rubricControllers/handleGetAllRubrics.js";
-import { handleUpdateRubric } from "../controllers/rubricControllers/handleUpdateRubric.js";
-import { handleGetRubricIdByTitle } from "../controllers/rubricControllers/handleGetRubricIdByTitle.js";
-import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
-import updateRubricValidator from "../validators/updateRubricValidator.js";
-import { handleCreateRubric } from "../controllers/rubricControllers/handleCreateRubric.js";
-import createRubricValidator from "../validators/rubricValidator.js";
+import express from 'express';
+import {
+  rubricValidationErrorHandler,
+} from '../middleware/rubricValidationErrorHandler.js';
+import {
+  handleCreateRubricAssociation,
+} from '../controllers/rubricControllers/handleCreateRubricAssociation.js';
+import {
+  handleGetRubricById,
+} from '../controllers/rubricControllers/handleGetRubricById.js';
+import {
+  handleGetAllRubrics,
+} from '../controllers/rubricControllers/handleGetAllRubrics.js';
+import {
+  handleUpdateRubric,
+} from '../controllers/rubricControllers/handleUpdateRubric.js';
+import {
+  handleGetRubricIdByTitle,
+} from '../controllers/rubricControllers/handleGetRubricIdByTitle.js';
+import {
+  handleDeleteRubric,
+} from '../controllers/rubricControllers/handleDeleteRubric.js';
+import updateRubricValidator from '../validators/updateRubricValidator.js';
+import {
+  handleCreateRubric,
+} from '../controllers/rubricControllers/handleCreateRubric.js';
+import createRubricValidator from '../validators/rubricValidator.js';
+import {
+  getRubricByIDValidator,
+} from '../validators/getRubricByIDValidator.js';
+import {
+  getAllRubricsValidator,
+} from '../validators/getAllRubricsValidator.js';
 
 const router = express.Router();
 
@@ -31,12 +53,22 @@ router.post("/rubric_associations", handleCreateRubricAssociation);
 /**
  * @route GET /rubrics/:id
  */
-router.get("/:id", handleGetRubricById);
+router.get(
+  "/:id",
+  getRubricByIDValidator(),
+  rubricValidationErrorHandler,
+  handleGetRubricById,
+);
 
 /**
  * @route GET /rubrics
  */
-router.get("/", handleGetAllRubrics);
+router.get(
+  "/",
+  getAllRubricsValidator(),
+  rubricValidationErrorHandler,
+  handleGetAllRubrics,
+);
 
 /**
  * @route PUT /rubrics/:id

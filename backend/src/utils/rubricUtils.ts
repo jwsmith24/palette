@@ -56,16 +56,19 @@ export const RubricUtils = {
    */
   toPaletteFormat(rubric: CanvasRubric): Rubric {
     return {
+      id: rubric.id,
       title: rubric.title,
       pointsPossible: rubric.points_possible,
       criteria:
         rubric.data?.map((criterion: CanvasCriterion) => {
           return {
+            id: criterion.id,
             description: criterion.description,
             longDescription: criterion.long_description,
             points: criterion.points,
             ratings: criterion.ratings?.map((rating: CanvasRating) => {
               return {
+                id: rating.id,
                 description: rating.description,
                 longDescription: rating.long_description,
                 points: rating.points,
