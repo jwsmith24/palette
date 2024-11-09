@@ -85,7 +85,9 @@ export function isRubricObjectHash(obj: unknown): obj is RubricObjectHash {
     obj !== null &&
     "rubric" in obj &&
     isCanvasRubric(obj.rubric) &&
-    "rubric_association" in obj &&
-    isCanvasAssociation(obj.rubric_association)
+    // if rubric_association is present, it must be a CanvasAssociation
+    ("rubric_association" in obj
+      ? isCanvasAssociation(obj.rubric_association)
+      : true)
   );
 }
