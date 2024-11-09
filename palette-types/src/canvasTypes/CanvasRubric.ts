@@ -30,7 +30,7 @@ export interface CanvasRubric {
   /**
    * An array with all of this CanvasRubric's grading Criteria.
    *
-   * Note: The CanvasAPI documentation
+   * Note: The canvasAPI documentation
    * is inconsistent about the actual name of this field - it is sometimes called
    * 'criteria' and others 'data'.
    */

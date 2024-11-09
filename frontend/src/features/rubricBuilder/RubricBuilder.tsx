@@ -11,10 +11,8 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import Dialog from "../../components/Dialog";
+import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
 import CSVUpload from "./CSVUpload";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -22,17 +20,16 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import ModalChoiceDialog from "../../components/ModalChoiceDialog";
-import formatDate from "../../utils/formatDate";
-import useFetch from "../../hooks/useFetch";
-import { ModalChoice } from "../../types/modalTypes";
+import { useFetch } from "@hooks";
+import { ModalChoice, CSVRow } from "@local_types";
 
 import {
   createCriterion,
   createRating,
   createRubric,
-} from "@utils/rubricFactory.ts";
-import { CSVRow } from "../../types/csvRow.ts";
+  formatDate,
+} from "@utils";
+
 import { Criteria, Rubric } from "palette-types";
 
 export default function RubricBuilder(): ReactElement {
@@ -64,10 +61,12 @@ export default function RubricBuilder(): ReactElement {
     const newRubric = { ...rubric };
     newRubric.title = event.target.value;
     setRubric(newRubric);
+    console.log(newRubric);
   };
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
+    console.log("builder");
     calculateTotalPoints();
   }, [rubric]);
 

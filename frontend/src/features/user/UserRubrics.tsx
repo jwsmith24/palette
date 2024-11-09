@@ -4,8 +4,7 @@ Main view for the Rubric Builder feature.
 
 import { ReactElement } from "react";
 
-import Header from "../../components/Header.tsx";
-import Footer from "../../components/Footer.tsx";
+import { Header, Footer } from "@components";
 
 export default function RubricBuilder(): ReactElement {
   return (
