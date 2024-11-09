@@ -17,7 +17,7 @@ export default function GradingView(): ReactElement {
   const activeAssignmentStyle =
     "font-bold text-green-400 hover:opacity-80 cursor-pointer";
   const resetStyle =
-    "font-bold text-purple-400 hover:opacity-80 cursor-pointer";
+    "font-bold text-indigo-400 hover:opacity-80 cursor-pointer";
 
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
