@@ -64,7 +64,7 @@ export default function GradingView(): ReactElement {
     <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
 
-      <div className="grid h-full w-full grid-rows-[1fr_4fr] gap-10 place-items-center">
+      <div className="grid h-full w-full grid-rows-[1fr_10fr] gap-10 place-items-center">
         {/* Active Course and Assignment Section */}
         <div
           className="
