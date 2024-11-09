@@ -172,8 +172,7 @@ export default function CriteriaInput({
     return (
       <div
         className={
-          " grid  grid-rows-3 " +
-          "shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700"
+          " grid  grid-rows-[1fr_2fr_1fr] shadow-xl p-6 rounded-lg w-full bg-gray-700"
         }
       >
         {/* Card style and main grid layout for content*/}
@@ -191,7 +190,7 @@ export default function CriteriaInput({
           </p>
         </div>
 
-        <div className={"grid grid-flow-col gap-8"}>
+        <div className={"grid grid-flow-col gap-2"}>
           {renderRatingOptions()}
         </div>
 
