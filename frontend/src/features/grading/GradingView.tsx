@@ -1,8 +1,9 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Header, Footer, Dialog } from "@components";
 import CourseSelection from "@features/grading/CourseSelection.tsx";
-import { Assignment, Course } from "palette-types";
+import { Assignment, Course, PaletteAPIResponse, Rubric } from "palette-types";
 import AssignmentSelection from "@features/grading/AssignmentSelection.tsx";
+import { useFetch } from "@hooks";
 
 export default function GradingView(): ReactElement {
   const [courseDialogOpen, setCourseDialogOpen] = useState(false);
@@ -12,6 +13,11 @@ export default function GradingView(): ReactElement {
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
   const [assignment, setAssignment] = useState<Assignment>();
   const [rubricId, setRubricId] = useState<string>();
+
+  const [rubric, setRubric] = useState<Rubric>();
+  const [rubricErrorMessage, setRubricErrorMessage] = useState<string>();
+
+  const { fetchData: getRubric } = useFetch(`/rubrics/${rubricId}`);
 
   const activeCourseStyle =
     "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
@@ -56,6 +62,31 @@ export default function GradingView(): ReactElement {
       setDialogTitle("Assignment Grading View");
     }
   }, [isCourseSelected, isAssignmentSelected]);
+
+  /**
+   * Effect hook to fetch rubric when rubric id changes
+   */
+  useEffect(() => {
+    if (rubricId) {
+      void fetchRubric();
+    }
+  }, [rubricId]);
+
+  const fetchRubric = async () => {
+    // loading tbd
+    try {
+      const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
+      console.log("rubric from request by id: ", response);
+
+      if (response.success) {
+        setRubric(response.data);
+      } else {
+        setRubricErrorMessage(response.error || "Failed to get rubric");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred while getting rubric", error);
+    }
+  };
 
   const renderContent = () => {
     if (!isCourseSelected) {
@@ -120,7 +151,7 @@ export default function GradingView(): ReactElement {
 
         {/* Content Section */}
         <div className="text-center font-bold text-5xl">
-          {assignment && assignment.rubricId}
+          {(rubric && rubric.title) || rubricErrorMessage}
         </div>
       </div>
 
