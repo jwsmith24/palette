@@ -13,6 +13,11 @@ export default function GradingView(): ReactElement {
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
   const [assignment, setAssignment] = useState<Assignment>();
 
+  const activeCourseStyle =
+    "font-bold text-purple-400 hover:opacity-80 cursor-pointer";
+  const activeAssignmentStyle =
+    "font-bold text-green-400 hover:opacity-80 cursor-pointer";
+
   // callback for Course Selection component to update
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
@@ -51,18 +56,44 @@ export default function GradingView(): ReactElement {
     return <div>Assignment Grading View</div>;
   };
   return (
-    <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+    <div className="h-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
-      <div className={"grid gap-10"}>
-        {course && <div>Active Course: {course.name}</div>}
-        {assignment && <div>Active Assignment: {assignment.name}</div>}
-        <div className={"font-bold text-center text-5xl"}>Grading View</div>
-        <button
-          className={"text-3xl font-bold"}
-          onClick={() => setCourseDialogOpen(true)}
+      <div
+        className={
+          "grid grid-rows-[0.2fr_0.8fr] gap-10 h-full justify-center justify-items-center"
+        }
+      >
+        <div
+          className={
+            "mt-4 mx-4 max-w-6xl px-6 grid max-h-12 grid-cols-2 items-center bg-transparent rounded-full" +
+            " ring-1 ring-purple-500 gap-4"
+          }
         >
-          {isCourseSelected ? "Change Course" : "Select a Course"}
-        </button>
+          <div className={"flex gap-2"}>
+            <p>Active Course: </p>
+            {course ? (
+              <p className={activeCourseStyle}>{course.name}</p>
+            ) : (
+              <button
+                className={activeCourseStyle}
+                onClick={() => setCourseDialogOpen(true)}
+              >
+                Select Course
+              </button>
+            )}
+          </div>
+          <div className={"flex gap-2"}>
+            <p>Active Assignment: </p>
+            {assignment ? (
+              <p className={activeAssignmentStyle}>{assignment.name}</p>
+            ) : (
+              <button className={activeAssignmentStyle}>
+                Select Assignment
+              </button>
+            )}
+          </div>
+        </div>
+        <div className={"font-bold text-center text-5xl"}>Grading View TBD</div>
       </div>
       <Footer />
       <Dialog
