@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
-import fs from 'fs';
+import dotenv from "dotenv";
+import fs from "fs";
 
 const config = dotenv.config();
-
 
 if (config.error) {
   // default .env file
