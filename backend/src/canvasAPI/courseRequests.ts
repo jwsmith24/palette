@@ -1,5 +1,5 @@
 /**
- * Collection of course-related queries for the Canvas API.
+ * Collection of course-related queries for the Canvas API. Includes assignment queries.
  */
 import { fetchAPI } from "../utils/fetchAPI.js";
 import { CanvasCourse, Course } from "palette-types";
@@ -46,7 +46,7 @@ export const CoursesAPI = {
    */
   async getCourses(): Promise<Course[]> {
     const canvasCourses = await fetchAPI<CanvasCourse[]>(
-      "/courses?per_page=100",
+      "/courses?per_page=25",
     );
     console.log("canvas courses: ", canvasCourses);
 
@@ -54,5 +54,12 @@ export const CoursesAPI = {
     return canvasCourses
       .map(mapToPaletteCourse)
       .filter((course): course is Course => course !== null);
+  },
+
+  // todo: wip for assignments
+  async getAssignments(course: Course): Promise<Assignment[]> {
+    const canvasAssignments = await fetchAPI<CanvasAssignment[]>(
+      `/courses/${course.id}/assignments?per_page=25`,
+    );
   },
 };

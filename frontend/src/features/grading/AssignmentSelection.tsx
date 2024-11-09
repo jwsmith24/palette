@@ -14,7 +14,7 @@ export default function AssignmentSelection({
   const [loading, setLoading] = useState<boolean>(false);
 
   const { fetchData: getAssignments } = useFetch(
-    `/courses/${course.id}/assignments?per_page=25`,
+    `/courses/${course.id}/assignments`,
   );
 
   useEffect(() => {
