@@ -1,6 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Header, Footer, Dialog } from "@components";
-
 import CourseSelection from "@features/grading/CourseSelection.tsx";
 import { Assignment, Course } from "palette-types";
 import AssignmentSelection from "@features/grading/AssignmentSelection.tsx";
@@ -14,26 +13,30 @@ export default function GradingView(): ReactElement {
   const [assignment, setAssignment] = useState<Assignment>();
 
   const activeCourseStyle =
-    "font-bold text-purple-400 hover:opacity-80 cursor-pointer";
+    "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
   const activeAssignmentStyle =
     "font-bold text-green-400 hover:opacity-80 cursor-pointer";
+  const resetStyle =
+    "font-bold text-purple-400 hover:opacity-80 cursor-pointer";
 
-  // callback for Course Selection component to update
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
     setCourse(course);
-    console.log(course);
-    // keep dialog open to select course
   };
 
   const selectAssignment = (assignment: Assignment) => {
     setIsAssignmentSelected(true);
     setAssignment(assignment);
-    console.log(assignment);
-    setCourseDialogOpen(false); // close the dialog when finished
+    setCourseDialogOpen(false);
   };
 
-  // dynamically adjust dialog title
+  const resetSelections = () => {
+    setIsCourseSelected(false);
+    setIsAssignmentSelected(false);
+    setCourse(undefined);
+    setAssignment(undefined);
+  };
+
   useEffect(() => {
     if (isCourseSelected && !isAssignmentSelected) {
       setDialogTitle("Assignment Selection");
@@ -54,25 +57,24 @@ export default function GradingView(): ReactElement {
         />
       );
     }
-
     return <div>Assignment Grading View</div>;
   };
+
   return (
-    <div className="h-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
-      <div
-        className={
-          "grid grid-rows-[0.2fr_0.8fr] gap-10 h-full justify-center justify-items-center"
-        }
-      >
+
+      <div className="grid h-full w-full grid-rows-[1fr_4fr] gap-10 place-items-center">
+        {/* Active Course and Assignment Section */}
         <div
-          className={
-            "mt-4 mx-4 max-w-6xl px-6 grid max-h-12 grid-cols-2 items-center bg-transparent rounded-full" +
-            " ring-1 ring-purple-500 gap-4"
-          }
+          className="
+            max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr]
+            items-center bg-transparent rounded-full
+            ring-1 ring-purple-500 gap-4 content-center
+          "
         >
-          <div className={"flex gap-2"}>
-            <p>Active Course: </p>
+          <div className="flex items-center gap-2">
+            <p>Active Course:</p>
             {course ? (
               <p className={activeCourseStyle}>{course.name}</p>
             ) : (
@@ -84,20 +86,33 @@ export default function GradingView(): ReactElement {
               </button>
             )}
           </div>
-          <div className={"flex gap-2"}>
-            <p>Active Assignment: </p>
+
+          <div className="flex items-center gap-2">
+            <p>Active Assignment:</p>
             {assignment ? (
               <p className={activeAssignmentStyle}>{assignment.name}</p>
             ) : (
-              <button className={activeAssignmentStyle}>
+              <button
+                className={activeAssignmentStyle}
+                onClick={() => setCourseDialogOpen(true)}
+              >
                 Select Assignment
               </button>
             )}
           </div>
+
+          <button className={resetStyle} onClick={resetSelections}>
+            Reset
+          </button>
         </div>
-        <div className={"font-bold text-center text-5xl"}>Grading View TBD</div>
+
+        {/* Content Section */}
+        <div className="text-center font-bold text-5xl">Grading View TBD</div>
       </div>
+
       <Footer />
+
+      {/* Dialog for Course/Assignment Selection */}
       <Dialog
         isOpen={courseDialogOpen}
         onClose={() => setCourseDialogOpen(false)}
