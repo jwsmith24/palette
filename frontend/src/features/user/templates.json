@@ -1,7 +1,7 @@
 [
   {
     "title": "Mock Template Name 1",
-    "rubricCriteria": [
+    "templateCriteria": [
       {
         "ratings": [
           {
@@ -11,10 +11,11 @@
             "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
           }
         ],
-        "description": "Criteria Name 1",
+        "description": "T1 Criteria Name 1",
         "longDescription": "",
         "points": 4,
-        "template": "Mock Template Name",
+        "id": 1,
+        "template": "Mock Template Name 1",
         "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
       },
       {
@@ -26,10 +27,11 @@
             "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
           }
         ],
-        "description": "Criteria Name 2",
+        "description": "T1 Criteria Name 2",
         "longDescription": "",
         "points": 6,
-        "template": "Mock Template Name",
+        "id": 2,
+        "template": "Mock Template Name 1",
         "key": "c543378a-6acb-4452-a907-897e0bfe3852"
       }
     ],
@@ -39,7 +41,7 @@
   },
   {
     "title": "Mock Template Name 2",
-    "rubricCriteria": [
+    "templateCriteria": [
       {
         "ratings": [
           {
@@ -49,10 +51,11 @@
             "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
           }
         ],
-        "description": "Criteria Name 1",
+        "description": "T2 Criteria Name 1",
         "longDescription": "",
         "points": 4,
-        "template": "Mock Template Name",
+        "id": 1,
+        "template": "Mock Template Name 2",
         "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
       },
       {
@@ -64,10 +67,11 @@
             "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
           }
         ],
-        "description": "Criteria Name 2",
+        "description": "T2 Criteria Name 2",
         "longDescription": "",
         "points": 6,
-        "template": "Mock Template Name",
+        "id": 2,
+        "template": "Mock Template Name 2",
         "key": "c543378a-6acb-4452-a907-897e0bfe3852"
       }
     ],
@@ -77,7 +81,7 @@
   },
   {
     "title": "Mock Template Name 3",
-    "rubricCriteria": [
+    "templateCriteria": [
       {
         "ratings": [
           {
@@ -87,10 +91,11 @@
             "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
           }
         ],
-        "description": "Criteria Name 1",
+        "description": "T3 Criteria Name 1",
         "longDescription": "",
         "points": 4,
-        "template": "Mock Template Name",
+        "id": 1,
+        "template": "Mock Template Name 3",
         "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
       },
       {
@@ -102,10 +107,11 @@
             "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
           }
         ],
-        "description": "Criteria Name 2",
+        "description": "T3 Criteria Name 2",
         "longDescription": "",
         "points": 6,
-        "template": "Mock Template Name",
+        "id": 2,
+        "template": "Mock Template Name 3",
         "key": "c543378a-6acb-4452-a907-897e0bfe3852"
       }
     ],

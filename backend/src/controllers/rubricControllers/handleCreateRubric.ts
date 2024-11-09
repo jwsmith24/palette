@@ -7,13 +7,13 @@ import {
   CreateRubricResponse,
   Rubric,
 } from "palette-types";
-import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
-import { RubricsAPI } from "../CanvasAPI/rubricRequests.js";
-import config from "../config.js";
+import { createSuccessResponse } from "../../utils/paletteResponseFactories.js";
+import { RubricsAPI } from "../../canvasAPI/rubricRequests.js";
+import config from "../../config.js";
 import asyncHandler from "express-async-handler";
 import { StatusCodes } from "http-status-codes";
-import { isRubricObjectHash } from "../utils/typeGuards.js";
-import RubricUtils from "../utils/rubricUtils.js";
+import { isRubricObjectHash } from "../../utils/typeGuards.js";
+import RubricUtils from "../../utils/rubricUtils.js";
 
 /**
  * Handles the creation of a new rubric.

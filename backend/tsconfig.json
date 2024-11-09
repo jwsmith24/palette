@@ -7,7 +7,6 @@
     "sourceRoot": "./src",
     "rootDir": "../",
     "baseUrl": "./",
-    "paths": {},
     "strict": true,
     "esModuleInterop": true,
     "sourceMap": true,

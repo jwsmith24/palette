@@ -3,9 +3,11 @@
  */
 
 export interface Course {
-  id: number; // REQUIRED: Courses will always have IDs already assigned by Canvas
-  name: string;
-  description: string;
-  credits: number;
-  key: string;
+  id: number; // REQUIRED: Canvas-assigned unique identifier for the course
+  name: string; // Course name to display in the Palette app
+  termId: number; // Identifier for the term to which the course belongs
+  enrollments: Array<{
+    type: "teacher" | "ta"; // Enrollment type filtered to include only teachers or TAs
+    enrollmentState: "active"; // Ensures only active enrollments are included
+  }>;
 }
