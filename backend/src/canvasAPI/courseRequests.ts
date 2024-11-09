@@ -2,7 +2,12 @@
  * Collection of course-related queries for the Canvas API. Includes assignment queries.
  */
 import { fetchAPI } from "../utils/fetchAPI.js";
-import { CanvasCourse, Course } from "palette-types";
+import {
+  CanvasCourse,
+  Course,
+  Assignment,
+  CanvasAssignment,
+} from "palette-types";
 
 /**
  * Convert canvas course object to palette course object.
@@ -36,6 +41,22 @@ function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
 }
 
 /**
+ * Trim Canvas Assignment to Assignment object within the Palette context.
+ * @param canvasAssignment
+ */
+function mapToPaletteAssignment(
+  canvasAssignment: CanvasAssignment,
+): Assignment {
+  return {
+    id: canvasAssignment.id,
+    name: canvasAssignment.name,
+    description: canvasAssignment.description || "",
+    dueDate: canvasAssignment.due_at || "",
+    pointsPossible: canvasAssignment.points_possible,
+  };
+}
+
+/**
  * Defines CRUD operations for courses from the Canvas API.
  */
 export const CoursesAPI = {
@@ -56,10 +77,16 @@ export const CoursesAPI = {
       .filter((course): course is Course => course !== null);
   },
 
-  // todo: wip for assignments
-  async getAssignments(course: Course): Promise<Assignment[]> {
+  async getAssignments(courseId: string): Promise<Assignment[]> {
+    console.log(`fetching assignments for course ${courseId}`);
+
+    if (!courseId) {
+      throw new Error("Course ID is undefined");
+    }
     const canvasAssignments = await fetchAPI<CanvasAssignment[]>(
-      `/courses/${course.id}/assignments?per_page=25`,
+      `/courses/${courseId}/assignments`,
     );
+    console.log("canvas assignments: ", canvasAssignments);
+    return canvasAssignments.map(mapToPaletteAssignment);
   },
 };
