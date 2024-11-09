@@ -11,22 +11,33 @@ export default function GradingView(): ReactElement {
   const [course, setCourse] = useState<Course>();
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
   const [assignment, setAssignment] = useState<Assignment>();
+  const [rubricId, setRubricId] = useState<string>();
 
   const activeCourseStyle =
     "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
   const activeAssignmentStyle =
     "font-bold text-green-400 hover:opacity-80 cursor-pointer";
   const resetStyle =
-    "font-bold text-indigo-400 hover:opacity-80 cursor-pointer";
+    "font-bold text-white-400 cursor-pointer hover:text-red-400";
 
+  /**
+   * Updates state for new course selection.
+   * @param course - target course for grading
+   */
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
     setCourse(course);
+    setCourseDialogOpen(false);
   };
 
+  /**
+   * Updates state for new assignment selection.
+   * @param assignment - target assignment for grading
+   */
   const selectAssignment = (assignment: Assignment) => {
     setIsAssignmentSelected(true);
     setAssignment(assignment);
+    setRubricId(assignment.rubricId);
     setCourseDialogOpen(false);
   };
 
@@ -35,6 +46,7 @@ export default function GradingView(): ReactElement {
     setIsAssignmentSelected(false);
     setCourse(undefined);
     setAssignment(undefined);
+    setRubricId(undefined);
   };
 
   useEffect(() => {
@@ -107,7 +119,9 @@ export default function GradingView(): ReactElement {
         </div>
 
         {/* Content Section */}
-        <div className="text-center font-bold text-5xl">Grading View TBD</div>
+        <div className="text-center font-bold text-5xl">
+          {assignment && assignment.rubricId}
+        </div>
       </div>
 
       <Footer />

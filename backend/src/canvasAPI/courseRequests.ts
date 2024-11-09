@@ -42,6 +42,8 @@ function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
 
 /**
  * Trim Canvas Assignment to Assignment object within the Palette context.
+ *
+ * Stores rubric id to fetch rubric when needed.
  * @param canvasAssignment
  */
 function mapToPaletteAssignment(
@@ -53,6 +55,9 @@ function mapToPaletteAssignment(
     description: canvasAssignment.description || "",
     dueDate: canvasAssignment.due_at || "",
     pointsPossible: canvasAssignment.points_possible,
+    rubricId: canvasAssignment.rubric
+      ? canvasAssignment.rubric[0].id
+      : "No rubrics are associated with this" + " assignment",
   };
 }
 

@@ -8,4 +8,5 @@ export interface Assignment {
   description: string;
   dueDate: string;
   pointsPossible: number;
+  rubricId: string; // stores the id of the rubric when needed
 }
