@@ -190,7 +190,11 @@ export default function CriteriaInput({
           </p>
         </div>
 
-        <div className={"grid grid-flow-col gap-2"}>
+        <div
+          className={
+            "grid grid-flow-col gap-4 m-auto max-w-full overflow-y-auto"
+          }
+        >
           {renderRatingOptions()}
         </div>
 

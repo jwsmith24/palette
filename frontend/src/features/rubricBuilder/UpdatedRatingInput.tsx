@@ -67,6 +67,12 @@ export default function UpdatedRatingInput({
    */
 
   return (
-    <div className={"grid grid-rows-2 border-2 border-red-500"}>rating</div>
+    <div className={"grid grid-rows-2 border-2 border-red-500 w-28 h-36 p-2"}>
+      <div>
+        <p>{points || 0} Points</p>
+        <p>{title || "Placeholder"}</p>
+      </div>
+      rating
+    </div>
   );
 }
