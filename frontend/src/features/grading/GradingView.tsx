@@ -2,7 +2,8 @@ import { ReactElement, useEffect, useState } from "react";
 import { Header, Footer, Dialog } from "@components";
 
 import CourseSelection from "@features/grading/CourseSelection.tsx";
-import { Course } from "palette-types";
+import { Assignment, Course } from "palette-types";
+import AssignmentSelection from "@features/grading/AssignmentSelection.tsx";
 
 export default function GradingView(): ReactElement {
   const [courseDialogOpen, setCourseDialogOpen] = useState(false);
@@ -10,11 +11,19 @@ export default function GradingView(): ReactElement {
   const [isCourseSelected, setIsCourseSelected] = useState(false);
   const [course, setCourse] = useState<Course>();
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
+  const [assignment, setAssignment] = useState<Assignment>();
 
+  // callback for Course Selection component to update
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
     setCourse(course);
     console.log(course);
+  };
+
+  const selectAssignment = (assignment: Assignment) => {
+    setIsAssignmentSelected(true);
+    setAssignment(assignment);
+    console.log(assignment);
   };
 
   // dynamically adjust dialog title
@@ -31,7 +40,12 @@ export default function GradingView(): ReactElement {
       return <CourseSelection selectCourse={selectCourse} />;
     }
     if (!isAssignmentSelected) {
-      return <div>Assignment Selection</div>;
+      return (
+        <AssignmentSelection
+          course={course!}
+          selectAssignment={selectAssignment}
+        />
+      );
     }
 
     return <div>Assignment Grading View</div>;

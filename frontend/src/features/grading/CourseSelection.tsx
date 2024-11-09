@@ -17,10 +17,7 @@ export default function CourseSelection({
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { fetchData: getCourses } = useFetch(
-    "/courses",
-    {}, // no extra options for GET
-  );
+  const { fetchData: getCourses } = useFetch("/courses");
 
   /**
    * Run fetchCourses when component initially mounts.
