@@ -80,7 +80,6 @@ export default function CourseSelection({
   };
 
   const handleCourseSelection = (course: Course) => {
-    alert(`Course Selected: ${course.name}`);
     selectCourse(course);
   };
 

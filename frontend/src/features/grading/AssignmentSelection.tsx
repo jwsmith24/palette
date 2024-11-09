@@ -49,7 +49,6 @@ export default function AssignmentSelection({
   };
 
   const handleAssignmentSelection = (assignment: Assignment) => {
-    alert(`Assignment Selected: ${assignment.name}`);
     selectAssignment(assignment);
   };
 

@@ -23,12 +23,14 @@ export default function GradingView(): ReactElement {
     setIsCourseSelected(true);
     setCourse(course);
     console.log(course);
+    // keep dialog open to select course
   };
 
   const selectAssignment = (assignment: Assignment) => {
     setIsAssignmentSelected(true);
     setAssignment(assignment);
     console.log(assignment);
+    setCourseDialogOpen(false); // close the dialog when finished
   };
 
   // dynamically adjust dialog title
