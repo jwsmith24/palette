@@ -7,19 +7,34 @@ interface CSVExportProps {
 
 const CSVExport: React.FC<CSVExportProps> = ({ rubric }) => {
   const handleExportToCSV = () => {
-    // Prepare header 
-    const header = ["Criteria/Title", "Rating", "Reason", "Rating", "Reason", "Rating", "Reason"];
+    // Determine the maximum number of ratings across all criteria
+    const maxRatings = Math.max(
+      ...rubric.rubricCriteria.map((criterion) => criterion.ratings.length)
+    );
 
-    // Prepare data rows based on the rubric structure
+    // Dynamically build header based on max number of ratings
+    const header = ["Criteria/Title"];
+    for (let i = 0; i < maxRatings; i++) {
+      header.push(`Rating ${i + 1}`, `Reason ${i + 1}`);
+    }
+
+    // Prepare CSV data
     const data = rubric.rubricCriteria.map((criterion) => {
+      // Initialize row with the criterion description
       const row = [criterion.description];
-      criterion.ratings.forEach((rating, index) => {
-        row.push(rating.points.toString(), rating.description);
+
+      // Add each rating and reason up to maxRatings
+      criterion.ratings.forEach((rating) => {
+        const reason = rating.longDescription
+          ? `${rating.description}.\n${rating.longDescription}`
+          : rating.description;
+
+        row.push(rating.points.toString(), reason);
       });
 
-      // Fill any remaining cells if there are fewer than 3 ratings per criterion
+      // Fill remaining cells if there are fewer ratings than maxRatings
       while (row.length < header.length) {
-        row.push("", ""); // Empty "Rating" and "Reason" cell
+        row.push("", ""); // Empty "Rating" and "Reason" cells for missing ratings
       }
 
       return row;
