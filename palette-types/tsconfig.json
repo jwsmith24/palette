@@ -3,8 +3,11 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist",
+    "sourceRoot": "./",
+    "rootDir": "./src",
     "strict": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "./"
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+  "include": ["src/**/*.ts"]
 }

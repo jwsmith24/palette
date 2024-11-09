@@ -1,0 +1,116 @@
+[
+  {
+    "title": "Mock Template Name 1",
+    "rubricCriteria": [
+      {
+        "ratings": [
+          {
+            "points": 4,
+            "description": "Long Description 1",
+            "longDescription": "",
+            "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
+          }
+        ],
+        "description": "Criteria Name 1",
+        "longDescription": "",
+        "points": 4,
+        "template": "Mock Template Name",
+        "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
+      },
+      {
+        "ratings": [
+          {
+            "points": 6,
+            "description": "Long Description 2",
+            "longDescription": "",
+            "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
+          }
+        ],
+        "description": "Criteria Name 2",
+        "longDescription": "",
+        "points": 6,
+        "template": "Mock Template Name",
+        "key": "c543378a-6acb-4452-a907-897e0bfe3852"
+      }
+    ],
+    "description": "Enter description",
+    "id": -1,
+    "key": "b54037d7-d0f1-45f9-8763-c7b79ea4047c"
+  },
+  {
+    "title": "Mock Template Name 2",
+    "rubricCriteria": [
+      {
+        "ratings": [
+          {
+            "points": 4,
+            "description": "Long Description 1",
+            "longDescription": "",
+            "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
+          }
+        ],
+        "description": "Criteria Name 1",
+        "longDescription": "",
+        "points": 4,
+        "template": "Mock Template Name",
+        "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
+      },
+      {
+        "ratings": [
+          {
+            "points": 6,
+            "description": "Long Description 2",
+            "longDescription": "",
+            "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
+          }
+        ],
+        "description": "Criteria Name 2",
+        "longDescription": "",
+        "points": 6,
+        "template": "Mock Template Name",
+        "key": "c543378a-6acb-4452-a907-897e0bfe3852"
+      }
+    ],
+    "description": "Enter description",
+    "id": -1,
+    "key": "b54037d7-d0f1-45f9-8763-c7b79ea4047c"
+  },
+  {
+    "title": "Mock Template Name 3",
+    "rubricCriteria": [
+      {
+        "ratings": [
+          {
+            "points": 4,
+            "description": "Long Description 1",
+            "longDescription": "",
+            "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
+          }
+        ],
+        "description": "Criteria Name 1",
+        "longDescription": "",
+        "points": 4,
+        "template": "Mock Template Name",
+        "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
+      },
+      {
+        "ratings": [
+          {
+            "points": 6,
+            "description": "Long Description 2",
+            "longDescription": "",
+            "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
+          }
+        ],
+        "description": "Criteria Name 2",
+        "longDescription": "",
+        "points": 6,
+        "template": "Mock Template Name",
+        "key": "c543378a-6acb-4452-a907-897e0bfe3852"
+      }
+    ],
+    "description": "Enter description",
+    "id": -1,
+    "key": "b54037d7-d0f1-45f9-8763-c7b79ea4047c"
+  }
+]
