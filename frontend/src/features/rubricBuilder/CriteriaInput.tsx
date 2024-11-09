@@ -8,9 +8,9 @@ import {
 
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-import RatingInput from "./RatingInput";
 import { Criteria, Rating } from "palette-types";
 import { calcMaxPoints, createRating } from "@utils";
+import UpdatedRatingInput from "@features/rubricBuilder/UpdatedRatingInput.tsx";
 
 export default function CriteriaInput({
   index,
@@ -86,7 +86,7 @@ export default function CriteriaInput({
   const renderRatingOptions = () => {
     return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
-        <RatingInput
+        <UpdatedRatingInput
           key={rating.key}
           ratingIndex={ratingIndex}
           rating={rating}
@@ -170,61 +170,67 @@ export default function CriteriaInput({
 
   const renderDetailedView = () => {
     return (
-      <div className=" grid border border-gray-700 shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700">
-        <div className="grid mt-4 mr-3 grid-cols-2 gap-4 items-start content-between">
-          <div className={"grid self-baseline"}>
-            <input
-              type="text"
-              placeholder={`Criteria ${index + 1} Description...`}
-              className="rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-800"
-              value={criteriaDescription}
-              onChange={handleDescriptionChange}
-            />
-            <p className="text-xl font-semibold mt-2 text-gray-200">
-              Max Points: {maxPoints}
-            </p>
-          </div>
+      <div
+        className={
+          " grid  grid-rows-3 " +
+          "shadow-xl p-6 gap-6 rounded-lg w-full bg-gray-700"
+        }
+      >
+        {/* Card style and main grid layout for content*/}
 
-          <div className={"grid gap-8"}>{renderRatingOptions()}</div>
+        <div className={"grid"}>
+          <input
+            type="text"
+            placeholder={`Criteria ${index + 1} Description...`}
+            className="rounded-lg p-3 text-gray-300 border border-gray-600 bg-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-800"
+            value={criteriaDescription}
+            onChange={handleDescriptionChange}
+          />
+          <p className="text-xl font-semibold mt-2 text-gray-200">
+            Max Points: {maxPoints}
+          </p>
+        </div>
 
-          <div className={"flex gap-3 justify-self-start"}>
-            <button
-              onPointerDown={(event: ReactMouseEvent<HTMLButtonElement>) =>
-                handleRemoveCriteriaButton(event, index)
-              }
-              className={
-                "transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4" +
-                " py-2 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none"
-              }
-              type={"button"}
-            >
-              Remove
-            </button>
-            <button
-              className={
-                "transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4" +
-                " py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-              }
-              onPointerDown={() => {
-                setActiveCriterionIndex(-1); // setting the index to -1 will ensure the current criteria will
-                // condense and another one won't open
-              }}
-              type={"button"}
-            >
-              Collapse
-            </button>
-            <button
-              className={
-                "transition-all ease-in-out duration-300 bg-slate-600 rounded-full px-2" +
-                " py-2 hover:bg-slate-700 focus:ring-2 focus:ring-slate-500 focus:outline-none"
-              }
-              onClick={handleTemplateSetterPress}
-              type={"button"}
-            >
-              +
-            </button>
-          </div>
+        <div className={"grid grid-flow-col gap-8"}>
+          {renderRatingOptions()}
+        </div>
 
+        <div className={"flex gap-3 items-end"}>
+          <button
+            onPointerDown={(event: ReactMouseEvent<HTMLButtonElement>) =>
+              handleRemoveCriteriaButton(event, index)
+            }
+            className={
+              "transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-4" +
+              " py-2 hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none"
+            }
+            type={"button"}
+          >
+            Remove
+          </button>
+          <button
+            className={
+              "transition-all ease-in-out duration-300 bg-amber-600 text-white font-bold rounded-lg px-4" +
+              " py-2 hover:bg-amber-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+            }
+            onPointerDown={() => {
+              setActiveCriterionIndex(-1); // setting the index to -1 will ensure the current criteria will
+              // condense and another one won't open
+            }}
+            type={"button"}
+          >
+            Collapse
+          </button>
+          <button
+            className={
+              "transition-all ease-in-out duration-300 bg-slate-600 rounded-full px-2" +
+              " py-2 hover:bg-slate-700 focus:ring-2 focus:ring-slate-500 focus:outline-none"
+            }
+            onClick={handleTemplateSetterPress}
+            type={"button"}
+          >
+            +
+          </button>
           <button
             className={
               "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4" +
