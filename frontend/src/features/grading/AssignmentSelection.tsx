@@ -30,17 +30,17 @@ export default function AssignmentSelection({
 
     return (
       <div className={"grid gap-2 mt-0.5"}>
-        Select the course you'd like to grade!
-        <div>
+        Select an assignment to grade
+        <div className={"grid gap-2 mt-0.5"}>
           {assignments.map((assignment: Assignment) => (
             <div
-              key={course.id}
+              key={assignment.id}
               className={
                 "flex gap-4 bg-gray-600 hover:bg-gray-500 px-3 py-1 cursor-pointer rounded-full text-2xl font-bold"
               }
               onClick={() => handleAssignmentSelection(assignment)}
             >
-              <h3>{course.name}</h3>
+              <h3>{assignment.name}</h3>
             </div>
           ))}
         </div>
@@ -49,7 +49,7 @@ export default function AssignmentSelection({
   };
 
   const handleAssignmentSelection = (assignment: Assignment) => {
-    alert(`Course Selected: ${course.name}`);
+    alert(`Assignment Selected: ${assignment.name}`);
     selectAssignment(assignment);
   };
 

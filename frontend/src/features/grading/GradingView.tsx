@@ -55,6 +55,7 @@ export default function GradingView(): ReactElement {
       <Header />
       <div className={"grid gap-10"}>
         {course && <div>Active Course: {course.name}</div>}
+        {assignment && <div>Active Assignment: {assignment.name}</div>}
         <div className={"font-bold text-center text-5xl"}>Grading View</div>
         <button
           className={"text-3xl font-bold"}
