@@ -69,13 +69,8 @@ export default function CriteriaInput({
     "transition-all ease-in-out duration-300 bg-violet-200 text-violet-600 font-bold rounded-lg px-4" +
     " py-2 justify-self-end hover:bg-violet-300 focus:ring-2 focus:ring-violet-500 focus:outline-none opacity-50 cursor-not-allowed";
 
-  const [addRatingStyle, setAddRatingStyle] = useState(addButtonActiveStyle);
 
-  useEffect(() => {
-    if (ratings.length >= 4) {
-      setAddRatingStyle(addButtonInactiveStyle);
-    }
-  });
+
 
   /**
    * Criteria change functionality.
@@ -276,11 +271,12 @@ export default function CriteriaInput({
               +
             </button>
             <button
-              className={addRatingStyle}
+              className={ratings.length < 4 ? addButtonActiveStyle : addButtonInactiveStyle}
               onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleAddRating(event, index)
               }
               type={"button"}
+              disabled={ratings.length >= 4}
             >
               Add Rating
             </button>
