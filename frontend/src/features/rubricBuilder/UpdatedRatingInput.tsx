@@ -1,5 +1,6 @@
-import React, { ChangeEvent, ReactElement, useState } from "react";
+import React, { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import { Rating } from "palette-types";
+import { Dialog } from "@components";
 
 export default function UpdatedRatingInput({
   ratingIndex,
@@ -42,12 +43,6 @@ export default function UpdatedRatingInput({
     handleRatingChange(ratingIndex, newRating); // trigger parent update
   };
 
-  const handleDescriptionChange = () => {
-    const updatedRating = { ...rating, description };
-    handleRatingChange(ratingIndex, updatedRating);
-    setIsPopupOpen(false); // Close the popup after saving
-  };
-
   const handleRemoveRatingPress = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -60,7 +55,8 @@ export default function UpdatedRatingInput({
    *
    * State
    */
-  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   /**
    * Rating menu
@@ -68,8 +64,18 @@ export default function UpdatedRatingInput({
    * Functionality
    */
 
+  const handleDescriptionChange = () => {
+    const updatedRating = { ...rating, description };
+    handleRatingChange(ratingIndex, updatedRating);
+    setIsDialogOpen(false); // Close the popup after saving
+  };
+
   return (
-    <div className={"grid grid-rows-2 border-2 border-red-500 w-36 h-36 p-2"}>
+    <div
+      className={
+        "grid grid-rows-2 border-2 border-indigo-500 w-36 h-36 p-2 rounded-xl"
+      }
+    >
       <div className={"grid gap-1"}>
         <div className={"flex gap-2"}>
           <input
@@ -84,9 +90,23 @@ export default function UpdatedRatingInput({
         </div>
         <p>{title || "Placeholder Title"}</p>
       </div>
-      <div className={"text-xs"}>
+      <div className={"text-xs relative"}>
         {description || "future description of the rating"}
       </div>
+      <button onClick={() => setIsDialogOpen(true)} type={"button"}>
+        <img
+          src="public/paint-palette.png"
+          alt="Edit Rating"
+          className="w-6 h-6"
+        />
+      </button>
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title={"Edit Rating"}
+      >
+        <p>stuff</p>
+      </Dialog>
     </div>
   );
 }

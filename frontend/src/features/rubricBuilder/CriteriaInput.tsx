@@ -44,6 +44,31 @@ export default function CriteriaInput({
     handleCriteriaUpdate(index, newCriterion);
   }, [ratings]);
 
+  /**
+   * useEffect hook to ghost the add ratings button when 4 ratings are rendered.
+   *
+   * Related button styles and state.
+   */
+  const addButtonActiveStyle =
+    "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4" +
+    " py-2 justify-self-end hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:outline-none";
+
+  const addButtonInactiveStyle =
+    "transition-all ease-in-out duration-300 bg-violet-200 text-violet-600 font-bold rounded-lg px-4" +
+    " py-2 justify-self-end hover:bg-violet-300 focus:ring-2 focus:ring-violet-500 focus:outline-none opacity-50 cursor-not-allowed";
+
+  const [addRatingStyle, setAddRatingStyle] = useState(addButtonActiveStyle);
+
+  useEffect(() => {
+    if (ratings.length >= 4) {
+      setAddRatingStyle(addButtonInactiveStyle);
+    }
+  });
+
+  /**
+   * Criteria change functionality.
+   */
+
   const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newDescription = event.target.value;
     setCriteriaDescription(newDescription);
@@ -102,9 +127,12 @@ export default function CriteriaInput({
     index: number,
   ) => {
     event.preventDefault();
-    const updatedRatings = [...ratings, createRating()];
-    setRatings(updatedRatings);
-    criterion.ratings = updatedRatings;
+
+    if (ratings.length >= 4) return; // limit max of 4 ratings to be added
+
+    ratings.splice(1, 0, createRating()); // insert new rating between full marks and no marks
+    setRatings(ratings);
+    criterion.ratings = ratings;
     handleCriteriaUpdate(index, criterion);
   };
 
@@ -235,10 +263,7 @@ export default function CriteriaInput({
             +
           </button>
           <button
-            className={
-              "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4" +
-              " py-2 justify-self-end hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:outline-none"
-            }
+            className={addRatingStyle}
             onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
               handleAddRating(event, index)
             }
