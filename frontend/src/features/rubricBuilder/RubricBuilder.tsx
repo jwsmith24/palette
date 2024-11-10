@@ -13,6 +13,7 @@ import {
 import CriteriaInput from "./CriteriaInput";
 import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
 import CSVUpload from "./CSVUpload";
+import CSVExport from "./CSVExport";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -30,7 +31,7 @@ import {
   formatDate,
 } from "@utils";
 
-import { Criteria, Rubric } from "palette-types";
+import { Criteria, Rubric } from "palette-types/src";
 
 export default function RubricBuilder(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>(createRubric());
@@ -340,9 +341,8 @@ export default function RubricBuilder(): ReactElement {
           <h1 className="font-extrabold text-5xl mb-2 text-center">
             Create a new rubric
           </h1>
-
           <div className="flex justify-between items-center">
-            {/* Import and Export Buttons Container with Reduced Spacing */}
+            {/* Import and Export Buttons Container */}
             <div className="flex gap-2">
               <button
                 className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -351,12 +351,8 @@ export default function RubricBuilder(): ReactElement {
                 Import CSV
               </button>
 
-              <button
-                className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onClick={(event) => event.preventDefault()} // Placeholder
-              >
-                Export to CSV
-              </button>
+              {/* CSVExport Component for Export */}
+              <CSVExport rubric={rubric} />
             </div>
 
             {/* Rubric Total Points */}

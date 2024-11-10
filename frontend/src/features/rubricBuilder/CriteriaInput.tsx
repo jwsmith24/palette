@@ -9,7 +9,7 @@ import {
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import RatingInput from "./RatingInput";
-import { Criteria, Rating } from "palette-types";
+import { Criteria, Rating } from "palette-types/src";
 import { calcMaxPoints, createRating } from "@utils";
 
 export default function CriteriaInput({
