@@ -12,16 +12,4 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
       - NODE_ENV=development
-    command: sh -c "npm run migrate && npm run dev"
-
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: palette-db
-    volumes:
-      - pgdata:/var/lib/postgresql/data  # persists data within the container
-
-volumes:
-  pgdata:
+    command: sh -c "npm run dev"
