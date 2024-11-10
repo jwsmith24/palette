@@ -13,7 +13,6 @@ import {
 import CriteriaInput from "./CriteriaInput";
 import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
 import CSVUpload from "./CSVUpload";
-import CSVExport from "./CSVExport";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -31,15 +30,21 @@ import {
   formatDate,
 } from "@utils";
 
-import { Criteria, Rubric } from "palette-types/src";
+import { Criteria, Rubric } from "palette-types";
+import CSVExport from "@features/rubricBuilder/CSVExport.tsx";
 
 export default function RubricBuilder(): ReactElement {
+  /**
+   * Rubric Builder State
+   */
   const [rubric, setRubric] = useState<Rubric>(createRubric());
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
-  // Modal State
+  /**
+   * Modal dialog state
+   */
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [modalMessage, setModalMessage] = useState("");
@@ -57,24 +62,19 @@ export default function RubricBuilder(): ReactElement {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  // Ensure title is updated independently of the rest of the rubric
-  const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = { ...rubric };
-    newRubric.title = event.target.value;
-    setRubric(newRubric);
-    console.log(newRubric);
-  };
-
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
-    console.log("builder");
     calculateTotalPoints();
   }, [rubric]);
 
   /**
-   * Custom fetch hook provides a `fetchData` callback to send any type of fetch request.
+   * Custom fetch hooks provide a `fetchData` callback to send any type of fetch request.
    *
    * See PaletteAPIRequest for options structure.
+   */
+
+  /**
+   * POST fetch hook to add a new rubric to Canvas.
    */
   const { response: postRubricResponse, fetchData: postRubric } = useFetch(
     "/rubrics",
@@ -84,6 +84,9 @@ export default function RubricBuilder(): ReactElement {
     },
   );
 
+  /**
+   * PUT fetch hook to update an existing rubric on Canvas.
+   */
   const { response: putRubricResponse, fetchData: putRubric } = useFetch(
     `rubrics/${rubric.id}`,
     {
@@ -112,6 +115,16 @@ export default function RubricBuilder(): ReactElement {
       }
     }
   }, [postRubricResponse]);
+
+  /**
+   * Rubric change event handlers
+   */
+
+  const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newRubric = { ...rubric };
+    newRubric.title = event.target.value;
+    setRubric(newRubric);
+  };
 
   const handleExistingRubric = () => {
     setModalTitle("Duplicate Rubric Detected");
@@ -179,9 +192,48 @@ export default function RubricBuilder(): ReactElement {
       ),
     );
 
+  // function to iterate through each criterion and sum total max points for entire rubric
+  const calculateTotalPoints = () => {
+    const total: number = rubric.criteria.reduce(
+      (sum: number, criterion: Criteria) => {
+        if (isNaN(criterion.points)) {
+          return sum; // do not add bad value
+        }
+        return sum + Number(criterion.points); // ensure points aren't treated as a string
+      },
+      0,
+    ); // Initialize sum as 0
+    setTotalPoints(total); // Update state with the total points
+  };
+
+  // update rubric state with new list of criteria
+  const handleAddCriteria = (event: MouseEvent) => {
+    event.preventDefault();
+    const newCriteria = [...rubric.criteria, createCriterion()];
+    setRubric({ ...rubric, criteria: newCriteria });
+    setActiveCriterionIndex(newCriteria.length - 1);
+  };
+
+  const handleRemoveCriterion = (index: number) => {
+    const newCriteria = [...rubric.criteria];
+    newCriteria.splice(index, 1); // remove the target criterion from the array
+    setRubric({ ...rubric, criteria: newCriteria });
+  };
+
+  // update criterion at given index
+  const handleUpdateCriterion = (index: number, criterion: Criteria) => {
+    const newCriteria = [...rubric.criteria]; // copy criteria to new array
+    newCriteria[index] = criterion; // update the criterion with changes;
+    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
+  };
+
+  /**
+   * CSV Import and Export Functionality
+   * @param data - parsed csv data
+   */
+
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: CSVRow[]) => {
-    console.log("data that rubric builder gets: ", data);
     // create a set of current criteria descriptions to optimize duplicate check
     const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
 
@@ -217,7 +269,6 @@ export default function RubricBuilder(): ReactElement {
 
           // If points and description are valid, create a new Rating and add it to the ratings array
           const rating = createRating(points, description);
-          console.log(rating);
           criterion.ratings.push(rating);
         }
         criterion.updatePoints();
@@ -228,43 +279,8 @@ export default function RubricBuilder(): ReactElement {
     // update rubric state
     setRubric((prevRubric) => ({
       ...prevRubric,
-      rubricCriteria: [...prevRubric.criteria, ...newCriteria],
+      criteria: [...prevRubric.criteria, ...newCriteria],
     }));
-  };
-
-  // function to iterate through each criterion and sum total max points for entire rubric
-  const calculateTotalPoints = () => {
-    const total: number = rubric.criteria.reduce(
-      (sum: number, criterion: Criteria) => {
-        if (isNaN(criterion.points)) {
-          return sum; // do not add bad value
-        }
-        return sum + Number(criterion.points); // ensure points aren't treated as a string
-      },
-      0,
-    ); // Initialize sum as 0
-    setTotalPoints(total); // Update state with the total points
-  };
-
-  // update rubric state with new list of criteria
-  const handleAddCriteria = (event: MouseEvent) => {
-    event.preventDefault();
-    const newCriteria = [...rubric.criteria, createCriterion()];
-    setRubric({ ...rubric, criteria: newCriteria });
-    setActiveCriterionIndex(newCriteria.length - 1);
-  };
-
-  const handleRemoveCriterion = (index: number) => {
-    const newCriteria = [...rubric.criteria];
-    newCriteria.splice(index, 1); // remove the target criterion from the array
-    setRubric({ ...rubric, criteria: newCriteria });
-  };
-
-  // update criterion at given index
-  const handleUpdateCriterion = (index: number, criterion: Criteria) => {
-    const newCriteria = [...rubric.criteria]; // copy criteria to new array
-    newCriteria[index] = criterion; // update the criterion with changes;
-    setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
   };
 
   const renderFileImport = () => {
@@ -341,8 +357,9 @@ export default function RubricBuilder(): ReactElement {
           <h1 className="font-extrabold text-5xl mb-2 text-center">
             Create a new rubric
           </h1>
+
           <div className="flex justify-between items-center">
-            {/* Import and Export Buttons Container */}
+            {/* Import and Export Buttons Container with Reduced Spacing */}
             <div className="flex gap-2">
               <button
                 className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -351,7 +368,6 @@ export default function RubricBuilder(): ReactElement {
                 Import CSV
               </button>
 
-              {/* CSVExport Component for Export */}
               <CSVExport rubric={rubric} />
             </div>
 

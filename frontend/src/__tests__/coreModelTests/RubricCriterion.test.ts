@@ -19,10 +19,10 @@ describe("RubricCriterion", () => {
     it("should create a Criterion object with default values", () => {
       const criterion = createCriterion();
 
-      expect(criterion.description).toBe("");
+      expect(criterion.description).toBe("New Criterion");
       expect(criterion.longDescription).toBe("");
       expect(criterion.points).toBe(0);
-      expect(criterion.ratings).toEqual([]);
+      expect(criterion.ratings).toHaveLength(2);
       expect(criterion.id).toBeUndefined(); // criterion created on the frontend should not have an id yet
       expect(criterion.key).toBe("test-uuid"); // Mocked UUID
     });

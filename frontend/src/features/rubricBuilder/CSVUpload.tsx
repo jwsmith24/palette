@@ -1,6 +1,6 @@
 import React from "react";
 import Papa from "papaparse";
-import { CSVRow } from "../../types/csvRow.ts";
+import { CSVRow } from "@local_types";
 
 interface CSVUploadProps {
   onDataChange: (data: CSVRow[]) => void;

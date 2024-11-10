@@ -8,9 +8,8 @@ import { rubricFieldErrorHandler } from "./middleware/rubricFieldErrorHandler.js
 import { requestLogger } from "./middleware/requestLogger.js";
 import { responseLogger } from "./middleware/responseLogger.js";
 import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
-import { Course, PaletteAPIResponse } from "palette-types";
-import { CoursesAPI } from "./canvasAPI/courseRequests.js";
 import dotenv from "dotenv";
+import courseRouter from "./routes/courseRouter.js";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -38,33 +37,9 @@ app.get("/health", (_req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ status: "HEALTHY" });
 });
 
-// Courses endpoint (test)
-app.get("/api/courses", async (_req: Request, res: Response) => {
-  try {
-    const courses = await CoursesAPI.getCourses();
-
-    const apiResponse: PaletteAPIResponse<Course[]> = {
-      data: courses,
-      success: true,
-      message: "Here are the courses",
-    };
-
-    res.json(apiResponse);
-  } catch (error) {
-    // Handle any potential errors from getCourses()
-    const errorResponse: PaletteAPIResponse<null> = {
-      success: false,
-      message: "Failed to retrieve courses",
-      error: error instanceof Error ? error.message : String(error),
-    };
-
-    res.status(500).json(errorResponse);
-  }
-});
-
 // API routes
+app.use("/api/courses", courseRouter);
 app.use("/api/rubrics", rubricRouter);
-//app.use("/api/templates", templateRouter); avoid errors from template router
 
 // Wildcard route should only handle frontend routes
 // It should not handle any routes under /api or other server-side routes.

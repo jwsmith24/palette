@@ -1,8 +1,14 @@
 /**
- * Collection of course-related queries for the Canvas API.
+ * Service functionality for course and assignment-related queries.
  */
+
 import { fetchAPI } from "../utils/fetchAPI.js";
-import { CanvasCourse, Course } from "palette-types";
+import {
+  CanvasCourse,
+  Course,
+  Assignment,
+  CanvasAssignment,
+} from "palette-types";
 
 /**
  * Convert canvas course object to palette course object.
@@ -36,6 +42,28 @@ function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
 }
 
 /**
+ * Convert CanvasAssignment object to Palette Assignment object.
+ *
+ * Stores rubric id to fetch rubric when needed.
+ * @param canvasAssignment - assignment information from the Canvas API.
+ * @returns Valid assignment entry to display.
+ */
+function mapToPaletteAssignment(
+  canvasAssignment: CanvasAssignment,
+): Assignment {
+  return {
+    id: canvasAssignment.id,
+    name: canvasAssignment.name,
+    description: canvasAssignment.description || "",
+    dueDate: canvasAssignment.due_at || "",
+    pointsPossible: canvasAssignment.points_possible,
+    rubricId: canvasAssignment.rubric
+      ? canvasAssignment.rubric[0].id
+      : "No rubrics are associated with this" + " assignment",
+  };
+}
+
+/**
  * Defines CRUD operations for courses from the Canvas API.
  */
 export const CoursesAPI = {
@@ -46,13 +74,22 @@ export const CoursesAPI = {
    */
   async getCourses(): Promise<Course[]> {
     const canvasCourses = await fetchAPI<CanvasCourse[]>(
-      "/courses?per_page=100",
+      "/courses?per_page=25",
     );
-    console.log("canvas courses: ", canvasCourses);
 
     // map canvas courses to palette courses and filter out any null entries
     return canvasCourses
       .map(mapToPaletteCourse)
       .filter((course): course is Course => course !== null);
+  },
+
+  async getAssignments(courseId: string): Promise<Assignment[]> {
+    if (!courseId) {
+      throw new Error("Course ID is undefined");
+    }
+    const canvasAssignments = await fetchAPI<CanvasAssignment[]>(
+      `/courses/${courseId}/assignments`,
+    );
+    return canvasAssignments.map(mapToPaletteAssignment);
   },
 };

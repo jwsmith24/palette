@@ -6,12 +6,36 @@ import { Rubric, Criteria, Rating, Template } from "../../../palette-types/src";
 import { calcMaxPoints } from "./calculateMaxPoints.ts";
 import { v4 as uuid } from "uuid";
 
+const DEFAULT_CRITERIA_COUNT = 1;
+
+/**
+ * Helper function to populate default criteria.
+ */
+function populateDefaultCriteria() {
+  const criteria: Criteria[] = [];
+  for (let i = 0; i < DEFAULT_CRITERIA_COUNT; i++) {
+    criteria.push(createCriterion());
+  }
+  return criteria;
+}
+
+/**
+ * Helper function to populate default ratings.
+ *
+ * Each criterion must have a minimum of two rating options that cannot be deleted - full marks and no marks.
+ */
+function populateDefaultRatings() {
+  const ratings: Rating[] = [];
+  ratings.push(createRating(5, "Full Marks", ""));
+  ratings.push(createRating(0, "No Marks", ""));
+  return ratings;
+}
 /**
  * Rubric factory function. Assigns a unique key with uuid.
  */
 export function createRubric(
   title: string = "",
-  criteria: Criteria[] = [],
+  criteria: Criteria[] = populateDefaultCriteria(),
   id?: number,
   pointsPossible: number = 0,
 ): Rubric {
@@ -34,10 +58,10 @@ export function createRubric(
  * id is only assigned if criterion is being imported from Canvas.
  */
 export function createCriterion(
-  description: string = "",
+  description: string = "New Criterion",
   longDescription: string = "",
   points: number = 0,
-  ratings: Rating[] = [],
+  ratings: Rating[] = populateDefaultRatings(),
   id?: number,
 ): Criteria {
   return {
@@ -58,8 +82,8 @@ export function createCriterion(
  */
 export function createRating(
   points: number = 0,
-  description: string = "",
-  longDescription: string = "",
+  description: string = "New Rating",
+  longDescription: string = "Add a description",
   id?: number,
 ): Rating {
   return {

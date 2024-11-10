@@ -8,15 +8,16 @@ import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
 
-export default function CourseSelection(): ReactElement {
+export default function CourseSelection({
+  selectCourse,
+}: {
+  selectCourse: (course: Course) => void;
+}): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { fetchData: getCourses } = useFetch(
-    "/courses",
-    {}, // no extra options for GET
-  );
+  const { fetchData: getCourses } = useFetch("/courses");
 
   /**
    * Run fetchCourses when component initially mounts.
@@ -53,20 +54,10 @@ export default function CourseSelection(): ReactElement {
    * Render courses on the ui for user to select from.
    */
   const renderCourses = () => {
-    if (loading) {
-      return <p>Loading...</p>;
-    }
-    if (!errorMessage && courses.length === 0) {
-      return <div>No courses available to display</div>;
-    }
-
-    if (errorMessage) {
-      return (
-        <p className={"text-red-500 font-normal"}>
-          Error occurred while fetching courses: {errorMessage}
-        </p>
-      );
-    }
+    if (loading) return <p>Loading...</p>;
+    if (errorMessage)
+      return <p className="text-red-500 font-normal">Error: {errorMessage}</p>;
+    if (courses.length === 0) return <div>No courses available to display</div>;
 
     return (
       <div className={"grid gap-2 mt-0.5"}>
@@ -78,7 +69,7 @@ export default function CourseSelection(): ReactElement {
               className={
                 "flex gap-4 bg-gray-600 hover:bg-gray-500 px-3 py-1 cursor-pointer rounded-full text-2xl font-bold"
               }
-              onClick={() => handleCourseSelection(course.name)}
+              onClick={() => handleCourseSelection(course)}
             >
               <h3>{course.name}</h3>
             </div>
@@ -88,8 +79,8 @@ export default function CourseSelection(): ReactElement {
     );
   };
 
-  const handleCourseSelection = (name: string) => {
-    alert(`Course Selected: ${name}`);
+  const handleCourseSelection = (course: Course) => {
+    selectCourse(course);
   };
 
   /**

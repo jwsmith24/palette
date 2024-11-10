@@ -13,7 +13,7 @@
     "migrate": "npx prisma migrate dev",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "clean": "sudo rm -rf dist && sudo rm -rf node_modules && npm install"
+    "clean": "sudo rm -rf dist && rm -rf node_modules && npm install"
   },
   "keywords": [],
   "author": "Your Name",
