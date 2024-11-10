@@ -1,7 +1,6 @@
 import Papa from "papaparse";
 import { Rating, Rubric } from "palette-types/src";
 
-
 interface CSVExportProps {
   rubric: Rubric;
 }
@@ -10,7 +9,7 @@ const CSVExport: React.FC<CSVExportProps> = ({ rubric }) => {
   const handleExportToCSV = () => {
     // Determine the maximum number of ratings across all criteria
     const maxRatings = Math.max(
-      ...rubric.criteria.map((criterion) => criterion.ratings.length)
+      ...rubric.criteria.map((criterion) => criterion.ratings.length),
     );
 
     // Dynamically build header based on max number of ratings
