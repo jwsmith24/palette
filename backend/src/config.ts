@@ -7,6 +7,8 @@ if (config.error) {
   // default .env file
   const defaultEnv = `
   SERVER_PORT=3000
+  CANVAS_API_TOKEN=[enter your token] (remove braces)
+  CANVAS_URL=https://canvas.asu.edu/api/v1
   `;
 
   // if a local .env file doesn't exist, write a default one
