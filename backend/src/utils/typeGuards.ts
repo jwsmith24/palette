@@ -121,3 +121,13 @@ export function isRubricObjectHash(obj: unknown): obj is RubricObjectHash {
       : true)
   );
 }
+
+/**
+ * Type guard to check if an object is a list of CanvasRubrics.
+ * @param {unknown} obj - The object to check.
+ * @returns {boolean} True if the object is a paginated list of CanvasRubrics, false otherwise.
+ */
+export function isPaginatedRubricsList(obj: unknown): obj is CanvasRubric[] {
+  // the response is an array of CanvasRubrics
+  return Array.isArray(obj) && obj.every(isCanvasRubric);
+}

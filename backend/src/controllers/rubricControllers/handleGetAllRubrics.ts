@@ -1,9 +1,28 @@
 import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
+import { GetAllRubricsRequest, GetAllRubricsResponse } from "palette-types";
+import config from "../../config.js";
+import { RubricsAPI } from "../../CanvasAPI/rubricRequests.js";
+import { StatusCodes } from "http-status-codes";
+import { isPaginatedRubricsList } from "../../utils/typeGuards.js";
 
 export const handleGetAllRubrics = asyncHandler(
-  (req: Request, res: Response) => {
-    console.log(req, res);
-    throw new Error("Not implemented");
+  async (req: Request, res: Response) => {
+    // create the request object for the Canvas API
+    const canvasRequest: GetAllRubricsRequest = {
+      courseID: Number(config!.TEST_COURSE_ID),
+    };
+
+    // make the request to the Canvas API
+    const canvasResponse: GetAllRubricsResponse =
+      await RubricsAPI.getAllRubrics(canvasRequest);
+
+    // if the response is successful, the type is a paginated list of CanvasRubrics
+    if (isPaginatedRubricsList(canvasResponse)) {
+      res.status(StatusCodes.OK).json(canvasResponse);
+      return;
+    }
+
+    throw new Error("Something went wrong");
   },
 );
