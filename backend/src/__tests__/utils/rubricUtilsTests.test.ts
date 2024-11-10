@@ -1,23 +1,31 @@
-import { RubricUtils } from '../../utils/rubricUtils';
-import { CanvasRubric, RequestFormattedRubric, Rubric } from 'palette-types';
+import { RubricUtils } from "../../utils/rubricUtils";
+import { CanvasRubric, RequestFormattedRubric, Rubric } from "palette-types";
+
+// mock the uuid function
+const MOCKED_UUID = "MOCK_UUID";
+jest.mock("uuid", () => {
+  return {
+    v4: () => MOCKED_UUID,
+  };
+});
 
 const validPaletteRubric: Rubric = {
   title: "Test Rubric",
   pointsPossible: 10,
-  key: "a key",
+  key: MOCKED_UUID,
   criteria: [
     {
       description: "Criterion 1",
       longDescription: "Long description 1",
       points: 10,
-      key: "a key",
+      key: MOCKED_UUID,
       updatePoints: () => {},
       ratings: [
         {
           description: "Rating 1",
           longDescription: "Long rating description 1",
           points: 5,
-          key: "a key",
+          key: MOCKED_UUID,
         },
       ],
     },
@@ -65,13 +73,6 @@ const validCanvasRubric: CanvasRubric = {
     },
   ],
 } as const;
-
-// mock the uuid function
-jest.mock("uuid", () => {
-  return {
-    v4: () => "a key",
-  };
-});
 
 describe("RubricUtils", () => {
   describe("toCanvasFormat", () => {
@@ -125,14 +126,14 @@ describe("RubricUtils", () => {
         id: 1,
         title: "Test Rubric",
         pointsPossible: 10,
-        key: "a key", // mocked uuid
+        key: MOCKED_UUID,
         criteria: [
           {
             //id: "1",
             description: "Criterion 1",
             longDescription: "Long description 1",
             points: 10,
-            key: "a key", // mocked uuid
+            key: MOCKED_UUID,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             updatePoints: expect.any(Function),
             ratings: [
@@ -141,7 +142,7 @@ describe("RubricUtils", () => {
                 description: "Rating 1",
                 longDescription: "Long rating description 1",
                 points: 5,
-                key: "a key", // mocked uuid
+                key: MOCKED_UUID,
               },
             ],
           },
@@ -159,7 +160,7 @@ describe("RubricUtils", () => {
         id: 1,
         title: "Test Rubric",
         pointsPossible: 10,
-        key: "a key", // mocked uuid
+        key: MOCKED_UUID,
         criteria: [],
       };
 
