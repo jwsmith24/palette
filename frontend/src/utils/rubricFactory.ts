@@ -26,8 +26,8 @@ function populateDefaultCriteria() {
  */
 function populateDefaultRatings() {
   const ratings: Rating[] = [];
-  ratings.push(createRating(5, "Full Marks", " "));
-  ratings.push(createRating(0, "No Marks", " "));
+  ratings.push(createRating(5, "Full Marks", ""));
+  ratings.push(createRating(0, "No Marks", ""));
   return ratings;
 }
 /**
@@ -58,7 +58,7 @@ export function createRubric(
  * id is only assigned if criterion is being imported from Canvas.
  */
 export function createCriterion(
-  description: string = "",
+  description: string = "New Criterion",
   longDescription: string = "",
   points: number = 0,
   ratings: Rating[] = populateDefaultRatings(),

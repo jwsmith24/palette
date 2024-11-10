@@ -129,8 +129,8 @@ export default function CriteriaInput({
     event.preventDefault();
 
     if (ratings.length >= 4) return; // limit max of 4 ratings to be added
-
-    ratings.splice(1, 0, createRating()); // insert new rating between full marks and no marks
+    // insert new rating between full marks and no marks
+    ratings.splice(1, 0, createRating(ratings.length));
     setRatings(ratings);
     criterion.ratings = ratings;
     handleCriteriaUpdate(index, criterion);
@@ -202,6 +202,12 @@ export default function CriteriaInput({
         className={
           " grid  grid-rows-[1fr_2fr_1fr] shadow-xl p-6 rounded-lg w-full bg-gray-700"
         }
+        onDoubleClick={(event) => {
+          // check if the clicked target is the card itself to avoid messing with child elements
+          if (event.target === event.currentTarget) {
+            setActiveCriterionIndex(-1);
+          }
+        }}
       >
         {/* Card style and main grid layout for content*/}
 

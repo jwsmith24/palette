@@ -23,6 +23,7 @@ export default function UpdatedRatingInput({
   const [description, setDescription] = useState<string>(
     rating.longDescription,
   );
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   /**
    * Rating data
@@ -43,6 +44,13 @@ export default function UpdatedRatingInput({
     handleRatingChange(ratingIndex, newRating); // trigger parent update
   };
 
+  const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const newDescription = event.target.value;
+    setDescription(newDescription); // update state to show latest input
+    const updatedRating = { ...rating, longDescription: newDescription };
+    handleRatingChange(ratingIndex, updatedRating);
+  };
+
   const handleRemoveRatingPress = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -51,29 +59,46 @@ export default function UpdatedRatingInput({
   };
 
   /**
-   * Rating menu
-   *
-   * State
+   * JSX for rendering the rating popup menu.
    */
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  /**
-   * Rating menu
-   *
-   * Functionality
-   */
-
-  const handleDescriptionChange = () => {
-    const updatedRating = { ...rating, description };
-    handleRatingChange(ratingIndex, updatedRating);
-    setIsDialogOpen(false); // Close the popup after saving
+  const renderRatingMenu = () => {
+    return (
+      <div className={"grid gap-6 mt-4"}>
+        <div className={"grid gap-2"}>
+          <label>Edit Title</label>
+          <input
+            placeholder={"Enter a title..."}
+            value={title}
+            type="text"
+            className={"p-2 text-black"}
+            onChange={handleTitleChange}
+          />
+        </div>
+        <div className={"grid gap-2"}>
+          <label>Edit Description</label>
+          <textarea
+            value={description}
+            placeholder={"Enter a description..."}
+            onChange={handleDescriptionChange}
+            className={"text-black p-2 resize-none"}
+            cols={60}
+            rows={4}
+          />
+        </div>
+        <div className={"flex gap-2 justify-self-end"}>
+          <button type={"button"} onClick={() => setIsDialogOpen(false)}>
+            Cancel
+          </button>
+          <button type={"button"}>Save</button>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div
       className={
-        "grid grid-rows-2 border-2 border-indigo-500 w-36 h-36 p-2 rounded-xl"
+        "grid grid-rows-2 border-2 border-indigo-500 w-36 h-44 p-2 rounded-xl"
       }
     >
       <div className={"grid gap-1"}>
@@ -93,7 +118,13 @@ export default function UpdatedRatingInput({
       <div className={"text-xs relative"}>
         {description || "future description of the rating"}
       </div>
-      <button onClick={() => setIsDialogOpen(true)} type={"button"}>
+      <button
+        onClick={() => setIsDialogOpen(true)}
+        type={"button"}
+        className={
+          "rounded-full bg-indigo-600 w-10 p-2 hover:opacity-80 active:opacity-70"
+        }
+      >
         <img
           src="public/paint-palette.png"
           alt="Edit Rating"
@@ -105,7 +136,7 @@ export default function UpdatedRatingInput({
         onClose={() => setIsDialogOpen(false)}
         title={"Edit Rating"}
       >
-        <p>stuff</p>
+        {renderRatingMenu()}
       </Dialog>
     </div>
   );
