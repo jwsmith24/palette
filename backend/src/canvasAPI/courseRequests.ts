@@ -74,7 +74,6 @@ export const CoursesAPI = {
     const canvasCourses = await fetchAPI<CanvasCourse[]>(
       "/courses?per_page=25",
     );
-    console.log("canvas courses: ", canvasCourses);
 
     // map canvas courses to palette courses and filter out any null entries
     return canvasCourses
@@ -83,15 +82,12 @@ export const CoursesAPI = {
   },
 
   async getAssignments(courseId: string): Promise<Assignment[]> {
-    console.log(`fetching assignments for course ${courseId}`);
-
     if (!courseId) {
       throw new Error("Course ID is undefined");
     }
     const canvasAssignments = await fetchAPI<CanvasAssignment[]>(
       `/courses/${courseId}/assignments`,
     );
-    console.log("canvas assignments: ", canvasAssignments);
     return canvasAssignments.map(mapToPaletteAssignment);
   },
 };
