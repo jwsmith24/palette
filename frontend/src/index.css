@@ -1,5 +1,5 @@
 /*
-CSS entry point. Tailwind classes are added here to be used within jsx/tsx files directly. tailwind.config.js
+CSS entry point. Tailwind classes are added here to be used within jsx/tsx files directly. tailwind.config.cjs
 removes all unused CSS classes when we do a production build.
  */
 @tailwind base;

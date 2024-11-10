@@ -10,7 +10,7 @@ import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import { Criteria, Rating } from "palette-types";
 import { calcMaxPoints, createRating } from "@utils";
-import UpdatedRatingInput from "@features/rubricBuilder/UpdatedRatingInput.tsx";
+import RatingInput from "@features/rubricBuilder/RatingInput";
 
 export default function CriteriaInput({
   index,
@@ -111,7 +111,7 @@ export default function CriteriaInput({
   const renderRatingOptions = () => {
     return ratings.map((rating: Rating, ratingIndex: number) => {
       return (
-        <UpdatedRatingInput
+        <RatingInput
           key={rating.key}
           ratingIndex={ratingIndex}
           rating={rating}

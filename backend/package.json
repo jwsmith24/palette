@@ -9,11 +9,9 @@
     "dev": "concurrently \"tsc --watch\" \"nodemon dist/backend/src/app.js\"",
     "build": "tsc",
     "start": "node dist/backend/src/app.js",
-    "generate": "npx prisma generate",
-    "migrate": "npx prisma migrate dev",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "clean": "sudo rm -rf dist && rm -rf node_modules && npm install"
+    "clean": "rm -rf dist && rm -rf node_modules && npm install && npm run build"
   },
   "keywords": [],
   "author": "Your Name",
