@@ -17,7 +17,7 @@ export const fallbackErrorHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ): void => {
-  console.error(`Uncaught error: ${err.message}`);
+  console.error(`Uncaught error: ${err.message} `);
   const paletteResponse = createErrorResponse(
     err.message || "An unexpected error occurred",
   );

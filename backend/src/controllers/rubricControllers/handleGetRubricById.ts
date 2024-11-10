@@ -4,6 +4,6 @@ import { Request, Response } from "express";
 export const handleGetRubricById = asyncHandler(
   (req: Request, res: Response) => {
     console.log(req, res);
-    throw new Error("Not implemented");
+    throw new Error("handleGetRubricById is not implemented.. yet");
   },
 );
