@@ -31,7 +31,7 @@ import {
 } from "@utils";
 
 import { Criteria, Rubric } from "palette-types";
-import CSVExport from "@features/rubricBuilder/CSVExport.tsx";
+import CSVExport from "@features/rubricBuilder/CSVExport";
 
 export default function RubricBuilder(): ReactElement {
   /**

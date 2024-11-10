@@ -9,8 +9,9 @@ import {
 import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import { Criteria, Rating } from "palette-types";
-import { calcMaxPoints, createRating } from "@utils";
+import { createRating } from "@utils";
 import RatingInput from "@features/rubricBuilder/RatingInput";
+import { motion } from "framer-motion";
 
 export default function CriteriaInput({
   index,
@@ -38,8 +39,19 @@ export default function CriteriaInput({
    * Whenever ratings change, recalculate criterion's max points
    */
   useEffect(() => {
-    const maxRating = calcMaxPoints(ratings);
+    // sort ratings in descending order by points
+    const sortedRatings = [...ratings].sort((a, b) => b.points - a.points);
+
+    // Only update state if the sorted array is different from the current ratings
+    if (JSON.stringify(ratings) !== JSON.stringify(sortedRatings)) {
+      setRatings(sortedRatings);
+    }
+
+    // calculate max points after sorting
+    const maxRating = sortedRatings[0]?.points || 0; // defaults to 0 if ratings array is empty
     setMaxPoints(maxRating);
+
+    // update criterion with new max points value
     const newCriterion = { ...criterion, points: maxRating };
     handleCriteriaUpdate(index, newCriterion);
   }, [ratings]);
@@ -219,13 +231,12 @@ export default function CriteriaInput({
           onChange={handleDescriptionChange}
         />
 
-        <div
-          className={
-            "grid grid-flow-col gap-4 m-auto max-w-full overflow-y-auto"
-          }
+        <motion.div
+          layout
+          className={"grid grid-flow-col gap-4 m-auto max-w-full"}
         >
           {renderRatingOptions()}
-        </div>
+        </motion.div>
 
         <div className={"flex gap-3 items-end justify-between"}>
           <div className="flex gap-3">

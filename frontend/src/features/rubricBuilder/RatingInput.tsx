@@ -1,6 +1,7 @@
 import React, { ChangeEvent, ReactElement, useState } from "react";
 import { Rating } from "palette-types";
 import { Dialog } from "@components";
+import { motion } from "framer-motion";
 
 export default function RatingInput({
   ratingIndex,
@@ -96,13 +97,22 @@ export default function RatingInput({
   };
 
   return (
-    <div
+    <motion.div
+      layout
+      transition={{
+        layout: {
+          type: "spring",
+          stiffness: 105,
+          damping: 10,
+        },
+      }}
       className={
-        "grid gap-2 grid-rows-2 border-2 border-indigo-500 w-36 h-48 p-2 rounded-xl"
+        "grid gap-2 grid-rows-2 border-2" +
+        " border-indigo-500 w-36 h-48 p-2 rounded-xl"
       }
     >
       <div className={"grid gap-2"}>
-        <div className={"flex gap-2"}>
+        <div className={"flex gap-2 relative"}>
           <input
             type={"number"}
             className={"px-3 w-16 rounded-full text-black"}
@@ -116,7 +126,7 @@ export default function RatingInput({
         <p className={"text-sm font-medium"}>{title}</p>
       </div>
       <div className={"text-xs relative"}>{description}</div>
-      <div>
+      <div className={"flex justify-between items-center"}>
         <button
           onClick={() => setIsDialogOpen(true)}
           type={"button"}
@@ -130,7 +140,15 @@ export default function RatingInput({
             className={"w-6 h-6"}
           />
         </button>
-        <button onClick={handleRemoveRatingPress}>Remove</button>
+        <button
+          onClick={handleRemoveRatingPress}
+          className={
+            "rounded-full h-8 w-8 text-xl font-light relative" +
+            " -right-2 -bottom-2 hover:text-red-500"
+          }
+        >
+          x
+        </button>
       </div>
       <Dialog
         isOpen={isDialogOpen}
@@ -139,6 +157,6 @@ export default function RatingInput({
       >
         {renderRatingMenu()}
       </Dialog>
-    </div>
+    </motion.div>
   );
 }

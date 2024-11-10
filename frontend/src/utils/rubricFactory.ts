@@ -3,8 +3,8 @@
  */
 
 import { Rubric, Criteria, Rating, Template } from "../../../palette-types/src";
-import { calcMaxPoints } from "./calculateMaxPoints.ts";
 import { v4 as uuid } from "uuid";
+import {calcMaxPoints} from "./calculateMaxPoints.ts";
 
 const DEFAULT_CRITERIA_COUNT = 1;
 
