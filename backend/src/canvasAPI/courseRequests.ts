@@ -1,6 +1,7 @@
 /**
- * Collection of course-related queries for the Canvas API. Includes assignment queries.
+ * Service functionality for course and assignment-related queries.
  */
+
 import { fetchAPI } from "../utils/fetchAPI.js";
 import {
   CanvasCourse,
@@ -41,10 +42,11 @@ function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
 }
 
 /**
- * Trim Canvas Assignment to Assignment object within the Palette context.
+ * Convert CanvasAssignment object to Palette Assignment object.
  *
  * Stores rubric id to fetch rubric when needed.
- * @param canvasAssignment
+ * @param canvasAssignment - assignment information from the Canvas API.
+ * @returns Valid assignment entry to display.
  */
 function mapToPaletteAssignment(
   canvasAssignment: CanvasAssignment,

@@ -82,8 +82,8 @@ export function createCriterion(
  */
 export function createRating(
   points: number = 0,
-  description: string = "",
-  longDescription: string = "",
+  description: string = "New Rating",
+  longDescription: string = "Add a description",
   id?: number,
 ): Rating {
   return {

@@ -98,10 +98,10 @@ export default function UpdatedRatingInput({
   return (
     <div
       className={
-        "grid grid-rows-2 border-2 border-indigo-500 w-36 h-44 p-2 rounded-xl"
+        "grid gap-2 grid-rows-2 border-2 border-indigo-500 w-36 h-48 p-2 rounded-xl"
       }
     >
-      <div className={"grid gap-1"}>
+      <div className={"grid gap-2"}>
         <div className={"flex gap-2"}>
           <input
             type={"number"}
@@ -113,25 +113,25 @@ export default function UpdatedRatingInput({
           />
           <span>Points</span>
         </div>
-        <p>{title || "Placeholder Title"}</p>
+        <p className={"text-sm font-medium"}>{title}</p>
       </div>
-      <div className={"text-xs relative"}>
-        {description || "future description of the rating"}
+      <div className={"text-xs relative"}>{description}</div>
+      <div>
+        <button
+          onClick={() => setIsDialogOpen(true)}
+          type={"button"}
+          className={
+            "rounded-full bg-indigo-600 w-10 p-2 hover:opacity-80 active:opacity-70"
+          }
+        >
+          <img
+            src="public/paint-palette.png"
+            alt="Edit Rating"
+            className="w-6 h-6"
+          />
+        </button>
+        <button onClick={handleRemoveRatingPress}>Remove</button>
       </div>
-      <button
-        onClick={() => setIsDialogOpen(true)}
-        type={"button"}
-        className={
-          "rounded-full bg-indigo-600 w-10 p-2 hover:opacity-80 active:opacity-70"
-        }
-      >
-        <img
-          src="public/paint-palette.png"
-          alt="Edit Rating"
-          className="w-6 h-6"
-        />
-      </button>
-      <button onClick={handleRemoveRatingPress}>Remove</button>
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
