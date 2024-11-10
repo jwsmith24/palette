@@ -227,10 +227,6 @@ export default function RubricBuilder(): ReactElement {
     }));
   };
 
-  useEffect(() => {
-    console.log("Updated rubric state: ", rubric);
-  }, [rubric]);
-
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
     const total: number = rubric.criteria.reduce(
