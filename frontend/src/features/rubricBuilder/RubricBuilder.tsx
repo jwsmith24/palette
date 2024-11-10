@@ -178,7 +178,6 @@ export default function RubricBuilder(): ReactElement {
 
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: CSVRow[]) => {
-    console.log("data that rubric builder gets: ", data);
     // create a set of current criteria descriptions to optimize duplicate check
     const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
 
@@ -214,7 +213,6 @@ export default function RubricBuilder(): ReactElement {
 
           // If points and description are valid, create a new Rating and add it to the ratings array
           const rating = createRating(points, description);
-          console.log(rating);
           criterion.ratings.push(rating);
         }
         criterion.updatePoints();
@@ -225,9 +223,13 @@ export default function RubricBuilder(): ReactElement {
     // update rubric state
     setRubric((prevRubric) => ({
       ...prevRubric,
-      rubricCriteria: [...prevRubric.criteria, ...newCriteria],
+      criteria: [...prevRubric.criteria, ...newCriteria],
     }));
   };
+
+  useEffect(() => {
+    console.log("Updated rubric state: ", rubric);
+  }, [rubric]);
 
   // function to iterate through each criterion and sum total max points for entire rubric
   const calculateTotalPoints = () => {
