@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactElement, useEffect, useState } from "react";
+import React, { ChangeEvent, ReactElement, useState } from "react";
 import { Rating } from "palette-types";
 import { Dialog } from "@components";
 
@@ -131,6 +131,7 @@ export default function UpdatedRatingInput({
           className="w-6 h-6"
         />
       </button>
+      <button onClick={handleRemoveRatingPress}>Remove</button>
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
