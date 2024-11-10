@@ -17,9 +17,11 @@ export default function UpdatedRatingInput({
    *
    * State
    */
-  const [points, setPoints] = useState<number>();
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [points, setPoints] = useState<number>(rating.points);
+  const [title, setTitle] = useState<string>(rating.description);
+  const [description, setDescription] = useState<string>(
+    rating.longDescription,
+  );
 
   /**
    * Rating data
@@ -67,12 +69,24 @@ export default function UpdatedRatingInput({
    */
 
   return (
-    <div className={"grid grid-rows-2 border-2 border-red-500 w-28 h-36 p-2"}>
-      <div>
-        <p>{points || 0} Points</p>
-        <p>{title || "Placeholder"}</p>
+    <div className={"grid grid-rows-2 border-2 border-red-500 w-36 h-36 p-2"}>
+      <div className={"grid gap-1"}>
+        <div className={"flex gap-2"}>
+          <input
+            type={"number"}
+            className={"px-3 w-16 rounded-full text-black"}
+            value={points}
+            onChange={handlePointChange}
+            min={0}
+            max={100}
+          />
+          <span>Points</span>
+        </div>
+        <p>{title || "Placeholder Title"}</p>
       </div>
-      rating
+      <div className={"text-xs"}>
+        {description || "future description of the rating"}
+      </div>
     </div>
   );
 }
