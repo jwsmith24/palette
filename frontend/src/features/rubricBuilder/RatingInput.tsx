@@ -125,9 +125,9 @@ export default function RatingInput({
           }
         >
           <img
-            src="public/paint-palette.png"
-            alt="Edit Rating"
-            className="w-6 h-6"
+            src={"paint-palette.png"}
+            alt={"Edit Rating"}
+            className={"w-6 h-6"}
           />
         </button>
         <button onClick={handleRemoveRatingPress}>Remove</button>
