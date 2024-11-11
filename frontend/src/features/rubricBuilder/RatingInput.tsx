@@ -1,4 +1,4 @@
-import React, {ChangeEvent, ReactElement, useEffect, useState} from "react";
+import React, { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import { Rating } from "palette-types";
 import { Dialog } from "@components";
 import { motion } from "framer-motion";
@@ -14,20 +14,23 @@ export default function RatingInput({
   handleRemoveRating: (index: number) => void;
   handleRatingChange: (index: number, updatedRating: Rating) => void;
 }): ReactElement {
-
   /**
    * Rating state
    */
   const [points, setPoints] = useState<number>(rating.points);
   const [title, setTitle] = useState<string>(rating.description);
-  const [description, setDescription] = useState<string>(rating.longDescription);
+  const [description, setDescription] = useState<string>(
+    rating.longDescription,
+  );
 
   /**
    * Dialog state
    */
-    // temp state used for form entries, only updating the actual rating state on a save
+  // temp state used for form entries, only updating the actual rating state on a save
   const [tempTitle, setTempTitle] = useState<string>(rating.description);
-  const [tempDescription, setTempDescription] = useState<string>(rating.longDescription);
+  const [tempDescription, setTempDescription] = useState<string>(
+    rating.longDescription,
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   /**
@@ -56,11 +59,15 @@ export default function RatingInput({
     setDescription(tempDescription);
 
     // use temp values directly since state updates are asynchronous
-    const newRating = {...rating, description:tempTitle, longDescription: tempDescription}
-    handleRatingChange(ratingIndex, newRating)
+    const newRating = {
+      ...rating,
+      description: tempTitle,
+      longDescription: tempDescription,
+    };
+    handleRatingChange(ratingIndex, newRating);
 
     handleMenuClose();
-  }
+  };
 
   /**
    * Hook to sync the input value temp state with actual rating values whenever they change.
@@ -69,14 +76,11 @@ export default function RatingInput({
    * conditional ensures temp state only updates if it's needed.
    */
   useEffect(() => {
-
     if (isDialogOpen) {
-      setTempTitle(rating.description)
-      setTempDescription(rating.longDescription)
+      setTempTitle(rating.description);
+      setTempDescription(rating.longDescription);
     }
-
-  }, [isDialogOpen, rating])
-
+  }, [isDialogOpen, rating]);
 
   /**
    * Triggers rating removal from parent criterion.
@@ -91,7 +95,7 @@ export default function RatingInput({
 
   const handleMenuClose = () => {
     setIsDialogOpen(false);
-  }
+  };
 
   /**
    * JSX for rendering the rating popup menu.
@@ -124,7 +128,9 @@ export default function RatingInput({
           <button type={"button"} onClick={handleMenuClose}>
             Cancel
           </button>
-          <button type={"button"} onClick={handleSaveRating}>Save</button>
+          <button type={"button"} onClick={handleSaveRating}>
+            Save
+          </button>
         </div>
       </div>
     );
