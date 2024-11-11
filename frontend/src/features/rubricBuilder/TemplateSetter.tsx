@@ -9,6 +9,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import templatesJson from "../user/templates.json";
 import { Criteria } from "palette-types";
 import { createCriterion } from "@utils/rubricFactory.ts";
+import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
