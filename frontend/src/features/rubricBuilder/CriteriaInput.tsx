@@ -69,9 +69,6 @@ export default function CriteriaInput({
     "transition-all ease-in-out duration-300 bg-violet-200 text-violet-600 font-bold rounded-lg px-4" +
     " py-2 justify-self-end hover:bg-violet-300 focus:ring-2 focus:ring-violet-500 focus:outline-none opacity-50 cursor-not-allowed";
 
-
-
-
   /**
    * Criteria change functionality.
    */
@@ -88,12 +85,9 @@ export default function CriteriaInput({
     event: ReactMouseEvent,
     index: number,
   ) => {
-    console.log("removing the criterion!");
     event.preventDefault();
     event.stopPropagation();
-    setTimeout(() => {
-      removeCriterion(index);
-    }, 300); // removes criterion after the 300ms animation
+    removeCriterion(index);
   };
 
   // Update criterion when ratings change.
@@ -271,7 +265,11 @@ export default function CriteriaInput({
               +
             </button>
             <button
-              className={ratings.length < 4 ? addButtonActiveStyle : addButtonInactiveStyle}
+              className={
+                ratings.length < 4
+                  ? addButtonActiveStyle
+                  : addButtonInactiveStyle
+              }
               onClick={(event: ReactMouseEvent<HTMLButtonElement>) =>
                 handleAddRating(event, index)
               }

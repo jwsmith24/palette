@@ -32,6 +32,7 @@ import {
 
 import { Criteria, Rubric } from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function RubricBuilder(): ReactElement {
   /**
@@ -338,17 +339,27 @@ export default function RubricBuilder(): ReactElement {
         items={rubric.criteria.map((criterion) => criterion.key)}
         strategy={verticalListSortingStrategy}
       >
-        {rubric.criteria.map((criterion, index) => (
-          <CriteriaInput
-            key={criterion.key}
-            index={index}
-            activeCriterionIndex={activeCriterionIndex}
-            criterion={criterion}
-            handleCriteriaUpdate={handleUpdateCriterion}
-            removeCriterion={handleRemoveCriterion}
-            setActiveCriterionIndex={setActiveCriterionIndex}
-          />
-        ))}
+        <AnimatePresence>
+          {rubric.criteria.map((criterion, index) => (
+            <motion.div
+              key={criterion.key}
+              initial={{ opacity: 0, y: 50 }} // Starting state (entry animation)
+              animate={{ opacity: 1, y: 0 }} // Animate to this state when in the DOM
+              exit={{ opacity: 0, x: 50 }} // Ending state (exit animation)
+              transition={{ duration: 0.3 }} // Controls the duration of the animations
+              className="my-1"
+            >
+              <CriteriaInput
+                index={index}
+                activeCriterionIndex={activeCriterionIndex}
+                criterion={criterion}
+                handleCriteriaUpdate={handleUpdateCriterion}
+                removeCriterion={handleRemoveCriterion}
+                setActiveCriterionIndex={setActiveCriterionIndex}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </SortableContext>
     );
   };
@@ -397,7 +408,7 @@ export default function RubricBuilder(): ReactElement {
           />
 
           {/* Criteria Section */}
-          <div className="mt-6 grid gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+          <div className="mt-6 flex flex-col gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
             {renderCriteria()}
           </div>
 
