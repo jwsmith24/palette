@@ -7,6 +7,7 @@ import {
   RequestFormattedRubric,
   Rubric,
 } from "palette-types";
+import { v4 as uuid } from "uuid";
 
 export const RubricUtils = {
   /**
@@ -56,19 +57,28 @@ export const RubricUtils = {
    */
   toPaletteFormat(rubric: CanvasRubric): Rubric {
     return {
+      id: rubric.id,
       title: rubric.title,
       pointsPossible: rubric.points_possible,
+      key: uuid(),
       criteria:
         rubric.data?.map((criterion: CanvasCriterion) => {
           return {
+            // id: criterion.id,
             description: criterion.description,
             longDescription: criterion.long_description,
             points: criterion.points,
+            key: uuid(),
+            updatePoints: () => {
+              throw new Error("Not implemented");
+            },
             ratings: criterion.ratings?.map((rating: CanvasRating) => {
               return {
+                // id: rating.id,
                 description: rating.description,
                 longDescription: rating.long_description,
                 points: rating.points,
+                key: uuid(),
               };
             }),
           };

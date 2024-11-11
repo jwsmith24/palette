@@ -71,7 +71,7 @@ export default function RubricBuilder(): ReactElement {
    * POST fetch hook to add a new rubric to Canvas.
    */
   const { response: postRubricResponse, fetchData: postRubric } = useFetch(
-    "/rubrics",
+    "/courses/15760/rubrics", // hardcoded course ID for now
     {
       method: "POST",
       body: JSON.stringify(rubric), // use latest rubric data
@@ -82,7 +82,7 @@ export default function RubricBuilder(): ReactElement {
    * PUT fetch hook to update an existing rubric on Canvas.
    */
   const { response: putRubricResponse, fetchData: putRubric } = useFetch(
-    `rubrics/${rubric.id}`,
+    `/courses/15760/rubrics/${rubric.id}`,
     {
       method: "PUT",
       body: JSON.stringify(rubric),
@@ -194,9 +194,9 @@ export default function RubricBuilder(): ReactElement {
    * Generates a set of the current criteria descriptions stored within the component state to use for checking
    * duplicate entries.
    */
-  const buildCriteriaDescriptionSet = () =>
+  const buildCriteriaDescriptionSet = (clearedRubric: Rubric): Set<string> =>
     new Set(
-      rubric.criteria.map((criterion) =>
+      clearedRubric.criteria.map((criterion) =>
         criterion.description.trim().toLowerCase(),
       ),
     );
@@ -243,11 +243,17 @@ export default function RubricBuilder(): ReactElement {
 
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: CSVRow[]) => {
+    // reset the rubric state to clear any existing criteria
+    const clearedRubric = { ...rubric, criteria: [] as Criteria[] };
+    setRubric(clearedRubric);
+
     // create a set of current criteria descriptions to optimize duplicate check
-    const existingCriteriaDescriptions = buildCriteriaDescriptionSet();
+    const existingCriteriaDescriptions =
+      buildCriteriaDescriptionSet(clearedRubric);
 
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
+
     // data is a 2D array representing the CSV
     const newCriteria = dataWithoutHeader
       .map((row: CSVRow) => {
@@ -269,16 +275,22 @@ export default function RubricBuilder(): ReactElement {
         }
 
         // Create new criterion if unique
-        const criterion: Criteria = createCriterion(row[0]); // use the original format
+        const criterion: Criteria = createCriterion(row[0], "", 0, []);
 
         // process ratings in their column pairs
-        for (let i = 1; i < row.length; i += 2) {
+        let i = 1;
+        let j = 2;
+        // while not at the end of the row and not looking at empty cells
+        while (i < row.length && !(row[i] === "" && row[j] === "")) {
           const points = Number(row[i] as number); // Ratings (B, D, F, etc.)
-          const description = row[i + 1] as string; // add type assertions
+          const description = row[j] as string; // add type assertions
 
           // If points and description are valid, create a new Rating and add it to the ratings array
           const rating = createRating(points, description);
           criterion.ratings.push(rating);
+
+          i += 2;
+          j += 2;
         }
         criterion.updatePoints();
         return criterion;
@@ -286,10 +298,13 @@ export default function RubricBuilder(): ReactElement {
       .filter((criterion) => criterion !== null); // remove null values (bad entries)
 
     // update rubric state
-    setRubric((prevRubric) => ({
-      ...prevRubric,
-      criteria: [...prevRubric.criteria, ...newCriteria],
-    }));
+    setRubric(
+      (prevRubric) =>
+        ({
+          ...prevRubric,
+          criteria: [...prevRubric.criteria, ...newCriteria],
+        }) as Rubric,
+    );
   };
 
   const renderFileImport = () => {
