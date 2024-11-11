@@ -65,21 +65,26 @@ export default function GradingView(): ReactElement {
   }, [isCourseSelected, isAssignmentSelected]);
 
   useEffect(() => {
-    console.log("rubric id: ", rubricId);
-    if (hasValidRubricId) {
-      setRubric(undefined);
-      setRubricErrorMessage(undefined);
-      setLoading(true);
-      void fetchRubric();
+    // prevent effect if either course or assignment is not selected
+    if (!isCourseSelected || !isAssignmentSelected) {
       return;
     }
-    console.log("Not fetching, no valid rubric id");
-    setLoading(false);
+
+    // reset rubric state for clean slate prior to fetch
     setRubric(undefined);
-    setRubricId(undefined);
-    setRubricErrorMessage(
-      "This assignment does not have an associated rubric.",
-    );
+    setRubricErrorMessage(undefined);
+
+    if (hasValidRubricId) {
+      setLoading(true);
+      void fetchRubric();
+    } else {
+      // reset rubric state, inform user that the assignment doesn't have a rubric
+      setLoading(false);
+      setRubricId(undefined);
+      setRubricErrorMessage(
+        "This assignment does not have an associated rubric.",
+      );
+    }
   }, [rubricId]);
 
   const fetchRubric = async () => {
