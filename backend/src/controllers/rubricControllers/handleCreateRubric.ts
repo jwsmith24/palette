@@ -24,12 +24,13 @@ import RubricUtils from "../../utils/rubricUtils.js";
 export const handleCreateRubric = asyncHandler(
   async (req: Request, res: Response) => {
     // create the request object for the Canvas API
+    const { course_id } = req.params;
     const canvasRequest = createCanvasRequest(req.body as Rubric);
 
     // make the request to the Canvas API
     const canvasResponse: CreateRubricResponse = await RubricsAPI.createRubric(
       canvasRequest,
-      Number(config!.TEST_COURSE_ID), // dummy course id for testing
+      Number(course_id) || Number(config!.TEST_COURSE_ID),
     );
 
     // if the response is successful, the type is a RubricObjectHash
@@ -57,13 +58,13 @@ export const handleCreateRubric = asyncHandler(
  */
 function createCanvasRequest(rubric: Rubric): CreateRubricRequest {
   // todo: this makes a canned request for a specific assignment. Will need updating
-  const dummyAssignmentID = Number(config!.TEST_ASSIGNMENT_ID);
+  const dummyCourseID = Number(config!.TEST_COURSE_ID);
   return {
-    rubric_association_id: dummyAssignmentID,
+    rubric_association_id: dummyCourseID,
     rubric: RubricUtils.toCanvasFormat(rubric),
     rubric_association: {
-      association_id: dummyAssignmentID,
-      association_type: "Assignment",
+      association_id: dummyCourseID,
+      association_type: "Course",
       use_for_grading: true,
       hide_score_total: false,
       purpose: "grading",

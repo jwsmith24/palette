@@ -77,7 +77,7 @@ export default function RubricBuilder(): ReactElement {
    * See PaletteAPIRequest for options structure.
    */
   const { response: postRubricResponse, fetchData: postRubric } = useFetch(
-    "/rubrics",
+    "/courses/15760/rubrics", // hardcoded course ID for now
     {
       method: "POST",
       body: JSON.stringify(rubric), // use latest rubric data
@@ -85,7 +85,7 @@ export default function RubricBuilder(): ReactElement {
   );
 
   const { response: putRubricResponse, fetchData: putRubric } = useFetch(
-    `rubrics/${rubric.id}`,
+    `/courses/15760/rubrics/${rubric.id}`,
     {
       method: "PUT",
       body: JSON.stringify(rubric),

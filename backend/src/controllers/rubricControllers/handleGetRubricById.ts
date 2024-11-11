@@ -14,9 +14,13 @@ import config from "../../config.js";
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const handleGetRubricById = asyncHandler(
-  async (_req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    const { course_id, id } = req.params;
     // create the request object for the Canvas API
-    const canvasRequest: GetRubricRequest = createCanvasRequest();
+    const canvasRequest: GetRubricRequest = {
+      course_id: Number(course_id) || Number(config!.TEST_COURSE_ID),
+      id: Number(id) || Number(config!.TEST_RUBRIC_ID),
+    };
 
     // make the request to the Canvas API
     const canvasResponse: GetRubricResponse =
@@ -31,11 +35,3 @@ export const handleGetRubricById = asyncHandler(
     throw new Error("Something went wrong");
   },
 );
-
-function createCanvasRequest() {
-  // todo: this makes a canned request for a specific rubric. Will need updating
-  return {
-    id: Number(config!.TEST_RUBRIC_ID),
-    course_id: Number(config!.TEST_COURSE_ID),
-  };
-}

@@ -36,12 +36,13 @@ function createNewRubricAssociationRequest(): CreateRubricAssociationRequest {
 export const handleCreateRubricAssociation = asyncHandler(
   async (req: Request, res: Response) => {
     // build the request
+    const { course_id } = req.params;
     const request = createNewRubricAssociationRequest();
 
     // make the api call
     const response = await RubricsAPI.createRubricAssociation(
       request,
-      Number(config!.TEST_COURSE_ID),
+      Number(course_id) || Number(config!.TEST_COURSE_ID),
     );
 
     // Canvas Documentation is wrong on the return type. It actually returns a RubricObjectHash and not a RubricAssociation

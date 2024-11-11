@@ -8,9 +8,10 @@ import { isPaginatedRubricsList } from "../../utils/typeGuards.js";
 
 export const handleGetAllRubrics = asyncHandler(
   async (req: Request, res: Response) => {
+    const { course_id } = req.params;
     // create the request object for the Canvas API
     const canvasRequest: GetAllRubricsRequest = {
-      courseID: Number(config!.TEST_COURSE_ID),
+      courseID: Number(course_id) || Number(config!.TEST_COURSE_ID),
     };
 
     // make the request to the Canvas API

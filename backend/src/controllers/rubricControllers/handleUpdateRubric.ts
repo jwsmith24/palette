@@ -15,22 +15,19 @@ import { StatusCodes } from "http-status-codes";
 
 export const handleUpdateRubric = asyncHandler(
   async (req: Request, res: Response) => {
-    // todo: I'm making an assumption that we'll look up existing rubrics on canvas, selecting one,
-    //  loading it into palette's rubric builder, and changing it, sending it back to the server to update
-    // we'll get a rubric object WITH a rubric ID to update as the request body
-    const rubricToUpdate = req.body as Rubric;
-    // todo: move to updateRubricRequestValidator
-    if (!rubricToUpdate.id) {
-      throw new Error("Rubric ID required for updating");
-    }
+    const { course_id, id } = req.params;
 
     // create the request object for the Canvas API
-    const canvasRequest = createCanvasRequest(req.body as Rubric);
+    const canvasRequest: UpdateRubricRequest = createCanvasRequest(
+      Number(id),
+      Number(course_id),
+      req.body as Rubric,
+    );
 
     // make the request to the Canvas API
     const canvasResponse: UpdateRubricResponse = await RubricsAPI.updateRubric(
       canvasRequest,
-      Number(config!.TEST_COURSE_ID), // dummy course id for testing
+      Number(course_id) || Number(config!.TEST_COURSE_ID),
     );
 
     // if the response is successful, the type is a RubricObjectHash
@@ -52,23 +49,24 @@ export const handleUpdateRubric = asyncHandler(
   },
 );
 
-function createCanvasRequest(rubric: Rubric): UpdateRubricRequest {
-  // we need an id here!
-  if (!rubric.id) {
-    throw new Error("Rubric ID required for updating");
-  }
-
+// ASSUMPTION: this assumes that this rubric should be associated the course that it's being updated in and not an assignment
+function createCanvasRequest(
+  rubricID: number,
+  courseID: number,
+  rubric: Rubric,
+): UpdateRubricRequest {
   return {
-    id: Number(config!.TEST_RUBRIC_ID),
-    rubric_association_id: Number(config!.TEST_ASSIGNMENT_ID),
+    id: rubricID || Number(config!.TEST_RUBRIC_ID),
+    rubric_association_id: courseID || Number(config!.TEST_COURSE_ID),
     rubric: RubricUtils.toCanvasFormat(rubric),
     // optional association update below
-    rubric_association: {
-      association_id: Number(config!.TEST_ASSIGNMENT_ID),
-      association_type: "Assignment",
-      use_for_grading: true,
-      hide_score_total: false,
-      purpose: "grading",
-    },
+    // if we use canvas types globally we can just use the existing association if we don't want to update it
+    // rubric_association: {
+    //   association_id: courseID || Number(config!.TEST_COURSE_ID),
+    //   association_type: "Course",
+    //   use_for_grading: true,
+    //   hide_score_total: false,
+    //   purpose: "grading",
+    // },
   };
 }
