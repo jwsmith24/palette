@@ -130,9 +130,9 @@ export default function CriteriaInput({
     event.preventDefault();
 
     if (ratings.length >= 4) return; // limit max of 4 ratings to be added
-    // insert new rating between full marks and no marks
-    ratings.splice(1, 0, createRating(ratings.length));
-    setRatings(ratings);
+    const updatedRatings = ratings.slice(0);
+    updatedRatings.push(createRating(ratings.length));
+    setRatings(updatedRatings);
     criterion.ratings = ratings;
     handleCriteriaUpdate(index, criterion);
   };
