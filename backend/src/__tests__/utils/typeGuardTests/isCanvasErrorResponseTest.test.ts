@@ -1,7 +1,7 @@
 import { isCanvasAPIErrorResponse } from "../../../utils/typeGuards";
 
 describe("isCanvasErrorResponse", () => {
-  it("should return true if the response is a Canvas API error response", () => {
+  it("should return true if the response is an array of Canvas API error response", () => {
     // Arrange
     const response: unknown = {
       errors: [
@@ -18,7 +18,7 @@ describe("isCanvasErrorResponse", () => {
     expect(result).toBe(true);
   });
 
-  it("should require that the errors array is not empty", () => {
+  it("should require that the errors array (if present) not be empty", () => {
     // Arrange
     const response: unknown = {
       errors: [],
@@ -31,12 +31,12 @@ describe("isCanvasErrorResponse", () => {
     expect(result).toBe(false);
   });
 
-  it("should require that every error in the errors array is a Canvas API error", () => {
+  it("should require that every error in the errors array (if present) is a Canvas API error", () => {
     // Arrange
     const response: unknown = {
       errors: [
         {
-          message: "Error message",
+          message: "Good error message",
         },
         {
           error: "Not a Canvas API error",
@@ -51,7 +51,7 @@ describe("isCanvasErrorResponse", () => {
     expect(result).toBe(false);
   });
 
-  it("should allow for multiple message fields in the errors array", () => {
+  it("should allow for multiple message fields in the errors array (if present)", () => {
     // Arrange
     const response: unknown = {
       errors: [
@@ -71,10 +71,23 @@ describe("isCanvasErrorResponse", () => {
     expect(result).toBe(true);
   });
 
-  it("should return false if the response is missing the errors (plural) field", () => {
+  it("should allow the errors array to be optional if the response is a Canvas API error", () => {
     // Arrange
     const response: unknown = {
-      notTheErrorsField: "Not a Canvas API error",
+      message: "Error message",
+    };
+
+    // Act
+    const result = isCanvasAPIErrorResponse(response);
+
+    // Assert
+    expect(result).toBe(true);
+  });
+
+  it("should return false if the errors array is missing and the response is not a Canvas API error", () => {
+    // Arrange
+    const response: unknown = {
+      notAFieldCalledMessage: "Not a Canvas API error",
     };
 
     // Act

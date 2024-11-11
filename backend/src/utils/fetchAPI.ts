@@ -67,8 +67,7 @@ export async function fetchAPI<T>(
   } catch (error: unknown) {
     if (error instanceof CanvasAPIUnexpectedError) {
       error.logCause(); // log the unexpected error response
-    }
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       console.error(`Canvas API Error: ${error.message}`);
     }
     throw error; // rethrow the error for the caller to handle

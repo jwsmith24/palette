@@ -33,11 +33,11 @@ export function isCanvasAPIErrorResponse(
   return (
     typeof obj === "object" &&
     obj !== null &&
-    "errors" in obj &&
-    obj.errors !== null &&
-    Array.isArray(obj.errors) &&
-    obj.errors.length !== 0 &&
-    obj.errors.every(isCanvasAPIError)
+    ("errors" in obj
+      ? Array.isArray(obj.errors) &&
+        obj.errors.length > 0 &&
+        obj.errors.every(isCanvasAPIError)
+      : isCanvasAPIError(obj))
   );
 }
 
