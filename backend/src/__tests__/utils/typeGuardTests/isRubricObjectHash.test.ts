@@ -8,7 +8,7 @@ import {
   isCanvasAssociation,
   isCanvasRubric,
   isRubricObjectHash,
-} from "../../utils/typeGuards";
+} from "../../../utils/typeGuards";
 import { CanvasRubric } from "palette-types";
 
 const validRubric: CanvasRubric = {

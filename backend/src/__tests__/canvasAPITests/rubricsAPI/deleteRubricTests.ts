@@ -3,11 +3,11 @@
  * The deleteRubric function is responsible for deleting a rubric by its ID.
  */
 
-import { RubricsAPI } from "../../../CanvasAPI/rubricRequests";
-import { fetchAPI } from "../../../CanvasAPI/fetchAPI";
+import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
+import { fetchAPI } from "../../../utils/fetchAPI";
 
 // Mock the fetchAPI function
-jest.mock("../../../CanvasAPI/fetchAPI", () => ({
+jest.mock("../../../utils/fetchAPI", () => ({
   fetchAPI: jest.fn(),
 }));
 

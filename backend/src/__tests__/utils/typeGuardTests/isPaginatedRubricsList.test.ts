@@ -3,7 +3,7 @@
  *
  */
 
-import { isPaginatedRubricsList } from "../../utils/typeGuards";
+import { isPaginatedRubricsList } from "../../../utils/typeGuards";
 import { CanvasRubric } from "palette-types";
 
 describe("isPaginatedRubricsList", () => {

@@ -6,12 +6,12 @@
  *
  */
 
-import { RubricsAPI } from "../../../CanvasAPI/rubricRequests";
+import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { CreateRubricRequest } from "palette-types";
-import { fetchAPI } from "../../../CanvasAPI/fetchAPI";
+import { fetchAPI } from "../../../utils/fetchAPI";
 
 // Mock the fetchAPI function
-jest.mock("../../../CanvasAPI/fetchAPI", () => ({
+jest.mock("../../../utils/fetchAPI", () => ({
   fetchAPI: jest.fn(),
 }));
 

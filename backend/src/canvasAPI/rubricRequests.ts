@@ -1,11 +1,16 @@
 import {
   CanvasRubric,
+  CreateRubricAssociationRequest,
+  CreateRubricAssociationResponse,
   CreateRubricRequest,
   CreateRubricResponse,
   DeleteRubricRequest,
   DeleteRubricResponse,
+  GetAllRubricsRequest,
+  GetAllRubricsResponse,
   GetRubricRequest,
   GetRubricResponse,
+  UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
 import { fetchAPI } from "../utils/fetchAPI.js";
@@ -32,20 +37,13 @@ export const RubricsAPI = {
 
   /**
    * Get a rubric by its ID.
-   * @param request - The request object containing rubric ID and type (course or account).
+   * @param request - The request object containing rubric ID and type (course).
    * @returns A promise that resolves to the retrieved rubric response.
    */
   async getRubric(request: GetRubricRequest): Promise<GetRubricResponse> {
-    if (request.type === "course") {
-      return fetchAPI<CanvasRubric>(
-        `/courses/${request.course_id}/rubrics/${request.id}`,
-      );
-    } else {
-      // request type is account
-      return fetchAPI<CanvasRubric>(
-        `/accounts/${request.account_id}/rubrics/${request.id}`,
-      );
-    }
+    return fetchAPI<CanvasRubric>(
+      `/courses/${request.course_id}/rubrics/${request.id}`,
+    );
   },
 
   /**
@@ -55,13 +53,16 @@ export const RubricsAPI = {
    * @returns A promise that resolves to the updated rubric response.
    */
   async updateRubric(
-    request: CreateRubricRequest,
+    request: UpdateRubricRequest,
     courseID: number,
   ): Promise<UpdateRubricResponse> {
-    return fetchAPI<UpdateRubricResponse>(`/courses/${courseID}/rubrics`, {
-      method: "PUT",
-      body: JSON.stringify(request),
-    });
+    return fetchAPI<UpdateRubricResponse>(
+      `/courses/${courseID}/rubrics/${request.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(request),
+      },
+    );
   },
 
   /**
@@ -80,7 +81,35 @@ export const RubricsAPI = {
     );
   },
 
-  //   async listAllRubrics(courseID: number): Promise<CanvasRubric[] | CanvasAPIErrorResponse> {
-  //     throw new Error("Not yet implemented");
-  // }
+  /**
+   * Get all rubrics in a specific course.
+   * @param {GetAllRubricsRequest} request - The request object containing course ID.
+   * @returns {Promise<GetAllRubricsResponse>} A promise that resolves to the retrieved rubrics response.
+   */
+  async getAllRubrics(
+    request: GetAllRubricsRequest,
+  ): Promise<GetAllRubricsResponse> {
+    return fetchAPI<GetAllRubricsResponse>(
+      `/courses/${request.courseID}/rubrics?per_page=100`,
+    );
+  },
+
+  /**
+   * Create a new rubric association in a specific course. The association can be with a
+   * specific assignment, or just the course itself.
+   * @param request - The request object containing rubric association details.
+   * @param courseID - The ID of the course.
+   */
+  async createRubricAssociation(
+    request: CreateRubricAssociationRequest,
+    courseID: number,
+  ): Promise<CreateRubricAssociationResponse> {
+    return fetchAPI<CreateRubricAssociationResponse>(
+      `/courses/${courseID}/rubric_associations`,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+      },
+    );
+  },
 };

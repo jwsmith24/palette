@@ -3,12 +3,12 @@
  * The getRubric function is responsible for retrieving a rubric by its ID.
  */
 
-import { RubricsAPI } from "../../../CanvasAPI/rubricRequests";
-import { fetchAPI } from "../../../CanvasAPI/fetchAPI";
+import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
+import { fetchAPI } from "../../../utils/fetchAPI";
 import { GetRubricRequest } from "palette-types";
 
 // Mock the fetchAPI function
-jest.mock("../../../CanvasAPI/fetchAPI", () => ({
+jest.mock("../../../utils/fetchAPI", () => ({
   fetchAPI: jest.fn(),
 }));
 

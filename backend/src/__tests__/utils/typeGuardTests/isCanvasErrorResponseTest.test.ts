@@ -4,7 +4,7 @@
  * The function takes in an unknown response object and returns a boolean indicating if the error is a Canvas API error.
  */
 
-import { isCanvasAPIErrorResponse } from "../../utils/typeGuards";
+import { isCanvasAPIErrorResponse } from "../../../utils/typeGuards";
 
 describe("isCanvasErrorResponse", () => {
   it("should return true if the response is a Canvas API error response", () => {

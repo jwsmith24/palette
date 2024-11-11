@@ -3,12 +3,12 @@
  * The listAllRubrics function is responsible for retrieving all rubrics in a specific course.
  */
 
-import { RubricsAPI } from "../../../CanvasAPI/rubricRequests";
-import { fetchAPI } from "../../../CanvasAPI/fetchAPI";
+import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
+import { fetchAPI } from "../../../utils/fetchAPI";
 import { GetAllRubricsRequest } from "palette-types";
 
 // Mock the fetchAPI function
-jest.mock("../../../CanvasAPI/fetchAPI", () => ({
+jest.mock("../../../utils/fetchAPI", () => ({
   fetchAPI: jest.fn(),
 }));
 

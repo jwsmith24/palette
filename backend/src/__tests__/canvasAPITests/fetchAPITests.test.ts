@@ -5,7 +5,7 @@
  * The function also handles errors and throws an error if an unexpected error response is encountered.
  */
 
-import { fetchAPI } from "../../CanvasAPI/fetchAPI";
+import { fetchAPI } from "../../utils/fetchAPI";
 import { CanvasAPIUnexpectedError } from "../../errors/UnknownCanvasError";
 
 // Mock the fetch function

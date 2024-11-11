@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { CreateRubricAssociationRequest } from "palette-types";
 import config from "../../config.js";
-import { RubricsAPI } from "../../CanvasAPI/rubricRequests.js";
+import { RubricsAPI } from "../../canvasAPI/rubricRequests.js";
 import { isRubricObjectHash } from "../../utils/typeGuards.js";
 import { createSuccessResponse } from "../../utils/paletteResponseFactories.js";
 import { StatusCodes } from "http-status-codes";

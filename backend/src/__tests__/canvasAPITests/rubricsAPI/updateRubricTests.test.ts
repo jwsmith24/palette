@@ -3,12 +3,12 @@
  * The updateRubric function is responsible for updating an existing rubric in a specific course.
  */
 
-import { RubricsAPI } from "../../../CanvasAPI/rubricRequests";
+import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { UpdateRubricRequest } from "palette-types";
-import { fetchAPI } from "../../../CanvasAPI/fetchAPI";
+import { fetchAPI } from "../../../utils/fetchAPI";
 
 // Mock the fetchAPI function
-jest.mock("../../../CanvasAPI/fetchAPI", () => ({
+jest.mock("../../../utils/fetchAPI", () => ({
   fetchAPI: jest.fn(),
 }));
 

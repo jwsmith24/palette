@@ -7,7 +7,7 @@ import {
   UpdateRubricResponse,
 } from "palette-types";
 import RubricUtils from "../../utils/rubricUtils.js";
-import { RubricsAPI } from "../../CanvasAPI/rubricRequests.js";
+import { RubricsAPI } from "../../canvasAPI/rubricRequests.js";
 import config from "../../config.js";
 import { isRubricObjectHash } from "../../utils/typeGuards.js";
 import { createSuccessResponse } from "../../utils/paletteResponseFactories.js";

@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { GetAllRubricsRequest, GetAllRubricsResponse } from "palette-types";
 import config from "../../config.js";
-import { RubricsAPI } from "../../CanvasAPI/rubricRequests.js";
+import { RubricsAPI } from "../../canvasAPI/rubricRequests.js";
 import { StatusCodes } from "http-status-codes";
 import { isPaginatedRubricsList } from "../../utils/typeGuards.js";
 
