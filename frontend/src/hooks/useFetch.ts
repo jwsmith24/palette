@@ -17,12 +17,11 @@ const DEFAULT_REQUEST = {
   method: "GET",
 } as PaletteAPIRequest;
 
-export default function useFetch<T>(
+export function useFetch<T>(
   endpoint: string, // url path to target endpoint
   options: Partial<PaletteAPIRequest> = {}, // use defaults if nothing is provided
 ) {
   const [response, setResponse] = useState<PaletteAPIResponse<T>>({
-    data: null,
     success: false,
     loading: true,
   });
@@ -43,30 +42,30 @@ export default function useFetch<T>(
       } as RequestInit);
 
       if (!response.ok) {
-        const errorResponse =
-          (await response.json()) as PaletteAPIResponse<null>;
+        const errorResponse = (await response.json()) as PaletteAPIResponse<T>;
         setResponse(errorResponse);
         return errorResponse;
-        //throw new Error(`Error: ${errorResponse.error}`);
       }
 
-      const json = (await response.json()) as T;
+      const backendResponse = (await response.json()) as PaletteAPIResponse<T>;
+
       const newResponse: PaletteAPIResponse<T> = {
-        data: json,
-        success: true,
+        ...backendResponse,
         loading: false,
       };
+
       setResponse(newResponse);
       return newResponse;
     } catch (error) {
-      console.log("API Request failed:", error);
-      const errorResponse: PaletteAPIResponse<null> = {
-        data: null,
+      console.error("API Request failed:", error);
+
+      const errorResponse: PaletteAPIResponse<T> = {
         success: false,
         error:
           error instanceof Error ? error.message : "An unknown error occurred",
         loading: false,
       };
+
       setResponse(errorResponse);
       return errorResponse;
     }

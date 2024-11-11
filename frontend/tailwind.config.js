@@ -7,16 +7,6 @@ export default {
   theme: {
     extend: {},
   },
-  safelist: [
-    "bg-red-500",
-    "bg-yellow-500",
-    "bg-green-500",
-    "bg-blue-500",
-    "bg-purple-500",
-    "bg-orange-500",
-    "bg-gray-200",
-    "opacity-0 scale-75",
-    "opacity-100 scale-100",
-  ],
+  safelist: ["bg-gray-200", "opacity-0 scale-75", "opacity-100 scale-100"],
   plugins: [],
 };

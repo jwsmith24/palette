@@ -2,8 +2,7 @@
  * Unit tests for RubricRating.ts
  */
 
-import { UNASSIGNED } from "@utils/constants";
-import { createRating } from "@utils/rubricFactory";
+import { createRating } from "@utils";
 import { describe, expect, it, vi } from "vitest";
 
 // Mock uuid to ensure predictable values
@@ -17,9 +16,9 @@ describe("RubricRating", () => {
       const rating = createRating();
 
       expect(rating.points).toBe(0);
-      expect(rating.description).toBe("");
-      expect(rating.longDescription).toBe("");
-      expect(rating.id).toEqual(UNASSIGNED);
+      expect(rating.description).toBe("New Rating");
+      expect(rating.longDescription).toBe("Add a description");
+      expect(rating.id).toBeUndefined(); // rating created on frontend should not have id yet
       expect(rating.key).toBe("test-uuid"); // mocked UUID
     });
 

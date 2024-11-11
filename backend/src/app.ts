@@ -27,8 +27,10 @@ app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-// Logging middleware (goes before routes)
+// Request logging
 app.use(requestLogger);
+
+// Response logging
 app.use(responseLogger);
 
 // Health check route
@@ -48,5 +50,5 @@ app.use(fallbackErrorHandler);
 
 // Start the server and listen on port defined in .env file
 app.listen(PORT, () => {
-  console.log(`Server is up on http://localhost:${PORT}`);
+  console.log(`Server is up on port: ${PORT}`);
 });

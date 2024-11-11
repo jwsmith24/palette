@@ -7,10 +7,6 @@
     "sourceRoot": "./src",
     "rootDir": "../",
     "baseUrl": "./",
-    "paths": {
-      //      "@controllers": ["src/controllers"],
-      //      "@middleware": ["src/middleware"],
-    },
     "strict": true,
     "esModuleInterop": true,
     "sourceMap": true,

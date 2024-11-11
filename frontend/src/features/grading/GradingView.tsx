@@ -1,54 +1,170 @@
-import { MouseEvent, ReactElement, useState } from "react";
-import Header from "../../components/Header.tsx";
-import Footer from "../../components/Footer.tsx";
-import useFetch from "../../hooks/useFetch.ts";
+import { ReactElement, useEffect, useState } from "react";
+import { Header, Footer, Dialog } from "@components";
+import CourseSelection from "@features/grading/CourseSelection.tsx";
+import { Assignment, Course, PaletteAPIResponse, Rubric } from "palette-types";
+import AssignmentSelection from "@features/grading/AssignmentSelection.tsx";
+import { useFetch } from "@hooks";
 
 export default function GradingView(): ReactElement {
-  const [message, setMessage] = useState("WANT TO SEE COURSES?");
+  const [courseDialogOpen, setCourseDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState<string>("Course Selection");
+  const [isCourseSelected, setIsCourseSelected] = useState(false);
+  const [course, setCourse] = useState<Course>();
+  const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
+  const [assignment, setAssignment] = useState<Assignment>();
+  const [rubricId, setRubricId] = useState<string>();
 
-  // useFetch hook for get all courses
-  // we can deconstruct the response out if we need it in state
-  const { fetchData: getCourses } = useFetch(
-    "/courses",
-    {}, // no extra options for GET
-  );
+  const [rubric, setRubric] = useState<Rubric>();
+  const [rubricErrorMessage, setRubricErrorMessage] = useState<string>();
 
-  const handleGetCourses = (event: MouseEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
+  const { fetchData: getRubric } = useFetch(`/rubrics/${rubricId}`);
 
-    void (async () => {
-      // use void to tell typescript we're not going to use the promise since we update state with
-      // everything we need.
-      try {
-        const response = await getCourses(); // Trigger the GET request
-        console.log(response);
+  const activeCourseStyle =
+    "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
+  const activeAssignmentStyle =
+    "font-bold text-green-400 hover:opacity-80 cursor-pointer";
+  const resetStyle =
+    "font-bold text-white-400 cursor-pointer hover:text-red-400";
 
-        // Set the message based on the response
-        if (response.success) {
-          setMessage(JSON.stringify(response.data ?? "No courses found"));
-        } else {
-          setMessage(response.error || "Failed to get courses");
-        }
-      } catch (error) {
-        console.error("Error getting courses: ", error);
-        setMessage("An error occurred while fetching courses.");
+  /**
+   * Updates state for new course selection.
+   * @param course - target course for grading
+   */
+  const selectCourse = (course: Course) => {
+    setIsCourseSelected(true);
+    setCourse(course);
+    setCourseDialogOpen(false);
+  };
+
+  /**
+   * Updates state for new assignment selection.
+   * @param assignment - target assignment for grading
+   */
+  const selectAssignment = (assignment: Assignment) => {
+    setIsAssignmentSelected(true);
+    setAssignment(assignment);
+    setRubricId(assignment.rubricId);
+    setCourseDialogOpen(false);
+  };
+
+  const resetSelections = () => {
+    setIsCourseSelected(false);
+    setIsAssignmentSelected(false);
+    setCourse(undefined);
+    setAssignment(undefined);
+    setRubricId(undefined);
+  };
+
+  useEffect(() => {
+    if (isCourseSelected && !isAssignmentSelected) {
+      setDialogTitle("Assignment Selection");
+    } else if (isCourseSelected && isAssignmentSelected) {
+      setDialogTitle("Assignment Grading View");
+    }
+  }, [isCourseSelected, isAssignmentSelected]);
+
+  /**
+   * Effect hook to fetch rubric when rubric id changes
+   */
+  useEffect(() => {
+    if (rubricId) {
+      void fetchRubric();
+    }
+  }, [rubricId]);
+
+  const fetchRubric = async () => {
+    // loading tbd
+    try {
+      const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
+      console.log("rubric from request by id: ", response);
+
+      if (response.success) {
+        setRubric(response.data);
+      } else {
+        setRubricErrorMessage(response.error || "Failed to get rubric");
       }
-    })(); // IIFE since onClick needs a void instead of Promise<void>
+    } catch (error) {
+      console.error("An unexpected error occurred while getting rubric", error);
+    }
+  };
+
+  const renderContent = () => {
+    if (!isCourseSelected) {
+      return <CourseSelection selectCourse={selectCourse} />;
+    }
+    if (!isAssignmentSelected) {
+      return (
+        <AssignmentSelection
+          course={course!}
+          selectAssignment={selectAssignment}
+        />
+      );
+    }
+    return <div>Assignment Grading View</div>;
   };
 
   return (
-    <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
-      <div className={"grid gap-10"}>
-        <div className={"font-bold text-center text-5xl"}>{message}</div>
-        <button
-          className={"text-3xl font-bold"}
-          onClick={(event) => handleGetCourses(event)}
+
+      <div className="grid h-full w-full grid-rows-[1fr_10fr] gap-10 place-items-center">
+        {/* Active Course and Assignment Section */}
+        <div
+          className="
+            max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr]
+            items-center bg-transparent rounded-full
+            ring-1 ring-purple-500 gap-4 content-center
+          "
         >
-          Click This
-        </button>
+          <div className="flex items-center gap-2">
+            <p>Active Course:</p>
+            {course ? (
+              <p className={activeCourseStyle}>{course.name}</p>
+            ) : (
+              <button
+                className={activeCourseStyle}
+                onClick={() => setCourseDialogOpen(true)}
+              >
+                Select Course
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <p>Active Assignment:</p>
+            {assignment ? (
+              <p className={activeAssignmentStyle}>{assignment.name}</p>
+            ) : (
+              <button
+                className={activeAssignmentStyle}
+                onClick={() => setCourseDialogOpen(true)}
+              >
+                Select Assignment
+              </button>
+            )}
+          </div>
+
+          <button className={resetStyle} onClick={resetSelections}>
+            Reset
+          </button>
+        </div>
+
+        {/* Content Section */}
+        <div className="text-center font-bold text-5xl">
+          {(rubric && rubric.title) || rubricErrorMessage}
+        </div>
       </div>
+
       <Footer />
+
+      {/* Dialog for Course/Assignment Selection */}
+      <Dialog
+        isOpen={courseDialogOpen}
+        onClose={() => setCourseDialogOpen(false)}
+        title={dialogTitle}
+      >
+        {renderContent()}
+      </Dialog>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// Router for all /rubrics requests
 import express from "express";
 import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
 import { handleCreateRubricAssociation } from "../controllers/rubricControllers/handleCreateRubricAssociation.js";
@@ -12,6 +11,10 @@ import {
   courseParamValidator,
   idAndCourseParamValidator,
 } from "../validators/baseParamValidators.js";
+import {
+  getAllCourses,
+  getAssignments,
+} from "../controllers/courseController.js";
 
 const router = express.Router();
 
@@ -52,6 +55,7 @@ router.get(
 /**
  * @route GET /courses/:course_id/rubrics
  * @description Get all rubrics in a specific course.
+ * @route - GET courses/
  */
 router.get(
   "/:course_id/rubrics",
@@ -59,6 +63,12 @@ router.get(
   rubricValidationErrorHandler,
   handleGetAllRubrics,
 );
+
+/**
+ * @route GET /courses
+ * @description Get all courses for the current user
+ */
+router.get("/", getAllCourses);
 
 /**
  * @route PUT /courses/:course_id/rubrics/:id
@@ -82,5 +92,11 @@ router.delete(
   rubricValidationErrorHandler,
   handleDeleteRubric,
 );
+
+/**
+ * @route GET /courses/:courseID/assignments
+ * @description Get all assignments for a course
+ */
+router.get("/:courseId/assignments", getAssignments);
 
 export default router;
