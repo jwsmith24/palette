@@ -142,8 +142,7 @@ export default function RatingInput({
       transition={{
         layout: {
           type: "spring",
-          stiffness: 105,
-          damping: 10,
+          damping: 12,
         },
       }}
       className={
