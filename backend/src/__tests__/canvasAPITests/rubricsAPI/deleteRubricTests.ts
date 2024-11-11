@@ -1,8 +1,3 @@
-/**
- * This file contains tests for the deleteRubric function in the rubricsAPI.
- * The deleteRubric function is responsible for deleting a rubric by its ID.
- */
-
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { fetchAPI } from "../../../utils/fetchAPI";
 

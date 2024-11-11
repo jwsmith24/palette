@@ -1,8 +1,3 @@
-/**
- * This file is responsible for testing the createRubricAssociation function in the rubricRequests.ts file.
- * The createRubricAssociation function is responsible for creating a new rubric association in a specific course.
- */
-
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { CreateRubricAssociationRequest } from "palette-types";
 import { fetchAPI } from "../../../utils/fetchAPI";

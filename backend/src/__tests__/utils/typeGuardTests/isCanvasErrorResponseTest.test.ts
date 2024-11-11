@@ -1,9 +1,3 @@
-/**
- * This file is a test for the isCanvasErrorResponse function in the typeGuards.ts file.
- * The isCanvasErrorResponse function is responsible for checking if an error response is from the Canvas API.
- * The function takes in an unknown response object and returns a boolean indicating if the error is a Canvas API error.
- */
-
 import { isCanvasAPIErrorResponse } from "../../../utils/typeGuards";
 
 describe("isCanvasErrorResponse", () => {

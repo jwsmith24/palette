@@ -1,11 +1,3 @@
-/**
- * This file is for testing the createRubric function in the rubricRequests.ts file.
- * The createRubric function is responsible for creating a new rubric in a specific course.
- * The function takes in a request object containing rubric details and the course ID.
- * It then makes a POST request to the Canvas API to create the rubric if successful.
- *
- */
-
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { CreateRubricRequest } from "palette-types";
 import { fetchAPI } from "../../../utils/fetchAPI";

@@ -1,8 +1,3 @@
-/**
- * This file is responsible for testing the isPaginatedRubricsList function in the typeGuards.ts file.
- *
- */
-
 import { isPaginatedRubricsList } from "../../../utils/typeGuards";
 import { CanvasRubric } from "palette-types";
 

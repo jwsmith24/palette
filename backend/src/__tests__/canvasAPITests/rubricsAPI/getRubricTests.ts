@@ -1,8 +1,3 @@
-/**
- * This file is for testing the getRubric function in the rubricRequests.ts file.
- * The getRubric function is responsible for retrieving a rubric by its ID.
- */
-
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { fetchAPI } from "../../../utils/fetchAPI";
 import { GetRubricRequest } from "palette-types";

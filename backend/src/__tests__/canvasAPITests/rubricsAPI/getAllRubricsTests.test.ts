@@ -1,8 +1,3 @@
-/**
- * This file is responsible for testing the listAllRubrics function in the rubricRequests.ts file.
- * The listAllRubrics function is responsible for retrieving all rubrics in a specific course.
- */
-
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { fetchAPI } from "../../../utils/fetchAPI";
 import { GetAllRubricsRequest } from "palette-types";

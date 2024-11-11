@@ -1,8 +1,3 @@
-/**
- * This file is responsible for testing the updateRubric function in the rubricRequests.ts file.
- * The updateRubric function is responsible for updating an existing rubric in a specific course.
- */
-
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 import { UpdateRubricRequest } from "palette-types";
 import { fetchAPI } from "../../../utils/fetchAPI";
