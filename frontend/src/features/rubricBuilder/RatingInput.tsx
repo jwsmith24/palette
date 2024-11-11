@@ -14,10 +14,9 @@ export default function RatingInput({
   handleRemoveRating: (index: number) => void;
   handleRatingChange: (index: number, updatedRating: Rating) => void;
 }): ReactElement {
+
   /**
    * Rating state
-   *
-   *
    */
   const [points, setPoints] = useState<number>(rating.points);
   const [title, setTitle] = useState<string>(rating.description);

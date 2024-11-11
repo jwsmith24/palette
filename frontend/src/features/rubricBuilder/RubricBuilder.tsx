@@ -21,7 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import { useFetch } from "@hooks";
-import { ModalChoice, CSVRow } from "@local_types";
+import { CSVRow } from "@local_types";
 
 import {
   createCriterion,
@@ -43,24 +43,17 @@ export default function RubricBuilder(): ReactElement {
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   /**
-   * Modal dialog state
+   * Group modal state in one object.
    */
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [modalTitle, setModalTitle] = useState("");
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalChoices, setModalChoices] = useState<ModalChoice[]>([
-    {
-      // default button option to just acknowledge the message and close modal
-      label: "OK",
-      action: () => {
-        closeModal();
-      },
-    },
-  ]);
 
-  // shorthand functions for opening and closing the modal
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
+  const closeModal = () => setModal({ ...modal, isOpen: false });
+
+  const [modal, setModal] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    choices: [{ label: "OK", action: closeModal }],
+  });
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
@@ -95,25 +88,41 @@ export default function RubricBuilder(): ReactElement {
     },
   );
 
-  useEffect(() => {
-    if (postRubricResponse.loading) {
-      return; // do nothing if still loading
-    }
-    // we've got a response, check if it was successful
+  /**
+   * Helper function for the effect hook that handles the modal display based on the response.
+   */
+  const handlePostRubricResponse = () => {
     if (postRubricResponse.success) {
-      setModalTitle("Success!");
-      setModalMessage(`Rubric "${rubric.title}" submitted successfully!`);
-      openModal();
+      setModal({
+        isOpen: true,
+        title: "Success",
+        message: `Rubric "${rubric.title}" submitted successfully!`,
+        choices: [{ label: "OK", action: closeModal }],
+      });
     } else {
-      // success and error fields are mutually exclusive
-      if (postRubricResponse.error!.includes("already exists")) {
+      const errorMessage =
+        postRubricResponse.error || "An unexpected error occurred";
+
+      if (errorMessage.includes("already exists")) {
         handleExistingRubric();
-      } else {
-        setModalTitle("A MYSTERIOUS ERROR OCCURRED");
-        setModalMessage(postRubricResponse.error!);
-        openModal();
+        return;
       }
+
+      setModal({
+        isOpen: true,
+        title: "Error",
+        message: errorMessage,
+        choices: [{ label: "OK", action: closeModal }],
+      });
     }
+  };
+
+  /**
+   * Effect hook to process the response when it comes back.
+   */
+  useEffect(() => {
+    if (!postRubricResponse || postRubricResponse.loading) return;
+    handlePostRubricResponse();
   }, [postRubricResponse]);
 
   /**
@@ -126,52 +135,51 @@ export default function RubricBuilder(): ReactElement {
     setRubric(newRubric);
   };
 
+  const overwriteRubric = async () => {
+    closeModal();
+
+    await putRubric();
+
+    setModal({
+      isOpen: true,
+      title: putRubricResponse.success ? "Success!" : "Error",
+      message: putRubricResponse.success
+        ? "Rubric was overwritten!"
+        : `Error overwriting the rubric: ${putRubricResponse.error}`,
+      choices: [{ label: "OK", action: closeModal }],
+    });
+  };
+
+  const copyRubric = async () => {
+    closeModal();
+
+    const newRubric = {
+      ...rubric,
+      title: `${rubric.title} - Copy ${formatDate()}`,
+    };
+    setRubric(newRubric); // update state with latest before using hook
+    await postRubric();
+
+    setModal({
+      isOpen: true,
+      title: postRubricResponse.success ? "Success!" : "Error",
+      message: postRubricResponse.success
+        ? "Rubric copied!"
+        : `Error copying rubric: ${postRubricResponse.error}`,
+      choices: [{ label: "OK", action: closeModal }],
+    });
+  };
+
   const handleExistingRubric = () => {
-    setModalTitle("Duplicate Rubric Detected");
-    setModalMessage(
-      `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
-    );
-
-    setModalChoices([
-      {
-        label: "Overwrite",
-        action: async () => {
-          closeModal();
-          await putRubric();
-
-          if (putRubricResponse.success) {
-            setModalMessage("Rubric was overwritten successfully!");
-          } else {
-            setModalMessage(
-              `Error overwriting the rubric: ${putRubricResponse.error}`,
-            );
-          }
-          openModal(); // show modal with response
-        },
-      },
-      {
-        label: "Make a Copy",
-        action: async () => {
-          closeModal();
-          // update title
-          const newRubric = {
-            ...rubric,
-            title: `${rubric.title} - Copy ${formatDate()}`,
-          };
-          setRubric(newRubric); // update state with latest before using hook
-          await postRubric();
-
-          if (postRubricResponse.success) {
-            setModalMessage(`Rubric ${newRubric.title} created successfully!`);
-          } else {
-            setModalMessage(`Error creating copy: ${postRubricResponse.error}`);
-          }
-          openModal();
-        },
-      },
-    ]);
-
-    openModal();
+    setModal({
+      ...modal,
+      title: "Duplicate Rubric Detected",
+      message: `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
+      choices: [
+        { label: "Overwrite", action: () => void overwriteRubric() },
+        { label: "Copy", action: () => void copyRubric() },
+      ],
+    });
   };
 
   // Build rubric object with latest state values and send to server
@@ -420,11 +428,11 @@ export default function RubricBuilder(): ReactElement {
 
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog
-          show={isModalOpen}
+          show={modal.isOpen}
           onHide={closeModal}
-          title={modalTitle}
-          message={modalMessage}
-          choices={modalChoices}
+          title={modal.title}
+          message={modal.message}
+          choices={modal.choices}
         />
 
         {/*CSV/XLSX Import Dialog*/}
