@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactElement, useState } from "react";
+import React, {ChangeEvent, ReactElement, useEffect, useState} from "react";
 import { Rating } from "palette-types";
 import { Dialog } from "@components";
 import { motion } from "framer-motion";
@@ -15,21 +15,24 @@ export default function RatingInput({
   handleRatingChange: (index: number, updatedRating: Rating) => void;
 }): ReactElement {
   /**
-   * Rating data
+   * Rating state
    *
-   * State
+   *
    */
   const [points, setPoints] = useState<number>(rating.points);
   const [title, setTitle] = useState<string>(rating.description);
-  const [description, setDescription] = useState<string>(
-    rating.longDescription,
-  );
+  const [description, setDescription] = useState<string>(rating.longDescription);
+
+  /**
+   * Dialog state
+   */
+    // temp state used for form entries, only updating the actual rating state on a save
+  const [tempTitle, setTempTitle] = useState<string>(rating.description);
+  const [tempDescription, setTempDescription] = useState<string>(rating.longDescription);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   /**
-   * Rating data
-   *
-   * Functionality
+   * Rating functionality
    */
   const handlePointChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newPointValue = Number(event.target.value);
@@ -39,25 +42,57 @@ export default function RatingInput({
   };
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newTitle = event.target.value;
-    setTitle(newTitle); // update input value in state
-    const newRating = { ...rating, description: newTitle };
-    handleRatingChange(ratingIndex, newRating); // trigger parent update
+    setTempTitle(event.target.value); // update input value in state
   };
 
   const handleDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const newDescription = event.target.value;
-    setDescription(newDescription); // update state to show latest input
-    const updatedRating = { ...rating, longDescription: newDescription };
-    handleRatingChange(ratingIndex, updatedRating);
+    setTempDescription(event.target.value); // update state to show latest input
   };
 
+  /**
+   * Update permanent state with new values.
+   */
+  const handleSaveRating = () => {
+    setTitle(tempTitle);
+    setDescription(tempDescription);
+
+    // use temp values directly since state updates are asynchronous
+    const newRating = {...rating, description:tempTitle, longDescription: tempDescription}
+    handleRatingChange(ratingIndex, newRating)
+
+    handleMenuClose();
+  }
+
+  /**
+   * Hook to sync the input value temp state with actual rating values whenever they change.
+   *
+   * isDialogOpen in the dependency array ensures the values are synced prior to the user seeing the dialog. The
+   * conditional ensures temp state only updates if it's needed.
+   */
+  useEffect(() => {
+
+    if (isDialogOpen) {
+      setTempTitle(rating.description)
+      setTempDescription(rating.longDescription)
+    }
+
+  }, [isDialogOpen, rating])
+
+
+  /**
+   * Triggers rating removal from parent criterion.
+   * @param event
+   */
   const handleRemoveRatingPress = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     handleRemoveRating(ratingIndex); // trigger removal
   };
+
+  const handleMenuClose = () => {
+    setIsDialogOpen(false);
+  }
 
   /**
    * JSX for rendering the rating popup menu.
@@ -69,7 +104,7 @@ export default function RatingInput({
           <label>Edit Title</label>
           <input
             placeholder={"Enter a title..."}
-            value={title}
+            value={tempTitle}
             type="text"
             className={"p-2 text-black"}
             onChange={handleTitleChange}
@@ -78,7 +113,7 @@ export default function RatingInput({
         <div className={"grid gap-2"}>
           <label>Edit Description</label>
           <textarea
-            value={description}
+            value={tempDescription}
             placeholder={"Enter a description..."}
             onChange={handleDescriptionChange}
             className={"text-black p-2 resize-none"}
@@ -87,10 +122,10 @@ export default function RatingInput({
           />
         </div>
         <div className={"flex gap-2 justify-self-end"}>
-          <button type={"button"} onClick={() => setIsDialogOpen(false)}>
+          <button type={"button"} onClick={handleMenuClose}>
             Cancel
           </button>
-          <button type={"button"}>Save</button>
+          <button type={"button"} onClick={handleSaveRating}>Save</button>
         </div>
       </div>
     );
@@ -146,6 +181,7 @@ export default function RatingInput({
             "rounded-full h-8 w-8 text-xl font-light relative" +
             " -right-2 -bottom-2 hover:text-red-500"
           }
+          tabIndex={-1} //ensure the remove buttons aren't tabbable
         >
           x
         </button>
