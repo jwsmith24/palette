@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Header, Footer, Dialog } from "@components";
+import { Dialog, Footer, Header } from "@components";
 import CourseSelection from "@features/grading/CourseSelection.tsx";
 import { Assignment, Course, PaletteAPIResponse, Rubric } from "palette-types";
 import AssignmentSelection from "@features/grading/AssignmentSelection.tsx";
@@ -7,7 +7,7 @@ import { useFetch } from "@hooks";
 
 export default function GradingView(): ReactElement {
   const [courseDialogOpen, setCourseDialogOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState<string>("Course Selection");
+  const [dialogTitle, setDialogTitle] = useState("Course Selection");
   const [isCourseSelected, setIsCourseSelected] = useState(false);
   const [course, setCourse] = useState<Course>();
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
@@ -16,8 +16,11 @@ export default function GradingView(): ReactElement {
 
   const [rubric, setRubric] = useState<Rubric>();
   const [rubricErrorMessage, setRubricErrorMessage] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
-  const { fetchData: getRubric } = useFetch(`/rubrics/${rubricId}`);
+  const { fetchData: getRubric } = useFetch(
+    `/courses/15760/rubrics/${rubricId}`,
+  );
 
   const activeCourseStyle =
     "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
@@ -26,20 +29,16 @@ export default function GradingView(): ReactElement {
   const resetStyle =
     "font-bold text-white-400 cursor-pointer hover:text-red-400";
 
-  /**
-   * Updates state for new course selection.
-   * @param course - target course for grading
-   */
+  const hasValidRubricId =
+    rubricId &&
+    !rubricId.match(/no rubrics are associated with this assignment/i);
+
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
     setCourse(course);
     setCourseDialogOpen(false);
   };
 
-  /**
-   * Updates state for new assignment selection.
-   * @param assignment - target assignment for grading
-   */
   const selectAssignment = (assignment: Assignment) => {
     setIsAssignmentSelected(true);
     setAssignment(assignment);
@@ -53,6 +52,8 @@ export default function GradingView(): ReactElement {
     setCourse(undefined);
     setAssignment(undefined);
     setRubricId(undefined);
+    setRubric(undefined);
+    setRubricErrorMessage(undefined);
   };
 
   useEffect(() => {
@@ -63,21 +64,27 @@ export default function GradingView(): ReactElement {
     }
   }, [isCourseSelected, isAssignmentSelected]);
 
-  /**
-   * Effect hook to fetch rubric when rubric id changes
-   */
   useEffect(() => {
-    if (rubricId) {
+    console.log("rubric id: ", rubricId);
+    if (hasValidRubricId) {
+      setRubric(undefined);
+      setRubricErrorMessage(undefined);
+      setLoading(true);
       void fetchRubric();
+      return;
     }
+    console.log("Not fetching, no valid rubric id");
+    setLoading(false);
+    setRubric(undefined);
+    setRubricId(undefined);
+    setRubricErrorMessage(
+      "This assignment does not have an associated rubric.",
+    );
   }, [rubricId]);
 
   const fetchRubric = async () => {
-    // loading tbd
     try {
       const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
-      console.log("rubric from request by id: ", response);
-
       if (response.success) {
         setRubric(response.data);
       } else {
@@ -85,6 +92,9 @@ export default function GradingView(): ReactElement {
       }
     } catch (error) {
       console.error("An unexpected error occurred while getting rubric", error);
+      setRubricErrorMessage("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,13 +119,7 @@ export default function GradingView(): ReactElement {
 
       <div className="grid h-full w-full grid-rows-[1fr_10fr] gap-10 place-items-center">
         {/* Active Course and Assignment Section */}
-        <div
-          className="
-            max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr]
-            items-center bg-transparent rounded-full
-            ring-1 ring-purple-500 gap-4 content-center
-          "
-        >
+        <div className="max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr] items-center bg-transparent rounded-full ring-1 ring-purple-500 gap-4 content-center">
           <div className="flex items-center gap-2">
             <p>Active Course:</p>
             {course ? (
@@ -151,7 +155,9 @@ export default function GradingView(): ReactElement {
 
         {/* Content Section */}
         <div className="text-center font-bold text-5xl">
-          {(rubric && rubric.title) || rubricErrorMessage}
+          {loading
+            ? "Loading..."
+            : (rubric && rubric.title) || rubricErrorMessage}
         </div>
       </div>
 
