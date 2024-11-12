@@ -1,12 +1,7 @@
-import { RubricsAPI } from "../canvasAPI/rubricRequests";
-import { Request, Response } from "express";
+import {RubricsAPI} from "../canvasAPI/rubricRequests";
+import {Request, Response} from "express";
 import asyncHandler from "express-async-handler";
-import {
-  GetAllRubricsRequest,
-  GetRubricRequest,
-  PaletteAPIResponse,
-  Rubric,
-} from "palette-types";
+import {GetAllRubricsRequest, GetRubricRequest, PaletteAPIResponse, Rubric,} from "palette-types";
 import config from "../config";
 
 /**
@@ -37,7 +32,7 @@ export const getRubricById = asyncHandler(
   },
 );
 
-export const handleGetAllRubrics = asyncHandler(
+export const getAllRubrics = asyncHandler(
   async (req: Request, res: Response) => {
     const { course_id } = req.params;
     // create the request object for the Canvas API

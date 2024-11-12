@@ -12,7 +12,7 @@ import {
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
-import {fetchAPI} from "../utils/fetchAPI.js";
+import { fetchAPI } from "../utils/fetchAPI.js";
 import RubricUtils from "../utils/rubricUtils.js";
 
 /**

@@ -16,8 +16,8 @@ import {
 } from "../controllers/courseController.js";
 
 import {
+  getAllRubrics,
   getRubricById,
-  handleGetAllRubrics,
 } from "../controllers/rubricController.js";
 
 const router = express.Router();
@@ -65,7 +65,7 @@ router.get(
   "/:course_id/rubrics",
   courseParamValidator,
   rubricValidationErrorHandler,
-  handleGetAllRubrics,
+  getAllRubrics,
 );
 
 /**
