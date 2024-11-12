@@ -89,9 +89,16 @@ export const RubricsAPI = {
    * @returns {Promise<Rubric[]>} A promise that resolves to the retrieved rubrics response.
    */
   async getAllRubrics(request: GetAllRubricsRequest): Promise<Rubric[]> {
-    const canvasRubrics = await fetchAPI<CanvasRubric[]>(
+    const canvasRubrics: CanvasRubric[] = await fetchAPI<CanvasRubric[]>(
       `/courses/${request.courseID}/rubrics?per_page=100`,
     );
+
+    // Check if the response is an array
+    if (!Array.isArray(canvasRubrics)) {
+      throw new Error(
+        "Unexpected response format: Expected an array of rubrics.",
+      );
+    }
 
     return canvasRubrics.map((rubric) => {
       return RubricUtils.toPaletteFormat(rubric);
