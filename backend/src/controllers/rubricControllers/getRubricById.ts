@@ -1,9 +1,7 @@
 import asyncHandler from "express-async-handler";
-import { Request, Response } from "express";
-import { GetRubricRequest, GetRubricResponse } from "palette-types";
-import { RubricsAPI } from "../../canvasAPI/rubricRequests.js";
-import { isCanvasRubric } from "../../utils/typeGuards.js";
-import { StatusCodes } from "http-status-codes";
+import {Request, Response} from "express";
+import {GetRubricRequest, PaletteAPIResponse, Rubric} from "palette-types";
+import {RubricsAPI} from "../../canvasAPI/rubricRequests.js";
 import config from "../../config.js";
 
 /**
@@ -13,7 +11,7 @@ import config from "../../config.js";
  * @param {Response} res - The Express response object.
  * @returns {Promise<void>} - A promise that resolves to void.
  */
-export const handleGetRubricById = asyncHandler(
+export const getRubricById = asyncHandler(
   async (req: Request, res: Response) => {
     const { course_id, id } = req.params;
     // create the request object for the Canvas API
@@ -23,15 +21,13 @@ export const handleGetRubricById = asyncHandler(
     };
 
     // make the request to the Canvas API
-    const canvasResponse: GetRubricResponse =
-      await RubricsAPI.getRubric(canvasRequest);
+    const rubric: Rubric = await RubricsAPI.getRubric(canvasRequest);
+    const apiResponse: PaletteAPIResponse<Rubric> = {
+      data: rubric,
+      success: true,
+      message: "Here is the rubric",
+    };
 
-    // if the response is successful, the type is a CanvasRubric
-    if (isCanvasRubric(canvasResponse)) {
-      res.status(StatusCodes.OK).json(canvasResponse);
-      return;
-    }
-
-    throw new Error("Something went wrong");
+    res.json(apiResponse);
   },
 );

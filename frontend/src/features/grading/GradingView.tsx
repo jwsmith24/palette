@@ -12,7 +12,7 @@ export default function GradingView(): ReactElement {
   const [course, setCourse] = useState<Course>();
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
   const [assignment, setAssignment] = useState<Assignment>();
-  const [rubricId, setRubricId] = useState<string>();
+  const [rubricId, setRubricId] = useState<number>();
 
   const [rubric, setRubric] = useState<Rubric>();
   const [rubricErrorMessage, setRubricErrorMessage] = useState<string>();
@@ -29,9 +29,7 @@ export default function GradingView(): ReactElement {
   const resetStyle =
     "font-bold text-white-400 cursor-pointer hover:text-red-400";
 
-  const hasValidRubricId =
-    rubricId &&
-    !rubricId.match(/no rubrics are associated with this assignment/i);
+  const hasValidRubricId = rubricId && rubricId !== -1;
 
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
@@ -90,10 +88,12 @@ export default function GradingView(): ReactElement {
   const fetchRubric = async () => {
     try {
       const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
+      console.log("Received rubric: ", response);
       if (response.success) {
+        console.log("success!");
         setRubric(response.data);
       } else {
-        setRubricErrorMessage(response.error || "Failed to get rubric");
+        setRubricErrorMessage(response.error);
       }
     } catch (error) {
       console.error("An unexpected error occurred while getting rubric", error);

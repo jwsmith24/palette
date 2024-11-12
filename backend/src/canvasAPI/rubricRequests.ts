@@ -9,11 +9,12 @@ import {
   GetAllRubricsRequest,
   GetAllRubricsResponse,
   GetRubricRequest,
-  GetRubricResponse,
+  Rubric,
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
-import { fetchAPI } from "../utils/fetchAPI.js";
+import {fetchAPI} from "../utils/fetchAPI.js";
+import RubricUtils from "../utils/rubricUtils.js";
 
 /**
  * API methods for interacting with Canvas Rubrics.
@@ -40,9 +41,11 @@ export const RubricsAPI = {
    * @param request - The request object containing rubric ID and type (course).
    * @returns A promise that resolves to the retrieved rubric response.
    */
-  async getRubric(request: GetRubricRequest): Promise<GetRubricResponse> {
-    return fetchAPI<CanvasRubric>(
-      `/courses/${request.course_id}/rubrics/${request.id}`,
+  async getRubric(request: GetRubricRequest): Promise<Rubric> {
+    return RubricUtils.toPaletteFormat(
+      await fetchAPI<CanvasRubric>(
+        `/courses/${request.course_id}/rubrics/${request.id}`,
+      ),
     );
   },
 
@@ -86,12 +89,14 @@ export const RubricsAPI = {
    * @param {GetAllRubricsRequest} request - The request object containing course ID.
    * @returns {Promise<GetAllRubricsResponse>} A promise that resolves to the retrieved rubrics response.
    */
-  async getAllRubrics(
-    request: GetAllRubricsRequest,
-  ): Promise<GetAllRubricsResponse> {
-    return fetchAPI<GetAllRubricsResponse>(
+  async getAllRubrics(request: GetAllRubricsRequest): Promise<Rubric[]> {
+    const canvasRubrics = await fetchAPI<CanvasRubric[]>(
       `/courses/${request.courseID}/rubrics?per_page=100`,
     );
+
+    return canvasRubrics.map((rubric) => {
+      return RubricUtils.toPaletteFormat(rubric);
+    });
   },
 
   /**

@@ -2,13 +2,8 @@
  * Service functionality for course and assignment-related queries.
  */
 
-import { fetchAPI } from "../utils/fetchAPI.js";
-import {
-  CanvasCourse,
-  Course,
-  Assignment,
-  CanvasAssignment,
-} from "palette-types";
+import {fetchAPI} from "../utils/fetchAPI.js";
+import {Assignment, CanvasAssignment, CanvasCourse, Course,} from "palette-types";
 
 /**
  * Convert canvas course object to palette course object.
@@ -57,9 +52,10 @@ function mapToPaletteAssignment(
     description: canvasAssignment.description || "",
     dueDate: canvasAssignment.due_at || "",
     pointsPossible: canvasAssignment.points_possible,
-    rubricId: canvasAssignment.rubric
-      ? canvasAssignment.rubric[0].id
-      : "No rubrics are associated with this" + " assignment",
+    rubricId:
+      canvasAssignment.rubric && canvasAssignment.rubric_settings
+        ? canvasAssignment.rubric_settings.id
+        : -1,
   };
 }
 
