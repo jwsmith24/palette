@@ -1,4 +1,4 @@
-import { RubricUtils } from "../../utils/rubricUtils";
+import { toCanvasFormat, toPaletteFormat } from "../../utils/rubricUtils";
 import { CanvasRubric, RequestFormattedRubric, Rubric } from "palette-types";
 
 const validPaletteRubric: Rubric = {
@@ -66,7 +66,7 @@ const validCanvasRubric: CanvasRubric = {
 describe("RubricUtils", () => {
   describe("toCanvasFormat", () => {
     it("converts a frontend rubric to a RequestFormattedRubric format", () => {
-      expect(RubricUtils.toCanvasFormat(validPaletteRubric)).toEqual(
+      expect(toCanvasFormat(validPaletteRubric)).toEqual(
         validRequestFormattedRubric,
       );
     });
@@ -78,7 +78,7 @@ describe("RubricUtils", () => {
       // copy the corresponding valid request formatted rubric and remove the criteria
       const expected = { ...validRequestFormattedRubric, criteria: {} };
 
-      expect(RubricUtils.toCanvasFormat(original)).toEqual(expected);
+      expect(toCanvasFormat(original)).toEqual(expected);
     });
 
     it("handles an empty ratings array", () => {
@@ -104,7 +104,7 @@ describe("RubricUtils", () => {
       // assert that the ratings object is empty
       expect(expected.criteria[0].ratings).toEqual({});
 
-      expect(RubricUtils.toCanvasFormat(original)).toEqual(expected);
+      expect(toCanvasFormat(original)).toEqual(expected);
     });
   });
 
@@ -137,7 +137,7 @@ describe("RubricUtils", () => {
         ],
       };
 
-      expect(RubricUtils.toPaletteFormat(validCanvasRubric)).toEqual(expected);
+      expect(toPaletteFormat(validCanvasRubric)).toEqual(expected);
     });
 
     it("handles a Canvas rubric with no criteria", () => {
@@ -151,7 +151,7 @@ describe("RubricUtils", () => {
         criteria: [],
       };
 
-      expect(RubricUtils.toPaletteFormat(noCriteriaRubric)).toEqual(expected);
+      expect(toPaletteFormat(noCriteriaRubric)).toEqual(expected);
     });
   });
 });

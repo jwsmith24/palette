@@ -6,7 +6,7 @@ import {
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
-import RubricUtils from "../../utils/rubricUtils.js";
+import { toCanvasFormat, toPaletteFormat } from "../../utils/rubricUtils.js";
 import { RubricsAPI } from "../../canvasAPI/rubricRequests.js";
 import config from "../../config.js";
 import { isRubricObjectHash } from "../../utils/typeGuards.js";
@@ -33,7 +33,7 @@ export const handleUpdateRubric = asyncHandler(
     // if the response is successful, the type is a RubricObjectHash
     if (isRubricObjectHash(canvasResponse)) {
       // convert the Canvas format to the palette format
-      const data: Rubric = RubricUtils.toPaletteFormat(
+      const data: Rubric = toPaletteFormat(
         canvasResponse.rubric as CanvasRubric,
       );
       // send the response back to the client
@@ -58,7 +58,7 @@ function createCanvasRequest(
   return {
     id: rubricID || Number(config!.TEST_RUBRIC_ID),
     rubric_association_id: courseID || Number(config!.TEST_COURSE_ID),
-    rubric: RubricUtils.toCanvasFormat(rubric),
+    rubric: toCanvasFormat(rubric),
     // optional association update below
     // if we use canvas types globally we can just use the existing association if we don't want to update it
     // rubric_association: {

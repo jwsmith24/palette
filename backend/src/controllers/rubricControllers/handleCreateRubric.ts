@@ -13,7 +13,7 @@ import config from "../../config.js";
 import asyncHandler from "express-async-handler";
 import { StatusCodes } from "http-status-codes";
 import { isRubricObjectHash } from "../../utils/typeGuards.js";
-import RubricUtils from "../../utils/rubricUtils.js";
+import { toCanvasFormat, toPaletteFormat } from "../../utils/rubricUtils.js";
 
 /**
  * Handles the creation of a new rubric.
@@ -35,7 +35,7 @@ export const handleCreateRubric = asyncHandler(
 
     // if the response is successful, the type is a RubricObjectHash
     if (isRubricObjectHash(canvasResponse)) {
-      const data: Rubric = RubricUtils.toPaletteFormat(
+      const data: Rubric = toPaletteFormat(
         canvasResponse.rubric as CanvasRubric,
       );
       const paletteResponse = createSuccessResponse(
@@ -61,7 +61,7 @@ function createCanvasRequest(rubric: Rubric): CreateRubricRequest {
   const dummyCourseID = Number(config!.TEST_COURSE_ID);
   return {
     rubric_association_id: dummyCourseID,
-    rubric: RubricUtils.toCanvasFormat(rubric),
+    rubric: toCanvasFormat(rubric),
     rubric_association: {
       association_id: dummyCourseID,
       association_type: "Course",
