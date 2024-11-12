@@ -45,11 +45,31 @@ describe("getRubric", () => {
 
     // call the getRubric service function
     const result = await RubricsAPI.getRubric(mockRequest);
-    // ensure fetchAPI is called with the correct url
+
+    // assertions:
     expect(fetchAPI).toHaveBeenCalledWith(
       `/courses/${mockRequest.course_id}/rubrics/${mockRequest.id}`,
     );
     expect(toPaletteFormat).toHaveBeenCalledWith(mockCanvasRubric);
     expect(result).toEqual(mockFormattedRubric);
+  });
+
+  it("should throw an error if fetchAPI fails", async () => {
+    (fetchAPI as jest.Mock).mockRejectedValue(new Error("API error"));
+
+    await expect(RubricsAPI.getRubric(mockRequest)).rejects.toThrow(
+      "API error",
+    );
+  });
+
+  it("should throw an error if the transformation to palette format fails", async () => {
+    (fetchAPI as jest.Mock).mockResolvedValue(mockCanvasRubric);
+    (toPaletteFormat as jest.Mock).mockImplementation(() => {
+      throw new Error("format error");
+    });
+
+    await expect(RubricsAPI.getRubric(mockRequest)).rejects.toThrow(
+      "format error",
+    );
   });
 });

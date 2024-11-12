@@ -12,8 +12,8 @@ import {
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
-import { fetchAPI } from "../utils/fetchAPI.js";
-import RubricUtils from "../utils/rubricUtils.js";
+import {fetchAPI} from "../utils/fetchAPI.js";
+import {toPaletteFormat} from "../utils/rubricUtils.js";
 
 /**
  * API methods for interacting with Canvas Rubrics.
@@ -41,7 +41,7 @@ export const RubricsAPI = {
    * @returns A promise that resolves to the retrieved rubric response.
    */
   async getRubric(request: GetRubricRequest): Promise<Rubric> {
-    return RubricUtils.toPaletteFormat(
+    return toPaletteFormat(
       await fetchAPI<CanvasRubric>(
         `/courses/${request.course_id}/rubrics/${request.id}`,
       ),
@@ -101,7 +101,7 @@ export const RubricsAPI = {
     }
 
     return canvasRubrics.map((rubric) => {
-      return RubricUtils.toPaletteFormat(rubric);
+      return toPaletteFormat(rubric);
     });
   },
 
