@@ -17,7 +17,8 @@
     "lint": "eslint . --no-cache",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
-    "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\""
+    "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\"",
+    "push": "npm run prettier:fix && npm run lint && npm run test"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"

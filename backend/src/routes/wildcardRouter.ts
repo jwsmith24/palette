@@ -1,8 +1,8 @@
-import {Request, Response} from "express";
-import {StatusCodes} from "http-status-codes";
+import { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import path from "path";
 import asyncHandler from "express-async-handler";
-import {__dirname} from "../app.js";
+import { __dirname } from "../app.js";
 
 /**
  * Handles wildcard routes for the application.
