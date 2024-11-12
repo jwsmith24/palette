@@ -1,7 +1,12 @@
-import {RubricsAPI} from "../canvasAPI/rubricRequests";
-import {Request, Response} from "express";
+import { RubricsAPI } from "../canvasAPI/rubricRequests";
+import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
-import {GetAllRubricsRequest, GetRubricRequest, PaletteAPIResponse, Rubric,} from "palette-types";
+import {
+  GetAllRubricsRequest,
+  GetRubricRequest,
+  PaletteAPIResponse,
+  Rubric,
+} from "palette-types";
 import config from "../config";
 
 /**

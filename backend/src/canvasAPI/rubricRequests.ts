@@ -7,7 +7,6 @@ import {
   DeleteRubricRequest,
   DeleteRubricResponse,
   GetAllRubricsRequest,
-  GetAllRubricsResponse,
   GetRubricRequest,
   Rubric,
   UpdateRubricRequest,
@@ -87,7 +86,7 @@ export const RubricsAPI = {
   /**
    * Get all rubrics in a specific course.
    * @param {GetAllRubricsRequest} request - The request object containing course ID.
-   * @returns {Promise<GetAllRubricsResponse>} A promise that resolves to the retrieved rubrics response.
+   * @returns {Promise<Rubric[]>} A promise that resolves to the retrieved rubrics response.
    */
   async getAllRubrics(request: GetAllRubricsRequest): Promise<Rubric[]> {
     const canvasRubrics = await fetchAPI<CanvasRubric[]>(
