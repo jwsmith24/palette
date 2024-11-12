@@ -25,7 +25,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions)); // enable CORS with above configuration
 app.use(express.json()); // middleware to parse json requests
-app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 // Request logging
 app.use(requestLogger);

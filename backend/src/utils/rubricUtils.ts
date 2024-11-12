@@ -8,6 +8,8 @@ import {
   Rubric,
 } from "palette-types";
 
+import { v4 as uuid } from "uuid";
+
 /**
  * Transforms the rubric object into the format expected by the Canvas API.
  *
@@ -54,6 +56,7 @@ export const toPaletteFormat = (rubric: CanvasRubric): Rubric => {
     id: rubric.id,
     title: rubric.title,
     pointsPossible: rubric.points_possible,
+    key: uuid(),
     criteria:
       rubric.data?.map((criterion: CanvasCriterion) => {
         return {
@@ -61,6 +64,7 @@ export const toPaletteFormat = (rubric: CanvasRubric): Rubric => {
           description: criterion.description,
           longDescription: criterion.long_description,
           points: criterion.points,
+          key: uuid(),
           updatePoints: () => {
             throw new Error("Not implemented");
           },
@@ -70,6 +74,7 @@ export const toPaletteFormat = (rubric: CanvasRubric): Rubric => {
               description: rating.description,
               longDescription: rating.long_description,
               points: rating.points,
+              key: uuid(),
             };
           }),
         };

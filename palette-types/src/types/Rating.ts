@@ -7,5 +7,5 @@ export interface Rating {
   description: string;
   longDescription: string;
   points: number;
-  key?: string;
+  key: string;
 }

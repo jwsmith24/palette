@@ -8,6 +8,10 @@ import { fetchAPI } from "../../../utils/fetchAPI";
 import { toPaletteFormat } from "../../../utils/rubricUtils";
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
 
+const MOCKED_UUID1 = "mock1";
+const MOCKED_UUID2 = "mock2";
+const MOCKED_UUID3 = "mock3";
+
 // mock the dependencies
 jest.mock("../../../utils/fetchAPI");
 jest.mock("../../../utils/rubricUtils");
@@ -39,6 +43,7 @@ describe("Rubric GET service methods", () => {
       id: 1,
       title: "Sample Rubric",
       pointsPossible: 10,
+      key: MOCKED_UUID3,
       criteria: [],
     };
     it("should retrieve and format a rubric", async () => {
@@ -89,8 +94,20 @@ describe("Rubric GET service methods", () => {
     ];
 
     const mockFormattedRubrics: Rubric[] = [
-      { id: 1, title: "Rubric One", pointsPossible: 10, criteria: [] },
-      { id: 2, title: "Rubric Two", pointsPossible: 12, criteria: [] },
+      {
+        id: 1,
+        title: "Rubric One",
+        pointsPossible: 10,
+        criteria: [],
+        key: MOCKED_UUID1,
+      },
+      {
+        id: 2,
+        title: "Rubric Two",
+        pointsPossible: 12,
+        criteria: [],
+        key: MOCKED_UUID2,
+      },
     ];
 
     it("should retrieve and format all rubrics successfully", async () => {

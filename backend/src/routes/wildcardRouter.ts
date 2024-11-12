@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import { StatusCodes } from "http-status-codes";
+import {Request, Response} from "express";
+import {StatusCodes} from "http-status-codes";
 import path from "path";
 import asyncHandler from "express-async-handler";
-import { __dirname } from "../app.js";
+import {__dirname} from "../app.js";
 
 /**
  * Handles wildcard routes for the application.
@@ -19,6 +19,6 @@ export const wildcardRouter = asyncHandler((req: Request, res: Response) => {
     res.status(StatusCodes.NOT_FOUND).send({ error: "API route not found" });
   } else {
     // If the client tries to navigate to an unknown page, send them the index.html file
-    res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
+    res.sendFile(path.join(__dirname, "/../frontend/dist", "index.html"));
   }
 });
