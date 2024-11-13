@@ -14,7 +14,7 @@ export default function AssignmentSelectionMenu({
   const [loading, setLoading] = useState<boolean>(false);
 
   const { activeCourse } = useCourse();
-  const { activeAssignment, setActiveAssignment } = useAssignment();
+  const { setActiveAssignment } = useAssignment();
 
   const { fetchData: getAssignments } = useFetch(
     `/courses/${activeCourse?.id}/assignments`,
@@ -80,13 +80,22 @@ export default function AssignmentSelectionMenu({
   };
 
   return (
-    <div>
+    <div className={"grid gap-2 text-2xl"}>
       {activeCourse ? (
         <p>Assignments for {activeCourse.name}</p>
       ) : (
         <p>No Course Selected</p>
       )}
       <div>{renderAssignments()}</div>
+      <button
+        onClick={void fetchAssignments}
+        className={
+          "justify-self-end text-2xl bg-blue-500 px-2 py-1 rounded-full hover:opacity-80 active:opacity-70"
+        }
+        type={"button"}
+      >
+        Refresh
+      </button>
     </div>
   );
 }

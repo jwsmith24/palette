@@ -62,14 +62,14 @@ export default function CourseSelectionMenu({
     if (courses.length === 0) return <div>No courses available to display</div>;
 
     return (
-      <div className={"grid gap-2 mt-0.5"}>
-        Select the course you'd like to grade!
+      <div className={"grid gap-2 my-1"}>
+        Select the course you'd like to grade:
         <div>
           {courses.map((course: Course) => (
             <div
               key={course.id}
               className={
-                "flex gap-4 bg-gray-600 hover:bg-gray-500 px-3 py-1 cursor-pointer rounded-full text-2xl font-bold"
+                "flex gap-4 bg-gray-600 hover:bg-gray-500 px-3 py-1 cursor-pointer rounded-full font-bold"
               }
               onClick={() => handleCourseSelection(course)}
             >
@@ -95,7 +95,7 @@ export default function CourseSelectionMenu({
     void fetchCourses();
   };
   return (
-    <div className={"grid gap-2"}>
+    <div className={"grid gap-2 text-2xl"}>
       <div>{renderCourses()}</div>
       <button
         onClick={handleGetCourses}
