@@ -12,8 +12,8 @@ import {
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
-import { fetchAPI } from "../utils/fetchAPI.js";
-import { toPaletteFormat } from "../utils/rubricUtils.js";
+import {fetchAPI} from "../utils/fetchAPI.js";
+import {toPaletteFormat} from "../utils/rubricUtils.js";
 
 /**
  * API methods for interacting with Canvas Rubrics.
@@ -56,7 +56,7 @@ export const RubricsAPI = {
   async updateRubric(
     request: UpdateRubricRequest,
   ): Promise<UpdateRubricResponse> {
-    return await fetchAPI<UpdateRubricResponse>(
+    return fetchAPI<UpdateRubricResponse>(
       `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
       {
         method: "PUT",
