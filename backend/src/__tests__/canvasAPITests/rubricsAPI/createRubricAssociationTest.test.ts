@@ -1,5 +1,8 @@
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
-import { CreateRubricAssociationRequest } from "palette-types";
+import {
+  CreateRubricAssociationRequest,
+  RubricObjectHash,
+} from "palette-types";
 import { fetchAPI } from "../../../utils/fetchAPI";
 
 // Mock the fetchAPI function
@@ -25,6 +28,20 @@ describe("createRubricAssociation", () => {
 
     const courseID = 123;
 
+    const fetchedRubricObjectHash: RubricObjectHash = {
+      rubric: {
+        id: 123,
+        title: "Assn Title",
+        points_possible: 0,
+        free_form_criterion_comments: true,
+        data: null,
+      },
+      // rubric_association field is optional
+    };
+
+    // Mock the fetchAPI function to resolve with a RubricObjectHash
+    (fetchAPI as jest.Mock).mockResolvedValue(fetchedRubricObjectHash);
+
     // Act
     await RubricsAPI.createRubricAssociation(request, courseID);
 
@@ -35,6 +52,34 @@ describe("createRubricAssociation", () => {
         method: "POST",
         body: JSON.stringify(request),
       },
+    );
+  });
+
+  it("throws an error if the fetched response is not a RubricObjectHash", async () => {
+    // Arrange
+    const request: CreateRubricAssociationRequest = {
+      rubric_association: {
+        rubric_id: 123,
+        association_id: 123,
+        association_type: "Course",
+        purpose: "grading",
+        use_for_grading: true,
+        hide_score_total: true,
+        title: "Assn Title",
+        bookmarked: true,
+      },
+    };
+
+    const courseID = 123;
+
+    // Mock the fetchAPI function to resolve with an unexpected response
+    (fetchAPI as jest.Mock).mockResolvedValue({});
+
+    // Act and Assert
+    await expect(
+      RubricsAPI.createRubricAssociation(request, courseID),
+    ).rejects.toThrowError(
+      "Unexpected response format: Expected a RubricObjectHash.",
     );
   });
 });

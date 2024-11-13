@@ -120,7 +120,7 @@ describe("Rubric GET service methods", () => {
       });
 
       await expect(RubricsAPI.getAllRubrics(mockRequest)).rejects.toThrow(
-        "Unexpected response format: Expected an array of rubrics.",
+        "Unexpected response format: Expected an array of CanvasRubric.",
       );
     });
 

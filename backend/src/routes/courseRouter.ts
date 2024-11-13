@@ -1,7 +1,5 @@
 import express from "express";
 import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
-import { handleCreateRubricAssociation } from "../controllers/rubricControllers/handleCreateRubricAssociation.js";
-
 import { handleUpdateRubric } from "../controllers/rubricControllers/handleUpdateRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
 import {
@@ -15,6 +13,7 @@ import {
 
 import {
   createRubric,
+  createRubricAssociation,
   deleteRubric,
   getAllRubrics,
   getRubricById,
@@ -42,7 +41,7 @@ router.post(
   "/:course_id/rubric_associations",
   courseParamValidator,
   rubricValidationErrorHandler,
-  handleCreateRubricAssociation,
+  createRubricAssociation,
 );
 
 /**

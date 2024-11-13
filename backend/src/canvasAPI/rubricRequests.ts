@@ -1,7 +1,6 @@
 import {
   CanvasRubric,
   CreateRubricAssociationRequest,
-  CreateRubricAssociationResponse,
   CreateRubricRequest,
   DeleteRubricRequest,
   GetAllRubricsRequest,
@@ -13,7 +12,11 @@ import {
 } from "palette-types";
 import { fetchAPI } from "../utils/fetchAPI.js";
 import { toPaletteFormat } from "../utils/rubricUtils.js";
-import { isCanvasRubric, isRubricObjectHash } from "../utils/typeGuards";
+import {
+  isCanvasRubric,
+  isPaginatedRubricsList,
+  isRubricObjectHash,
+} from "../utils/typeGuards";
 
 /**
  * API methods for interacting with Canvas Rubrics.
@@ -114,13 +117,14 @@ export const RubricsAPI = {
       `/courses/${request.courseID}/rubrics?per_page=100`,
     );
 
-    // Check if the response is an array
-    if (!Array.isArray(canvasRubrics)) {
+    // check if the response is an array of CanvasRubric
+    if (!isPaginatedRubricsList(canvasRubrics)) {
       throw new Error(
-        "Unexpected response format: Expected an array of rubrics.",
+        "Unexpected response format: Expected an array of CanvasRubric.",
       );
     }
 
+    // return the rubrics in the expected format
     return canvasRubrics.map((rubric) => {
       return toPaletteFormat(rubric);
     });
@@ -135,13 +139,24 @@ export const RubricsAPI = {
   async createRubricAssociation(
     request: CreateRubricAssociationRequest,
     courseID: number,
-  ): Promise<CreateRubricAssociationResponse> {
-    return fetchAPI<CreateRubricAssociationResponse>(
+  ): Promise<Rubric> {
+    // canvas api returns a RubricObjectHash (contrary to the documentation!)
+    const response = await fetchAPI<RubricObjectHash>(
       `/courses/${courseID}/rubric_associations`,
       {
         method: "POST",
         body: JSON.stringify(request),
       },
     );
+
+    // Check if the response is a RubricObjectHash
+    if (!isRubricObjectHash(response)) {
+      throw new Error(
+        "Unexpected response format: Expected a RubricObjectHash.",
+      );
+    }
+
+    // return the created rubric in the expected format
+    return toPaletteFormat(response.rubric as CanvasRubric);
   },
 };

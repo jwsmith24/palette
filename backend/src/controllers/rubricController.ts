@@ -2,6 +2,7 @@ import { RubricsAPI } from "../canvasAPI/rubricRequests";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
+  CreateRubricAssociationRequest,
   CreateRubricRequest,
   DeleteRubricRequest,
   GetAllRubricsRequest,
@@ -116,6 +117,56 @@ export const deleteRubric = asyncHandler(
     return;
   },
 );
+
+/**
+ * Handles the creation of a new rubric association.
+ *
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
+ */
+export const createRubricAssociation = asyncHandler(
+  async (req: Request, res: Response) => {
+    // build the request
+    const { course_id } = req.params;
+
+    // use the canned request for now
+    const request: CreateRubricAssociationRequest =
+      createNewRubricAssociationRequest();
+
+    // make the api call
+    const response: Rubric = await RubricsAPI.createRubricAssociation(
+      request,
+      Number(course_id),
+    );
+
+    const data: PaletteAPIResponse<Rubric> = createSuccessResponse(
+      response,
+      "Rubric association created successfully",
+    );
+    res.status(StatusCodes.CREATED).json(data);
+    return;
+  },
+);
+
+/**
+ * Creates a new rubric association request.
+ * @returns {CreateRubricAssociationRequest} The request object for the Canvas API.
+ */
+function createNewRubricAssociationRequest(): CreateRubricAssociationRequest {
+  // todo - this is a canned request for a specific assignment. Will need updating
+  return {
+    rubric_association: {
+      rubric_id: Number(config!.TEST_RUBRIC_ID),
+      association_id: Number(config!.TEST_ASSIGNMENT_ID),
+      association_type: "Assignment",
+      title: "wrong title",
+      use_for_grading: true,
+      hide_score_total: false,
+      purpose: "grading",
+      bookmarked: false,
+    },
+  };
+}
 
 /**
  * Creates a request object for creating a rubric using the Canvas API.
