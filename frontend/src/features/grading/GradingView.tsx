@@ -1,18 +1,17 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Dialog, Footer, Header } from "@components";
 import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
-import { Assignment, Course, PaletteAPIResponse, Rubric } from "palette-types";
+import { Assignment, PaletteAPIResponse, Rubric } from "palette-types";
 import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
 import { useFetch } from "@hooks";
 import ActiveCourseSelection from "@features/grading/ActiveCourseSelection.tsx";
 import { v4 as uuid } from "uuid";
 import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
+import { useCourse } from "src/context/CourseProvider";
 
 export default function GradingView(): ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("Course Selection");
-  const [isCourseSelected, setIsCourseSelected] = useState(false);
-  const [course, setCourse] = useState<Course>();
   const [isAssignmentSelected, setIsAssignmentSelected] = useState(false);
   const [assignment, setAssignment] = useState<Assignment>();
   const [rubricId, setRubricId] = useState<number>();
@@ -30,11 +29,7 @@ export default function GradingView(): ReactElement {
 
   const hasValidRubricId = rubricId && rubricId !== -1;
 
-  const selectCourse = (course: Course) => {
-    setIsCourseSelected(true);
-    setCourse(course);
-    setDialogOpen(false);
-  };
+  const { activeCourse } = useCourse();
 
   const selectAssignment = (assignment: Assignment) => {
     setIsAssignmentSelected(true);
@@ -44,9 +39,7 @@ export default function GradingView(): ReactElement {
   };
 
   const resetSelections = () => {
-    setIsCourseSelected(false);
     setIsAssignmentSelected(false);
-    setCourse(undefined);
     setAssignment(undefined);
     setRubricId(undefined);
     setRubric(undefined);
@@ -54,16 +47,16 @@ export default function GradingView(): ReactElement {
   };
 
   useEffect(() => {
-    if (isCourseSelected && !isAssignmentSelected) {
+    if (activeCourse && !isAssignmentSelected) {
       setDialogTitle("Assignment Selection");
-    } else if (isCourseSelected && isAssignmentSelected) {
+    } else if (activeCourse && isAssignmentSelected) {
       setDialogTitle("Assignment Grading View");
     }
-  }, [isCourseSelected, isAssignmentSelected]);
+  }, [activeCourse, isAssignmentSelected]);
 
   useEffect(() => {
     // prevent effect if either course or assignment is not selected
-    if (!isCourseSelected || !isAssignmentSelected) {
+    if (!activeCourse || !isAssignmentSelected) {
       return;
     }
 
@@ -103,16 +96,11 @@ export default function GradingView(): ReactElement {
   };
 
   const renderContent = () => {
-    if (!isCourseSelected) {
-      return <CourseSelectionMenu selectCourse={selectCourse} />;
+    if (!activeCourse) {
+      return <CourseSelectionMenu />;
     }
     if (!isAssignmentSelected) {
-      return (
-        <AssignmentSelectionMenu
-          course={course!}
-          selectAssignment={selectAssignment}
-        />
-      );
+      return <AssignmentSelectionMenu selectAssignment={selectAssignment} />;
     }
     return <div>Assignment Grading View</div>;
   };
@@ -124,15 +112,11 @@ export default function GradingView(): ReactElement {
       <div className="grid h-full w-full grid-rows-[1fr_10fr] gap-10 place-items-center">
         {/* Active Course and Assignment Section */}
         <div className="max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr] items-center bg-transparent rounded-full ring-1 ring-purple-500 gap-4 content-center">
-          <ActiveCourseSelection
-            course={course}
-            key={uuid()}
-            setCourseDialogOpen={setDialogOpen}
-          />
+          <ActiveCourseSelection key={uuid()} setDialogOpen={setDialogOpen} />
 
           <ActiveAssignmentSelection
             assignment={assignment}
-            setCourseDialogOpen={setDialogOpen}
+            setDialogOpen={setDialogOpen}
             key={uuid()}
           />
 

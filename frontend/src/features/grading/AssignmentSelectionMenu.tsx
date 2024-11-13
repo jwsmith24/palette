@@ -1,20 +1,21 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Assignment, Course, PaletteAPIResponse } from "palette-types";
+import { Assignment, PaletteAPIResponse } from "palette-types";
 import { useFetch } from "@hooks";
+import { useCourse } from "../../context";
 
 export default function AssignmentSelectionMenu({
-  course,
   selectAssignment,
 }: {
-  course: Course;
   selectAssignment: (assignment: Assignment) => void;
 }): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const { activeCourse } = useCourse();
+
   const { fetchData: getAssignments } = useFetch(
-    `/courses/${course.id}/assignments`,
+    `/courses/${activeCourse?.id}/assignments`,
   );
 
   useEffect(() => {
@@ -29,8 +30,7 @@ export default function AssignmentSelectionMenu({
       return <div>No courses available to display</div>;
 
     return (
-      <div className={"grid gap-2 mt-0.5"}>
-        Select an assignment to grade
+      <div className={"grid gap-2 my-4"}>
         <div className={"grid gap-2 mt-0.5"}>
           {assignments.map((assignment: Assignment) => (
             <div
@@ -78,7 +78,11 @@ export default function AssignmentSelectionMenu({
 
   return (
     <div>
-      Assignments for {course.name}
+      {activeCourse ? (
+        <p>Assignments for {activeCourse.name}</p>
+      ) : (
+        <p>No Course Selected</p>
+      )}
       <div>{renderAssignments()}</div>
     </div>
   );

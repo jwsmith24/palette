@@ -1,24 +1,27 @@
-import { Course } from "palette-types";
+import { useCourse } from "src/context/CourseProvider.tsx";
 
 export default function ActiveCourseSelection({
-  course,
-  setCourseDialogOpen,
+  setDialogOpen,
 }: {
-  course: Course | undefined;
-  setCourseDialogOpen: (open: boolean) => void;
+  setDialogOpen: (open: boolean) => void;
 }) {
   const activeCourseStyle =
     "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
 
+  /**
+   * Use the Course context for consistent state across the application
+   */
+  const { activeCourse } = useCourse();
+
   return (
     <div className="flex items-center gap-2">
       <p>Active Course:</p>
-      {course ? (
-        <p className={activeCourseStyle}>{course.name}</p>
+      {activeCourse ? (
+        <p className={activeCourseStyle}>{activeCourse.name}</p>
       ) : (
         <button
           className={activeCourseStyle}
-          onClick={() => setCourseDialogOpen(true)}
+          onClick={() => setDialogOpen(true)}
         >
           Select Course
         </button>

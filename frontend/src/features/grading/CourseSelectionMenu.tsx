@@ -7,17 +7,15 @@
 import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
+import { useCourse } from "src/context/CourseProvider";
 
-export default function CourseSelectionMenu({
-  selectCourse,
-}: {
-  selectCourse: (course: Course) => void;
-}): ReactElement {
+export default function CourseSelectionMenu(): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { fetchData: getCourses } = useFetch("/courses");
+  const { setActiveCourse } = useCourse();
 
   /**
    * Run fetchCourses when component initially mounts.
@@ -80,7 +78,7 @@ export default function CourseSelectionMenu({
   };
 
   const handleCourseSelection = (course: Course) => {
-    selectCourse(course);
+    setActiveCourse(course);
   };
 
   /**

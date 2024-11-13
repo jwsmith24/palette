@@ -21,7 +21,7 @@
       "@features/*": ["src/features/*"],
       "@hooks": ["src/hooks"],
       "@resources": ["src/resources"],
-      "@local_types": ["src/types"]
+      "@local_types": ["src/types"],
     }
   },
   "include": ["src", "vite.config.ts", "**/*.test.ts"],
