@@ -4,7 +4,6 @@ import {
   CreateRubricAssociationResponse,
   CreateRubricRequest,
   DeleteRubricRequest,
-  DeleteRubricResponse,
   GetAllRubricsRequest,
   GetRubricRequest,
   Rubric,
@@ -14,7 +13,7 @@ import {
 } from "palette-types";
 import { fetchAPI } from "../utils/fetchAPI.js";
 import { toPaletteFormat } from "../utils/rubricUtils.js";
-import { isRubricObjectHash } from "../utils/typeGuards";
+import { isCanvasRubric, isRubricObjectHash } from "../utils/typeGuards";
 
 /**
  * API methods for interacting with Canvas Rubrics.
@@ -83,19 +82,26 @@ export const RubricsAPI = {
   },
 
   /**
-   * Delete a rubric by its ID.
+   * Delete a rubric by its ID (including all its associations).
    * @param request - The request object containing rubric ID and course ID.
    * @returns A promise that resolves to the deleted rubric response.
    */
-  async deleteRubric(
-    request: DeleteRubricRequest,
-  ): Promise<DeleteRubricResponse> {
-    return fetchAPI<DeleteRubricResponse>(
+  async deleteRubric(request: DeleteRubricRequest): Promise<Rubric> {
+    // canvas api returns a CanvasRubric
+    const response: CanvasRubric = await fetchAPI<CanvasRubric>(
       `/courses/${request.course_id}/rubrics/${request.id}`,
       {
         method: "DELETE",
       },
     );
+
+    // Check if the response is a CanvasRubric
+    if (!isCanvasRubric(response)) {
+      throw new Error("Unexpected response format: Expected a CanvasRubric.");
+    }
+
+    // return the deleted rubric in the expected format
+    return toPaletteFormat(response);
   },
 
   /**

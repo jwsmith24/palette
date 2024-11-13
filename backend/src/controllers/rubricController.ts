@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
   CreateRubricRequest,
+  DeleteRubricRequest,
   GetAllRubricsRequest,
   GetRubricRequest,
   PaletteAPIResponse,
@@ -89,6 +90,29 @@ export const createRubric = asyncHandler(
       "Rubric created successfully",
     );
     res.status(StatusCodes.CREATED).json(paletteResponse);
+    return;
+  },
+);
+
+export const deleteRubric = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { course_id, id } = req.params;
+
+    // create the request object for the Canvas API
+    const deleteRequest: DeleteRubricRequest = {
+      course_id: Number(course_id),
+      id: Number(id),
+    };
+
+    // make the request to the Canvas API
+    const canvasResponse: Rubric = await RubricsAPI.deleteRubric(deleteRequest);
+
+    // send the response back to the client
+    const paletteResponse: PaletteAPIResponse<Rubric> = createSuccessResponse(
+      canvasResponse,
+      "Rubric deleted successfully",
+    );
+    res.status(StatusCodes.OK).json(paletteResponse);
     return;
   },
 );

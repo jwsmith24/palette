@@ -3,7 +3,6 @@ import { rubricValidationErrorHandler } from "../middleware/rubricValidationErro
 import { handleCreateRubricAssociation } from "../controllers/rubricControllers/handleCreateRubricAssociation.js";
 
 import { handleUpdateRubric } from "../controllers/rubricControllers/handleUpdateRubric.js";
-import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
 import {
   courseParamValidator,
@@ -16,6 +15,7 @@ import {
 
 import {
   createRubric,
+  deleteRubric,
   getAllRubrics,
   getRubricById,
 } from "../controllers/rubricController.js";
@@ -94,7 +94,7 @@ router.delete(
   "/:course_id/rubrics/:id",
   idAndCourseParamValidator,
   rubricValidationErrorHandler,
-  handleDeleteRubric,
+  deleteRubric,
 );
 
 /**
