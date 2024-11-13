@@ -14,7 +14,7 @@ export default function ActiveCourseSelection({
   const { activeCourse } = useCourse();
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 ring-2 ring-black rounded-full p-2">
       <p>Active Course:</p>
       {activeCourse ? (
         <p className={activeCourseStyle}>{activeCourse.name}</p>

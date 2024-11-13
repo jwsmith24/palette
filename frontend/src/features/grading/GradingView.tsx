@@ -1,10 +1,8 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Dialog, Footer, Header } from "@components";
-import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
 import { Assignment, PaletteAPIResponse, Rubric } from "palette-types";
 import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
 import { useFetch } from "@hooks";
-import ActiveCourseSelection from "@features/grading/ActiveCourseSelection.tsx";
 import { v4 as uuid } from "uuid";
 import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
 import { useCourse } from "src/context/CourseProvider";
@@ -96,9 +94,6 @@ export default function GradingView(): ReactElement {
   };
 
   const renderContent = () => {
-    if (!activeCourse) {
-      return <CourseSelectionMenu />;
-    }
     if (!isAssignmentSelected) {
       return <AssignmentSelectionMenu selectAssignment={selectAssignment} />;
     }
@@ -112,8 +107,6 @@ export default function GradingView(): ReactElement {
       <div className="grid h-full w-full grid-rows-[1fr_10fr] gap-10 place-items-center">
         {/* Active Course and Assignment Section */}
         <div className="max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr] items-center bg-transparent rounded-full ring-1 ring-purple-500 gap-4 content-center">
-          <ActiveCourseSelection key={uuid()} setDialogOpen={setDialogOpen} />
-
           <ActiveAssignmentSelection
             assignment={assignment}
             setDialogOpen={setDialogOpen}

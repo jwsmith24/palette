@@ -9,7 +9,11 @@ import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
 import { useCourse } from "src/context/CourseProvider";
 
-export default function CourseSelectionMenu(): ReactElement {
+export default function CourseSelectionMenu({
+  setDialogOpen,
+}: {
+  setDialogOpen: (open: boolean) => void;
+}): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -79,6 +83,7 @@ export default function CourseSelectionMenu(): ReactElement {
 
   const handleCourseSelection = (course: Course) => {
     setActiveCourse(course);
+    setDialogOpen(false);
   };
 
   /**
