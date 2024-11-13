@@ -9,7 +9,7 @@ import { v4 as uuid } from "uuid";
 import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
 
 export default function GradingView(): ReactElement {
-  const [courseDialogOpen, setCourseDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("Course Selection");
   const [isCourseSelected, setIsCourseSelected] = useState(false);
   const [course, setCourse] = useState<Course>();
@@ -33,14 +33,14 @@ export default function GradingView(): ReactElement {
   const selectCourse = (course: Course) => {
     setIsCourseSelected(true);
     setCourse(course);
-    setCourseDialogOpen(false);
+    setDialogOpen(false);
   };
 
   const selectAssignment = (assignment: Assignment) => {
     setIsAssignmentSelected(true);
     setAssignment(assignment);
     setRubricId(assignment.rubricId);
-    setCourseDialogOpen(false);
+    setDialogOpen(false);
   };
 
   const resetSelections = () => {
@@ -127,12 +127,12 @@ export default function GradingView(): ReactElement {
           <ActiveCourseSelection
             course={course}
             key={uuid()}
-            setCourseDialogOpen={setCourseDialogOpen}
+            setCourseDialogOpen={setDialogOpen}
           />
 
           <ActiveAssignmentSelection
             assignment={assignment}
-            setCourseDialogOpen={setCourseDialogOpen}
+            setCourseDialogOpen={setDialogOpen}
             key={uuid()}
           />
 
@@ -153,8 +153,8 @@ export default function GradingView(): ReactElement {
 
       {/* Dialog for Course/Assignment Selection */}
       <Dialog
-        isOpen={courseDialogOpen}
-        onClose={() => setCourseDialogOpen(false)}
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
         title={dialogTitle}
       >
         {renderContent()}
