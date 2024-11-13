@@ -8,7 +8,8 @@ import { CanvasAssociation } from "../canvasTypes/CanvasAssociation";
  */
 export interface UpdateRubricRequest {
   // Required: The ID of the rubric
-  id: number;
+  rubric_id: number;
+  course_id: number;
   // The ID of the object associated with the rubric
   rubric_association_id?: number;
   rubric: UpdatedRubric;

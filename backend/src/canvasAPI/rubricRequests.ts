@@ -51,15 +51,13 @@ export const RubricsAPI = {
   /**
    * Update an existing rubric in a specific course.
    * @param request - The request object containing updated rubric details.
-   * @param courseID - The ID of the course.
    * @returns A promise that resolves to the updated rubric response.
    */
   async updateRubric(
     request: UpdateRubricRequest,
-    courseID: number,
   ): Promise<UpdateRubricResponse> {
-    return fetchAPI<UpdateRubricResponse>(
-      `/courses/${courseID}/rubrics/${request.id}`,
+    return await fetchAPI<UpdateRubricResponse>(
+      `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
       {
         method: "PUT",
         body: JSON.stringify(request),

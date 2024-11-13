@@ -11,8 +11,9 @@ describe("updateRubric", () => {
   it("should make a PUT request to update an existing rubric in a specific course", async () => {
     // Arrange
     const request: UpdateRubricRequest = {
-      id: 123,
+      rubric_id: 123,
       rubric_association_id: 123,
+      course_id: 123,
       rubric: {
         title: "Rubric Title",
         free_form_criterion_comments: true,
@@ -42,14 +43,12 @@ describe("updateRubric", () => {
         purpose: "grading",
       },
     };
-    const courseID = 123;
-
     // Act
-    await RubricsAPI.updateRubric(request, courseID);
+    await RubricsAPI.updateRubric(request);
 
     // Assert
     expect(fetchAPI).toHaveBeenCalledWith(
-      `/courses/${courseID}/rubrics/${request.id}`,
+      `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
       {
         method: "PUT",
         body: JSON.stringify(request),

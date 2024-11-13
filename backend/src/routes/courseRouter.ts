@@ -2,7 +2,6 @@ import express from "express";
 import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
 import { handleCreateRubricAssociation } from "../controllers/rubricControllers/handleCreateRubricAssociation.js";
 
-import { handleUpdateRubric } from "../controllers/rubricControllers/handleUpdateRubric.js";
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
 import { handleCreateRubric } from "../controllers/rubricControllers/handleCreateRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
@@ -17,7 +16,8 @@ import {
 
 import {
   getAllRubrics,
-  getRubricById,
+  getRubric,
+  updateRubric,
 } from "../controllers/rubricController.js";
 
 const router = express.Router();
@@ -53,7 +53,7 @@ router.get(
   "/:course_id/rubrics/:id",
   idAndCourseParamValidator,
   rubricValidationErrorHandler,
-  getRubricById,
+  getRubric,
 );
 
 /**
@@ -83,7 +83,7 @@ router.put(
   idAndCourseParamValidator,
   rubricValidator,
   rubricValidationErrorHandler,
-  handleUpdateRubric,
+  updateRubric,
 );
 
 /**
