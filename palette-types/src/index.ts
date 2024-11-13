@@ -3,20 +3,8 @@
  */
 
 // Export everything from canvasProtocol
-export * from "./canvasProtocol/CreateRubricRequest";
-export * from "./canvasProtocol/CreateRubricResponse";
-export * from "./canvasProtocol/DeleteRubricRequest";
-export * from "./canvasProtocol/DeleteRubricResponse";
-export * from "./canvasProtocol/GetRubricRequest";
-export * from "./canvasProtocol/GetRubricResponse";
-export * from "./canvasProtocol/GetAllRubricsRequest";
-export * from "./canvasProtocol/CreateRubricAssociationRequest";
-export * from "./canvasProtocol/CreateRubricAssociationResponse";
-export * from "./canvasProtocol/GetAllRubricsResponse";
-export * from "./canvasProtocol/UpdateRubricRequest";
-export * from "./canvasProtocol/UpdateRubricResponse";
-export * from "./canvasProtocol/CanvasAPIError";
-export * from "./canvasProtocol/CanvasAPIErrorResponse";
+export * from "./canvasProtocol/canvasRubricResponses";
+export * from "./canvasProtocol/canvasRubricRequests";
 
 // Export everything from canvasTypes
 export * from "./canvasTypes/CanvasAssessment";
