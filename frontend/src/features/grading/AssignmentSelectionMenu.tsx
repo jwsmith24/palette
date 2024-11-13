@@ -1,8 +1,8 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Course, Assignment, PaletteAPIResponse } from "palette-types";
+import { Assignment, Course, PaletteAPIResponse } from "palette-types";
 import { useFetch } from "@hooks";
 
-export default function AssignmentSelection({
+export default function AssignmentSelectionMenu({
   course,
   selectAssignment,
 }: {

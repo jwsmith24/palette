@@ -8,7 +8,7 @@ import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
 
-export default function CourseSelection({
+export default function CourseSelectionMenu({
   selectCourse,
 }: {
   selectCourse: (course: Course) => void;

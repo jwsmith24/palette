@@ -1,9 +1,12 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Dialog, Footer, Header } from "@components";
-import CourseSelection from "@features/grading/CourseSelection.tsx";
+import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
 import { Assignment, Course, PaletteAPIResponse, Rubric } from "palette-types";
-import AssignmentSelection from "@features/grading/AssignmentSelection.tsx";
+import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
 import { useFetch } from "@hooks";
+import ActiveCourseSelection from "@features/grading/ActiveCourseSelection.tsx";
+import { v4 as uuid } from "uuid";
+import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
 
 export default function GradingView(): ReactElement {
   const [courseDialogOpen, setCourseDialogOpen] = useState(false);
@@ -22,10 +25,6 @@ export default function GradingView(): ReactElement {
     `/courses/15760/rubrics/${rubricId}`,
   );
 
-  const activeCourseStyle =
-    "font-bold text-orange-400 hover:opacity-80 cursor-pointer";
-  const activeAssignmentStyle =
-    "font-bold text-green-400 hover:opacity-80 cursor-pointer";
   const resetStyle =
     "font-bold text-white-400 cursor-pointer hover:text-red-400";
 
@@ -105,11 +104,11 @@ export default function GradingView(): ReactElement {
 
   const renderContent = () => {
     if (!isCourseSelected) {
-      return <CourseSelection selectCourse={selectCourse} />;
+      return <CourseSelectionMenu selectCourse={selectCourse} />;
     }
     if (!isAssignmentSelected) {
       return (
-        <AssignmentSelection
+        <AssignmentSelectionMenu
           course={course!}
           selectAssignment={selectAssignment}
         />
@@ -125,33 +124,17 @@ export default function GradingView(): ReactElement {
       <div className="grid h-full w-full grid-rows-[1fr_10fr] gap-10 place-items-center">
         {/* Active Course and Assignment Section */}
         <div className="max-w-6xl w-full p-6 grid max-h-12 grid-cols-[5fr_5fr_1fr] items-center bg-transparent rounded-full ring-1 ring-purple-500 gap-4 content-center">
-          <div className="flex items-center gap-2">
-            <p>Active Course:</p>
-            {course ? (
-              <p className={activeCourseStyle}>{course.name}</p>
-            ) : (
-              <button
-                className={activeCourseStyle}
-                onClick={() => setCourseDialogOpen(true)}
-              >
-                Select Course
-              </button>
-            )}
-          </div>
+          <ActiveCourseSelection
+            course={course}
+            key={uuid()}
+            setCourseDialogOpen={setCourseDialogOpen}
+          />
 
-          <div className="flex items-center gap-2">
-            <p>Active Assignment:</p>
-            {assignment ? (
-              <p className={activeAssignmentStyle}>{assignment.name}</p>
-            ) : (
-              <button
-                className={activeAssignmentStyle}
-                onClick={() => setCourseDialogOpen(true)}
-              >
-                Select Assignment
-              </button>
-            )}
-          </div>
+          <ActiveAssignmentSelection
+            assignment={assignment}
+            setCourseDialogOpen={setCourseDialogOpen}
+            key={uuid()}
+          />
 
           <button className={resetStyle} onClick={resetSelections}>
             Reset

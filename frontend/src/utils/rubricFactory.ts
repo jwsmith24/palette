@@ -3,7 +3,7 @@
  * application.
  */
 
-import { Criteria, Rating, Rubric, Template } from "../../../palette-types/src";
+import { Criteria, Rating, Rubric, Template } from "palette-types";
 import { v4 as uuid } from "uuid";
 import { calcMaxPoints } from "./calculateMaxPoints.ts";
 

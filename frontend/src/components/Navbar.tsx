@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 
@@ -61,6 +61,7 @@ function Navbar() {
     <div className="flex justify-between items-center h-16 mx-4">
       {renderNavButtons()}
 
+      <div>hi</div>
       <button
         className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
         onClick={handleOpenUserMenu}
@@ -90,4 +91,5 @@ function Navbar() {
     </div>
   );
 }
+
 export default Navbar;
