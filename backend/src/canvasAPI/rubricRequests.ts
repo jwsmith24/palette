@@ -12,8 +12,8 @@ import {
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
-import {fetchAPI} from "../utils/fetchAPI.js";
-import {toPaletteFormat} from "../utils/rubricUtils.js";
+import { fetchAPI } from "../utils/fetchAPI.js";
+import { toPaletteFormat } from "../utils/rubricUtils.js";
 
 /**
  * API methods for interacting with Canvas Rubrics.
