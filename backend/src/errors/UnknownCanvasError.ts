@@ -10,16 +10,6 @@ export class CanvasAPIUnexpectedError extends Error {
     super(message);
     this.name = "CanvasAPIUnexpectedError";
     this.responseData = responseData;
-    // looks like:
-    // CanvasAPIUnexpectedError: Unexpected Canvas API response
-    // Error Data:
-    // {
-    //   noErrorField: [
-    //     {
-    //       orNoMessageField: 'The specified resource does not exist.'
-    //     }
-    //   ]
-    // }
   }
 
   // method that logs the formatted responseData to the console
