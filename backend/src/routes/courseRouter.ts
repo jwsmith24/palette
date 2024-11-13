@@ -4,7 +4,6 @@ import { handleCreateRubricAssociation } from "../controllers/rubricControllers/
 
 import { handleUpdateRubric } from "../controllers/rubricControllers/handleUpdateRubric.js";
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
-import { handleCreateRubric } from "../controllers/rubricControllers/handleCreateRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
 import {
   courseParamValidator,
@@ -16,6 +15,7 @@ import {
 } from "../controllers/courseController.js";
 
 import {
+  createRubric,
   getAllRubrics,
   getRubricById,
 } from "../controllers/rubricController.js";
@@ -31,7 +31,7 @@ router.post(
   courseParamValidator,
   rubricValidator,
   rubricValidationErrorHandler,
-  handleCreateRubric,
+  createRubric,
 );
 
 /**

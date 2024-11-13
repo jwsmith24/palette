@@ -3,17 +3,18 @@ import {
   CreateRubricAssociationRequest,
   CreateRubricAssociationResponse,
   CreateRubricRequest,
-  CreateRubricResponse,
   DeleteRubricRequest,
   DeleteRubricResponse,
   GetAllRubricsRequest,
   GetRubricRequest,
   Rubric,
+  RubricObjectHash,
   UpdateRubricRequest,
   UpdateRubricResponse,
 } from "palette-types";
 import { fetchAPI } from "../utils/fetchAPI.js";
 import { toPaletteFormat } from "../utils/rubricUtils.js";
+import { isRubricObjectHash } from "../utils/typeGuards";
 
 /**
  * API methods for interacting with Canvas Rubrics.
@@ -28,11 +29,25 @@ export const RubricsAPI = {
   async createRubric(
     request: CreateRubricRequest,
     courseID: number,
-  ): Promise<CreateRubricResponse> {
-    return fetchAPI<CreateRubricResponse>(`/courses/${courseID}/rubrics`, {
-      method: "POST",
-      body: JSON.stringify(request),
-    });
+  ): Promise<Rubric> {
+    // canvas api returns a rubric object hash
+    const response: RubricObjectHash = await fetchAPI<RubricObjectHash>(
+      `/courses/${courseID}/rubrics`,
+      {
+        method: "POST",
+        body: JSON.stringify(request),
+      },
+    );
+
+    // Check if the response is a RubricObjectHash
+    if (!isRubricObjectHash(response)) {
+      throw new Error(
+        "Unexpected response format: Expected a RubricObjectHash.",
+      );
+    }
+
+    // return the created rubric in the expected format
+    return toPaletteFormat(response.rubric as CanvasRubric);
   },
 
   /**
