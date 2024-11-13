@@ -14,7 +14,7 @@
     "dev": "concurrently \"npm run dev -w frontend\" \"npm run dev -w backend\"",
     "build": "npm run build --workspaces",
     "clean": "npm run clean --workspaces",
-    "lint": "eslint . --no-cache",
+    "lint": "eslint . ",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "test": "concurrently \"npm run test -w frontend\" \"npm run test -w backend\"",

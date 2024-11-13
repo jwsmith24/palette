@@ -10,12 +10,12 @@ import {
   UpdateRubricResponse,
 } from "palette-types";
 import config from "../config.js";
-import { toCanvasFormat } from "../utils/rubricUtils";
-import { isRubricObjectHash } from "../utils/typeGuards";
+import { toCanvasFormat } from "../utils/rubricUtils.js";
+import { isRubricObjectHash } from "../utils/typeGuards.js";
 import {
   createErrorResponse,
   createSuccessResponse,
-} from "../utils/paletteResponseFactories";
+} from "../utils/paletteResponseFactories.js";
 
 /**
  * Handles the GET request to retrieve a rubric by its ID.
