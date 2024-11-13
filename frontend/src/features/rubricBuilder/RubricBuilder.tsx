@@ -33,6 +33,10 @@ import {
 import { Criteria, Rubric } from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
 import { AnimatePresence, motion } from "framer-motion";
+import { useCourse } from "../../context";
+import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
+import { useAssignment } from "../../context/AssignmentProvider.tsx";
+import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
 
 export default function RubricBuilder(): ReactElement {
   /**
@@ -55,6 +59,12 @@ export default function RubricBuilder(): ReactElement {
     message: "",
     choices: [{ label: "OK", action: closeModal }],
   });
+
+  /**
+   * Active Course and Assignment State
+   */
+  const { activeCourse } = useCourse();
+  const { activeAssignment } = useAssignment();
 
   // Effect hook to update total points display on initial mount and anytime the rubric state changes
   useEffect(() => {
@@ -385,72 +395,70 @@ export default function RubricBuilder(): ReactElement {
         {/* Sticky Header with Gradient */}
         <Header />
 
-        {/* Form Section */}
-        <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
-          {/* Main Heading */}
-          <h1 className="font-extrabold text-5xl mb-2 text-center">
-            Create a new rubric
-          </h1>
+        {!activeCourse ? (
+          <NoCourseSelected />
+        ) : !activeAssignment ? (
+          <NoAssignmentSelected />
+        ) : (
+          <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
+            <h1 className="font-extrabold text-5xl mb-2 text-center">
+              Create a new rubric
+            </h1>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2">
+                <button
+                  className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  onClick={handleImportFilePress}
+                >
+                  Import CSV
+                </button>
 
-          <div className="flex justify-between items-center">
-            {/* Import and Export Buttons Container with Reduced Spacing */}
-            <div className="flex gap-2">
-              <button
-                className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                onClick={handleImportFilePress}
-              >
-                Import CSV
-              </button>
+                <CSVExport rubric={rubric} />
+              </div>
 
-              <CSVExport rubric={rubric} />
+              <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
+                {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
+              </h2>
             </div>
 
-            {/* Rubric Total Points */}
-            <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-              {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
-            </h2>
-          </div>
+            <input
+              type="text"
+              placeholder="Rubric title"
+              className="rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
+              name="rubricTitle"
+              id="rubricTitle"
+              value={rubric.title}
+              onChange={handleRubricTitleChange}
+            />
 
-          {/* Rubric Title Input */}
-          <input
-            type="text"
-            placeholder="Rubric title"
-            className="rounded p-3 mb-4 hover:bg-gray-200 focus:bg-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-800 w-full max-w-full text-xl truncate whitespace-nowrap"
-            name="rubricTitle"
-            id="rubricTitle"
-            value={rubric.title}
-            onChange={handleRubricTitleChange}
-          />
+            <div className="mt-6 flex flex-col gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
+              {renderCriteria()}
+            </div>
 
-          {/* Criteria Section */}
-          <div className="mt-6 flex flex-col gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
-            {renderCriteria()}
-          </div>
-
-          {/* Buttons */}
-          <div className="grid gap-4 mt-6">
-            <button
-              className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
+            <div className="grid gap-4 mt-6">
+              <button
+                className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onClick={handleAddCriteria}
-            >
-              Add Criteria
-            </button>
-            <button
-              className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
+                onClick={handleAddCriteria}
+              >
+                Add Criteria
+              </button>
+              <button
+                className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-              onClick={(event: MouseEvent) => {
-                handleSubmitRubric(event).catch((error) => {
-                  console.error("Error handling rubric submission: ", error);
-                });
-              }}
-              // instead of
-              // promise
-            >
-              Save Rubric
-            </button>
-          </div>
-        </form>
+                onClick={(event: MouseEvent) => {
+                  handleSubmitRubric(event).catch((error) => {
+                    console.error("Error handling rubric submission: ", error);
+                  });
+                }}
+                // instead of
+                // promise
+              >
+                Save Rubric
+              </button>
+            </div>
+          </form>
+        )}
 
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog

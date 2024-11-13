@@ -1,28 +1,23 @@
-import { Assignment } from "palette-types";
+import { useAssignment } from "../../context/AssignmentProvider.tsx";
 
 export default function ActiveAssignmentSelection({
-  assignment,
   setDialogOpen,
 }: {
-  assignment: Assignment | undefined;
   setDialogOpen: (open: boolean) => void;
 }) {
   const activeAssignmentStyle =
     "font-bold text-green-400 hover:opacity-80 cursor-pointer";
 
+  const { activeAssignment } = useAssignment();
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 ring-2 ring-black rounded-full p-2">
       <p>Active Assignment:</p>
-      {assignment ? (
-        <p className={activeAssignmentStyle}>{assignment.name}</p>
-      ) : (
-        <button
-          className={activeAssignmentStyle}
-          onClick={() => setDialogOpen(true)}
-        >
-          Select Assignment
-        </button>
-      )}
+      <button
+        className={activeAssignmentStyle}
+        onClick={() => setDialogOpen(true)}
+      >
+        {activeAssignment ? activeAssignment.name : "Select Assignment"}
+      </button>
     </div>
   );
 }

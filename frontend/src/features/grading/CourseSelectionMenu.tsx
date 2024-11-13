@@ -10,9 +10,9 @@ import { Course, PaletteAPIResponse } from "palette-types";
 import { useCourse } from "src/context/CourseProvider";
 
 export default function CourseSelectionMenu({
-  setDialogOpen,
+  onSelect,
 }: {
-  setDialogOpen: (open: boolean) => void;
+  onSelect: (open: boolean) => void;
 }): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -83,7 +83,7 @@ export default function CourseSelectionMenu({
 
   const handleCourseSelection = (course: Course) => {
     setActiveCourse(course);
-    setDialogOpen(false);
+    onSelect(false);
   };
 
   /**

@@ -95,7 +95,12 @@ export default function GradingView(): ReactElement {
 
   const renderContent = () => {
     if (!isAssignmentSelected) {
-      return <AssignmentSelectionMenu selectAssignment={selectAssignment} />;
+      return (
+        <AssignmentSelectionMenu
+          selectAssignment={selectAssignment}
+          onSelect={setDialogOpen}
+        />
+      );
     }
     return <div>Assignment Grading View</div>;
   };

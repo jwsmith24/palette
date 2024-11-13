@@ -6,11 +6,14 @@ import Menu from "@mui/material/Menu";
 import ActiveCourseSelection from "@features/grading/ActiveCourseSelection.tsx";
 import { Dialog } from "./Dialog.tsx";
 import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
+import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
+import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
 
 function Navbar() {
   const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [courseDialogOpen, setCourseDialogOpen] = useState(false);
+  const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -66,13 +69,16 @@ function Navbar() {
     <div className="flex justify-between items-center h-16 mx-4">
       {renderNavButtons()}
 
-      <ActiveCourseSelection setDialogOpen={setDialogOpen} />
-      <button
-        className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
-        onClick={handleOpenUserMenu}
-      >
-        P
-      </button>
+      <div className={"flex gap-20"}>
+        <ActiveCourseSelection setDialogOpen={setCourseDialogOpen} />
+        <ActiveAssignmentSelection setDialogOpen={setAssignmentDialogOpen} />
+        <button
+          className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
+          onClick={handleOpenUserMenu}
+        >
+          P
+        </button>
+      </div>
 
       <Menu
         sx={{ mt: "45px" }}
@@ -94,11 +100,18 @@ function Navbar() {
         <MenuItem onClick={handleLogoutClicked}>Logout</MenuItem>
       </Menu>
       <Dialog
-        isOpen={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        isOpen={courseDialogOpen}
+        onClose={() => setCourseDialogOpen(false)}
         title={"Course Selection"}
       >
-        <CourseSelectionMenu setDialogOpen={setDialogOpen} />
+        <CourseSelectionMenu onSelect={setCourseDialogOpen} />
+      </Dialog>
+      <Dialog
+        isOpen={assignmentDialogOpen}
+        onClose={() => setAssignmentDialogOpen(false)}
+        title={"Assignment Selection"}
+      >
+        <AssignmentSelectionMenu onSelect={setAssignmentDialogOpen} />
       </Dialog>
     </div>
   );

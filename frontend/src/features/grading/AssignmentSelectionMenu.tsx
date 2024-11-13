@@ -2,17 +2,19 @@ import { ReactElement, useEffect, useState } from "react";
 import { Assignment, PaletteAPIResponse } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "../../context";
+import { useAssignment } from "../../context/AssignmentProvider.tsx";
 
 export default function AssignmentSelectionMenu({
-  selectAssignment,
+  onSelect,
 }: {
-  selectAssignment: (assignment: Assignment) => void;
+  onSelect: (open: boolean) => void;
 }): ReactElement {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { activeCourse } = useCourse();
+  const { activeAssignment, setActiveAssignment } = useAssignment();
 
   const { fetchData: getAssignments } = useFetch(
     `/courses/${activeCourse?.id}/assignments`,
@@ -49,7 +51,8 @@ export default function AssignmentSelectionMenu({
   };
 
   const handleAssignmentSelection = (assignment: Assignment) => {
-    selectAssignment(assignment);
+    setActiveAssignment(assignment);
+    onSelect(false);
   };
 
   const fetchAssignments = async () => {
