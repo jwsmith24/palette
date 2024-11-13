@@ -16,16 +16,9 @@ export default function ActiveCourseSelection({
   return (
     <div className="flex items-center gap-2 ring-2 ring-black rounded-full p-2">
       <p>Active Course:</p>
-      {activeCourse ? (
-        <p className={activeCourseStyle}>{activeCourse.name}</p>
-      ) : (
-        <button
-          className={activeCourseStyle}
-          onClick={() => setDialogOpen(true)}
-        >
-          Select Course
-        </button>
-      )}
+      <button className={activeCourseStyle} onClick={() => setDialogOpen(true)}>
+        {activeCourse ? activeCourse.name : "Select Course"}
+      </button>
     </div>
   );
 }
