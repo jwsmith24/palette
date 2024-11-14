@@ -49,6 +49,8 @@ export default function RubricBuilder(): ReactElement {
 
   const [existingRubric, setExistingRubric] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   /**
    * Group modal state in one object.
    */
@@ -109,16 +111,17 @@ export default function RubricBuilder(): ReactElement {
   );
 
   /**
-   * Effect hook to see if the active assignment has an existing rubric.
+   * Effect hook to see if the active assignment has an existing rubric. Apply loading status while waiting to
+   * determine which view to render.
    */
   useEffect(() => {
     if (!activeCourse || !activeAssignment) return;
-
+    setLoading(true);
     const checkRubricExists = async () => {
       const response = await getRubric();
       setExistingRubric(response?.success || false);
+      setLoading(false);
     };
-
     void checkRubricExists();
   }, [activeCourse, activeAssignment]);
 
@@ -475,13 +478,24 @@ export default function RubricBuilder(): ReactElement {
     );
   };
 
+  const renderLoadingDisplay = () => {
+    return (
+      <div className="flex space-x-2">
+        <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+        <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce animation-delay-200"></div>
+        <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce animation-delay-400"></div>
+      </div>
+    );
+  };
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
 
-        {!activeCourse ? (
+        {loading ? (
+          renderLoadingDisplay() // Show loading icon when loading is true
+        ) : !activeCourse ? (
           <NoCourseSelected />
         ) : !activeAssignment ? (
           <NoAssignmentSelected />
