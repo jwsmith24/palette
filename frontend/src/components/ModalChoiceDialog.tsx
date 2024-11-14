@@ -32,7 +32,7 @@ export const ModalChoiceDialog: React.FC<ModalChoiceDialogProps> = ({
     return null; // Don't render anything if the modal is not visible
   }
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
         {/* Title */}
         <div className="mb-4">

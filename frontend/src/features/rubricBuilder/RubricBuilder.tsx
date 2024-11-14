@@ -7,6 +7,8 @@ import {
   MouseEvent,
   ReactElement,
   useEffect,
+  useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -23,12 +25,7 @@ import {
 import { useFetch } from "@hooks";
 import { CSVRow } from "@local_types";
 
-import {
-  createCriterion,
-  createRating,
-  createRubric,
-  formatDate,
-} from "@utils";
+import { createCriterion, createRating, createRubric } from "@utils";
 
 import { Criteria, Rubric } from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
@@ -43,14 +40,16 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Rubric Builder State
    */
-  const [rubric, setRubric] = useState<Rubric>(createRubric());
-  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [rubric, setRubric] = useState<Rubric | undefined>(undefined);
   const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   const [existingRubric, setExistingRubric] = useState(false);
+  const [isNewRubric, setIsNewRubric] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const hasMounted = useRef(false);
 
   /**
    * Group modal state in one object.
@@ -70,11 +69,6 @@ export default function RubricBuilder(): ReactElement {
    */
   const { activeCourse } = useCourse();
   const { activeAssignment } = useAssignment();
-
-  // Effect hook to update total points display on initial mount and anytime the rubric state changes
-  useEffect(() => {
-    calculateTotalPoints();
-  }, [rubric]);
 
   /**
    * Custom fetch hooks provide a `fetchData` callback to send any type of fetch request.
@@ -97,7 +91,7 @@ export default function RubricBuilder(): ReactElement {
    * PUT fetch hook to update an existing rubric on Canvas.
    */
   const { response: putRubricResponse, fetchData: putRubric } = useFetch(
-    `/courses/15760/rubrics/${rubric.id}`,
+    `/courses/${activeCourse?.id}/rubrics/${rubric?.id}`,
     {
       method: "PUT",
       body: JSON.stringify(rubric),
@@ -134,13 +128,14 @@ export default function RubricBuilder(): ReactElement {
       setModal({
         isOpen: true,
         title: "Success",
-        message: `Rubric "${rubric.title}" submitted successfully!`,
+        message: `Rubric "${rubric?.title}" submitted successfully!`,
         choices: [{ label: "OK", action: closeModal }],
       });
     } else {
       const errorMessage =
         postRubricResponse.error || "An unexpected error occurred";
 
+      // todo: can probably remove as this case will never happen directly from Canvas
       if (errorMessage.includes("already exists")) {
         handleExistingRubric();
         return;
@@ -167,16 +162,17 @@ export default function RubricBuilder(): ReactElement {
    * Rubric change event handlers
    */
 
-  const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newRubric = { ...rubric };
-    newRubric.title = event.target.value;
-    setRubric(newRubric);
-  };
+  /**
+   * Display modal feedback when put response changes.
+   */
+  useEffect(() => {
+    // avoid rendering modal on initial mount
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
 
-  const overwriteRubric = async () => {
-    closeModal();
-
-    await putRubric();
+    if (!rubric || !putRubricResponse) return;
 
     setModal({
       isOpen: true,
@@ -186,45 +182,57 @@ export default function RubricBuilder(): ReactElement {
         : `Error overwriting the rubric: ${putRubricResponse.error}`,
       choices: [{ label: "OK", action: closeModal }],
     });
-  };
+  }, [putRubricResponse]);
 
-  const copyRubric = async () => {
+  /**
+   * If user selects edit existing rubric, the program loads the rubric. When the user clicks "Save Rubric" the
+   * program sends a PUT request to apply updates.
+   */
+  const editRubric = () => {
     closeModal();
-
-    const newRubric = {
-      ...rubric,
-      title: `${rubric.title} - Copy ${formatDate()}`,
-    };
-    setRubric(newRubric); // update state with latest before using hook
-    await postRubric();
-
-    setModal({
-      isOpen: true,
-      title: postRubricResponse.success ? "Success!" : "Error",
-      message: postRubricResponse.success
-        ? "Rubric copied!"
-        : `Error copying rubric: ${postRubricResponse.error}`,
-      choices: [{ label: "OK", action: closeModal }],
-    });
+    setIsNewRubric(false); // set flag so that we update
   };
 
+  const replaceRubric = () => {
+    closeModal();
+    setIsNewRubric(true);
+    const newRubric = createRubric();
+    setRubric(newRubric); // set the active rubric to a fresh rubric
+  };
+
+  /**
+   * Fires when a selected assignment already has a rubric.
+   *
+   * User has the option to either overwrite the rubric with a fresh start or edit the existing rubric.
+   */
   const handleExistingRubric = () => {
     setModal({
-      ...modal,
-      title: "Duplicate Rubric Detected",
-      message: `A rubric with the title "${rubric.title}" already exists. How would you like to proceed?`,
+      isOpen: true,
+      title: "Existing Rubric Detected",
+      message: `A rubric with the title "${rubric?.title}" already exists for the active assignment. How would you like to proceed?`,
       choices: [
-        { label: "Overwrite", action: () => void overwriteRubric() },
-        { label: "Copy", action: () => void copyRubric() },
+        { label: "Edit Rubric", action: () => void editRubric() },
+        { label: "Create New Rubric", action: () => void replaceRubric() },
       ],
     });
   };
 
-  // Build rubric object with latest state values and send to server
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
-    console.log("rubric:", rubric);
-    await postRubric(); // triggers the POST request for the active rubric
+    try {
+      console.log("rubric:", rubric);
+      await postRubric();
+    } catch (error) {
+      console.error("Error handling rubric submission:", error);
+    }
+  };
+
+  const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setRubric((prevRubric) =>
+      prevRubric
+        ? { ...prevRubric, title: event.target.value }
+        : createRubric(),
+    );
   };
 
   /**
@@ -238,29 +246,36 @@ export default function RubricBuilder(): ReactElement {
       ),
     );
 
-  // function to iterate through each criterion and sum total max points for entire rubric
-  const calculateTotalPoints = () => {
-    const total: number = rubric.criteria.reduce(
-      (sum: number, criterion: Criteria) => {
-        if (isNaN(criterion.points)) {
-          return sum; // do not add bad value
-        }
-        return sum + Number(criterion.points); // ensure points aren't treated as a string
-      },
-      0,
-    ); // Initialize sum as 0
-    setTotalPoints(total); // Update state with the total points
-  };
+  /**
+   * Calculate rubric max points whenever rubric criterion changes. Uses memoization to avoid re-rendering the
+   * function everytime, improving performance.
+   *
+   * Defaults to 0 if no criterion is defined.
+   */
+  const maxPoints = useMemo(() => {
+    if (!rubric) return;
+
+    return (
+      rubric.criteria.reduce(
+        (sum, criterion) =>
+          isNaN(criterion.points) ? sum : sum + criterion.points,
+        0, // init sum to 0
+      ) || 0 // fallback value if criterion is undefined
+    );
+  }, [rubric?.criteria]);
 
   // update rubric state with new list of criteria
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
-    const newCriteria = [...rubric.criteria, createCriterion()];
+    if (!rubric) return;
+
+    const newCriteria = [...rubric.criteria];
     setRubric({ ...rubric, criteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
   };
 
   const handleRemoveCriterion = (index: number) => {
+    if (!rubric) return;
     const newCriteria = [...rubric.criteria];
     newCriteria.splice(index, 1); // remove the target criterion from the array
     setRubric({ ...rubric, criteria: newCriteria });
@@ -268,7 +283,8 @@ export default function RubricBuilder(): ReactElement {
 
   // update criterion at given index
   const handleUpdateCriterion = (index: number, criterion: Criteria) => {
-    const newCriteria = [...rubric.criteria]; // copy criteria to new array
+    if (!rubric) return;
+    const newCriteria = [...rubric.criteria];
     newCriteria[index] = criterion; // update the criterion with changes;
     setRubric({ ...rubric, criteria: newCriteria }); // update rubric to have new criteria
   };
@@ -282,11 +298,12 @@ export default function RubricBuilder(): ReactElement {
   const handleImportFile = (data: CSVRow[]) => {
     // reset the rubric state to clear any existing criteria
     const clearedRubric = { ...rubric, criteria: [] as Criteria[] };
-    setRubric(clearedRubric);
+    setRubric(clearedRubric as Rubric);
 
     // create a set of current criteria descriptions to optimize duplicate check
-    const existingCriteriaDescriptions =
-      buildCriteriaDescriptionSet(clearedRubric);
+    const existingCriteriaDescriptions = buildCriteriaDescriptionSet(
+      clearedRubric as Rubric,
+    );
 
     // Skip the first row (header row)
     const dataWithoutHeader = data.slice(1);
@@ -339,20 +356,9 @@ export default function RubricBuilder(): ReactElement {
       (prevRubric) =>
         ({
           ...prevRubric,
-          criteria: [...prevRubric.criteria, ...newCriteria],
+          criteria: [...(prevRubric?.criteria || []), ...newCriteria],
         }) as Rubric,
     );
-  };
-
-  const renderFileImport = () => {
-    if (fileInputActive) {
-      return (
-        <CSVUpload
-          onDataChange={(data: CSVRow[]) => handleImportFile(data)}
-          closeImportCard={handleCloseImportCard}
-        />
-      );
-    }
   };
 
   const handleImportFilePress = (event: MouseEvent<HTMLButtonElement>) => {
@@ -362,12 +368,12 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  const handleCloseImportCard = () => {
-    setFileInputActive(false); // hides the import file card
-  };
-
-  // Fires when drag event is over to re-sort criteria
+  /**
+   * Fires when a drag event ends, resorting the rubric criteria.
+   * @param event - drag end event
+   */
   const handleDragEnd = (event: DragEndEvent) => {
+    if (!rubric) return;
     if (event.over) {
       const oldIndex = rubric.criteria.findIndex(
         (criterion) => criterion.key === event.active.id,
@@ -384,8 +390,14 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  // render criterion card for each criterion in the array
-  const renderCriteria = () => {
+  /**
+   * Render a card for each criterion in the active rubric.
+   *
+   * The Sortable Context wrapper allows the drag and drop to dynamically apply sorting. The Animate Presence wrapper
+   * with the motion.div enable the transitions in and out.
+   */
+  const renderCriteriaCards = () => {
+    if (!rubric) return;
     return (
       <SortableContext
         items={rubric.criteria.map((criterion) => criterion.key)}
@@ -416,7 +428,8 @@ export default function RubricBuilder(): ReactElement {
     );
   };
 
-  const renderForm = () => {
+  const renderRubricBuilderForm = () => {
+    if (!rubric) return;
     return (
       <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
         <h1 className="font-extrabold text-5xl mb-2 text-center">
@@ -435,7 +448,7 @@ export default function RubricBuilder(): ReactElement {
           </div>
 
           <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
-            {totalPoints} {totalPoints === 1 ? "Point" : "Points"}
+            {maxPoints} {maxPoints === 1 ? "Point" : "Points"}
           </h2>
         </div>
 
@@ -450,7 +463,7 @@ export default function RubricBuilder(): ReactElement {
         />
 
         <div className="mt-6 flex flex-col gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
-          {renderCriteria()}
+          {renderCriteriaCards()}
         </div>
 
         <div className="grid gap-4 mt-6">
@@ -465,9 +478,7 @@ export default function RubricBuilder(): ReactElement {
             className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
             onClick={(event: MouseEvent) => {
-              handleSubmitRubric(event).catch((error) => {
-                console.error("Error handling rubric submission: ", error);
-              });
+              void handleSubmitRubric(event);
             }}
             // instead of
             // promise
@@ -479,23 +490,24 @@ export default function RubricBuilder(): ReactElement {
     );
   };
 
+  useEffect(() => {
+    if (existingRubric) handleExistingRubric();
+  }, [existingRubric]);
+
+  const renderContent = () => {
+    if (loading) return <LoadingDots />;
+    if (!activeCourse) return <NoCourseSelected />;
+    if (!activeAssignment) return <NoAssignmentSelected />;
+    if (existingRubric) return null;
+    return renderRubricBuilderForm();
+  };
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
-        <LoadingDots />
-        {loading ? (
-          <LoadingDots />
-        ) : !activeCourse ? (
-          <NoCourseSelected />
-        ) : !activeAssignment ? (
-          <NoAssignmentSelected />
-        ) : existingRubric ? (
-          <p>Prompt user to select if they want to overwrite or copy</p>
-        ) : (
-          renderForm()
-        )}
+        {renderContent()}
 
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog
@@ -506,13 +518,16 @@ export default function RubricBuilder(): ReactElement {
           choices={modal.choices}
         />
 
-        {/*CSV/XLSX Import Dialog*/}
+        {/* CSV/XLSX Import Dialog */}
         <Dialog
           isOpen={fileInputActive}
           onClose={() => setFileInputActive(false)}
           title={"Import a CSV Template"}
         >
-          {renderFileImport()}
+          <CSVUpload
+            onDataChange={(data: CSVRow[]) => handleImportFile(data)}
+            closeImportCard={() => setFileInputActive(false)}
+          />
         </Dialog>
 
         {/* Sticky Footer with Gradient */}
