@@ -45,7 +45,7 @@ export default function RubricBuilder(): ReactElement {
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
 
   const [existingRubric, setExistingRubric] = useState(false);
-  const [isNewRubric, setIsNewRubric] = useState(false);
+  const [isUpdatedRubric, setIsUpdatedRubric] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -114,7 +114,12 @@ export default function RubricBuilder(): ReactElement {
     setLoading(true);
     const checkRubricExists = async () => {
       const response = await getRubric();
-      setExistingRubric(response?.success || false);
+      if (!response) {
+        setLoading(false);
+        return;
+      }
+      setExistingRubric(response.success || false);
+      setRubric(response.data as Rubric);
       setLoading(false);
     };
     void checkRubricExists();
@@ -134,12 +139,6 @@ export default function RubricBuilder(): ReactElement {
     } else {
       const errorMessage =
         postRubricResponse.error || "An unexpected error occurred";
-
-      // todo: can probably remove as this case will never happen directly from Canvas
-      if (errorMessage.includes("already exists")) {
-        handleExistingRubric();
-        return;
-      }
 
       setModal({
         isOpen: true,
@@ -190,12 +189,17 @@ export default function RubricBuilder(): ReactElement {
    */
   const editRubric = () => {
     closeModal();
-    setIsNewRubric(false); // set flag so that we update
+    setIsUpdatedRubric(true); // set flag so that we update
   };
 
+  /**
+   * If user selects replace existing rubric, the program creates a new rubric for the user to edit.
+   *
+   * On "Save Rubric", the program sends a POST request to add the new rubric to the associated assignment on Canvas..
+   */
   const replaceRubric = () => {
     closeModal();
-    setIsNewRubric(true);
+    setIsUpdatedRubric(false);
     const newRubric = createRubric();
     setRubric(newRubric); // set the active rubric to a fresh rubric
   };
@@ -206,10 +210,12 @@ export default function RubricBuilder(): ReactElement {
    * User has the option to either overwrite the rubric with a fresh start or edit the existing rubric.
    */
   const handleExistingRubric = () => {
+    if (!rubric) return;
+
     setModal({
       isOpen: true,
       title: "Existing Rubric Detected",
-      message: `A rubric with the title "${rubric?.title}" already exists for the active assignment. How would you like to proceed?`,
+      message: `A rubric with the title "${rubric.title}" already exists for the active assignment. How would you like to proceed?`,
       choices: [
         { label: "Edit Rubric", action: () => void editRubric() },
         { label: "Create New Rubric", action: () => void replaceRubric() },
@@ -219,9 +225,16 @@ export default function RubricBuilder(): ReactElement {
 
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
+    if (!rubric || !activeCourse) return;
+
     try {
-      console.log("rubric:", rubric);
-      await postRubric();
+      if (isUpdatedRubric) {
+        console.log(`Updating rubric: ${rubric.title} in ${activeCourse.id}`);
+        await putRubric();
+      } else {
+        console.log(`Adding new Rubric to ${activeCourse.id}: ${rubric.title}`);
+        await postRubric();
+      }
     } catch (error) {
       console.error("Error handling rubric submission:", error);
     }
@@ -260,7 +273,7 @@ export default function RubricBuilder(): ReactElement {
         (sum, criterion) =>
           isNaN(criterion.points) ? sum : sum + criterion.points,
         0, // init sum to 0
-      ) || 0 // fallback value if criterion is undefined
+      ) ?? 0 // fallback value if criterion is undefined
     );
   }, [rubric?.criteria]);
 
@@ -428,6 +441,9 @@ export default function RubricBuilder(): ReactElement {
     );
   };
 
+  /**
+   * Helper function to wrap the builder JSX.
+   */
   const renderRubricBuilderForm = () => {
     if (!rubric) return;
     return (
@@ -494,11 +510,14 @@ export default function RubricBuilder(): ReactElement {
     if (existingRubric) handleExistingRubric();
   }, [existingRubric]);
 
+  /**
+   * Helper function to consolidate conditional rendering in the JSX.
+   */
   const renderContent = () => {
     if (loading) return <LoadingDots />;
     if (!activeCourse) return <NoCourseSelected />;
     if (!activeAssignment) return <NoAssignmentSelected />;
-    if (existingRubric) return null;
+    if (!existingRubric) return null;
     return renderRubricBuilderForm();
   };
 
