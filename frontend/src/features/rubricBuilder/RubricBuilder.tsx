@@ -309,67 +309,38 @@ export default function RubricBuilder(): ReactElement {
 
   // Update state with the new CSV/XLSX data
   const handleImportFile = (data: CSVRow[]) => {
-    // reset the rubric state to clear any existing criteria
-    const clearedRubric = { ...rubric, criteria: [] as Criteria[] };
-    setRubric(clearedRubric as Rubric);
+    if (!rubric) return;
 
-    // create a set of current criteria descriptions to optimize duplicate check
-    const existingCriteriaDescriptions = buildCriteriaDescriptionSet(
-      clearedRubric as Rubric,
-    );
+    const clearedRubric = { ...rubric, criteria: [] };
+    setRubric(clearedRubric);
 
-    // Skip the first row (header row)
-    const dataWithoutHeader = data.slice(1);
+    const existingCriteriaDescriptions =
+      buildCriteriaDescriptionSet(clearedRubric);
 
-    // data is a 2D array representing the CSV
-    const newCriteria = dataWithoutHeader
-      .map((row: CSVRow) => {
-        // ensures title is a string and non-empty otherwise throw out the entry
-        if (typeof row[0] !== "string" || !row[0].trim()) {
-          console.warn(
-            `Non-string or empty value in criterion description field: ${row[0]}. Throwing out entry.`,
-          );
+    const newCriteria = data
+      .slice(1)
+      .map((row) => {
+        if (typeof row[0] !== "string" || !row[0].trim()) return null;
+        if (existingCriteriaDescriptions.has(row[0].trim().toLowerCase()))
           return null;
-        }
 
-        const criteriaDescription = row[0].trim().toLowerCase();
-        // check for duplicates
-        if (existingCriteriaDescriptions.has(criteriaDescription)) {
-          console.warn(
-            `Duplicate criterion found: ${criteriaDescription}. Throwing out entry.`,
-          );
-          return null; //skip adding the duplicate criterion
-        }
-
-        // Create new criterion if unique
         const criterion: Criteria = createCriterion(row[0], "", 0, []);
-
-        // process ratings in their column pairs
-        let i = 1;
-        let j = 2;
-        // while not at the end of the row and not looking at empty cells
-        while (i < row.length && !(row[i] === "" && row[j] === "")) {
-          const points = Number(row[i] as number); // Ratings (B, D, F, etc.)
-          const description = row[j] as string; // add type assertions
-
-          // If points and description are valid, create a new Rating and add it to the ratings array
-          const rating = createRating(points, description);
-          criterion.ratings.push(rating);
-
-          i += 2;
-          j += 2;
+        for (let i = 1; i < row.length; i += 2) {
+          const points = Number(row[i]);
+          const description = row[i + 1] as string;
+          if (description)
+            criterion.ratings.push(createRating(points, description));
         }
         criterion.updatePoints();
         return criterion;
       })
-      .filter((criterion) => criterion !== null); // remove null values (bad entries)
+      .filter(Boolean);
 
-    // update rubric state
     setRubric(
       (prevRubric) =>
         ({
-          ...prevRubric,
-          criteria: [...(prevRubric?.criteria || []), ...newCriteria],
+          ...(prevRubric ?? createRubric()),
+          criteria: [...(prevRubric?.criteria ?? []), ...newCriteria],
         }) as Rubric,
     );
   };
