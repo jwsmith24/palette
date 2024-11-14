@@ -484,7 +484,7 @@ export default function RubricBuilder(): ReactElement {
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
-
+        <LoadingDots />
         {loading ? (
           <LoadingDots />
         ) : !activeCourse ? (
