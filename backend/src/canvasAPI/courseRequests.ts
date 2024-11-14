@@ -93,4 +93,18 @@ export const CoursesAPI = {
     );
     return canvasAssignments.map(mapToPaletteAssignment);
   },
+
+  async getAssignment(
+    courseId: string,
+    assignmentId: string,
+  ): Promise<Assignment> {
+    if (!assignmentId) {
+      throw new Error("Assignment ID is undefined");
+    }
+    const canvasAssignment = await fetchAPI<CanvasAssignment>(
+      `courses/${courseId}/assignments/${assignmentId}`,
+    );
+
+    return mapToPaletteAssignment(canvasAssignment);
+  },
 };

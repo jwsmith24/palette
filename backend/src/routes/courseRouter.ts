@@ -11,6 +11,7 @@ import {
 } from "../validators/baseParamValidators.js";
 import {
   getAllCourses,
+  getAssignment,
   getAssignments,
 } from "../controllers/courseController.js";
 
@@ -102,5 +103,10 @@ router.delete(
  * @description Get all assignments for a course
  */
 router.get("/:courseId/assignments", getAssignments);
+
+/**
+ * @route GET/courses/:courseId/assignments/:assignmentId
+ */
+router.get("/:courseId/assignments/:assignmentId", getAssignment);
 
 export default router;

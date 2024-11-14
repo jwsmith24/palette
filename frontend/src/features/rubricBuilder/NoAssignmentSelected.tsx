@@ -12,15 +12,14 @@ export default function NoAssignmentSelected() {
   return (
     <div className="self-center text-5xl font-semibold ">
       <p>
-        Please{" "}
+        Select an{" "}
         <button
           className={"text-green-400 hover:animate-pulse"}
           type={"button"}
           onClick={() => setAssignmentMenuOpen(true)}
         >
-          select
-        </button>{" "}
-        an assignment
+          Assignment
+        </button>
       </p>
       <Dialog
         isOpen={assignmentMenuOpen}
