@@ -37,6 +37,7 @@ import { useCourse } from "../../context";
 import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
+import LoadingDots from "../../components/LoadingDots.tsx";
 
 export default function RubricBuilder(): ReactElement {
   /**
@@ -478,15 +479,6 @@ export default function RubricBuilder(): ReactElement {
     );
   };
 
-  const renderLoadingDisplay = () => {
-    return (
-      <div className="flex space-x-2">
-        <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
-        <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce animation-delay-200"></div>
-        <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce animation-delay-400"></div>
-      </div>
-    );
-  };
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
@@ -494,7 +486,7 @@ export default function RubricBuilder(): ReactElement {
         <Header />
 
         {loading ? (
-          renderLoadingDisplay() // Show loading icon when loading is true
+          <LoadingDots />
         ) : !activeCourse ? (
           <NoCourseSelected />
         ) : !activeAssignment ? (
