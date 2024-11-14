@@ -16,7 +16,7 @@ import {
   isCanvasRubric,
   isPaginatedRubricsList,
   isRubricObjectHash,
-} from "../utils/typeGuards";
+} from "../utils/typeGuards.js";
 
 /**
  * API methods for interacting with Canvas Rubrics.

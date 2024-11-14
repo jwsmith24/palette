@@ -1,4 +1,4 @@
-import { RubricsAPI } from "../canvasAPI/rubricRequests";
+import { RubricsAPI } from "../canvasAPI/rubricRequests.js";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
@@ -10,9 +10,9 @@ import {
   PaletteAPIResponse,
   Rubric,
 } from "palette-types";
-import config from "../config";
-import { toCanvasFormat } from "../utils/rubricUtils";
-import { createSuccessResponse } from "../utils/paletteResponseFactories";
+import config from "../config.js";
+import { toCanvasFormat } from "../utils/rubricUtils.js";
+import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
 import { StatusCodes } from "http-status-codes";
 
 /**
