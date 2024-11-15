@@ -13,7 +13,6 @@ import {
   getAllCourses,
   getAssignment,
   getAssignments,
-  putAssignment,
 } from "../controllers/courseController.js";
 
 import {
@@ -81,7 +80,7 @@ router.get("/", getAllCourses);
  * @description Update a rubric by its ID in a specific course.
  */
 router.put(
-  "/:course_id/rubrics/:id",
+  "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
   rubricValidator,
   rubricValidationErrorHandler,
@@ -109,12 +108,5 @@ router.get("/:courseId/assignments", getAssignments);
  * @route GET /courses/:courseId/assignments/:assignmentId
  */
 router.get("/:courseId/assignments/:assignmentId", getAssignment);
-
-/**
- * @route PUT /courses/:courseId/assignments/:assignmentId
- *
- * Updates active assignment with latest rubric.
- */
-router.put("/:courseId/assignments/:assignmentId", putAssignment);
 
 export default router;
