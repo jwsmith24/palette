@@ -2,13 +2,8 @@
  * Service functionality for course and assignment-related queries.
  */
 
-import { fetchAPI } from "../utils/fetchAPI.js";
-import {
-  Assignment,
-  CanvasAssignment,
-  CanvasCourse,
-  Course,
-} from "palette-types";
+import {fetchAPI} from "../utils/fetchAPI.js";
+import {Assignment, CanvasAssignment, CanvasCourse, Course,} from "palette-types";
 
 /**
  * Convert canvas course object to palette course object.
@@ -89,7 +84,7 @@ export const CoursesAPI = {
       throw new Error("Course ID is undefined");
     }
     const canvasAssignments = await fetchAPI<CanvasAssignment[]>(
-      `/courses/${courseId}/assignments`,
+      `/courses/${courseId}/assignments?per_page=50`,
     );
     return canvasAssignments.map(mapToPaletteAssignment);
   },

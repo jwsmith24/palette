@@ -1,7 +1,7 @@
 import {
   CanvasRubric,
   GetAllRubricsRequest,
-  GetRubricRequest,
+  PartialRubricRequest,
   Rubric,
 } from "palette-types";
 import { fetchAPI } from "../../../utils/fetchAPI";
@@ -27,7 +27,7 @@ describe("Rubric GET service methods", () => {
   });
 
   describe("getRubric", () => {
-    const mockRequest: GetRubricRequest = {
+    const mockRequest: PartialRubricRequest = {
       course_id: 123,
       id: 1,
     };

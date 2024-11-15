@@ -1,23 +1,19 @@
-import { RubricsAPI } from "../canvasAPI/rubricRequests.js";
-import { Request, Response } from "express";
+import {RubricsAPI} from "../canvasAPI/rubricRequests.js";
+import {Request, Response} from "express";
 import asyncHandler from "express-async-handler";
 import {
-  GetRubricRequest,
+  CanvasRubric,
+  CreateRubricResponse,
   PaletteAPIResponse,
   Rubric,
   RubricRequestBody,
   UpdateRubricResponse,
 } from "palette-types";
 import config from "../config.js";
-import {
-  createAssignmentAssociation,
-  toCanvasFormat,
-} from "../utils/rubricUtils.js";
-import { isRubricObjectHash } from "../utils/typeGuards.js";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "../utils/paletteResponseFactories.js";
+import {createAssignmentAssociation, toCanvasFormat, toPaletteFormat,} from "../utils/rubricUtils.js";
+import {isRubricObjectHash} from "../utils/typeGuards.js";
+import {createErrorResponse, createSuccessResponse,} from "../utils/paletteResponseFactories.js";
+import {StatusCodes} from "http-status-codes";
 
 /**
  * Handles the GET request to retrieve a rubric by its ID.
@@ -29,9 +25,9 @@ import {
 export const getRubric = asyncHandler(async (req: Request, res: Response) => {
   const { course_id, rubric_id } = req.params;
   // create the request object for the Canvas API
-  const canvasRequest: GetRubricRequest = {
-    course_id: Number(course_id) || Number(config!.TEST_COURSE_ID),
-    rubric_id: Number(rubric_id) || Number(config!.TEST_RUBRIC_ID),
+  const canvasRequest: RubricRequestBody = {
+    course_id: Number(course_id),
+    rubric_id: Number(rubric_id),
   };
 
   // make the request to the Canvas API
@@ -49,7 +45,7 @@ export const getAllRubrics = asyncHandler(
   async (req: Request, res: Response) => {
     const { course_id } = req.params;
     // create the request object for the Canvas API
-    const canvasRequest: GetRubricRequest = {
+    const canvasRequest: RubricRequestBody = {
       course_id: Number(course_id) || Number(config!.TEST_COURSE_ID),
     };
 
@@ -65,12 +61,45 @@ export const getAllRubrics = asyncHandler(
   },
 );
 
+export const createRubric = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { course_id, assignment_id } = req.params;
+
+    const canvasRequest: RubricRequestBody = {
+      course_id: Number(course_id),
+      data: {
+        rubric_association: createAssignmentAssociation(Number(assignment_id)),
+        rubric: toCanvasFormat(req.body as Rubric),
+      },
+    };
+
+    const canvasResponse: CreateRubricResponse =
+      await RubricsAPI.createRubric(canvasRequest);
+
+    if (isRubricObjectHash(canvasResponse)) {
+      const data: Rubric = toPaletteFormat(
+        canvasResponse.rubric as CanvasRubric,
+      );
+
+      const paletteResponse = createSuccessResponse(
+        data,
+        "Rubric created successfully!",
+      );
+      res.status(StatusCodes.CREATED).json(paletteResponse);
+      return;
+    }
+
+    console.error("Bad response from Canvas API: ", canvasResponse);
+    const errorResponse = createErrorResponse(
+      `Bad response from Canvas API: ${canvasResponse.errors[0].message}`,
+    );
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse);
+  },
+);
+
 export const updateRubric = asyncHandler(
   async (req: Request, res: Response) => {
     const { course_id, rubric_id, assignment_id } = req.params;
-    console.log("update rubric check");
-    console.log("course_id", course_id);
-    console.log("rubric_id", rubric_id);
 
     // package the required information for the rubric request
     const canvasRequest: RubricRequestBody = {

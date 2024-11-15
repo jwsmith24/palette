@@ -7,8 +7,8 @@ _A guide to navigate the wonderous Canvas API._
 ### Phase 1: Establish Context
 
 - Ensure that `activeCourse`, `activeAssignment` are set to the intended targets.
-  - These values are consistent across the application utilizing the React `ContextProvider` wrapper.
-  - [React docs on Context](https://react.dev/reference/react/useContext)
+    - These values are consistent across the application utilizing the React `ContextProvider` wrapper.
+    - [React docs on Context](https://react.dev/reference/react/useContext)
 - This ensures `course_id`, `assignment_id`, and `rubric_id` are known and valid prior to building the request.
 
 ### Phase 2: Edit Rubric
@@ -19,9 +19,9 @@ _A guide to navigate the wonderous Canvas API._
 ### Phase 3A: Add Updated Rubric to Canvas
 
 - If Assignment already has an existing rubric:
-  - Send a PUT request to update the rubric with the latest data to the endpoint:
-    - `https://canvas.asu.edu/api/v1/courses/:course_id/rubrics/:rubric_id`
-  - The payload must follow the example format below:
+    - Send a PUT request to update the rubric with the latest data to the endpoint:
+        - `https://canvas.asu.edu/api/v1/courses/:course_id/rubrics/:rubric_id`
+    - The payload must follow the example format below:
 
 ```json
 {
@@ -68,7 +68,6 @@ _A guide to navigate the wonderous Canvas API._
 ### Phase 3B: Add Rubric to Assignment Without an Existing Rubric
 
 - Create new rubric in the course with a POST request matching the format below.
--
 
 POST Request Format:
 

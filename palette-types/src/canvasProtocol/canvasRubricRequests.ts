@@ -1,22 +1,17 @@
-import { CanvasCriterion } from "../canvasTypes/CanvasCriterion";
-import { CanvasRating } from "../canvasTypes/CanvasRating";
+import {CanvasCriterion} from "../canvasTypes/CanvasCriterion";
+import {CanvasRating} from "../canvasTypes/CanvasRating";
 
 /**
  * This type represents the request body for creating or updating a CanvasRubric.
  */
 export interface RubricRequestBody {
-  rubric_id: number;
+  rubric_id?: number;
   course_id: number;
-  data: {
+  data?: {
     rubric_association: RubricAssociation;
     rubric: RequestFormattedRubric;
   };
 }
-
-/**
- * Enables fields to be optional for get requests.
- */
-export type GetRubricRequest = Partial<RubricRequestBody>;
 
 /**
  * Defines the rubric fields that can be created (according to the API).

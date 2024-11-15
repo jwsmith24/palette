@@ -2,7 +2,6 @@ import express from "express";
 import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
 
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
-import { handleCreateRubric } from "../controllers/rubricControllers/handleCreateRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
 import {
   assignmentParamValidator,
@@ -16,6 +15,7 @@ import {
 } from "../controllers/courseController.js";
 
 import {
+  createRubric,
   getAllRubrics,
   getRubric,
   updateRubric,
@@ -28,11 +28,12 @@ const router = express.Router();
  * @description Create a new rubric in a specific course.
  */
 router.post(
-  "/:course_id/rubrics",
+  "/:course_id/rubrics/:assignment_id",
   courseParamValidator,
+  assignmentParamValidator,
   rubricValidator,
   rubricValidationErrorHandler,
-  handleCreateRubric,
+  createRubric,
 );
 
 /**
