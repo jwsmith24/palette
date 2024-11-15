@@ -94,7 +94,7 @@ export default function RubricBuilder(): ReactElement {
    * Updates active assignment with new or updated rubric.
    */
 
-  const { response: putRubricResponse, fetchData: putRubric } = useFetch(
+  const { fetchData: putRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}/${activeAssignment?.id}`,
     {
       method: "PUT",
@@ -102,7 +102,7 @@ export default function RubricBuilder(): ReactElement {
     },
   );
 
-  const { response: postRubricResponse, fetchData: postRubric } = useFetch(
+  const { fetchData: postRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.id}`,
     {
       method: "POST",
@@ -207,8 +207,8 @@ export default function RubricBuilder(): ReactElement {
       title: "Existing Rubric Detected",
       message: `A rubric with the title "${rubric.title}" already exists for the active assignment. How would you like to proceed?`,
       choices: [
-        { label: "Edit Rubric", action: () => void editRubric() },
-        { label: "Create New Rubric", action: () => void startNewRubric() },
+        { label: "Edit Rubric", action: () => editRubric() },
+        { label: "Create New Rubric", action: () => startNewRubric() },
       ],
     });
   };
@@ -216,21 +216,36 @@ export default function RubricBuilder(): ReactElement {
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
     if (!rubric || !activeCourse || !activeAssignment) return;
+    setLoading(true);
 
     try {
       if (isNewRubric) {
-        console.log(`Creating rubric for assignment: ${activeAssignment.name}`);
-        console.log("rubric: ", rubric);
         await postRubric();
-        console.log("response from POST: ", postRubricResponse);
+        setModal({
+          isOpen: true,
+          title: "Success!",
+          message: `${rubric.title} created!`,
+          choices: [{ label: "Radical", action: () => closeModal() }],
+        });
       } else {
-        console.log(`Updating rubric on assignment: ${activeAssignment.name}`);
-        console.log("rubric: ", rubric);
         await putRubric();
-        console.log("response from SUBMIT: ", putRubricResponse);
+        setModal({
+          isOpen: true,
+          title: "Success!",
+          message: `${rubric.title} updated!`,
+          choices: [{ label: "Radical", action: () => closeModal() }],
+        });
       }
     } catch (error) {
       console.error("Error handling rubric submission:", error);
+      setModal({
+        isOpen: true,
+        title: "Error!",
+        message: `An error occurred: ${error instanceof Error ? error.message : "unknown error"}`,
+        choices: [{ label: "Radical", action: () => closeModal() }],
+      });
+    } finally {
+      setLoading(false);
     }
   };
 

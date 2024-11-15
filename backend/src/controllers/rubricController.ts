@@ -1,8 +1,7 @@
-import {RubricsAPI} from "../canvasAPI/rubricRequests.js";
-import {Request, Response} from "express";
+import { RubricsAPI } from "../canvasAPI/rubricRequests.js";
+import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
-  CanvasRubric,
   CreateRubricResponse,
   PaletteAPIResponse,
   Rubric,
@@ -10,10 +9,15 @@ import {
   UpdateRubricResponse,
 } from "palette-types";
 import config from "../config.js";
-import {createAssignmentAssociation, toCanvasFormat, toPaletteFormat,} from "../utils/rubricUtils.js";
-import {isRubricObjectHash} from "../utils/typeGuards.js";
-import {createErrorResponse, createSuccessResponse,} from "../utils/paletteResponseFactories.js";
-import {StatusCodes} from "http-status-codes";
+import {
+  createAssignmentAssociation,
+  toCanvasFormat,
+} from "../utils/rubricUtils.js";
+import { isRubricObjectHash } from "../utils/typeGuards.js";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+} from "../utils/paletteResponseFactories.js";
 
 /**
  * Handles the GET request to retrieve a rubric by its ID.
@@ -76,24 +80,13 @@ export const createRubric = asyncHandler(
     const canvasResponse: CreateRubricResponse =
       await RubricsAPI.createRubric(canvasRequest);
 
-    if (isRubricObjectHash(canvasResponse)) {
-      const data: Rubric = toPaletteFormat(
-        canvasResponse.rubric as CanvasRubric,
-      );
+    const apiResponse: PaletteAPIResponse<unknown> = {
+      data: canvasResponse,
+      success: true,
+      message: "New rubric created successfully",
+    };
 
-      const paletteResponse = createSuccessResponse(
-        data,
-        "Rubric created successfully!",
-      );
-      res.status(StatusCodes.CREATED).json(paletteResponse);
-      return;
-    }
-
-    console.error("Bad response from Canvas API: ", canvasResponse);
-    const errorResponse = createErrorResponse(
-      `Bad response from Canvas API: ${canvasResponse.errors[0].message}`,
-    );
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse);
+    res.json(apiResponse);
   },
 );
 
@@ -114,11 +107,11 @@ export const updateRubric = asyncHandler(
     const canvasResponse: UpdateRubricResponse =
       await RubricsAPI.updateRubric(canvasRequest);
 
-    let paletteResponse: PaletteAPIResponse<null>;
+    let paletteResponse: PaletteAPIResponse<unknown>;
 
     if (isRubricObjectHash(canvasResponse)) {
       paletteResponse = createSuccessResponse(
-        null,
+        canvasResponse.rubric,
         "Rubric updated successfully!",
       );
     } else {
