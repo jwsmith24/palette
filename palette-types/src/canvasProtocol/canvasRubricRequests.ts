@@ -1,5 +1,5 @@
-import {CanvasCriterion} from "../canvasTypes/CanvasCriterion";
-import {CanvasRating} from "../canvasTypes/CanvasRating";
+import { CanvasCriterion } from "../canvasTypes/CanvasCriterion";
+import { CanvasRating } from "../canvasTypes/CanvasRating";
 
 /**
  * This type represents the request body for creating or updating a CanvasRubric.
