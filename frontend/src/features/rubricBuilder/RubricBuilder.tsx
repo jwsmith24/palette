@@ -93,7 +93,7 @@ export default function RubricBuilder(): ReactElement {
    */
 
   const { response: submitRubricResponse, fetchData: updateRubric } = useFetch(
-    `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`,
+    `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}/${activeAssignment?.id}`,
     {
       method: "PUT",
       body: JSON.stringify(rubric),

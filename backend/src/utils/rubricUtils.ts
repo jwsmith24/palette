@@ -91,14 +91,14 @@ export const toPaletteFormat = (rubric: CanvasRubric): Rubric => {
 
 /**
  * Factory function to make a rubric association.
- * @param assignmentID
+ * @param assignment_id
  */
 export const createAssignmentAssociation = (
-  assignmentID: number,
+  assignment_id: number,
 ): RubricAssociation => {
   return {
     association_type: "Assignment",
-    association_id: assignmentID,
+    association_id: assignment_id,
     use_for_grading: true,
     purpose: "grading",
   };

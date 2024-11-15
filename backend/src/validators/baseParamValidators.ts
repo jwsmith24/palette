@@ -10,6 +10,12 @@ export const courseParamValidator: ValidationChain[] = [
     .withMessage("Course ID param must be a number"),
 ];
 
+export const assignmentParamValidator: ValidationChain[] = [
+  param("assignment_id")
+    .isNumeric()
+    .withMessage("Assignment id must be a number"),
+];
+
 export const idAndCourseParamValidator: ValidationChain[] = [
   ...idParamValidator,
   ...courseParamValidator,

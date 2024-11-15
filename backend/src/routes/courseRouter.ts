@@ -5,6 +5,7 @@ import { handleDeleteRubric } from "../controllers/rubricControllers/handleDelet
 import { handleCreateRubric } from "../controllers/rubricControllers/handleCreateRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
 import {
+  assignmentParamValidator,
   courseParamValidator,
   idAndCourseParamValidator,
 } from "../validators/baseParamValidators.js";
@@ -68,8 +69,9 @@ router.get("/", getAllCourses);
  * @description Update a rubric by its ID in a specific course.
  */
 router.put(
-  "/:course_id/rubrics/:rubric_id",
+  "/:course_id/rubrics/:rubric_id/:assignment_id",
   idAndCourseParamValidator,
+  assignmentParamValidator,
   rubricValidator,
   rubricValidationErrorHandler,
   updateRubric,
