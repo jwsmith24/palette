@@ -92,8 +92,8 @@ export default function RubricBuilder(): ReactElement {
    * Updates active assignment with new or updated rubric.
    */
 
-  const { response: submitRubricResponse, fetchData: putAssignment } = useFetch(
-    `/courses/${activeCourse?.id}/assignments/${activeAssignment?.id}`,
+  const { response: submitRubricResponse, fetchData: updateRubric } = useFetch(
+    `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`,
     {
       method: "PUT",
       body: JSON.stringify(rubric),
@@ -207,7 +207,8 @@ export default function RubricBuilder(): ReactElement {
 
     try {
       console.log(`Updating rubric on assignment: ${activeAssignment.name}`);
-      await putAssignment();
+      console.log("rubric: ", rubric);
+      await updateRubric();
       console.log("response from SUBMIT: ", submitRubricResponse);
     } catch (error) {
       console.error("Error handling rubric submission:", error);

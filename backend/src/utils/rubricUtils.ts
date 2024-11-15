@@ -30,7 +30,7 @@ export const toCanvasFormat = (
   const formattedCriteria: RequestFormattedCriteria = Object.fromEntries(
     originalRubric.criteria.map((criterion, index) => {
       return [
-        index,
+        index + 1,
         {
           description: criterion.description,
           long_description: criterion.longDescription,
@@ -38,7 +38,7 @@ export const toCanvasFormat = (
           ratings: Object.fromEntries(
             criterion.ratings.map((rating, ratingIndex) => {
               return [
-                ratingIndex,
+                ratingIndex + 1,
                 {
                   description: rating.description,
                   long_description: rating.longDescription,

@@ -16,8 +16,8 @@ export const getAllCourses = asyncHandler(async (req, res) => {
 
 export const getAssignments = asyncHandler(
   async (req: Request, res: Response) => {
-    console.log("course id: ", req.params.courseId);
-    const assignments = await CoursesAPI.getAssignments(req.params.courseId);
+    console.log("course id: ", req.params.course_id);
+    const assignments = await CoursesAPI.getAssignments(req.params.course_id);
     const apiResponse: PaletteAPIResponse<Assignment[]> = {
       data: assignments,
       success: true,
@@ -31,8 +31,8 @@ export const getAssignments = asyncHandler(
 export const getAssignment = asyncHandler(
   async (req: Request, res: Response) => {
     const assignment = await CoursesAPI.getAssignment(
-      req.params.courseId,
-      req.params.assignmentId,
+      req.params.course_id,
+      req.params.assignment_id,
     );
     const apiResponse: PaletteAPIResponse<Assignment> = {
       data: assignment,

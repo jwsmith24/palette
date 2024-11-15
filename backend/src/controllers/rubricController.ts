@@ -15,11 +15,11 @@ import {createErrorResponse, createSuccessResponse,} from "../utils/paletteRespo
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const getRubric = asyncHandler(async (req: Request, res: Response) => {
-  const { course_id, id } = req.params;
+  const { course_id, rubric_id } = req.params;
   // create the request object for the Canvas API
   const canvasRequest: GetRubricRequest = {
     course_id: Number(course_id) || Number(config!.TEST_COURSE_ID),
-    rubric_id: Number(id) || Number(config!.TEST_RUBRIC_ID),
+    rubric_id: Number(rubric_id) || Number(config!.TEST_RUBRIC_ID),
   };
 
   // make the request to the Canvas API
@@ -55,11 +55,14 @@ export const getAllRubrics = asyncHandler(
 
 export const updateRubric = asyncHandler(
   async (req: Request, res: Response) => {
-    const { course_id, id } = req.params;
+    const { course_id, rubric_id } = req.params;
+    console.log("update rubric check");
+    console.log("course_id", course_id);
+    console.log("rubric_id", rubric_id);
 
     // package the required information for the rubric request
     const canvasRequest: RubricRequestBody = {
-      rubric_id: Number(id),
+      rubric_id: Number(rubric_id),
       course_id: Number(course_id),
       data: {
         rubric_association: createAssignmentAssociation(Number(course_id)),

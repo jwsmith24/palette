@@ -1,6 +1,5 @@
 import express from "express";
 import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
-import { handleCreateRubricAssociation } from "../controllers/rubricControllers/handleCreateRubricAssociation.js";
 
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
 import { handleCreateRubric } from "../controllers/rubricControllers/handleCreateRubric.js";
@@ -36,22 +35,11 @@ router.post(
 );
 
 /**
- * @route POST /courses/:course_id/rubric_associations
- * @description Create a new rubric association in a specific course.
- */
-router.post(
-  "/:course_id/rubric_associations",
-  courseParamValidator,
-  rubricValidationErrorHandler,
-  handleCreateRubricAssociation,
-);
-
-/**
  * @route GET /courses/:course_id/rubrics/:id
  * @description Get a rubric by its ID in a specific course.
  */
 router.get(
-  "/:course_id/rubrics/:id",
+  "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
   rubricValidationErrorHandler,
   getRubric,
@@ -92,7 +80,7 @@ router.put(
  * @description Delete a rubric by its ID in a specific course.
  */
 router.delete(
-  "/:course_id/rubrics/:id",
+  "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
   rubricValidationErrorHandler,
   handleDeleteRubric,
@@ -102,11 +90,11 @@ router.delete(
  * @route GET /courses/:courseID/assignments
  * @description Get all assignments for a course
  */
-router.get("/:courseId/assignments", getAssignments);
+router.get("/:course_id/assignments", getAssignments);
 
 /**
  * @route GET /courses/:courseId/assignments/:assignmentId
  */
-router.get("/:courseId/assignments/:assignmentId", getAssignment);
+router.get("/:course_id/assignments/:assignment_id", getAssignment);
 
 export default router;

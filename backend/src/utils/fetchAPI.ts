@@ -10,7 +10,7 @@ export const CanvasAPIConfig = {
     // get the token from the environment variables
     Authorization: `Bearer ${config!.CANVAS_API_TOKEN || "REDACTED"}`,
     Accept: "application/json",
-    "Content-Type": "application/json", // must be a string!
+    "Content-Type": "application/json",
   },
 } as const;
 
