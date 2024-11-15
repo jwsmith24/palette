@@ -6,10 +6,18 @@ import {
   RequestFormattedCriteria,
   RequestFormattedRubric,
   Rubric,
+  RubricAssociation,
 } from "palette-types";
 
-import { v4 as uuid } from "uuid";
+import {v4 as uuid} from "uuid"; /**
+ * Transforms the rubric object into the format expected by the Canvas API.
+ *
+ */
 
+/**
+ * Transforms the rubric object into the format expected by the Canvas API.
+ *
+ */
 /**
  * Transforms the rubric object into the format expected by the Canvas API.
  *
@@ -46,7 +54,6 @@ export const toCanvasFormat = (
   // return the transformed rubric object
   return {
     title: originalRubric.title,
-    free_form_criterion_comments: true, // todo: default value
     criteria: formattedCriteria,
   };
 };
@@ -80,4 +87,19 @@ export const toPaletteFormat = (rubric: CanvasRubric): Rubric => {
         };
       }) || [], // or if there are no criteria, return an empty array
   } as Rubric;
+};
+
+/**
+ * Factory function to make a rubric association.
+ * @param assignmentID
+ */
+export const createAssignmentAssociation = (
+  assignmentID: number,
+): RubricAssociation => {
+  return {
+    association_type: "Assignment",
+    association_id: assignmentID,
+    use_for_grading: true,
+    purpose: "grading",
+  };
 };

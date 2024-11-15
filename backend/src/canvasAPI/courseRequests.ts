@@ -2,13 +2,8 @@
  * Service functionality for course and assignment-related queries.
  */
 
-import { fetchAPI } from "../utils/fetchAPI.js";
-import {
-  Assignment,
-  CanvasAssignment,
-  CanvasCourse,
-  Course,
-} from "palette-types";
+import {fetchAPI} from "../utils/fetchAPI.js";
+import {Assignment, CanvasAssignment, CanvasCourse, Course,} from "palette-types";
 
 /**
  * Convert canvas course object to palette course object.

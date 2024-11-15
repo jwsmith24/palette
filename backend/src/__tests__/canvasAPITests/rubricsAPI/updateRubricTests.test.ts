@@ -1,5 +1,5 @@
 import { RubricsAPI } from "../../../canvasAPI/rubricRequests";
-import { UpdateRubricRequest } from "palette-types";
+import { RubricRequestBody } from "palette-types";
 import { fetchAPI } from "../../../utils/fetchAPI";
 
 // Mock the fetchAPI function
@@ -10,7 +10,7 @@ jest.mock("../../../utils/fetchAPI", () => ({
 describe("updateRubric", () => {
   it("should make a PUT request to update an existing rubric in a specific course", async () => {
     // Arrange
-    const request: UpdateRubricRequest = {
+    const request: RubricRequestBody = {
       rubric_id: 123,
       rubric_association_id: 123,
       course_id: 123,

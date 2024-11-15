@@ -9,7 +9,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -49,13 +48,10 @@ export default function RubricBuilder(): ReactElement {
   // tracks which criterion card is displaying the detailed view (limited to one at a time)
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
   // result of hook checking if active assignment has an existing rubric
-  const [existingRubric, setExistingRubric] = useState(false);
-  // Flag for POST or PUT request on save
-  const [isUpdatedRubric, setIsUpdatedRubric] = useState(false);
+  const [hasExistingRubric, setHasExistingRubric] = useState(false);
   // flag for if loading component should be rendered
   const [loading, setLoading] = useState(false);
-  // flag to check if a component has mounted for the first time
-  const hasMounted = useRef(false);
+
   // declared before so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
     () => setModal((prevModal) => ({ ...prevModal, isOpen: false })),
@@ -81,24 +77,6 @@ export default function RubricBuilder(): ReactElement {
    * See PaletteAPIRequest for options structure.
    */
 
-  // POST fetch hook to add a new rubric to Canvas.
-  const { response: postRubricResponse, fetchData: postRubric } = useFetch(
-    "/courses/15760/rubrics", // hardcoded course ID for now
-    {
-      method: "POST",
-      body: JSON.stringify(rubric), // use latest rubric data
-    },
-  );
-
-  // PUT fetch hook to update an existing rubric on Canvas.
-  const { response: putRubricResponse, fetchData: putRubric } = useFetch(
-    `/courses/${activeCourse?.id}/rubrics/${rubric?.id}`,
-    {
-      method: "PUT",
-      body: JSON.stringify(rubric),
-    },
-  );
-
   // GET rubric from the active assignment.
   const { fetchData: getRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`,
@@ -106,9 +84,21 @@ export default function RubricBuilder(): ReactElement {
 
   useEffect(() => {
     if (!activeCourse || !activeAssignment) return;
-    if (existingRubric) handleExistingRubric();
-    if (!existingRubric) handleNewRubric();
-  }, [existingRubric]);
+    if (hasExistingRubric) handleExistingRubric();
+    if (!hasExistingRubric) handleNewRubric();
+  }, [hasExistingRubric]);
+
+  /**
+   * Updates active assignment with new or updated rubric.
+   */
+
+  const { response: submitRubricResponse, fetchData: putAssignment } = useFetch(
+    `/courses/${activeCourse?.id}/assignments/${activeAssignment?.id}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(rubric),
+    },
+  );
 
   /**
    * Fires when user selects an assignment that doesn't have a rubric id associated with it.
@@ -126,8 +116,7 @@ export default function RubricBuilder(): ReactElement {
       choices: [{ label: "OK", action: closeModal }],
     });
     setLoading(false);
-    setIsUpdatedRubric(false);
-    setExistingRubric(false);
+    setHasExistingRubric(false);
   };
 
   /**
@@ -163,7 +152,7 @@ export default function RubricBuilder(): ReactElement {
         setLoading(false);
         return;
       }
-      setExistingRubric(response.success || false);
+      setHasExistingRubric(response.success || false);
       setRubric(response.data as Rubric);
       setLoading(false);
     };
@@ -171,62 +160,8 @@ export default function RubricBuilder(): ReactElement {
   }, [activeCourse, activeAssignment]);
 
   /**
-   * Helper function for the effect hook that handles the modal display based on the response.
-   */
-  const handlePostRubricResponse = () => {
-    if (postRubricResponse.success) {
-      setModal({
-        isOpen: true,
-        title: "Success",
-        message: `Rubric "${rubric?.title}" submitted successfully!`,
-        choices: [{ label: "OK", action: closeModal }],
-      });
-    } else {
-      const errorMessage =
-        postRubricResponse.error || "An unexpected error occurred";
-
-      setModal({
-        isOpen: true,
-        title: "Error",
-        message: errorMessage,
-        choices: [{ label: "OK", action: closeModal }],
-      });
-    }
-  };
-
-  /**
-   * Effect hook to process the response when it comes back.
-   */
-  useEffect(() => {
-    if (!postRubricResponse || postRubricResponse.loading) return;
-    handlePostRubricResponse();
-  }, [postRubricResponse]);
-
-  /**
    * Rubric change event handlers
    */
-
-  /**
-   * Display modal feedback when put response changes.
-   */
-  useEffect(() => {
-    // avoid rendering modal on initial mount
-    if (!hasMounted.current) {
-      hasMounted.current = true;
-      return;
-    }
-
-    if (!rubric || !putRubricResponse) return;
-
-    setModal({
-      isOpen: true,
-      title: putRubricResponse.success ? "Success!" : "Error",
-      message: putRubricResponse.success
-        ? "Rubric was overwritten!"
-        : `Error overwriting the rubric: ${putRubricResponse.error}`,
-      choices: [{ label: "OK", action: closeModal }],
-    });
-  }, [putRubricResponse]);
 
   /**
    * If user selects edit existing rubric, the program loads the rubric. When the user clicks "Save Rubric" the
@@ -234,7 +169,6 @@ export default function RubricBuilder(): ReactElement {
    */
   const editRubric = () => {
     closeModal();
-    setIsUpdatedRubric(true); // set flag so that we update
   };
 
   /**
@@ -244,7 +178,6 @@ export default function RubricBuilder(): ReactElement {
    */
   const startNewRubric = () => {
     closeModal();
-    setIsUpdatedRubric(false);
     const newRubric = createRubric();
     setRubric(newRubric); // set the active rubric to a fresh rubric
   };
@@ -270,16 +203,12 @@ export default function RubricBuilder(): ReactElement {
 
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
-    if (!rubric || !activeCourse) return;
+    if (!rubric || !activeCourse || !activeAssignment) return;
 
     try {
-      if (isUpdatedRubric) {
-        console.log(`Updating rubric: ${rubric.title} in ${activeCourse.id}`);
-        await putRubric();
-      } else {
-        console.log(`Adding new Rubric to ${activeCourse.id}: ${rubric.title}`);
-        await postRubric();
-      }
+      console.log(`Updating rubric on assignment: ${activeAssignment.name}`);
+      await putAssignment();
+      console.log("response from SUBMIT: ", submitRubricResponse);
     } catch (error) {
       console.error("Error handling rubric submission:", error);
     }
