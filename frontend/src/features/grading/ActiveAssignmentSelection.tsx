@@ -9,8 +9,9 @@ export default function ActiveAssignmentSelection({
     "font-bold text-green-400 hover:opacity-80 cursor-pointer";
 
   const { activeAssignment } = useAssignment();
+
   return (
-    <div className="flex items-center gap-2 ring-2 ring-black rounded-full p-2">
+    <div className="flex items-center gap-2 ring-2 ring-black rounded-full p-2 relative">
       <p>Active Assignment:</p>
       <button
         className={activeAssignmentStyle}

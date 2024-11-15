@@ -3,6 +3,7 @@ import { Assignment, PaletteAPIResponse } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "../../context";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
+import LoadingDots from "../../components/LoadingDots.tsx";
 
 export default function AssignmentSelectionMenu({
   onSelect,
@@ -21,15 +22,26 @@ export default function AssignmentSelectionMenu({
   );
 
   useEffect(() => {
+    if (!activeCourse) return;
     void fetchAssignments();
   }, []);
 
   const renderAssignments = () => {
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <LoadingDots />;
     if (errorMessage)
-      return <p className="text-red-500 font-normal">Error: {errorMessage}</p>;
+      return (
+        <p className="text-red-500 font-normal mt-2">Error: {errorMessage}</p>
+      );
+
+    if (!activeCourse) {
+      return (
+        <div className={"text-red-500 font-medium mt-2"}>
+          Select a course first to view assignments.
+        </div>
+      );
+    }
     if (assignments.length === 0)
-      return <div>No courses available to display</div>;
+      return <div>No assignments are available to display</div>;
 
     return (
       <div className={"grid gap-2 my-4"}>
@@ -81,11 +93,7 @@ export default function AssignmentSelectionMenu({
 
   return (
     <div className={"grid gap-2 text-2xl"}>
-      {activeCourse ? (
-        <p>Assignments for {activeCourse.name}</p>
-      ) : (
-        <p>No Course Selected</p>
-      )}
+      {activeCourse ? <p>Assignments for {activeCourse.name}</p> : null}
       <div>{renderAssignments()}</div>
       <button
         onClick={void fetchAssignments}
