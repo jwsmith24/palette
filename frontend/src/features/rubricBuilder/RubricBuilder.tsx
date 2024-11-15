@@ -326,8 +326,7 @@ export default function RubricBuilder(): ReactElement {
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
     if (!rubric) return;
-
-    const newCriteria = [...rubric.criteria];
+    const newCriteria = [...rubric.criteria, createCriterion()];
     setRubric({ ...rubric, criteria: newCriteria });
     setActiveCriterionIndex(newCriteria.length - 1);
   };
@@ -509,9 +508,8 @@ export default function RubricBuilder(): ReactElement {
           <button
             className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event: MouseEvent) => {
-              void handleSubmitRubric(event);
-            }}
+            onClick={void handleSubmitRubric}
+
             // instead of
             // promise
           >
