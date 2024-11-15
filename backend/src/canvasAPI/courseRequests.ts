@@ -60,7 +60,7 @@ function mapToPaletteAssignment(
     rubricId:
       canvasAssignment.rubric && canvasAssignment.rubric_settings
         ? canvasAssignment.rubric_settings.id
-        : -1,
+        : undefined,
   };
 }
 

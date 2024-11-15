@@ -6,6 +6,7 @@ import {
   ChangeEvent,
   MouseEvent,
   ReactElement,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -40,32 +41,36 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Rubric Builder State
    */
+
+  // active rubric being edited
   const [rubric, setRubric] = useState<Rubric | undefined>(undefined);
-  const [fileInputActive, setFileInputActive] = useState(false); // file input display is open or not
+  // csv import modal
+  const [fileInputActive, setFileInputActive] = useState(false);
+  // tracks which criterion card is displaying the detailed view (limited to one at a time)
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
-
+  // result of hook checking if active assignment has an existing rubric
   const [existingRubric, setExistingRubric] = useState(false);
+  // Flag for POST or PUT request on save
   const [isUpdatedRubric, setIsUpdatedRubric] = useState(false);
-
+  // flag for if loading component should be rendered
   const [loading, setLoading] = useState(false);
-
+  // flag to check if a component has mounted for the first time
   const hasMounted = useRef(false);
-
-  /**
-   * Group modal state in one object.
-   */
-
-  const closeModal = () => setModal({ ...modal, isOpen: false });
-
+  // declared before so it's initialized for the modal initial state. memoized for performance
+  const closeModal = useCallback(
+    () => setModal((prevModal) => ({ ...prevModal, isOpen: false })),
+    [],
+  );
+  // object containing related modal state
   const [modal, setModal] = useState({
     isOpen: false,
     title: "",
     message: "",
-    choices: [{ label: "OK", action: closeModal }],
+    choices: [] as { label: string; action: () => void }[],
   });
 
   /**
-   * Active Course and Assignment State
+   * Active Course and Assignment State (Context)
    */
   const { activeCourse } = useCourse();
   const { activeAssignment } = useAssignment();
@@ -76,9 +81,7 @@ export default function RubricBuilder(): ReactElement {
    * See PaletteAPIRequest for options structure.
    */
 
-  /**
-   * POST fetch hook to add a new rubric to Canvas.
-   */
+  // POST fetch hook to add a new rubric to Canvas.
   const { response: postRubricResponse, fetchData: postRubric } = useFetch(
     "/courses/15760/rubrics", // hardcoded course ID for now
     {
@@ -87,9 +90,7 @@ export default function RubricBuilder(): ReactElement {
     },
   );
 
-  /**
-   * PUT fetch hook to update an existing rubric on Canvas.
-   */
+  // PUT fetch hook to update an existing rubric on Canvas.
   const { response: putRubricResponse, fetchData: putRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${rubric?.id}`,
     {
@@ -98,23 +99,67 @@ export default function RubricBuilder(): ReactElement {
     },
   );
 
-  /**
-   * GET rubric from the active assignment.
-   */
+  // GET rubric from the active assignment.
   const { fetchData: getRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`,
   );
+
+  useEffect(() => {
+    if (!activeCourse || !activeAssignment) return;
+    if (existingRubric) handleExistingRubric();
+    if (!existingRubric) handleNewRubric();
+  }, [existingRubric]);
+
+  /**
+   * Fires when user selects an assignment that doesn't have a rubric id associated with it.
+   */
+  const handleNewRubric = () => {
+    console.log("Active assignment doesn't have a rubric");
+    const newRubric = createRubric();
+    setRubric(newRubric);
+
+    setModal({
+      isOpen: true,
+      title: "Build a New Rubric",
+      message:
+        "The active assignment does not have an associated rubric. Let's build one!",
+      choices: [{ label: "OK", action: closeModal }],
+    });
+    setLoading(false);
+    setIsUpdatedRubric(false);
+    setExistingRubric(false);
+  };
 
   /**
    * Effect hook to see if the active assignment has an existing rubric. Apply loading status while waiting to
    * determine which view to render.
    */
   useEffect(() => {
-    if (!activeCourse || !activeAssignment) return;
+    if (!activeCourse) {
+      console.warn("Select a course before trying to fetch rubric");
+      return;
+    }
+
+    if (!activeAssignment) {
+      console.warn("Select a assignment before trying to fetch rubric");
+      return;
+    }
+
     setLoading(true);
+
     const checkRubricExists = async () => {
+      console.log("checking existence:");
+      console.log(activeAssignment);
+
+      if (!activeAssignment.rubricId) {
+        handleNewRubric();
+        return;
+      }
+
       const response = await getRubric();
+
       if (!response) {
+        console.log("response is not good");
         setLoading(false);
         return;
       }
@@ -197,7 +242,7 @@ export default function RubricBuilder(): ReactElement {
    *
    * On "Save Rubric", the program sends a POST request to add the new rubric to the associated assignment on Canvas..
    */
-  const replaceRubric = () => {
+  const startNewRubric = () => {
     closeModal();
     setIsUpdatedRubric(false);
     const newRubric = createRubric();
@@ -218,7 +263,7 @@ export default function RubricBuilder(): ReactElement {
       message: `A rubric with the title "${rubric.title}" already exists for the active assignment. How would you like to proceed?`,
       choices: [
         { label: "Edit Rubric", action: () => void editRubric() },
-        { label: "Create New Rubric", action: () => void replaceRubric() },
+        { label: "Create New Rubric", action: () => void startNewRubric() },
       ],
     });
   };
@@ -477,10 +522,6 @@ export default function RubricBuilder(): ReactElement {
     );
   };
 
-  useEffect(() => {
-    if (existingRubric) handleExistingRubric();
-  }, [existingRubric]);
-
   /**
    * Helper function to consolidate conditional rendering in the JSX.
    */
@@ -488,7 +529,7 @@ export default function RubricBuilder(): ReactElement {
     if (loading) return <LoadingDots />;
     if (!activeCourse) return <NoCourseSelected />;
     if (!activeAssignment) return <NoAssignmentSelected />;
-    if (!existingRubric) return null;
+
     return renderRubricBuilderForm();
   };
 
