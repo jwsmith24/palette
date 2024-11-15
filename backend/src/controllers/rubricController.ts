@@ -61,8 +61,10 @@ export const updateRubric = asyncHandler(
     const canvasRequest: RubricRequestBody = {
       rubric_id: Number(id),
       course_id: Number(course_id),
-      rubric_association: createAssignmentAssociation(Number(course_id)),
-      rubric: toCanvasFormat(req.body as Rubric),
+      data: {
+        rubric_association: createAssignmentAssociation(Number(course_id)),
+        rubric: toCanvasFormat(req.body as Rubric),
+      },
     };
 
     const canvasResponse: UpdateRubricResponse =

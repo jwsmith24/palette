@@ -46,7 +46,7 @@ export const RubricsAPI = {
 
   /**
    * Update an existing rubric in a specific course.
-   * @param request - The request object containing updated rubric details.
+   *
    * @returns A promise that resolves to the updated rubric response.
    */
   async updateRubric(
@@ -56,7 +56,7 @@ export const RubricsAPI = {
       `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
       {
         method: "PUT",
-        body: JSON.stringify(request),
+        body: JSON.stringify(request.data),
       },
     );
   },

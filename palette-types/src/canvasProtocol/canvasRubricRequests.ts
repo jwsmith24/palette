@@ -5,10 +5,12 @@ import {CanvasRating} from "../canvasTypes/CanvasRating";
  * This type represents the request body for creating or updating a CanvasRubric.
  */
 export interface RubricRequestBody {
-  course_id: number;
   rubric_id: number;
-  rubric_association: RubricAssociation;
-  rubric: RequestFormattedRubric;
+  course_id: number;
+  data: {
+    rubric_association: RubricAssociation;
+    rubric: RequestFormattedRubric;
+  };
 }
 
 /**
