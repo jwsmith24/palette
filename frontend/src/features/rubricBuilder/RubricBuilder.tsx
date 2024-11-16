@@ -27,7 +27,7 @@ import { CSVRow } from "@local_types";
 
 import { createCriterion, createRating, createRubric } from "@utils";
 
-import { Criteria, Rubric } from "palette-types";
+import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCourse } from "../../context";
@@ -54,7 +54,7 @@ export default function RubricBuilder(): ReactElement {
   // flag to determine if new rubric should be sent via POST or updated via PUT
   const [isNewRubric, setIsNewRubric] = useState(false);
 
-  // declared before so it's initialized for the modal initial state. memoized for performance
+  // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
     () => setModal((prevModal) => ({ ...prevModal, isOpen: false })),
     [],
@@ -186,7 +186,7 @@ export default function RubricBuilder(): ReactElement {
   /**
    * If user selects replace existing rubric, the program creates a new rubric for the user to edit.
    *
-   * On "Save Rubric", the program sends a POST request to add the new rubric to the associated assignment on Canvas..
+   * On "Save Rubric", the program sends a POST request to add the new rubric to the associated assignment on Canvas.
    */
   const startNewRubric = () => {
     closeModal();
@@ -219,21 +219,23 @@ export default function RubricBuilder(): ReactElement {
     setLoading(true);
 
     try {
-      if (isNewRubric) {
-        await postRubric();
+      const response: PaletteAPIResponse<unknown> = isNewRubric
+        ? await postRubric()
+        : await putRubric();
+
+      if (response.success) {
         setModal({
           isOpen: true,
           title: "Success!",
-          message: `${rubric.title} created!`,
+          message: `${rubric.title} ${isNewRubric ? "created" : "updated"}!`,
           choices: [{ label: "Radical", action: () => closeModal() }],
         });
       } else {
-        await putRubric();
         setModal({
           isOpen: true,
-          title: "Success!",
-          message: `${rubric.title} updated!`,
-          choices: [{ label: "Radical", action: () => closeModal() }],
+          title: "Error!",
+          message: `An error occurred: ${response.error || "Unknown error"}`,
+          choices: [{ label: "Close", action: () => closeModal() }],
         });
       }
     } catch (error) {
@@ -241,8 +243,10 @@ export default function RubricBuilder(): ReactElement {
       setModal({
         isOpen: true,
         title: "Error!",
-        message: `An error occurred: ${error instanceof Error ? error.message : "unknown error"}`,
-        choices: [{ label: "Radical", action: () => closeModal() }],
+        message: `An unexpected error occurred: ${
+          error instanceof Error ? error.message : "unknown error"
+        }`,
+        choices: [{ label: "Close", action: () => closeModal() }],
       });
     } finally {
       setLoading(false);
@@ -399,8 +403,14 @@ export default function RubricBuilder(): ReactElement {
           {rubric.criteria.map((criterion, index) => (
             <motion.div
               key={criterion.key}
-              initial={{ opacity: 0, y: 50 }} // Starting state (entry animation)
-              animate={{ opacity: 1, y: 0 }} // Animate to this state when in the DOM
+              initial={{
+                opacity: 0,
+                y: 50,
+              }} // Starting state (entry animation)
+              animate={{
+                opacity: 1,
+                y: 0,
+              }} // Animate to this state when in the DOM
               exit={{ opacity: 0, x: 50 }} // Ending state (exit animation)
               transition={{ duration: 0.3 }} // Controls the duration of the animations
               className="my-1"

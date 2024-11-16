@@ -75,7 +75,7 @@ export const CoursesAPI = {
    */
   async getCourses(): Promise<Course[]> {
     const canvasCourses = await fetchAPI<CanvasCourse[]>(
-      "/courses?per_page=25",
+      "/courses?enrollment_type=teacher&per_page=25",
     );
 
     // map canvas courses to palette courses and filter out any null entries
