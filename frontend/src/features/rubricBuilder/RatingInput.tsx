@@ -186,6 +186,7 @@ export default function RatingInput({
             " -right-2 -bottom-2 hover:text-red-500"
           }
           tabIndex={-1} //ensure the remove buttons aren't tabbable
+          type={"button"}
         >
           x
         </button>

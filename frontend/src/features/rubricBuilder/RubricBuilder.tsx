@@ -254,6 +254,7 @@ export default function RubricBuilder(): ReactElement {
   };
 
   const handleRubricTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     setRubric((prevRubric) =>
       prevRubric
         ? { ...prevRubric, title: event.target.value }
@@ -436,7 +437,10 @@ export default function RubricBuilder(): ReactElement {
   const renderRubricBuilderForm = () => {
     if (!rubric) return;
     return (
-      <form className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg">
+      <form
+        className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg"
+        onSubmit={(event) => event.preventDefault()}
+      >
         <h1 className="font-extrabold text-5xl mb-2 text-center">
           Create a new rubric
         </h1>
@@ -445,6 +449,7 @@ export default function RubricBuilder(): ReactElement {
             <button
               className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
               onClick={handleImportFilePress}
+              type={"button"}
             >
               Import CSV
             </button>
@@ -476,6 +481,7 @@ export default function RubricBuilder(): ReactElement {
             className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
             onClick={handleAddCriteria}
+            type={"button"}
           >
             Add Criteria
           </button>
@@ -483,9 +489,7 @@ export default function RubricBuilder(): ReactElement {
             className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
             onClick={(event) => void handleSubmitRubric(event)}
-
-            // instead of
-            // promise
+            type={"button"}
           >
             Save Rubric
           </button>
