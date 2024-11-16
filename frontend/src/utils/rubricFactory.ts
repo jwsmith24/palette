@@ -3,7 +3,7 @@
  * application.
  */
 
-import { Criteria, Rating, Rubric, Template } from "palette-types";
+import { Criteria, Rating, Rubric } from "palette-types";
 import { v4 as uuid } from "uuid";
 import { calcMaxPoints } from "./calculateMaxPoints.ts";
 
@@ -60,7 +60,7 @@ export function createRubric(
  * id is only assigned if criterion is being imported from Canvas.
  */
 export function createCriterion(
-  description: string = "New Criterion",
+  description: string = "",
   longDescription: string = "",
   points: number = 0,
   ratings: Rating[] = populateDefaultRatings(),
@@ -80,34 +80,19 @@ export function createCriterion(
 }
 
 /**
- * Rating factory function.
+ * Rating factory function. Generates unique key for React with uuid.
+ *
  */
 export function createRating(
   points: number = 0,
-  description: string = "New Rating",
-  longDescription: string = "Add a description",
+  description: string = "",
+  longDescription: string = "",
   id?: number,
 ): Rating {
   return {
     points,
     description,
     longDescription,
-    id,
-    key: uuid(),
-  };
-}
-
-/**
- * Template factory function.
- */
-export function createTemplate(
-  title: string = "",
-  criteria: Criteria[] = [],
-  id?: number,
-): Template {
-  return {
-    title,
-    criteria: criteria,
     id,
     key: uuid(),
   };

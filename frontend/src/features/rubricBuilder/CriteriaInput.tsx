@@ -198,6 +198,22 @@ export default function CriteriaInput({
   };
 
   const renderDetailedView = () => {
+    /**
+     * Dynamically change gap between rating cards based on how many are rendered simultaneously.
+     */
+    const calculateGap = () => {
+      switch (ratings.length) {
+        case 1:
+          return "";
+        case 2:
+          return "gap-3";
+        case 3:
+          return "gap-2";
+        case 4:
+          return "gap-1";
+      }
+    };
+
     return (
       <div
         className={
@@ -222,7 +238,7 @@ export default function CriteriaInput({
 
         <motion.div
           layout
-          className={"grid grid-flow-col gap-4 m-auto max-w-full"}
+          className={`grid ${calculateGap()} grid-flow-col m-auto max-w-full`}
         >
           {renderRatingOptions()}
         </motion.div>
