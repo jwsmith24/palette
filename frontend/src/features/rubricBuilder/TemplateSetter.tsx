@@ -33,21 +33,21 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
-  const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
-    "/templates",
-    {
-      method: "POST",
-      body: JSON.stringify(template), // use latest rubric data
-    }
-  );
+  // const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
+  //   "/templates",
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify(template), // use latest rubric data
+  //   }
+  // );
 
-  const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
-    `templates/${template.id}`,
-    {
-      method: "GET",
-      body: JSON.stringify(template),
-    }
-  );
+  // const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
+  //   `templates/${template.id}`,
+  //   {
+  //     method: "GET",
+  //     body: JSON.stringify(template),
+  //   }
+  // );
 
   useEffect(() => {
     console.log("refresh");
@@ -79,7 +79,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     criterion.template = selectedTemplateTitle;
     const newCriteria = [...template.criteria, criterion];
     setTemplate({ ...template, criteria: newCriteria });
-    postTemplate();
+    TemplateService.createTemplate(template);
     // onTemplateSelected(template);
     closeTemplateCard();
   };
@@ -105,7 +105,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
       if (selectedTemplateJson?.templateCriteria != undefined) {
         selectedTemplateJson?.templateCriteria.forEach(
-          (existingCriterion: Criteria) => {
+          (existingCriterion: any) => {
             const copyCriterion = createCriterion();
 
             copyCriterion.description = existingCriterion.description;
