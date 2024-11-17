@@ -1,4 +1,4 @@
-import { useCourse } from "src/context/CourseProvider.tsx";
+import { useCourse } from "../context/CourseProvider.tsx";
 
 export default function ActiveCourseSelection({
   setDialogOpen,

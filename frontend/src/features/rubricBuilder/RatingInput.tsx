@@ -162,7 +162,11 @@ export default function RatingInput({
         <span>Points</span>
       </div>
       <p className={"text-sm font-medium text-center whitespace-normal"}>
-        {title ? title : "New Rating"}
+        {title ? (
+          title
+        ) : (
+          <span className={"text-red-400"}>Give me a title!</span>
+        )}
       </p>
 
       <p

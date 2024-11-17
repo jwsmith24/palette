@@ -3,18 +3,19 @@ import { Footer, Header } from "@components";
 import { PaletteAPIResponse, Rubric } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "src/context/CourseProvider";
-import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
-import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import { useNavigate } from "react-router-dom";
+import LoadingDots from "../../components/LoadingDots.tsx";
+import NoCourseSelected from "../../components/NoCourseSelected.tsx";
+import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 
 export default function GradingView(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>();
-  const [rubricErrorMessage, setRubricErrorMessage] = useState<ReactElement>();
   const [loading, setLoading] = useState(false);
 
   const { activeCourse } = useCourse();
   const { activeAssignment } = useAssignment();
+  const navigate = useNavigate();
 
   //todo: get assignment and then get rubric
   /**
@@ -29,7 +30,6 @@ export default function GradingView(): ReactElement {
   const resetState = () => {
     // reset rubric state for clean slate prior to fetch
     setRubric(undefined);
-    setRubricErrorMessage(undefined);
   };
 
   useEffect(() => {
@@ -42,8 +42,6 @@ export default function GradingView(): ReactElement {
     void fetchRubric();
   }, [activeCourse, activeAssignment]);
 
-  const navigate = useNavigate();
-
   const fetchRubric = async () => {
     try {
       const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
@@ -51,68 +49,58 @@ export default function GradingView(): ReactElement {
 
       if (response.success) {
         setRubric(response.data);
-      } else {
-        setRubricErrorMessage(
-          <div className={"grid gap-8"}>
-            <p>This course does not have an associated rubric.</p>
-            <p>
-              You can make one in the{" "}
-              <button
-                className={"text-purple-500 hover:animate-pulse"}
-                type={"button"}
-                onClick={() => navigate("/rubric-builder")}
-              >
-                Builder
-              </button>{" "}
-              tab!
-            </p>
-          </div>,
-        );
       }
     } catch (error) {
       console.error("An unexpected error occurred while getting rubric", error);
-      setRubricErrorMessage(<p>An unexpected error occurred.</p>);
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
-      <Header />
+  const renderContent = () => {
+    if (loading) return <LoadingDots />;
+    if (!activeCourse) return <NoCourseSelected />;
+    if (!activeAssignment) return <NoAssignmentSelected />;
 
-      <div className={"flex content-center place-self-center"}>
-        {!activeCourse ? (
-          <NoCourseSelected />
-        ) : !activeAssignment ? (
-          <NoAssignmentSelected />
-        ) : (
-          <div className="grid h-full w-full gap-10 place-items-center">
-            {/* Content Section */}
-            <div className=" text-center font-bold text-5xl grid gap-6 items-center">
-              <p>
-                {loading
-                  ? "Loading..."
-                  : (rubric && rubric.title) || rubricErrorMessage}
-              </p>
-              <p className={"font-medium text-2xl"}>
-                {rubric ? `Points Possible: ${rubric.pointsPossible}` : " "}
-              </p>
-              <p className={"font-medium text-2xl"}>
-                {rubric?.criteria.map((criterion) => {
-                  return (
-                    <div className={"border-2 border-white p-2"}>
-                      <p>{criterion.description}</p>
-                      <p>Max Points: {criterion.points}</p>
-                    </div>
-                  );
-                })}
-              </p>
-            </div>
-          </div>
-        )}
+    return renderSubmissionView();
+  };
+
+  const renderSubmissionView = () => {
+    return (
+      <div>
+        {/*Assignment and Rubric Info*/}
+        <div className={"grid p-4 border-red-500 border-2 mt-4"}>
+          <p>
+            Assignment {activeAssignment?.id}: {activeAssignment?.name}
+          </p>
+          <p>
+            Rubric:{" "}
+            {rubric ? (
+              rubric.title
+            ) : (
+              <span>
+                {" "}
+                This assignment does not have an associated rubric. Click{" "}
+                <button
+                  className={"text-red-400"}
+                  type={"button"}
+                  onClick={() => navigate("/rubric-builder")}
+                >
+                  here
+                </button>{" "}
+                to make one!
+              </span>
+            )}
+          </p>
+        </div>
       </div>
+    );
+  };
 
+  return (
+    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans ">
+      <Header />
+      {renderContent()}
       <Footer />
     </div>
   );
