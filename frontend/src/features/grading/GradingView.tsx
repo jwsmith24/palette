@@ -3,10 +3,11 @@ import { Footer, Header } from "@components";
 import { PaletteAPIResponse, Rubric } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "src/context/CourseProvider";
-import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
-import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import { useNavigate } from "react-router-dom";
+import LoadingDots from "../../components/LoadingDots.tsx";
+import NoCourseSelected from "../../components/NoCourseSelected.tsx";
+import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 
 export default function GradingView(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>();
@@ -77,42 +78,18 @@ export default function GradingView(): ReactElement {
     }
   };
 
+  const renderContent = () => {
+    if (loading) return <LoadingDots />;
+    if (!activeCourse) return <NoCourseSelected />;
+    if (!activeAssignment) return <NoAssignmentSelected />;
+
+    return <div>Let's see those submissions!</div>;
+  };
+
   return (
-    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans ">
       <Header />
-
-      <div className={"flex content-center place-self-center"}>
-        {!activeCourse ? (
-          <NoCourseSelected />
-        ) : !activeAssignment ? (
-          <NoAssignmentSelected />
-        ) : (
-          <div className="grid h-full w-full gap-10 place-items-center">
-            {/* Content Section */}
-            <div className=" text-center font-bold text-5xl grid gap-6 items-center">
-              <p>
-                {loading
-                  ? "Loading..."
-                  : (rubric && rubric.title) || rubricErrorMessage}
-              </p>
-              <p className={"font-medium text-2xl"}>
-                {rubric ? `Points Possible: ${rubric.pointsPossible}` : " "}
-              </p>
-              <p className={"font-medium text-2xl"}>
-                {rubric?.criteria.map((criterion) => {
-                  return (
-                    <div className={"border-2 border-white p-2"}>
-                      <p>{criterion.description}</p>
-                      <p>Max Points: {criterion.points}</p>
-                    </div>
-                  );
-                })}
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-
+      {renderContent()}
       <Footer />
     </div>
   );

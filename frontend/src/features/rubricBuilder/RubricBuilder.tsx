@@ -31,9 +31,9 @@ import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCourse } from "../../context";
-import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
+import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
+import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import LoadingDots from "../../components/LoadingDots.tsx";
 
 export default function RubricBuilder(): ReactElement {
