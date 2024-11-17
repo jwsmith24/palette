@@ -1,16 +1,15 @@
 import React from "react";
 import Papa from "papaparse";
 import { CSVRow } from "@local_types";
+import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
+import { createCriterion, createRating } from "@utils";
 
 interface CSVUploadProps {
-  onDataChange: (data: CSVRow[]) => void;
-  closeImportCard: () => void; // callback to close the import card
+  rubric: Rubric | undefined; // Current rubric state
+  setRubric: React.Dispatch<React.SetStateAction<Rubric | undefined>>; // Setter for rubric state
 }
 
-const CSVUpload: React.FC<CSVUploadProps> = ({
-  onDataChange,
-  closeImportCard,
-}: CSVUploadProps) => {
+const CSVUpload: FC<CSVUploadProps> = ({ rubric, setRubric }) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -26,11 +25,10 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
 
   const parseCSV = (file: File) => {
     Papa.parse(file, {
-      header: false, // keeps the output an array to sync with parsing xlsx files
+      header: false, // Keeps the output an array
       complete: (results) => {
         console.log("Parsed CSV data:", results.data);
 
-        // Validate each row to ensure it matches CSVRow type
         const parsedData = results.data.filter((row): row is CSVRow => {
           return (
             Array.isArray(row) &&
@@ -42,29 +40,76 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
               )
           );
         });
-        console.log("Validated CSV data:", results.data);
-        onDataChange(parsedData); // Pass validated data to parent
+
+        updateRubricWithCSV(parsedData);
       },
     });
-    closeImportCard();
+  };
+
+  const updateRubricWithCSV = (data: CSVRow[]) => {
+    if (!rubric) return;
+
+    const clearedRubric = { ...rubric, criteria: [] };
+    const existingCriteriaDescriptions = new Set(
+      clearedRubric.criteria.map((criterion) =>
+        criterion.description.trim().toLowerCase(),
+      ),
+    );
+
+    const newCriteria = data
+      .slice(1) // Skip the header row
+      .map((row) => {
+        if (typeof row[0] !== "string" || !row[0].trim()) return null;
+        if (existingCriteriaDescriptions.has(row[0].trim().toLowerCase()))
+          return null;
+
+        const criterion: Criteria = createCriterion(row[0], "", 0, []);
+        for (let i = 1; i < row.length; i += 2) {
+          const points = Number(row[i]);
+          const description = row[i + 1] as string;
+          if (description)
+            criterion.ratings.push(createRating(points, description));
+        }
+        criterion.updatePoints();
+        return criterion;
+      })
+      .filter(Boolean);
+
+    setRubric((prevRubric) =>
+      prevRubric
+        ? {
+            ...prevRubric,
+            criteria: [...prevRubric.criteria, ...newCriteria],
+          }
+        : createRubric(),
+    );
+  };
+
+  const triggerFileInput = () => {
+    const fileInput = document.getElementById("csv-file-upload") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
   };
 
   return (
-    <div className={"flex justify-center items-center gap-10"}>
+    <div className="flex items-center">
+      {/* Hidden File Input */}
       <input
         type="file"
         accept=".csv"
-        data-testid={"file-upload"}
+        id="csv-file-upload"
+        className="hidden"
         onChange={handleFileChange}
-        className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
       />
 
-      {/* Cancel Button */}
+      {/* Import CSV Button */}
       <button
-        onClick={closeImportCard}
-        className=" mt-4 bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+        className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+        onClick={triggerFileInput}
+        type="button"
       >
-        Cancel
+        Import CSV
       </button>
     </div>
   );
