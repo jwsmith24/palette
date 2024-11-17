@@ -11,11 +11,11 @@ import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 
 export default function GradingView(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>();
-  const [rubricErrorMessage, setRubricErrorMessage] = useState<ReactElement>();
   const [loading, setLoading] = useState(false);
 
   const { activeCourse } = useCourse();
   const { activeAssignment } = useAssignment();
+  const navigate = useNavigate();
 
   //todo: get assignment and then get rubric
   /**
@@ -30,7 +30,6 @@ export default function GradingView(): ReactElement {
   const resetState = () => {
     // reset rubric state for clean slate prior to fetch
     setRubric(undefined);
-    setRubricErrorMessage(undefined);
   };
 
   useEffect(() => {
@@ -43,8 +42,6 @@ export default function GradingView(): ReactElement {
     void fetchRubric();
   }, [activeCourse, activeAssignment]);
 
-  const navigate = useNavigate();
-
   const fetchRubric = async () => {
     try {
       const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
@@ -52,27 +49,9 @@ export default function GradingView(): ReactElement {
 
       if (response.success) {
         setRubric(response.data);
-      } else {
-        setRubricErrorMessage(
-          <div className={"grid gap-8"}>
-            <p>This course does not have an associated rubric.</p>
-            <p>
-              You can make one in the{" "}
-              <button
-                className={"text-purple-500 hover:animate-pulse"}
-                type={"button"}
-                onClick={() => navigate("/rubric-builder")}
-              >
-                Builder
-              </button>{" "}
-              tab!
-            </p>
-          </div>,
-        );
       }
     } catch (error) {
       console.error("An unexpected error occurred while getting rubric", error);
-      setRubricErrorMessage(<p>An unexpected error occurred.</p>);
     } finally {
       setLoading(false);
     }
@@ -88,9 +67,32 @@ export default function GradingView(): ReactElement {
 
   const renderSubmissionView = () => {
     return (
-      <div className={"self-center justify-self-center text-5xl font-bold"}>
-        Future home of the submissions for Assignment {activeAssignment?.id}:{" "}
-        {activeAssignment?.name}
+      <div>
+        {/*Assignment and Rubric Info*/}
+        <div className={"grid p-4 border-red-500 border-2 mt-4"}>
+          <p>
+            Assignment {activeAssignment?.id}: {activeAssignment?.name}
+          </p>
+          <p>
+            Rubric:{" "}
+            {rubric ? (
+              rubric.title
+            ) : (
+              <span>
+                {" "}
+                This assignment does not have an associated rubric. Click{" "}
+                <button
+                  className={"text-red-400"}
+                  type={"button"}
+                  onClick={() => navigate("/rubric-builder")}
+                >
+                  here
+                </button>{" "}
+                to make one!
+              </span>
+            )}
+          </p>
+        </div>
       </div>
     );
   };
