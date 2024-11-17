@@ -89,7 +89,7 @@ export default function GradingView(): ReactElement {
     return (
       <div>
         {/*Assignment and Rubric Info*/}
-        <div className={"grid p-4 border-red-500 border-2"}>
+        <div className={"grid p-4 border-red-500 border-2 mt-4"}>
           <p>
             Assignment {activeAssignment?.id}: {activeAssignment?.name}
           </p>
@@ -98,13 +98,18 @@ export default function GradingView(): ReactElement {
             {rubric ? (
               rubric.title
             ) : (
-              <button
-                className={"text-red-400"}
-                type={"button"}
-                onClick={() => navigate("/rubric-builder")}
-              >
-                Create a Rubric
-              </button>
+              <span>
+                {" "}
+                This assignment does not have an associated rubric. Click{" "}
+                <button
+                  className={"text-red-400"}
+                  type={"button"}
+                  onClick={() => navigate("/rubric-builder")}
+                >
+                  here
+                </button>{" "}
+                to make one!
+              </span>
             )}
           </p>
         </div>

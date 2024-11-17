@@ -54,6 +54,8 @@ export default function RubricBuilder(): ReactElement {
   // flag to determine if new rubric should be sent via POST or updated via PUT
   const [isNewRubric, setIsNewRubric] = useState(false);
 
+  const [isCanvasBypassed, setIsCanvasBypassed] = useState(false);
+
   // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
     () => setModal((prevModal) => ({ ...prevModal, isOpen: false })),
@@ -432,10 +434,19 @@ export default function RubricBuilder(): ReactElement {
   };
 
   /**
+   * Effect to load a default rubric if canvas api is bypassed
+   */
+  useEffect(() => {
+    if (isCanvasBypassed && !rubric) {
+      setRubric(createRubric());
+    }
+  }, [isCanvasBypassed, rubric]);
+  /**
    * Helper function to wrap the builder JSX.
    */
   const renderRubricBuilderForm = () => {
-    if (!rubric) return;
+    if (!rubric) return <p>No Active Rubric</p>;
+
     return (
       <form
         className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg"
@@ -503,18 +514,33 @@ export default function RubricBuilder(): ReactElement {
    */
   const renderContent = () => {
     if (loading) return <LoadingDots />;
+    if (isCanvasBypassed) return renderRubricBuilderForm();
     if (!activeCourse) return <NoCourseSelected />;
     if (!activeAssignment) return <NoAssignmentSelected />;
 
     return renderRubricBuilderForm();
   };
 
+  const renderBypassButton = () => {
+    return (
+      <div className={"justify-self-center self-center"}>
+        <button
+          className={"text-2xl font-bold text-red-500"}
+          type={"button"}
+          onClick={() => setIsCanvasBypassed((prev) => !prev)} // Toggle bypass
+        >
+          {isCanvasBypassed ? "Use Canvas API" : "Bypass Canvas API"}
+        </button>
+      </div>
+    );
+  };
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
         {renderContent()}
+        {!isCanvasBypassed && renderBypassButton()}
 
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog
