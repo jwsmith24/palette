@@ -1,14 +1,13 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Template } from "../../../../palette-types/src/types/Template";
-import { createTemplate } from "@utils/templateFactory";
+import { createTemplate } from "../../utils/templateFactory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import templatesJson from "../../../../backend/src/userData/templates.json";
 import { Criteria } from "palette-types";
-import { createCriterion } from "@utils/rubricFactory.ts";
+import { createCriterion } from "../../utils/rubricFactory";
 import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
 
 interface TemplateSetterProps {
@@ -79,7 +78,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     criterion.template = selectedTemplateTitle;
     const newCriteria = [...template.criteria, criterion];
     setTemplate({ ...template, criteria: newCriteria });
-    TemplateService.createTemplate(template);
+    TemplateService.addTemplate(template);
     // onTemplateSelected(template);
     closeTemplateCard();
   };

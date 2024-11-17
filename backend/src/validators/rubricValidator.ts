@@ -1,9 +1,10 @@
-import { body } from "express-validator";
+import { body, ValidationChain } from "express-validator";
 
 /**
- * define validation for rubrics before being stored on the database
+ * Validation chain for the request body during rubric creation and update.
+ * @type {ValidationChain[]}
  */
-const validateRubric = [
+const rubricValidator: ValidationChain[] = [
   body("title")
     .isString()
     .trim()
@@ -33,4 +34,4 @@ const validateRubric = [
     .withMessage("Ratings must have a description."),
 ];
 
-export default validateRubric;
+export default rubricValidator;

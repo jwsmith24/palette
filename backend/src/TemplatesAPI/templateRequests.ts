@@ -12,37 +12,9 @@ export const TemplateService = {
    * @param {Template} data - The rubric object to be created.
    * @returns {Promise<Template | null>} - The created rubric object or null if creation failed.
    */
-  async createTemplate(data: Template): Promise<Template | null> {
-    try {
-      // Read existing templates
-      const templatesPath = ".,/userData/templates.json";
-      let templates: Template[] = [];
-
-      try {
-        const fileContent = await fs.readFile(templatesPath, "utf-8");
-        templates = JSON.parse(fileContent);
-      } catch (error) {
-        // If file doesn't exist, we'll create it
-        await fs.mkdir(templatesPath, { recursive: true });
-      }
-
-      // Generate new ID (use length + 1 or find max ID + 1)
-      data.id =
-        templates.length > 0
-          ? Math.max(...templates.map((t) => t.id ?? 0)) + 1
-          : 1;
-
-      // Add new template
-      templates.push(data);
-
-      // Write back to file
-      await fs.writeFile(templatesPath, JSON.stringify(templates, null, 2));
-
-      return data;
-    } catch (error) {
-      console.error("Error creating template:", error);
-      return null;
-    }
+  async addTemplate(data: Template): Promise<Template | null> {
+    console.log("Adding template:", data);
+    return Promise.resolve(null);
   },
 
   /**

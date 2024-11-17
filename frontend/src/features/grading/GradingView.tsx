@@ -1,53 +1,118 @@
-import { MouseEvent, ReactElement, useState } from "react";
-import Header from "../../components/Header.tsx";
-import Footer from "../../components/Footer.tsx";
-import useFetch from "../../hooks/useFetch.ts";
+import { ReactElement, useEffect, useState } from "react";
+import { Footer, Header } from "@components";
+import { PaletteAPIResponse, Rubric } from "palette-types";
+import { useFetch } from "@hooks";
+import { useCourse } from "src/context/CourseProvider";
+import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
+import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
+import { useAssignment } from "../../context/AssignmentProvider.tsx";
+import { useNavigate } from "react-router-dom";
 
 export default function GradingView(): ReactElement {
-  const [message, setMessage] = useState("WANT TO SEE COURSES?");
+  const [rubric, setRubric] = useState<Rubric>();
+  const [rubricErrorMessage, setRubricErrorMessage] = useState<ReactElement>();
+  const [loading, setLoading] = useState(false);
 
-  // useFetch hook for get all courses
-  // we can deconstruct the response out if we need it in state
-  const { fetchData: getCourses } = useFetch(
-    "/courses",
-    {}, // no extra options for GET
+  const { activeCourse } = useCourse();
+  const { activeAssignment } = useAssignment();
+
+  //todo: get assignment and then get rubric
+  /**
+   * Get the rubric id for the active assignment.
+   *
+   * The active Assignment is already stored in context.
+   */
+  const { fetchData: getRubric } = useFetch(
+    `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`
   );
 
-  const handleGetCourses = (event: MouseEvent<HTMLButtonElement>): void => {
-    event.preventDefault();
+  const resetState = () => {
+    // reset rubric state for clean slate prior to fetch
+    setRubric(undefined);
+    setRubricErrorMessage(undefined);
+  };
 
-    void (async () => {
-      // use void to tell typescript we're not going to use the promise since we update state with
-      // everything we need.
-      try {
-        const response = await getCourses(); // Trigger the GET request
-        console.log(response);
+  useEffect(() => {
+    // prevent effect if either course or assignment is not selected
+    if (!activeCourse || !activeAssignment) {
+      return;
+    }
+    resetState();
+    setLoading(true);
+    void fetchRubric();
+  }, [activeCourse, activeAssignment]);
 
-        // Set the message based on the response
-        if (response.success) {
-          setMessage(JSON.stringify(response.data ?? "No courses found"));
-        } else {
-          setMessage(response.error || "Failed to get courses");
-        }
-      } catch (error) {
-        console.error("Error getting courses: ", error);
-        setMessage("An error occurred while fetching courses.");
+  const navigate = useNavigate();
+
+  const fetchRubric = async () => {
+    try {
+      const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
+      console.log(response);
+
+      if (response.success) {
+        setRubric(response.data);
+      } else {
+        setRubricErrorMessage(
+          <div className={"grid gap-8"}>
+            <p>This course does not have an associated rubric.</p>
+            <p>
+              You can make one in the{" "}
+              <button
+                className={"text-purple-500 hover:animate-pulse"}
+                type={"button"}
+                onClick={() => navigate("/rubric-builder")}
+              >
+                Builder
+              </button>{" "}
+              tab!
+            </p>
+          </div>
+        );
       }
-    })(); // IIFE since onClick needs a void instead of Promise<void>
+    } catch (error) {
+      console.error("An unexpected error occurred while getting rubric", error);
+      setRubricErrorMessage(<p>An unexpected error occurred.</p>);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
-      <div className={"grid gap-10"}>
-        <div className={"font-bold text-center text-5xl"}>{message}</div>
-        <button
-          className={"text-3xl font-bold"}
-          onClick={(event) => handleGetCourses(event)}
-        >
-          Click This
-        </button>
+
+      <div className={"flex content-center place-self-center"}>
+        {!activeCourse ? (
+          <NoCourseSelected />
+        ) : !activeAssignment ? (
+          <NoAssignmentSelected />
+        ) : (
+          <div className="grid h-full w-full gap-10 place-items-center">
+            {/* Content Section */}
+            <div className=" text-center font-bold text-5xl grid gap-6 items-center">
+              <p>
+                {loading
+                  ? "Loading..."
+                  : (rubric && rubric.title) || rubricErrorMessage}
+              </p>
+              <p className={"font-medium text-2xl"}>
+                {rubric ? `Points Possible: ${rubric.pointsPossible}` : " "}
+              </p>
+              <p className={"font-medium text-2xl"}>
+                {rubric?.criteria.map((criterion) => {
+                  return (
+                    <div className={"border-2 border-white p-2"}>
+                      <p>{criterion.description}</p>
+                      <p>Max Points: {criterion.points}</p>
+                    </div>
+                  );
+                })}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
+
       <Footer />
     </div>
   );
