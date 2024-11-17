@@ -11,7 +11,6 @@ import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 
 export default function GradingView(): ReactElement {
   const [rubric, setRubric] = useState<Rubric>();
-  const [rubricErrorMessage, setRubricErrorMessage] = useState<ReactElement>();
   const [loading, setLoading] = useState(false);
 
   const { activeCourse } = useCourse();
@@ -31,7 +30,6 @@ export default function GradingView(): ReactElement {
   const resetState = () => {
     // reset rubric state for clean slate prior to fetch
     setRubric(undefined);
-    setRubricErrorMessage(undefined);
   };
 
   useEffect(() => {
@@ -51,27 +49,9 @@ export default function GradingView(): ReactElement {
 
       if (response.success) {
         setRubric(response.data);
-      } else {
-        setRubricErrorMessage(
-          <div className={"grid gap-8"}>
-            <p>This course does not have an associated rubric.</p>
-            <p>
-              You can make one in the{" "}
-              <button
-                className={"text-purple-500 hover:animate-pulse"}
-                type={"button"}
-                onClick={() => navigate("/rubric-builder")}
-              >
-                Builder
-              </button>{" "}
-              tab!
-            </p>
-          </div>,
-        );
       }
     } catch (error) {
       console.error("An unexpected error occurred while getting rubric", error);
-      setRubricErrorMessage(<p>An unexpected error occurred.</p>);
     } finally {
       setLoading(false);
     }
