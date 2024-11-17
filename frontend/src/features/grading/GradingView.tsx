@@ -16,6 +16,7 @@ export default function GradingView(): ReactElement {
 
   const { activeCourse } = useCourse();
   const { activeAssignment } = useAssignment();
+  const navigate = useNavigate();
 
   //todo: get assignment and then get rubric
   /**
@@ -42,8 +43,6 @@ export default function GradingView(): ReactElement {
     setLoading(true);
     void fetchRubric();
   }, [activeCourse, activeAssignment]);
-
-  const navigate = useNavigate();
 
   const fetchRubric = async () => {
     try {
@@ -88,9 +87,27 @@ export default function GradingView(): ReactElement {
 
   const renderSubmissionView = () => {
     return (
-      <div className={"self-center justify-self-center text-5xl font-bold"}>
-        Future home of the submissions for Assignment {activeAssignment?.id}:{" "}
-        {activeAssignment?.name}
+      <div>
+        {/*Assignment and Rubric Info*/}
+        <div className={"grid p-4 border-red-500 border-2"}>
+          <p>
+            Assignment {activeAssignment?.id}: {activeAssignment?.name}
+          </p>
+          <p>
+            Rubric:{" "}
+            {rubric ? (
+              rubric.title
+            ) : (
+              <button
+                className={"text-red-400"}
+                type={"button"}
+                onClick={() => navigate("/rubric-builder")}
+              >
+                Create a Rubric
+              </button>
+            )}
+          </p>
+        </div>
       </div>
     );
   };
