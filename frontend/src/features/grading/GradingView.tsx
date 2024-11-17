@@ -83,7 +83,16 @@ export default function GradingView(): ReactElement {
     if (!activeCourse) return <NoCourseSelected />;
     if (!activeAssignment) return <NoAssignmentSelected />;
 
-    return <div>Let's see those submissions!</div>;
+    return renderSubmissionView();
+  };
+
+  const renderSubmissionView = () => {
+    return (
+      <div className={"self-center justify-self-center text-5xl font-bold"}>
+        Future home of the submissions for Assignment {activeAssignment?.id}:{" "}
+        {activeAssignment?.name}
+      </div>
+    );
   };
 
   return (
