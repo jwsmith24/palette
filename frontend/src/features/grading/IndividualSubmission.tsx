@@ -1,5 +1,12 @@
-import {Submission} from "palette-types";
-import {useEffect, useState} from "react";
+import { Submission } from "palette-types";
+import { useEffect, useState } from "react";
+
+type SubmissionIconStatus = {
+  gradedOpacity: string;
+  missingOpacity: string;
+  lateOpacity: string;
+  commentOpacity: string;
+};
 
 /**
  * Component for displaying student submission in the group submissions view.
@@ -9,29 +16,32 @@ export default function IndividualSubmission({
 }: {
   submission: Submission;
 }) {
-  const [submissionFlag, setSubmissionFlag] = useState({
-    gradedOpacity: "opacity-10",
-    missingOpacity: "opacity-10",
-    lateOpacity: "opacity-25",
+  // initialize status icons to ghosted. Late icon needed a little bump for visibility.
+  const [iconStatus, setIconStatus] = useState<SubmissionIconStatus>({
+    gradedOpacity: "opacity-20",
+    missingOpacity: "opacity-20",
+    lateOpacity: "opacity-30",
+    commentOpacity: "opacity-20",
   });
 
-  const [attachmentCount, setAttachmentCount] = useState(0);
+  const [attachmentCount, setAttachmentCount] = useState<number>(0);
   const ICON_SIZE = "h-6";
 
-  // set the icons based on submission status: graded | missing | late
+  // set the icons based on submission status: graded | missing | late | comments
   useEffect(() => {
-    if (submission.graded)
-      setSubmissionFlag({ ...submissionFlag, gradedOpacity: "" });
-    if (submission.missing)
-      setSubmissionFlag({ ...submissionFlag, missingOpacity: "" });
-    if (submission.late)
-      setSubmissionFlag({ ...submissionFlag, lateOpacity: "" });
+    setIconStatus((prev) => ({
+      ...prev,
+      gradedOpacity: submission.graded ? "" : "opacity-20",
+      missingOpacity: submission.missing ? "" : "opacity-20",
+      lateOpacity: submission.late ? "" : "opacity-30",
+      commentOpacity: submission.comment ? "" : "opacity-20",
+    }));
   }, [submission]);
 
   useEffect(() => {
     if (!submission || !submission.attachments) return;
     setAttachmentCount(submission.attachments.length);
-  }, []);
+  }, [submission]);
 
   return (
     <div
@@ -44,27 +54,30 @@ export default function IndividualSubmission({
         <p className={"font-light"}>{submission.user.name}</p>
       </div>
 
-      <div>Comments: {submission.comment ? submission.comment : "None"}</div>
-
-      <div className={"grid gap-2"}>
-        <div className={"flex gap-6"}>
+      <div className={"grid gap-2 items-center"}>
+        <div className={"flex gap-6 bg-gray-900 py-1 px-2 rounded-2xl"}>
           <img
             src="/check-icon.png"
-            alt="Assignment Submitted"
-            className={`${ICON_SIZE} ${submissionFlag.gradedOpacity}`}
+            alt="Assignment Graded"
+            className={`${ICON_SIZE} ${iconStatus.gradedOpacity}`}
           />
           <img
             src="/close-icon.png"
-            alt="Assignment Submitted"
-            className={`${ICON_SIZE} ${submissionFlag.missingOpacity}`}
+            alt="Assignment Submission Missing"
+            className={`${ICON_SIZE} ${iconStatus.missingOpacity}`}
           />
           <img
             src="/timer-purple.png"
-            alt="Assignment Submitted"
-            className={`${ICON_SIZE} ${submissionFlag.lateOpacity}`}
+            alt="Assignment Submitted Late"
+            className={`${ICON_SIZE} ${iconStatus.lateOpacity}`}
+          />
+          <img
+            src="/comment-icon.png"
+            alt="Comments Added"
+            className={`${ICON_SIZE} ${iconStatus.commentOpacity}`}
           />
         </div>
-        <div className={"flex justify-self-start"}>
+        <div className={"flex justify-self-center"}>
           <button type={"button"}>{`Attachments: ${attachmentCount}`}</button>
         </div>
       </div>

@@ -28,3 +28,5 @@ dist-ssr
 
 # jest reports
 coverage/
+
+*Zone.Identifier
