@@ -46,7 +46,8 @@ export default function IndividualSubmission({
   return (
     <div
       className={
-        "border border-pink-400 px-4 py-3 rounded-full flex gap-6 justify-between items-center cursor-pointer "
+        "border border-gray-200 border-opacity-50 px-4 py-3 rounded-xl flex gap-6 justify-between items-center" +
+        " cursor-pointer max-w-3xl hover:border-opacity-100 shadow-2xl"
       }
     >
       <div className={"flex items-center gap-4 text-xl font-semibold"}>
@@ -60,21 +61,26 @@ export default function IndividualSubmission({
             src="/check-icon.png"
             alt="Assignment Graded"
             className={`${ICON_SIZE} ${iconStatus.gradedOpacity}`}
+            title="Assignment Graded"
           />
-          <img
-            src="/close-icon.png"
-            alt="Assignment Submission Missing"
-            className={`${ICON_SIZE} ${iconStatus.missingOpacity}`}
-          />
+
           <img
             src="/timer-purple.png"
             alt="Assignment Submitted Late"
             className={`${ICON_SIZE} ${iconStatus.lateOpacity}`}
+            title="Late"
           />
           <img
             src="/comment-icon.png"
             alt="Comments Added"
             className={`${ICON_SIZE} ${iconStatus.commentOpacity}`}
+            title="Comments"
+          />
+          <img
+            src="/close-icon.png"
+            alt="Assignment Submission Missing"
+            className={`${ICON_SIZE} ${iconStatus.missingOpacity}`}
+            title="Missing"
           />
         </div>
         <div className={"flex justify-self-center"}>

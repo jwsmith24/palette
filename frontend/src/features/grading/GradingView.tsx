@@ -94,7 +94,7 @@ export default function GradingView(): ReactElement {
     return (
       <div>
         {/*Assignment and Rubric Info*/}
-        <div className={"grid p-4 border-red-500 border mt-4"}>
+        <div className={"grid p-4 mt-4"}>
           <p>
             Assignment {activeAssignment?.id}: {activeAssignment?.name}
           </p>
@@ -204,9 +204,23 @@ export default function GradingView(): ReactElement {
   const renderSubmissions = () => {
     return (
       <div className={"grid my-2 p-12 border border-blue-500"}>
-        <h1 className={"text-4xl font-bold"}>Group 2 Submissions</h1>
+        <div className={"flex gap-4 items-center relative"}>
+          <h1 className={"text-4xl font-bold"}>Group 2 Submissions</h1>
+          <button
+            type={"button"}
+            className={
+              "bg-white rounded-xl p-1 relative top-1 hover:bg-blue-400"
+            }
+          >
+            <img
+              src="/drop-down-arrow.png"
+              alt="Show/Hide Group Submissions"
+              className={"h-6 cursor-pointer"}
+            />
+          </button>
+        </div>
         <h2>50% Graded</h2>
-        <div className={"mt-2 grid gap-3"}>
+        <div className={"mt-2 grid gap-2"}>
           {dummySubmissions.map((submission, index) => (
             <IndividualSubmission submission={submission} key={index} />
           ))}
