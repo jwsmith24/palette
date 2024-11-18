@@ -2,7 +2,7 @@ import {Submission} from "palette-types";
 import {useEffect, useState} from "react";
 
 /**
- * Component for displaying student submission in the submissions view.
+ * Component for displaying student submission in the group submissions view.
  */
 export default function IndividualSubmission({
   submission,
@@ -16,7 +16,7 @@ export default function IndividualSubmission({
   });
 
   const [attachmentCount, setAttachmentCount] = useState(0);
-  const ICON_SIZE = "h-4";
+  const ICON_SIZE = "h-6";
 
   useEffect(() => {
     if (submission.submitted)
