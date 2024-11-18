@@ -91,14 +91,22 @@ export default function GradingView(): ReactElement {
   };
 
   const dummyGroups = [
-    "Group 1",
-    "Group 2",
-    "Group 3",
-    "Group 4",
-    "Group 5",
-    "Group 6",
-    "Group 7",
-    "Group 8",
+    "Galaxy Explorers",
+    "Nebula Navigators",
+    "Comet Chasers",
+    "Stellar Pioneers",
+    "Asteroid Adventurers",
+    "Cosmic Voyagers",
+    "Lunar Legends",
+    "Orbit Operators",
+    "Supernova Squad",
+    "Solar Seekers",
+    "Planet Patrol",
+    "Starbase Strikers",
+    "Meteor Mavericks",
+    "Black Hole Bandits",
+    "Rocket Rangers",
+    "Astral Alliance",
   ];
 
   const renderSubmissionView = () => {
@@ -133,7 +141,7 @@ export default function GradingView(): ReactElement {
         <div
           className={
             " grid grid-flow-row auto-rows-fr grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" +
-            " gap-4 px-20 max-w-screen max-h-full m-auto"
+            " gap-4 px-8 max-w-screen max-h-full m-auto"
           }
         >
           {dummyGroups.map((dummyGroup) => {
