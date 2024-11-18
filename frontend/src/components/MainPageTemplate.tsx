@@ -10,7 +10,13 @@ export default function MainPageTemplate({
   return (
     <div className="h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
       <Header />
-      <main className={"flex-grow overflow-auto"}>{children}</main>
+      <main
+        className={
+          "flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800"
+        }
+      >
+        {children}
+      </main>
       <Footer />
     </div>
   );

@@ -133,7 +133,7 @@ export default function GradingView(): ReactElement {
         <div
           className={
             " grid grid-flow-row auto-rows-fr grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" +
-            " gap-4 px-4 max-w-screen max-h-full m-auto overflow-y-auto"
+            " gap-4 px-20 max-w-screen max-h-full m-auto"
           }
         >
           {dummyGroups.map((dummyGroup) => {
