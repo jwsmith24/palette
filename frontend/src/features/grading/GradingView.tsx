@@ -192,9 +192,9 @@ export default function GradingView(): ReactElement {
   const renderSubmissions = () => {
     return (
       <div className={"grid my-2 p-12 border border-blue-500"}>
-        <h1 className={"text-4xl font-bold"}>Submissions</h1>
-        <h2>100% Graded</h2>
-        <div className={"border border-purple-400 mt-2"}>
+        <h1 className={"text-4xl font-bold"}>Group 2 Submissions</h1>
+        <h2>50% Graded</h2>
+        <div className={"mt-2 grid gap-3"}>
           {dummySubmissions.map((submission, index) => (
             <IndividualSubmission submission={submission} key={index} />
           ))}
