@@ -9,8 +9,8 @@ The following workflow results in successfully grading a submission from Palette
 ## Preconditions:
 
 - An assignment must have an associated rubric.
-    - The RubricAssessment specifically targets the `criterion_id` and `rating_id` fields.
-    - Without a valid rubric association, the assessment will get thrown away by Canvas.
+  - The RubricAssessment specifically targets the `criterion_id` and `rating_id` fields.
+  - Without a valid rubric association, the assessment will get thrown away by Canvas.
 
 ## Get Rubric
 

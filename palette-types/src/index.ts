@@ -28,3 +28,4 @@ export * from "./types/Rubric";
 export * from "./types/Course";
 export * from "./types/Template";
 export * from "./types/Assignment";
+export * from "./types/Submission";
