@@ -12,10 +12,8 @@ export interface Submission {
   submitted: boolean;
   late: boolean;
   missing: boolean;
-  attachments: [
-    {
-      fileName: string;
-      url: string;
-    },
-  ];
+  attachments: {
+    fileName: string;
+    url: string;
+  }[];
 }
