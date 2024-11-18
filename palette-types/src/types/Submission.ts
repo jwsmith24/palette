@@ -5,6 +5,7 @@ import {Criteria} from "./Criteria";
  *
  */
 export interface Submission {
+  id: number;
   user: {
     id: number;
     name: string;
