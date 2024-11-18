@@ -69,7 +69,7 @@ export default function GradingView(): ReactElement {
     return (
       <div>
         {/*Assignment and Rubric Info*/}
-        <div className={"grid p-4 border-red-500 border-2 mt-4"}>
+        <div className={"grid p-4 border-red-500 border mt-4"}>
           <p>
             Assignment {activeAssignment?.id}: {activeAssignment?.name}
           </p>
@@ -92,6 +92,31 @@ export default function GradingView(): ReactElement {
               </span>
             )}
           </p>
+        </div>
+        {renderSubmissions()}
+      </div>
+    );
+  };
+
+  const dummySubmissions = [
+    "submission 1",
+    "submission 2",
+    "submission 3",
+    "submission 4",
+    "submission 5",
+  ];
+
+  const renderSubmissions = () => {
+    return (
+      <div className={"grid my-2 p-12 border border-blue-500"}>
+        <h1 className={"text-4xl font-bold"}>Submissions</h1>
+        <h2>100% Graded</h2>
+        <div className={"border border-purple-400 mt-2"}>
+          {dummySubmissions.map((submission, index) => (
+            <div key={index} className={"text-2xl"}>
+              {submission}{" "}
+            </div>
+          ))}
         </div>
       </div>
     );
