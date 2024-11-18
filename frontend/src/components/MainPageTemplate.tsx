@@ -1,0 +1,17 @@
+import { Header } from "./Header.tsx";
+import { Footer } from "./Footer.tsx";
+import { ReactNode } from "react";
+
+export default function MainPageTemplate({
+  children = <div>Give me content!</div>,
+}: {
+  children?: ReactNode;
+}) {
+  return (
+    <div className="h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
+      <Header />
+      <main className={"flex-grow overflow-auto"}>{children}</main>
+      <Footer />
+    </div>
+  );
+}

@@ -47,7 +47,7 @@ export default function IndividualSubmission({
     <div
       className={
         "border border-gray-200 border-opacity-50 px-4 py-3 rounded-xl flex gap-6 justify-between items-center" +
-        " cursor-pointer max-w-3xl hover:border-opacity-100 shadow-2xl"
+        " cursor-pointer hover:border-opacity-100 shadow-2xl"
       }
     >
       <div className={"flex items-center gap-4 text-xl font-semibold"}>
@@ -56,7 +56,7 @@ export default function IndividualSubmission({
       </div>
 
       <div className={"grid gap-2 items-center"}>
-        <div className={"flex gap-6 bg-gray-900 py-1 px-2 rounded-2xl"}>
+        <div className={"flex gap-6 bg-gray-900 p-2 rounded-2xl"}>
           <img
             src="/check-icon.png"
             alt="Assignment Graded"

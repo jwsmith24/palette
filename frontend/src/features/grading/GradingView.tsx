@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Footer, Header } from "@components";
 import { PaletteAPIResponse, Rubric, Submission } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "src/context/CourseProvider";
@@ -9,6 +8,7 @@ import LoadingDots from "../../components/LoadingDots.tsx";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import GroupSubmissions from "@features/grading/GroupSubmissions.tsx";
+import MainPageTemplate from "../../components/MainPageTemplate.tsx";
 
 export default function GradingView(): ReactElement {
   // state
@@ -90,6 +90,17 @@ export default function GradingView(): ReactElement {
     return renderSubmissionView();
   };
 
+  const dummyGroups = [
+    "Group 1",
+    "Group 2",
+    "Group 3",
+    "Group 4",
+    "Group 5",
+    "Group 6",
+    "Group 7",
+    "Group 8",
+  ];
+
   const renderSubmissionView = () => {
     return (
       <div>
@@ -118,16 +129,20 @@ export default function GradingView(): ReactElement {
             )}
           </p>
         </div>
-        <GroupSubmissions />
+
+        <div
+          className={
+            " grid grid-flow-row auto-rows-fr grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" +
+            " gap-4 px-4 max-w-screen max-h-full m-auto overflow-y-auto"
+          }
+        >
+          {dummyGroups.map((dummyGroup) => {
+            return <GroupSubmissions groupName={dummyGroup} />;
+          })}
+        </div>
       </div>
     );
   };
 
-  return (
-    <div className="h-screen w-screen grid grid-cols-1 grid-rows-[0.2fr_5fr_0.2fr] bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans ">
-      <Header />
-      {renderContent()}
-      <Footer />
-    </div>
-  );
+  return <MainPageTemplate children={renderContent()} />;
 }

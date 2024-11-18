@@ -1,7 +1,11 @@
 import IndividualSubmission from "@features/grading/IndividualSubmission.tsx";
 import { Submission } from "palette-types";
+import { useState } from "react";
+import ProgressBar from "@features/grading/ProgressBar.tsx";
 
-export default function GroupSubmissions() {
+export default function GroupSubmissions({ groupName }: { groupName: string }) {
+  const [progress, setProgress] = useState<number>(68);
+
   const dummySubmissions: Submission[] = [
     {
       id: 1,
@@ -81,21 +85,29 @@ export default function GroupSubmissions() {
   ];
 
   return (
-    <div className={"grid my-2 p-12 border border-blue-500"}>
-      <div className={"flex gap-4 items-center relative"}>
-        <h1 className={"text-4xl font-bold"}>Group 2 Submissions</h1>
-        <button
-          type={"button"}
-          className={"bg-white rounded-xl p-1 relative top-1 hover:bg-blue-400"}
-        >
-          <img
-            src="/drop-down-arrow.png"
-            alt="Show/Hide Group Submissions"
-            className={"h-6 cursor-pointer"}
-          />
-        </button>
+    <div
+      className={
+        "grid m-2 p-6 border border-gray-400 border-opacity-35 shadow-xl rounded-2xl overflow-hidden"
+      }
+    >
+      <div className={"flex items-center justify-between"}>
+        <div className={"flex gap-4"}>
+          <h1 className={"text-4xl font-bold"}>{groupName} Submissions</h1>
+          <button
+            type={"button"}
+            className={
+              "bg-white rounded-xl p-1 relative top-1 hover:bg-blue-400"
+            }
+          >
+            <img
+              src="/drop-down-arrow.png"
+              alt="Show/Hide Group Submissions"
+              className={"h-6 cursor-pointer"}
+            />
+          </button>
+        </div>
+        <ProgressBar progress={progress} />
       </div>
-      <h2>50% Graded</h2>
       <div className={"mt-2 grid gap-2"}>
         {dummySubmissions.map((submission, index) => (
           <IndividualSubmission submission={submission} key={index} />
