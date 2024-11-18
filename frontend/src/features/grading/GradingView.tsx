@@ -125,12 +125,16 @@ export default function GradingView(): ReactElement {
 
   const dummySubmissions: Submission[] = [
     {
+      id: 1,
+      comment: "Very nice comment",
+      isGroupComment: false,
+      rubricAssessment: [],
       user: {
         id: 1,
         name: "Manuel Sanchez",
         asurite: "msanc156",
       },
-      submitted: true,
+      graded: true,
       late: false,
       missing: false,
       attachments: [
@@ -145,12 +149,16 @@ export default function GradingView(): ReactElement {
       ],
     },
     {
+      id: 2,
+      comment: "Very average comment",
+      isGroupComment: false,
+      rubricAssessment: [],
       user: {
         id: 2,
         name: "Matt Anderson",
         asurite: "mmande34",
       },
-      submitted: true,
+      graded: false,
       late: true,
       missing: false,
       attachments: [
@@ -161,25 +169,29 @@ export default function GradingView(): ReactElement {
       ],
     },
     {
+      id: 3,
+      comment: "Very bad comment",
+      isGroupComment: false,
+      rubricAssessment: [],
       user: {
         id: 3,
         name: "Test Student",
         asurite: "test1234",
       },
-      submitted: false,
+      graded: false,
       late: false,
       missing: true,
       attachments: [],
     },
     {
+      id: 4,
+      rubricAssessment: [],
       user: {
         id: 4,
         name: "Alice Johnson",
         asurite: "ajohn789",
       },
-      submitted: true,
-      late: false,
-      missing: false,
+      graded: true,
       attachments: [
         {
           fileName: "LabReport.docx",
