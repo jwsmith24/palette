@@ -1,0 +1,13 @@
+{
+  "userName": "admin",
+  "templateCriteria": [
+    {
+      "criteria": "this will be a criteria object"
+    }
+  ],
+  "token": "canvas api token",
+  "preferences": {
+    "darkMode": false,
+    "defaultScale": 1
+  }
+}

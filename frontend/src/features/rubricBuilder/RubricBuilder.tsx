@@ -95,7 +95,6 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Updates active assignment with new or updated rubric.
    */
-
   const { fetchData: putRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}/${activeAssignment?.id}`,
     {
