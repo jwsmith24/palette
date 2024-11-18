@@ -16,6 +16,7 @@ export default function IndividualSubmission({
   });
 
   const [attachmentCount, setAttachmentCount] = useState(0);
+  const ICON_SIZE = "h-4";
 
   useEffect(() => {
     if (submission.submitted)
@@ -47,17 +48,17 @@ export default function IndividualSubmission({
           <img
             src="/check-icon.png"
             alt="Assignment Submitted"
-            className={`h-8 ${submissionFlag.submittedOpacity}`}
+            className={`${ICON_SIZE} ${submissionFlag.submittedOpacity}`}
           />
           <img
             src="/close-icon.png"
             alt="Assignment Submitted"
-            className={`h-8 ${submissionFlag.missingOpacity}`}
+            className={`${ICON_SIZE} ${submissionFlag.missingOpacity}`}
           />
           <img
             src="/timer-purple.png"
             alt="Assignment Submitted"
-            className={`h-8 ${submissionFlag.lateOpacity}`}
+            className={`${ICON_SIZE} ${submissionFlag.lateOpacity}`}
           />
         </div>
         <div className={"flex justify-self-start"}>
