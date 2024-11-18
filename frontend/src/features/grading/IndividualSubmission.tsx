@@ -1,6 +1,6 @@
-import { useFetch } from "@hooks";
-import { useEffect, useState } from "react";
-import { Submission } from "palette-types";
+import {useFetch} from "@hooks";
+import {useEffect, useState} from "react";
+import {Submission} from "palette-types";
 
 /**
  * Component for displaying student submission in the submissions view.
@@ -10,6 +10,8 @@ export default function IndividualSubmissions() {
 
   const fetchSubmissionsURL =
     "https://canvas.asu.edu/api/v1/courses/15760/assignments/5739158/submissions?grouped=true&include=group&include=user";
+
+  //todo: !! this component should just be about rendering and not actually doing the fetching !!
 
   const { fetchData: getSubmissions, response: getSubmissionsResponse } =
     useFetch(fetchSubmissionsURL);
