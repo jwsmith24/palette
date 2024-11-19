@@ -8,11 +8,11 @@ import {
   courseParamValidator,
   idAndCourseParamValidator,
 } from "../validators/baseParamValidators.js";
+
 import {
   getAllCourses,
   getAssignment,
   getAssignments,
-  getSubmissions,
 } from "../controllers/courseController.js";
 
 import {
@@ -21,6 +21,8 @@ import {
   getRubric,
   updateRubric,
 } from "../controllers/rubricController.js";
+
+import { getSubmissions } from "../controllers/submissionController";
 
 const router = express.Router();
 

@@ -1,5 +1,4 @@
-import { RubricsAPI } from "../canvasAPI/rubricRequests.js";
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 import asyncHandler from "express-async-handler";
 import {
   CreateRubricResponse,
@@ -9,15 +8,10 @@ import {
   UpdateRubricResponse,
 } from "palette-types";
 import config from "../config.js";
-import {
-  createAssignmentAssociation,
-  toCanvasFormat,
-} from "../utils/rubricUtils.js";
-import { isRubricObjectHash } from "../utils/typeGuards.js";
-import {
-  createErrorResponse,
-  createSuccessResponse,
-} from "../utils/paletteResponseFactories.js";
+import {createAssignmentAssociation, toCanvasFormat,} from "../utils/rubricUtils.js";
+import {isRubricObjectHash} from "../utils/typeGuards.js";
+import {createErrorResponse, createSuccessResponse,} from "../utils/paletteResponseFactories.js";
+import {RubricsAPI} from "../services/rubricRequests";
 
 /**
  * Handles the GET request to retrieve a rubric by its ID.

@@ -1,12 +1,8 @@
 import asyncHandler from "express-async-handler";
-import { CoursesAPI } from "../canvasAPI/courseRequests.js";
-import {
-  Assignment,
-  Course,
-  PaletteAPIResponse,
-  Submission,
-} from "palette-types";
+
+import { Assignment, Course, PaletteAPIResponse } from "palette-types";
 import { Request, Response } from "express";
+import { CoursesAPI } from "../services/courseRequests";
 
 export const getAllCourses = asyncHandler(async (req, res) => {
   const courses = await CoursesAPI.getCourses();
@@ -47,18 +43,3 @@ export const getAssignment = asyncHandler(
     res.json(apiResponse);
   },
 );
-
-export const getSubmissions = asyncHandler(async (req, res) => {
-  const submissions = await CoursesAPI.getSubmissions(
-    req.params.course_id,
-    req.params.assignment_id,
-  );
-
-  const apiResponse: PaletteAPIResponse<Submission[]> = {
-    data: submissions,
-    success: true,
-    message: "Assignment submissions",
-  };
-
-  res.json(apiResponse);
-});
