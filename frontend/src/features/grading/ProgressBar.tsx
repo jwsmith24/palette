@@ -4,11 +4,14 @@ export default function ProgressBar({ progress }: { progress: number }) {
   const [progressBarColor, setProgressBarColor] =
     useState<string>("bg-green-500");
 
+  const GREEN_PROGRESS = 70;
+  const YELLOW_PROGRESS = 50;
+
   useEffect(() => {
     setProgressBarColor(
-      progress > 70
+      progress > GREEN_PROGRESS
         ? "bg-green-500"
-        : progress > 50
+        : progress > YELLOW_PROGRESS
           ? "bg-yellow-600"
           : "bg-red-500",
     );
