@@ -1,7 +1,11 @@
 import express from "express";
-import { getUserSettings } from "../controllers/userController.js";
+import {
+  getUserSettings,
+  updateUserSettings,
+} from "../controllers/userController.js";
 import { getUserSettingsValidator } from "../validators/settingsRequestValidator.js";
-import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
+import { validationErrorHandler } from "../middleware/validationErrorHandler.js";
+import { updateUserSettingsValidator } from "../validators/updateUserSettingsValidator.js";
 
 const userRouter = express.Router();
 
@@ -12,8 +16,18 @@ const userRouter = express.Router();
 userRouter.get(
   "/settings",
   getUserSettingsValidator,
-  rubricValidationErrorHandler,
+  validationErrorHandler,
   getUserSettings,
+);
+
+/**
+ * @route PUT /user/settings
+ */
+userRouter.put(
+  "/settings",
+  updateUserSettingsValidator,
+  validationErrorHandler,
+  updateUserSettings,
 );
 
 export default userRouter;

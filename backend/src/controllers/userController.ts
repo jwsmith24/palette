@@ -57,13 +57,64 @@ export const getUserSettings = asyncHandler((req: Request, res: Response) => {
   res.json(createSuccessResponse(settings));
 });
 
+// controller for update user settings
+export const updateUserSettings = asyncHandler(
+  (req: Request, res: Response) => {
+    const body = req.body as Partial<Settings>;
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+
+    // Update the settings with the new values
+    const updatedSettings = deepMerge({ ...settings }, body);
+
+    // Write the updated settings back to the file
+    fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2));
+
+    res.json(
+      createSuccessResponse(updatedSettings, "Settings updated successfully"),
+    );
+  },
+);
+
+/**
+ * Deeply (i.e., recursively) merges two objects, overwriting properties in the target object with
+ * properties from the source object if they exist.
+ * @param {T} target - The target object to merge into.
+ * @param {Partial<T>} source - The source object to merge from. Must be a subset of T.
+ * @returns {T} - The merged object.
+ *
+ */
+function deepMerge<T extends object>(target: T, source: Partial<T>): T {
+  for (const key in source) {
+    if (
+      source[key] &&
+      typeof source[key] === "object" &&
+      !Array.isArray(source[key])
+    ) {
+      // Ensure the target has a nested object to merge into
+      if (!target[key]) (target as unknown)[key] = {};
+
+      // Recursively merge nested objects
+      (target as unknown)[key] = deepMerge(
+        target[key] as object,
+        source[key] as Partial<object>,
+      );
+    } else {
+      // Directly assign the value if not an object
+      (target as unknown)[key] = source[key];
+    }
+  }
+  return target;
+}
+
 /**
  * Helper function to get the value of a nested field from an object.
  *
  * @param {unknown} obj - The object to retrieve the nested field from.
  * @param {string} path - The dot-separated path to the nested field.
  * @returns {unknown} - The value of the nested field, or undefined if not found.
- */ const getNestedField = (obj: unknown, path: string): unknown => {
+ */
+const getNestedField = (obj: unknown, path: string): unknown => {
   return path
     .split(".")
     .reduce(

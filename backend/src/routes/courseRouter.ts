@@ -1,5 +1,5 @@
 import express from "express";
-import { rubricValidationErrorHandler } from "../middleware/rubricValidationErrorHandler.js";
+import { validationErrorHandler } from "../middleware/validationErrorHandler.js";
 
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
 import rubricValidator from "../validators/rubricValidator.js";
@@ -32,7 +32,7 @@ courseRouter.post(
   courseParamValidator,
   assignmentParamValidator,
   rubricValidator,
-  rubricValidationErrorHandler,
+  validationErrorHandler,
   createRubric,
 );
 
@@ -43,7 +43,7 @@ courseRouter.post(
 courseRouter.get(
   "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
-  rubricValidationErrorHandler,
+  validationErrorHandler,
   getRubric,
 );
 
@@ -55,7 +55,7 @@ courseRouter.get(
 courseRouter.get(
   "/:course_id/rubrics",
   courseParamValidator,
-  rubricValidationErrorHandler,
+  validationErrorHandler,
   getAllRubrics,
 );
 
@@ -74,7 +74,7 @@ courseRouter.put(
   idAndCourseParamValidator,
   assignmentParamValidator,
   rubricValidator,
-  rubricValidationErrorHandler,
+  validationErrorHandler,
   updateRubric,
 );
 
@@ -85,7 +85,7 @@ courseRouter.put(
 courseRouter.delete(
   "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
-  rubricValidationErrorHandler,
+  validationErrorHandler,
   handleDeleteRubric,
 );
 
