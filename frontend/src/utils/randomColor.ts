@@ -1,11 +1,9 @@
-import { COLORS } from "./constants.ts";
-
 export const colorOptions = [
-  COLORS.RED,
-  COLORS.YELLOW,
-  COLORS.GREEN,
-  COLORS.BLUE,
-  COLORS.PURPLE,
+  "bg-red-500",
+  "bg-yellow-500",
+  "bg-green-500",
+  "bg-blue-500",
+  "bg-purple-500",
 ];
 
 export function randomColor(): string {
