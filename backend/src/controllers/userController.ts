@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import fs from "fs";
 import { createSuccessResponse } from "../utils/paletteResponseFactories.js";
 import { Settings } from "palette-types";
+import merge from "lodash/merge.js";
 
 // Construct an absolute path
 const settingsPath = "./settings.json";
@@ -60,12 +61,13 @@ export const getUserSettings = asyncHandler((req: Request, res: Response) => {
 // controller for update user settings
 export const updateUserSettings = asyncHandler(
   (req: Request, res: Response) => {
-    const body = req.body as Partial<Settings>;
+    // Read and parse current settings from JSON file
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
 
     // Update the settings with the new values
-    const updatedSettings = deepMerge({ ...settings }, body);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const updatedSettings = merge(settings, req.body) as Settings;
 
     // Write the updated settings back to the file
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2));
@@ -75,37 +77,6 @@ export const updateUserSettings = asyncHandler(
     );
   },
 );
-
-/**
- * Deeply (i.e., recursively) merges two objects, overwriting properties in the target object with
- * properties from the source object if they exist.
- * @param {T} target - The target object to merge into.
- * @param {Partial<T>} source - The source object to merge from. Must be a subset of T.
- * @returns {T} - The merged object.
- *
- */
-function deepMerge<T extends object>(target: T, source: Partial<T>): T {
-  for (const key in source) {
-    if (
-      source[key] &&
-      typeof source[key] === "object" &&
-      !Array.isArray(source[key])
-    ) {
-      // Ensure the target has a nested object to merge into
-      if (!target[key]) (target as unknown)[key] = {};
-
-      // Recursively merge nested objects
-      (target as unknown)[key] = deepMerge(
-        target[key] as object,
-        source[key] as Partial<object>,
-      );
-    } else {
-      // Directly assign the value if not an object
-      (target as unknown)[key] = source[key];
-    }
-  }
-  return target;
-}
 
 /**
  * Helper function to get the value of a nested field from an object.
