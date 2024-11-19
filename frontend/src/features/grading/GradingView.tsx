@@ -9,6 +9,7 @@ import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import GroupSubmissions from "@features/grading/GroupSubmissions.tsx";
 import MainPageTemplate from "../../components/MainPageTemplate.tsx";
+import { dummyGroups } from "@features/grading/seedData.ts";
 
 export default function GradingView(): ReactElement {
   // state
@@ -86,31 +87,18 @@ export default function GradingView(): ReactElement {
   };
 
   const renderContent = () => {
-    if (loading) return <LoadingDots />;
-    if (!activeCourse) return <NoCourseSelected />;
-    if (!activeAssignment) return <NoAssignmentSelected />;
+    if (!loading && activeCourse && activeAssignment) {
+      return renderSubmissionView();
+    }
 
-    return renderSubmissionView();
+    return (
+      <div className={"grid h-full"}>
+        {loading && <LoadingDots />}
+        {!activeCourse && <NoCourseSelected />}
+        {activeCourse && !activeAssignment && <NoAssignmentSelected />}
+      </div>
+    );
   };
-
-  const dummyGroups = [
-    "Galaxy Explorers",
-    "Nebula Navigators",
-    "Comet Chasers",
-    "Stellar Pioneers",
-    "Asteroid Adventurers",
-    "Cosmic Voyagers",
-    "Lunar Legends",
-    "Orbit Operators",
-    "Supernova Squad",
-    "Solar Seekers",
-    "Planet Patrol",
-    "Starbase Strikers",
-    "Meteor Mavericks",
-    "Black Hole Bandits",
-    "Rocket Rangers",
-    "Astral Alliance",
-  ];
 
   const renderSubmissionView = () => {
     if (!activeAssignment) return;

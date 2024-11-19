@@ -1,0 +1,18 @@
+export const dummyGroups = [
+  "Galaxy Explorers",
+  "Nebula Navigators",
+  "Comet Chasers",
+  "Stellar Pioneers",
+  "Asteroid Adventurers",
+  "Cosmic Voyagers",
+  "Lunar Legends",
+  "Orbit Operators",
+  "Supernova Squad",
+  "Solar Seekers",
+  "Planet Patrol",
+  "Starbase Strikers",
+  "Meteor Mavericks",
+  "Black Hole Bandits",
+  "Rocket Rangers",
+  "Astral Alliance",
+];
