@@ -1,21 +1,12 @@
-/**
- * Service functionality for course and assignment-related queries.
- */
-
-import { fetchAPI } from "../utils/fetchAPI.js";
-import {
-  Assignment,
-  CanvasAssignment,
-  CanvasCourse,
-  Course,
-} from "palette-types";
+import {CanvasSubmissionResponse} from "palette-types/dist/canvasProtocol/canvasSubmissionResponse";
+import {Assignment, CanvasAssignment, CanvasCourse, Course, Submission,} from "palette-types";
 
 /**
  * Convert canvas course object to palette course object.
  * @param canvasCourse - course information from the Canvas API.
  * @returns Valid courses entry to display or null to be filtered out.
  */
-function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
+export function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
   const teacherOrTaEnrollments = canvasCourse.enrollments?.filter(
     (enrollment) =>
       (enrollment.type === "teacher" || enrollment.type === "ta") &&
@@ -48,7 +39,7 @@ function mapToPaletteCourse(canvasCourse: CanvasCourse): Course | null {
  * @param canvasAssignment - assignment information from the Canvas API.
  * @returns Valid assignment entry to display.
  */
-function mapToPaletteAssignment(
+export function mapToPaletteAssignment(
   canvasAssignment: CanvasAssignment,
 ): Assignment {
   return {
@@ -65,46 +56,43 @@ function mapToPaletteAssignment(
 }
 
 /**
- * Defines CRUD operations for courses from the Canvas API.
+ * Canvas provides way more info than what we need. Pick from data and throw an error if something is missing.
+ * @param canvasResponse
  */
-export const CoursesAPI = {
-  /**
-   * Gets all courses that the user is enrolled in with the role of Teacher or TA.
-   *
-   * @returns Promise for a filtered array of course objects.
-   */
-  async getCourses(): Promise<Course[]> {
-    const canvasCourses = await fetchAPI<CanvasCourse[]>(
-      "/courses?enrollment_type=teacher&per_page=25",
+export const mapToPaletteSubmission = (
+  canvasResponse: CanvasSubmissionResponse,
+): Submission => {
+  if (!canvasResponse)
+    throw new Error("Invalid canvas submission.. cannot transform.");
+
+  try {
+    const transformComments = [{ id: 1, authorName: "jake", comment: "hi" }];
+    const transformAttachments = [
+      { url: "super rad url", fileName: "super rad file name" },
+    ];
+    return {
+      id: canvasResponse.id,
+      user: {
+        id: canvasResponse.user.id,
+        name: canvasResponse.user.name,
+        asurite: canvasResponse.user.display_name,
+      },
+      group: {
+        id: canvasResponse.group.id,
+        name: canvasResponse.group.name,
+      },
+      comments: transformComments,
+      rubricAssessment: [],
+      graded: canvasResponse.graded_at !== null,
+      gradedBy: canvasResponse.grader_id,
+      late: canvasResponse?.late || undefined,
+      missing: canvasResponse?.missing || undefined,
+      attachments: transformAttachments,
+    } as Submission;
+  } catch (error) {
+    throw new Error(
+      "Error transforming the submission response from Canvas",
+      error as Error,
     );
-
-    // map canvas courses to palette courses and filter out any null entries
-    return canvasCourses
-      .map(mapToPaletteCourse)
-      .filter((course): course is Course => course !== null);
-  },
-
-  async getAssignments(courseId: string): Promise<Assignment[]> {
-    if (!courseId) {
-      throw new Error("Course ID is undefined");
-    }
-    const canvasAssignments = await fetchAPI<CanvasAssignment[]>(
-      `/courses/${courseId}/assignments?per_page=50`,
-    );
-    return canvasAssignments.map(mapToPaletteAssignment);
-  },
-
-  async getAssignment(
-    courseId: string,
-    assignmentId: string,
-  ): Promise<Assignment> {
-    if (!assignmentId) {
-      throw new Error("Assignment ID is undefined");
-    }
-    const canvasAssignment = await fetchAPI<CanvasAssignment>(
-      `courses/${courseId}/assignments/${assignmentId}`,
-    );
-
-    return mapToPaletteAssignment(canvasAssignment);
-  },
+  }
 };

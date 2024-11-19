@@ -12,6 +12,7 @@ import {
   getAllCourses,
   getAssignment,
   getAssignments,
+  getSubmissions,
 } from "../controllers/courseController.js";
 
 import {
@@ -22,6 +23,16 @@ import {
 } from "../controllers/rubricController.js";
 
 const router = express.Router();
+
+/**
+ * Submission Routes
+ */
+router.get(
+  "/:course_id/assignments/:assignment_id/submissions",
+  courseParamValidator,
+  assignmentParamValidator,
+  getSubmissions,
+);
 
 /**
  * @route POST /courses/:courseID/rubrics
