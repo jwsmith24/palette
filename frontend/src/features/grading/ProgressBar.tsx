@@ -9,7 +9,7 @@ export default function ProgressBar({ progress }: { progress: number }) {
       progress > 70
         ? "bg-green-500"
         : progress > 50
-          ? "bg-yellow-500"
+          ? "bg-yellow-600"
           : "bg-red-500",
     );
   });
@@ -21,7 +21,11 @@ export default function ProgressBar({ progress }: { progress: number }) {
           style={{ width: `${progress}%` }}
         ></div>
       </div>
-      <h2 className="p-1 text-white">{progress}% Graded</h2>
+      <h2
+        className={`p-1 text-white absolute justify-self-center font-extrabold`}
+      >
+        {progress}% Graded
+      </h2>
     </div>
   );
 }
