@@ -29,6 +29,9 @@ export default function GradingView(): ReactElement {
   const { fetchData: getRubric } = useFetch(getRubricURL);
   const { fetchData: getSubmissions } = useFetch(fetchSubmissionsURL);
 
+  // layout control
+  const [isExpandedView, setExpandedView] = useState<boolean>(false);
+
   /**
    * Clear state prior to fetch operations.
    */
@@ -110,31 +113,43 @@ export default function GradingView(): ReactElement {
   ];
 
   const renderSubmissionView = () => {
+    if (!activeAssignment) return;
     return (
       <div>
         {/*Assignment and Rubric Info*/}
-        <div className={"grid p-4 mt-4"}>
-          <p>
-            Assignment {activeAssignment?.id}: {activeAssignment?.name}
-          </p>
-          <p>
-            Rubric:{" "}
-            {rubric ? (
-              rubric.title
-            ) : (
-              <span>
-                {" "}
-                This assignment does not have an associated rubric. Click{" "}
-                <button
-                  className={"text-red-400"}
-                  type={"button"}
-                  onClick={() => navigate("/rubric-builder")}
-                >
-                  here
-                </button>{" "}
-                to make one!
-              </span>
-            )}
+        <div className={"flex px-4 justify-between items-center"}>
+          <div className={"grid gap-2 p-4 mt-4 "}>
+            <p className={"font-bold text-3xl"}>{activeAssignment.name}</p>
+            <p>
+              {rubric ? (
+                rubric.title
+              ) : (
+                <span>
+                  {" "}
+                  This assignment does not have an associated rubric. Click{" "}
+                  <button
+                    className={"text-red-400"}
+                    type={"button"}
+                    onClick={() => navigate("/rubric-builder")}
+                  >
+                    here
+                  </button>{" "}
+                  to make one!
+                </span>
+              )}
+            </p>
+          </div>
+          <p className={"mr-32 font-bold bg-gray-800 px-3 py-1 rounded-xl"}>
+            View:{" "}
+            <button
+              className={"font-semibold text-blue-400"}
+              type={"button"}
+              onClick={() => {
+                setExpandedView(!isExpandedView);
+              }}
+            >
+              {isExpandedView ? "Detailed" : "Condensed"}
+            </button>
           </p>
         </div>
 
@@ -145,7 +160,13 @@ export default function GradingView(): ReactElement {
           }
         >
           {dummyGroups.map((dummyGroup) => {
-            return <GroupSubmissions groupName={dummyGroup} />;
+            return (
+              <GroupSubmissions
+                groupName={dummyGroup}
+                progress={Math.floor(Math.random() * 100)}
+                isExpanded={isExpandedView}
+              />
+            );
           })}
         </div>
       </div>
