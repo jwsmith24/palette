@@ -1,13 +1,19 @@
 {
-  "userName": "admin",
+  "userName": "test name",
   "templateCriteria": [
     {
-      "criteria": "this will be a criteria object"
+      "criteria": "test"
+    },
+    {
+      "criteria": "test"
+    },
+    {
+      "criteria": "blah"
     }
   ],
-  "token": "canvas api token",
+  "token": "new token",
   "preferences": {
     "darkMode": false,
-    "defaultScale": 1
+    "defaultScale": 10
   }
 }
