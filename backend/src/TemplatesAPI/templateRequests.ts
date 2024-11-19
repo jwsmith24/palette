@@ -1,5 +1,4 @@
 import { Template } from "palette-types";
-import * as fs from "fs/promises";
 
 /**
  * This file contains the interface for the RubricService class.
@@ -24,14 +23,6 @@ export const TemplateService = {
    */
   getTemplateById(id: number): Promise<Template | null> {
     return Promise.resolve(null);
-  },
-
-  /**
-   * Retrieves all rubrics from the datastore.
-   * @returns {Promise<Rubric[]>} - An array of all rubric objects.
-   */
-  getAllTemplates(): Promise<Template[]> {
-    return Promise.resolve([]);
   },
 
   /**

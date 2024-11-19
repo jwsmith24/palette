@@ -9,6 +9,8 @@ import templatesJson from "../../../../backend/src/userData/templates.json";
 import { Criteria } from "palette-types";
 import { createCriterion } from "../../utils/rubricFactory";
 import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
+import { getAllTemplates } from "../../../../backend/src/controllers/templateController";
+import { useFetch } from "../../hooks/useFetch";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
@@ -32,21 +34,21 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
-  // const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
-  //   "/templates",
-  //   {
-  //     method: "POST",
-  //     body: JSON.stringify(template), // use latest rubric data
-  //   }
-  // );
+  const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
+    "/templates",
+    {
+      method: "POST",
+      body: JSON.stringify(template), // use latest rubric data
+    }
+  );
 
-  // const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
-  //   `templates/${template.id}`,
-  //   {
-  //     method: "GET",
-  //     body: JSON.stringify(template),
-  //   }
-  // );
+  const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
+    `templates/${template.id}`,
+    {
+      method: "GET",
+      body: JSON.stringify(template),
+    }
+  );
 
   useEffect(() => {
     console.log("refresh");
@@ -79,6 +81,8 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     const newCriteria = [...template.criteria, criterion];
     setTemplate({ ...template, criteria: newCriteria });
     TemplateService.addTemplate(template);
+    console.log("after save");
+    getAllTemplates();
     // onTemplateSelected(template);
     closeTemplateCard();
   };
