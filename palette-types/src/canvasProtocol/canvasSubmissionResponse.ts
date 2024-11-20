@@ -19,7 +19,7 @@ export interface CanvasSubmissionResponse {
   user: {
     id: number;
     name: string;
-    display_name: string;
+    login_id: string;
   };
   submission_comments: {
     id: number;

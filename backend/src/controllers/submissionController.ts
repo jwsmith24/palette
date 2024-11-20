@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
-import { CoursesAPI } from "../services/courseRequests";
-import { PaletteAPIResponse, Submission } from "palette-types";
+import { CoursesAPI } from "../services/courseRequests.js";
+import { PaletteAPIResponse } from "palette-types";
+import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions";
 
 export const getSubmissions = asyncHandler(async (req, res) => {
   console.log(
@@ -11,7 +12,7 @@ export const getSubmissions = asyncHandler(async (req, res) => {
     req.params.assignment_id,
   );
 
-  const apiResponse: PaletteAPIResponse<Submission[]> = {
+  const apiResponse: PaletteAPIResponse<GroupedSubmissions> = {
     data: submissions,
     success: true,
     message: "Assignment submissions",

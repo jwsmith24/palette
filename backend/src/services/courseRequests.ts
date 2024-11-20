@@ -8,17 +8,17 @@ import {
   CanvasAssignment,
   CanvasCourse,
   Course,
-  Submission,
 } from "palette-types";
 import { CanvasSubmissionResponse } from "palette-types/dist/canvasProtocol/canvasSubmissionResponse";
 import {
   mapToPaletteAssignment,
   mapToPaletteCourse,
-  mapToPaletteSubmission,
-} from "./transformers";
+  transformSubmissions,
+} from "./transformers.js";
+import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions";
 
 const SUBMISSION_QUERY_PARAMS =
-  "?submissions?include[]=group&include[]=user&include[]=submission_comments&grouped=true";
+  "?include[]=group&include[]=user&include[]=submission_comments";
 
 /**
  * Defines CRUD operations for courses from the Canvas API.
@@ -55,7 +55,7 @@ export const CoursesAPI = {
     assignmentId: string,
   ): Promise<Assignment> {
     const canvasAssignment = await fetchAPI<CanvasAssignment>(
-      `courses/${courseId}/assignments/${assignmentId}`,
+      `/courses/${courseId}/assignments/${assignmentId}`,
     );
 
     return mapToPaletteAssignment(canvasAssignment);
@@ -64,11 +64,11 @@ export const CoursesAPI = {
   async getSubmissions(
     courseId: string,
     assignmentId: string,
-  ): Promise<Submission[]> {
+  ): Promise<GroupedSubmissions> {
     const canvasSubmissions = await fetchAPI<CanvasSubmissionResponse[]>(
-      `courses/${courseId}/assignments/${assignmentId}/submissions${SUBMISSION_QUERY_PARAMS}`,
+      `/courses/${courseId}/assignments/${assignmentId}/submissions${SUBMISSION_QUERY_PARAMS}`,
     );
 
-    return canvasSubmissions.map(mapToPaletteSubmission);
+    return transformSubmissions(canvasSubmissions);
   },
 };

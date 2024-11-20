@@ -23,7 +23,7 @@ export default function GradingView(): ReactElement {
   const navigate = useNavigate();
 
   // url string constants
-  const fetchSubmissionsURL = `https://canvas.asu.edu/api/v1/courses/${activeCourse?.id}/assignments/${activeAssignment?.rubricId}/submissions`;
+  const fetchSubmissionsURL = `/courses/${activeCourse?.id}/assignments/${activeAssignment?.id}/submissions`;
   const getRubricURL = `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`;
 
   // define fetch hooks
@@ -147,10 +147,11 @@ export default function GradingView(): ReactElement {
             " 2xl:grid-cols-4 gap-4 px-8 max-w-screen max-h-full m-auto"
           }
         >
-          {dummyGroups.map((dummyGroup, index) => {
+          {submissions.map((submission, index) => {
+            console.log("group name HERE: ", submission.group?.name);
             return (
               <GroupSubmissions
-                groupName={dummyGroup}
+                groupName={submission.group?.name || dummyGroups[index]}
                 progress={Math.floor(Math.random() * 100)}
                 isExpanded={isExpandedView}
                 key={index}

@@ -1,5 +1,6 @@
 import {CanvasSubmissionResponse} from "palette-types/dist/canvasProtocol/canvasSubmissionResponse";
 import {Assignment, CanvasAssignment, CanvasCourse, Course, Submission,} from "palette-types";
+import {GroupedSubmissions} from "palette-types/dist/types/GroupedSubmissions";
 
 /**
  * Convert canvas course object to palette course object.
@@ -59,40 +60,59 @@ export function mapToPaletteAssignment(
  * Canvas provides way more info than what we need. Pick from data and throw an error if something is missing.
  * @param canvasResponse
  */
-export const mapToPaletteSubmission = (
+const mapToPaletteSubmission = (
   canvasResponse: CanvasSubmissionResponse,
 ): Submission => {
+  // placeholders
+  const transformComments = [{ id: 1, authorName: "jake", comment: "hi" }];
+  const transformAttachments = [
+    { url: "super rad url", fileName: "super rad file name" },
+  ];
+
+  console.log("attempting to transform: ", canvasResponse);
+
+  return {
+    id: canvasResponse.id,
+    user: {
+      id: canvasResponse.user?.id,
+      name: canvasResponse.user?.name,
+      asurite: canvasResponse.user?.login_id,
+    },
+    group: {
+      id: canvasResponse.group?.id,
+      name: canvasResponse.group?.name,
+    },
+    comments: transformComments,
+    rubricAssessment: [],
+    graded: canvasResponse.graded_at !== undefined,
+    gradedBy: canvasResponse.grader_id,
+    late: canvasResponse.late || undefined,
+    missing: canvasResponse.missing || undefined,
+    attachments: transformAttachments,
+  } as Submission;
+};
+
+export const transformSubmissions = (
+  canvasResponse: CanvasSubmissionResponse[],
+) => {
   if (!canvasResponse)
     throw new Error("Invalid canvas submission.. cannot transform.");
 
-  try {
-    const transformComments = [{ id: 1, authorName: "jake", comment: "hi" }];
-    const transformAttachments = [
-      { url: "super rad url", fileName: "super rad file name" },
-    ];
-    return {
-      id: canvasResponse.id,
-      user: {
-        id: canvasResponse.user.id,
-        name: canvasResponse.user.name,
-        asurite: canvasResponse.user.display_name,
-      },
-      group: {
-        id: canvasResponse.group.id,
-        name: canvasResponse.group.name,
-      },
-      comments: transformComments,
-      rubricAssessment: [],
-      graded: canvasResponse.graded_at !== null,
-      gradedBy: canvasResponse.grader_id,
-      late: canvasResponse?.late || undefined,
-      missing: canvasResponse?.missing || undefined,
-      attachments: transformAttachments,
-    } as Submission;
-  } catch (error) {
-    throw new Error(
-      "Error transforming the submission response from Canvas",
-      error as Error,
-    );
-  }
+  // convert submissions to palette format
+  const transformedSubmissions = canvasResponse.map(mapToPaletteSubmission);
+
+  // key value object to organize group submissions and is serializable
+  const groupedSubmissions: GroupedSubmissions = {
+    "no-group": [],
+  };
+
+  transformedSubmissions.forEach((submission) => {
+    const groupId = submission.group?.id || "no-group";
+    if (!groupedSubmissions[groupId]) {
+      groupedSubmissions[groupId] = [];
+    }
+    groupedSubmissions[groupId].push(submission);
+  });
+
+  return groupedSubmissions;
 };

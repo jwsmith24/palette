@@ -22,7 +22,7 @@ import {
   updateRubric,
 } from "../controllers/rubricController.js";
 
-import { getSubmissions } from "../controllers/submissionController";
+import { getSubmissions } from "../controllers/submissionController.js";
 
 const router = express.Router();
 
