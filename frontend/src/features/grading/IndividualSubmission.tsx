@@ -26,6 +26,7 @@ export default function IndividualSubmission({
 
   const [attachmentCount, setAttachmentCount] = useState<number>(0);
   const ICON_SIZE = "h-6";
+  const MAX_ID_LENGTH = 10;
 
   // set the icons based on submission status: graded | missing | late | comments
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function IndividualSubmission({
       gradedOpacity: submission.graded ? "" : "opacity-20",
       missingOpacity: submission.missing ? "" : "opacity-20",
       lateOpacity: submission.late ? "" : "opacity-30",
-      commentOpacity: submission.comment ? "" : "opacity-20",
+      commentOpacity: submission.comments ? "" : "opacity-20",
     }));
   }, [submission]);
 
@@ -51,7 +52,11 @@ export default function IndividualSubmission({
       }
     >
       <div className={"flex items-center gap-4 text-xl font-semibold"}>
-        <p>{submission.user.asurite}</p>
+        <p>
+          {submission.user.asurite.length > MAX_ID_LENGTH
+            ? submission.user.asurite.slice(0, MAX_ID_LENGTH) + "..."
+            : submission.user.asurite}
+        </p>
         <p className={"font-light"}>{submission.user.name}</p>
       </div>
 
