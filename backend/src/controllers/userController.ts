@@ -12,35 +12,20 @@ import { SettingsAPI } from "../settings.js";
  * @returns {Promise<void>} - A promise that resolves to void.
  */
 export const getUserSettings = asyncHandler((req: Request, res: Response) => {
-  const { fields } = req.query;
+  // Get the settings object
+  const settings: Settings = SettingsAPI.getUserSettings(true);
 
-  if (fields) {
-    // Split the 'fields' parameter into an array of requested fields
-    const requestedFields = (fields as string).split(",");
-
-    const filteredSettings: Partial<Settings> = SettingsAPI.getUserSettings(
-      false,
-      requestedFields,
-    );
-
-    // Respond with the filtered settings
-    res.json(createSuccessResponse(filteredSettings));
-    return;
-  }
-
-  // If no fields were requested, respond with the full settings object
-  const settings = SettingsAPI.getUserSettings(true) as Settings;
+  // Respond with the filtered settings
   res.json(createSuccessResponse(settings));
 });
 
-// controller for update user settings
 export const updateUserSettings = asyncHandler(
   (req: Request, res: Response) => {
     // Update the settings with the new values
-    SettingsAPI.updateUserSettings(req.body as Partial<Settings>);
+    SettingsAPI.updateUserSettings(req.body as Settings);
 
     // Safely retrieve the updated settings
-    const updatedSettings = SettingsAPI.getUserSettings(false);
+    const updatedSettings = SettingsAPI.getUserSettings(true);
 
     res.json(
       createSuccessResponse(updatedSettings, "Settings updated successfully"),
