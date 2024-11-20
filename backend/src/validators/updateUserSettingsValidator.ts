@@ -10,10 +10,12 @@ const settingsSchema = z
     userName: z.string(),
     templateCriteria: z.array(z.object({ criteria: z.string() })),
     token: z.string(),
-    preferences: z.object({
-      darkMode: z.boolean().optional(), // Zod's deep partial type is deprecated
-      defaultScale: z.number().optional(),
-    }),
+    preferences: z
+      .object({
+        darkMode: z.boolean().optional(),
+        defaultScale: z.number().optional(),
+      })
+      .strict(), // throw validation error for additional fields
   })
   .strict(); // throw validation error for additional fields
 

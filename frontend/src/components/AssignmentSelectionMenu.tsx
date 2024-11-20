@@ -3,7 +3,7 @@ import { Assignment, PaletteAPIResponse } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "../context";
 import { useAssignment } from "../context/AssignmentProvider.tsx";
-import LoadingDots from "./LoadingDots.tsx";
+import { LoadingDots } from "@components";
 
 export default function AssignmentSelectionMenu({
   onSelect,

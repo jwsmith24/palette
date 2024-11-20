@@ -1,11 +1,10 @@
 import { ReactElement, useEffect, useState } from "react";
-import { Footer, Header } from "@components";
+import { Footer, Header, LoadingDots } from "@components";
 import { PaletteAPIResponse, Rubric } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "src/context/CourseProvider";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import { useNavigate } from "react-router-dom";
-import LoadingDots from "../../components/LoadingDots.tsx";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 

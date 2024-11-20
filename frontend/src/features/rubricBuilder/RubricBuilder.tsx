@@ -13,7 +13,13 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
+import {
+  Dialog,
+  Footer,
+  Header,
+  LoadingDots,
+  ModalChoiceDialog,
+} from "@components";
 import CSVUpload from "./CSVUpload";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
@@ -34,7 +40,6 @@ import { useCourse } from "../../context";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
-import LoadingDots from "../../components/LoadingDots.tsx";
 
 export default function RubricBuilder(): ReactElement {
   /**

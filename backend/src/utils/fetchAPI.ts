@@ -1,14 +1,14 @@
-import config from "../config.js";
 import { isCanvasAPIErrorResponse } from "./typeGuards.js";
 import { CanvasAPIError } from "palette-types";
 import { CanvasAPIUnexpectedError } from "../errors/UnknownCanvasError.js";
 import util from "util";
+import { SettingsAPI } from "../settings.js";
 
 export const CanvasAPIConfig = {
   baseURL: "https://canvas.asu.edu/api/v1",
   headers: {
     // get the token from the environment variables
-    Authorization: `Bearer ${config!.CANVAS_API_TOKEN || "REDACTED"}`,
+    Authorization: `Bearer ${SettingsAPI.getUserSettings(true).token}`,
     Accept: "application/json",
     "Content-Type": "application/json",
   },
