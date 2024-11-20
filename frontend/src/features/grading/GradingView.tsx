@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
-import { PaletteAPIResponse, Rubric, Submission } from "palette-types";
+import { PaletteAPIResponse, Rubric } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "src/context/CourseProvider";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
@@ -9,12 +9,14 @@ import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import GroupSubmissions from "@features/grading/GroupSubmissions.tsx";
 import MainPageTemplate from "../../components/MainPageTemplate.tsx";
-import { dummyGroups } from "@features/grading/seedData.ts";
+import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions.ts";
 
 export default function GradingView(): ReactElement {
   // state
   const [rubric, setRubric] = useState<Rubric>();
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [submissions, setSubmissions] = useState<GroupedSubmissions>({
+    "no-group": [],
+  });
   const [loading, setLoading] = useState(false);
 
   // context providers
@@ -38,7 +40,7 @@ export default function GradingView(): ReactElement {
    */
   const resetState = () => {
     setRubric(undefined);
-    setSubmissions([]);
+    setSubmissions({ "no-group": [] });
   };
 
   // fetch rubric and submissions when course or assignment change
@@ -71,9 +73,8 @@ export default function GradingView(): ReactElement {
 
   const fetchSubmissions = async () => {
     try {
-      const response = (await getSubmissions()) as PaletteAPIResponse<
-        Submission[]
-      >;
+      const response =
+        (await getSubmissions()) as PaletteAPIResponse<GroupedSubmissions>;
       console.log(response);
 
       if (response.success && response.data) {
@@ -147,14 +148,16 @@ export default function GradingView(): ReactElement {
             " 2xl:grid-cols-4 gap-4 px-8 max-w-screen max-h-full m-auto"
           }
         >
-          {submissions.map((submission, index) => {
-            console.log("group name HERE: ", submission.group?.name);
+          {Object.entries(submissions).map(([groupId, groupSubmissions]) => {
+            const groupName: string =
+              groupSubmissions[0]?.group?.name || "No Group";
             return (
               <GroupSubmissions
-                groupName={submission.group?.name || dummyGroups[index]}
+                key={groupId}
+                groupName={groupName}
                 progress={Math.floor(Math.random() * 100)}
                 isExpanded={isExpandedView}
-                key={index}
+                submissions={groupSubmissions}
               />
             );
           })}

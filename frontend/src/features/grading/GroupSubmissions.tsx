@@ -1,15 +1,17 @@
 import IndividualSubmission from "@features/grading/IndividualSubmission.tsx";
 import ProgressBar from "@features/grading/ProgressBar.tsx";
-import { dummySubmissions } from "@features/grading/seedData.ts";
+import { Submission } from "palette-types";
 
 export default function GroupSubmissions({
   groupName,
   progress,
   isExpanded,
+  submissions,
 }: {
   groupName: string;
   progress: number;
   isExpanded: boolean;
+  submissions: Submission[];
 }) {
   const renderGroupHeader = () => {
     return (
@@ -39,7 +41,7 @@ export default function GroupSubmissions({
   const renderSubmissions = () => {
     return (
       <div className={"mt-2 grid gap-2"}>
-        {dummySubmissions.map((submission, index) => (
+        {submissions.map((submission, index) => (
           <IndividualSubmission submission={submission} key={index} />
         ))}
       </div>
