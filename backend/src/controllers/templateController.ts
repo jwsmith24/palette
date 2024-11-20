@@ -4,6 +4,7 @@ import { Criteria } from "palette-types";
 
 export const getAllTemplates = () => {};
 
-export const addTemplate = (criterion: Criteria) => {
-  TemplateService.addTemplates(criterion);
+export const addTemplate = (req: Request) => {
+  console.log("template received in template controller");
+  TemplateService.addTemplate(req);
 };

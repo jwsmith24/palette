@@ -37,7 +37,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     "/templates",
     {
       method: "POST",
-      body: JSON.stringify(criterion), // use latest rubric data
+      body: JSON.stringify(template), // use latest rubric data
     }
   );
 
@@ -90,6 +90,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   ) => {
     event.preventDefault();
 
+    // TODO: get the templates from the settings.file instead and delete templates.json file.
     const selectedTemplateTitle = event.currentTarget.textContent;
     const selectedTemplateJson = templatesJson.find(
       (tmplt) => tmplt.title === selectedTemplateTitle

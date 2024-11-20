@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllTemplates);
+// router.get("/", getAllTemplates);
 
 router.post("/", addTemplate);
 

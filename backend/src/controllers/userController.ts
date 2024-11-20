@@ -47,7 +47,7 @@ export const getUserSettings = asyncHandler((req: Request, res: Response) => {
         }
         return result;
       },
-      {},
+      {}
     );
     // Respond with the filtered settings
     res.json(createSuccessResponse(filteredSettings));
@@ -73,9 +73,9 @@ export const updateUserSettings = asyncHandler(
     fs.writeFileSync(settingsPath, JSON.stringify(updatedSettings, null, 2));
 
     res.json(
-      createSuccessResponse(updatedSettings, "Settings updated successfully"),
+      createSuccessResponse(updatedSettings, "Settings updated successfully")
     );
-  },
+  }
 );
 
 /**
@@ -90,6 +90,6 @@ const getNestedField = (obj: unknown, path: string): unknown => {
     .split(".")
     .reduce(
       (acc, key) => (acc ? (acc as Record<string, unknown>)[key] : undefined),
-      obj,
+      obj
     );
 };
