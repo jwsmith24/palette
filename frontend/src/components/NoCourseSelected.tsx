@@ -3,14 +3,14 @@
  * @constructor
  */
 import { useState } from "react";
-import { Dialog } from "@components";
-import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
+import { Dialog } from "./index.ts";
+import CourseSelectionMenu from "./CourseSelectionMenu.tsx";
 
 export default function NoAssignmentSelected() {
   const [courseMenuOpen, setCourseMenuOpen] = useState(false);
 
   return (
-    <div className="self-center text-5xl font-semibold ">
+    <div className="text-5xl font-semibold self-center justify-self-center">
       <p>
         Select a{" "}
         <button

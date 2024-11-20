@@ -28,7 +28,6 @@ export function createErrorResponse(
   errors?: PaletteAPIErrorData[],
 ): PaletteAPIResponse<null> {
   return {
-    data: null,
     success: false,
     message: "Request failed",
     error,

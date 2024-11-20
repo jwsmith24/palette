@@ -9,7 +9,6 @@ import templatesJson from "../../../../backend/src/userData/templates.json";
 import { Criteria } from "palette-types";
 import { createCriterion } from "../../utils/rubricFactory";
 import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
-import { getAllTemplates } from "../../../../backend/src/controllers/templateController";
 import { useFetch } from "../../hooks/useFetch";
 
 interface TemplateSetterProps {
@@ -82,7 +81,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     setTemplate({ ...template, criteria: newCriteria });
     TemplateService.addTemplate(template);
     console.log("after save");
-    getAllTemplates();
     // onTemplateSelected(template);
     closeTemplateCard();
   };

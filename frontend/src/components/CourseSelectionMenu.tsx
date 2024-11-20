@@ -7,7 +7,7 @@
 import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
-import { useCourse } from "src/context/CourseProvider";
+import { useCourse } from "../context/CourseProvider.tsx";
 
 export default function CourseSelectionMenu({
   onSelect,

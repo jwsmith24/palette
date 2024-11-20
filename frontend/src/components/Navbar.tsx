@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import ActiveCourseSelection from "@features/grading/ActiveCourseSelection.tsx";
+import ActiveCourseSelection from "./ActiveCourseSelection.tsx";
 import { Dialog } from "./Dialog.tsx";
-import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
-import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
-import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
+import CourseSelectionMenu from "./CourseSelectionMenu.tsx";
+import ActiveAssignmentSelection from "./ActiveAssignmentSelection.tsx";
+import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
 
 function Navbar() {
   const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);

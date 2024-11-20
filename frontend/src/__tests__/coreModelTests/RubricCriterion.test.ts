@@ -19,7 +19,7 @@ describe("RubricCriterion", () => {
     it("should create a Criterion object with default values", () => {
       const criterion = createCriterion();
 
-      expect(criterion.description).toBe("New Criterion");
+      expect(criterion.description).toBe("");
       expect(criterion.longDescription).toBe("");
       expect(criterion.points).toBe(0);
       expect(criterion.ratings).toHaveLength(2);

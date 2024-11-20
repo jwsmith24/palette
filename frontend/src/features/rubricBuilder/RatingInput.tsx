@@ -146,25 +146,36 @@ export default function RatingInput({
         },
       }}
       className={
-        "grid gap-2 grid-rows-2 border-2" +
-        " border-indigo-500 w-36 h-48 p-2 rounded-xl"
+        "grid gap-3 auto-rows-auto max-w-48 max-h-64 border-2" +
+        " border-indigo-500 p-2 rounded-xl mt-4"
       }
     >
-      <div className={"grid gap-2"}>
-        <div className={"flex gap-2 relative"}>
-          <input
-            type={"number"}
-            className={"px-3 w-16 rounded-full text-black"}
-            value={points}
-            onChange={handlePointChange}
-            min={0}
-            max={100}
-          />
-          <span>Points</span>
-        </div>
-        <p className={"text-sm font-medium"}>{title}</p>
+      <div className={"flex gap-2 relative items-center"}>
+        <input
+          type={"number"}
+          className={"px-3 w-16 rounded-full text-black"}
+          value={points}
+          onChange={handlePointChange}
+          min={0}
+          max={100}
+        />
+        <span>Points</span>
       </div>
-      <div className={"text-xs relative"}>{description}</div>
+      <p className={"text-sm font-medium text-center whitespace-normal"}>
+        {title ? (
+          title
+        ) : (
+          <span className={"text-red-400"}>Give me a title!</span>
+        )}
+      </p>
+
+      <p
+        className={
+          "text-xs relative break-words whitespace-normal overflow-auto"
+        }
+      >
+        {description}
+      </p>
       <div className={"flex justify-between items-center"}>
         <button
           onClick={() => setIsDialogOpen(true)}
