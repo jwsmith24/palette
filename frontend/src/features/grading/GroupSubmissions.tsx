@@ -15,25 +15,26 @@ export default function GroupSubmissions({
 }) {
   const renderGroupHeader = () => {
     return (
-      <div className={"grid gap-4 items-center justify-between"}>
-        <div className={"grid grid-rows-1 grid-cols-[15fr,1fr] gap-4 "}>
-          <h1 className={"text-4xl font-bold"}>{groupName}</h1>
-          <button
-            type={"button"}
-            className={
-              "bg-white rounded-xl p-1 relative top-1 hover:bg-blue-400"
-            }
-            onClick={() => alert("To the grading view!")}
-            title={"Grade this Group"}
-          >
-            <img
-              src="/drop-down-arrow.png"
-              alt="Show/Hide Group Submissions"
-              className={"h-6 cursor-pointer -rotate-90"}
-            />
-          </button>
+      <div
+        className={
+          "grid gap-4 grid-cols-3 grid-rows-2 items-center justify-between"
+        }
+      >
+        <h1 className={"text-4xl font-bold col-span-2"}>{groupName}</h1>
+        <button
+          type={"button"}
+          className={
+            "bg-white rounded-xl p-1 relative top-1 hover:bg-blue-400 flex col-start-3 justify-center"
+          }
+          onClick={() => alert("To the grading view!")}
+          title={"Grade this Group"}
+        >
+          <p className={"text-black h-8 text-2xl font-bold"}>Grade</p>
+        </button>
+
+        <div className={"col-span-3"}>
+          <ProgressBar progress={progress} />
         </div>
-        <ProgressBar progress={progress} />
       </div>
     );
   };
