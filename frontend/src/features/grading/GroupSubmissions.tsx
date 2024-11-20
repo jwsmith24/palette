@@ -41,8 +41,8 @@ export default function GroupSubmissions({
   const renderSubmissions = () => {
     return (
       <div className={"mt-2 grid gap-2"}>
-        {submissions.map((submission, index) => (
-          <IndividualSubmission submission={submission} key={index} />
+        {submissions.map((submission) => (
+          <IndividualSubmission submission={submission} key={submission.id} />
         ))}
       </div>
     );

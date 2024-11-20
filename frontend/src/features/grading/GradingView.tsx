@@ -151,11 +151,16 @@ export default function GradingView(): ReactElement {
           {Object.entries(submissions).map(([groupId, groupSubmissions]) => {
             const groupName: string =
               groupSubmissions[0]?.group?.name || "No Group";
+
+            // todo - implement real check
+            const calculateGradingProgress = () => {
+              return Math.floor(Math.random() * 100);
+            };
             return (
               <GroupSubmissions
                 key={groupId}
                 groupName={groupName}
-                progress={Math.floor(Math.random() * 100)}
+                progress={calculateGradingProgress()}
                 isExpanded={isExpandedView}
                 submissions={groupSubmissions}
               />
