@@ -1,5 +1,5 @@
-import { Template } from "palette-types";
-import fs from "fs/promises";
+import { Template, Criteria } from "palette-types";
+import fs from "fs";
 
 /**
  * This file contains the interface for the RubricService class.
@@ -12,28 +12,28 @@ export const TemplateService = {
    * @param {Template} data - The rubric object to be created.
    * @returns {Promise<Template | null>} - The created rubric object or null if creation failed.
    */
-  async addTemplate(data: Template): Promise<Template | null> {
+  addTemplates: async (data: Criteria) => {
     try {
       // Read existing templates
-      const templatesPath = "./userData/templates.json";
-      let templates: Template[] = [];
+      const userSettingsPath = "../../settings.json";
+      let userSettings;
       try {
-        const fileContent = await fs.readFile(templatesPath, "utf-8");
-        templates = JSON.parse(fileContent);
+        const fileContent = await fs.readFileSync(userSettingsPath, "utf-8");
+
+        userSettings = JSON.parse(fileContent);
       } catch (error) {
         // If file doesn't exist, we'll create it
-        await fs.mkdir(templatesPath, { recursive: true });
+        await fs.mkdirSync(userSettingsPath, { recursive: true });
       }
-      // Generate new ID (use length + 1 or find max ID + 1)
-      data.id =
-        templates.length > 0
-          ? Math.max(...templates.map((t) => t.id ?? 0)) + 1
-          : 1;
-      // Add new template
-      templates.push(data);
+      console.log("userSettings criteria", userSettings);
+      // userSettings.templateCriteria.push(data.key);
+
       // Write back to file
-      await fs.writeFile(templatesPath, JSON.stringify(templates, null, 2));
-      return data;
+      await fs.writeFileSync(
+        userSettingsPath,
+        JSON.stringify(userSettings, null, 2)
+      );
+      console.log("template added from template service");
     } catch (error) {
       console.error("Error creating template:", error);
       return null;

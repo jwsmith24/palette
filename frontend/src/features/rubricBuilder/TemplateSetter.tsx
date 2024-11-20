@@ -37,7 +37,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     "/templates",
     {
       method: "POST",
-      body: JSON.stringify(template), // use latest rubric data
+      body: JSON.stringify(criterion), // use latest rubric data
     }
   );
 
@@ -76,10 +76,10 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   // send the template up to the criterion input so that it can detect changes and update the
   // criterion within the template.
   const handleSave = () => {
-    criterion.template = selectedTemplateTitle;
+    criterion.template = template.key;
     const newCriteria = [...template.criteria, criterion];
     setTemplate({ ...template, criteria: newCriteria });
-    TemplateService.addTemplate(template);
+    postTemplate();
     console.log("after save");
     // onTemplateSelected(template);
     closeTemplateCard();

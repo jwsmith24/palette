@@ -12,7 +12,8 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "types": ["node", "express", "@prisma/client", "jest"],
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/prisma/**"]
