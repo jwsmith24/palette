@@ -35,7 +35,7 @@ export default function IndividualSubmission({
       gradedOpacity: submission.graded ? "" : "opacity-20",
       missingOpacity: submission.missing ? "" : "opacity-20",
       lateOpacity: submission.late ? "" : "opacity-30",
-      commentOpacity: submission.comments ? "" : "opacity-20",
+      commentOpacity: submission.comments.length !== 0 ? "" : "opacity-20",
     }));
   }, [submission]);
 

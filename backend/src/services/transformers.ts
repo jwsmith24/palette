@@ -63,11 +63,16 @@ export function mapToPaletteAssignment(
 const mapToPaletteSubmission = (
   canvasResponse: CanvasSubmissionResponse,
 ): Submission => {
-  // placeholders
-  const transformComments = [{ id: 1, authorName: "jake", comment: "hi" }];
-  const transformAttachments = [
-    { url: "super rad url", fileName: "super rad file name" },
-  ];
+  // return array of transformed comments
+  const transformComments = () => {
+    return canvasResponse.submission_comments.map((comment) => {
+      return {
+        id: comment.id,
+        authorName: comment.author_name,
+        comment: comment.comment,
+      };
+    });
+  };
 
   console.log("attempting to transform: ", canvasResponse);
 
@@ -82,13 +87,13 @@ const mapToPaletteSubmission = (
       id: canvasResponse.group?.id,
       name: canvasResponse.group?.name,
     },
-    comments: transformComments,
+    comments: transformComments(),
     rubricAssessment: [],
     graded: canvasResponse?.graded_at || false,
     gradedBy: canvasResponse.grader_id,
     late: canvasResponse.late || undefined,
     missing: canvasResponse.missing || undefined,
-    attachments: transformAttachments,
+    attachments: canvasResponse.attachments,
   } as Submission;
 };
 

@@ -15,7 +15,7 @@ export interface CanvasSubmissionResponse {
   attachments: {
     filename: string;
     url: string;
-  };
+  }[];
   user: {
     id: number;
     name: string;

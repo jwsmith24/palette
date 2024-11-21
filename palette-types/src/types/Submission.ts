@@ -1,4 +1,4 @@
-import { Criteria } from "./Criteria";
+import {Criteria} from "./Criteria";
 
 /**
  * Defines the Submission type for use within the Palette application.
@@ -27,7 +27,7 @@ export interface Submission {
   late?: boolean;
   missing?: boolean;
   attachments?: {
-    fileName: string;
+    filename: string;
     url: string;
   }[];
 }
