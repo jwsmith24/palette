@@ -1,15 +1,15 @@
-import {ReactElement, useEffect, useState} from "react";
-import {PaletteAPIResponse, Rubric} from "palette-types";
-import {useFetch} from "@hooks";
-import {useCourse} from "src/context/CourseProvider";
-import {useAssignment} from "../../context/AssignmentProvider.tsx";
-import {useNavigate} from "react-router-dom";
+import { ReactElement, useEffect, useState } from "react";
+import { PaletteAPIResponse, Rubric } from "palette-types";
+import { useFetch } from "@hooks";
+import { useCourse } from "src/context/CourseProvider";
+import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import LoadingDots from "../../components/LoadingDots.tsx";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import GroupSubmissions from "@features/grading/GroupSubmissions.tsx";
 import MainPageTemplate from "../../components/MainPageTemplate.tsx";
-import {GroupedSubmissions} from "palette-types/dist/types/GroupedSubmissions.ts";
+import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions.ts";
+import AssignmentData from "@features/grading/AssignmentData.tsx";
 
 export default function GradingView(): ReactElement {
   // state
@@ -18,26 +18,18 @@ export default function GradingView(): ReactElement {
     "no-group": [],
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const messageOptions = {
-    missing: "This assignment does not have an associated rubric.",
-    present: `This assignment has an associated rubric.`,
-  };
-  const [rubricMessage, setRubricMessage] = useState<string>(
-    messageOptions.missing,
-  );
 
   // context providers
-  const {activeCourse} = useCourse();
-  const {activeAssignment} = useAssignment();
-  const navigate = useNavigate();
+  const { activeCourse } = useCourse();
+  const { activeAssignment } = useAssignment();
 
   // url string constants
   const fetchSubmissionsURL = `/courses/${activeCourse?.id}/assignments/${activeAssignment?.id}/submissions`;
   const getRubricURL = `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`;
 
   // define fetch hooks
-  const {fetchData: getRubric} = useFetch(getRubricURL);
-  const {fetchData: getSubmissions} = useFetch(fetchSubmissionsURL);
+  const { fetchData: getRubric } = useFetch(getRubricURL);
+  const { fetchData: getSubmissions } = useFetch(fetchSubmissionsURL);
 
   // layout control
   const [isExpandedView, setExpandedView] = useState<boolean>(false);
@@ -47,7 +39,7 @@ export default function GradingView(): ReactElement {
    */
   const resetState = () => {
     setRubric(undefined);
-    setSubmissions({"no-group": []});
+    setSubmissions({ "no-group": [] });
   };
 
   // fetch rubric and submissions when course or assignment change
@@ -78,14 +70,6 @@ export default function GradingView(): ReactElement {
     }
   };
 
-  useEffect(() => {
-    if (rubric) {
-      setRubricMessage(messageOptions.present);
-    } else {
-      setRubricMessage(messageOptions.missing);
-    }
-  }, [rubric]);
-
   const fetchSubmissions = async () => {
     try {
       const response =
@@ -108,49 +92,9 @@ export default function GradingView(): ReactElement {
 
     return (
       <div className={"grid h-full"}>
-        {loading && <LoadingDots/>}
-        {!activeCourse && <NoCourseSelected/>}
-        {activeCourse && !activeAssignment && <NoAssignmentSelected/>}
-      </div>
-    );
-  };
-
-  const renderAssignmentData = () => {
-    return (
-      <div
-        className={"flex px-4 min-w-screen justify-between items-center mb-4"}
-      >
-        <div className={"grid gap-2 mt-4 "}>
-          <p className={"font-bold text-3xl"}>
-            <span className={"font-medium"}>Assignment: </span>
-            {activeAssignment!.name}
-          </p>
-          <div className={"flex gap-4"}>
-            <div
-              className={"bg-gray-500 rounded-lg px-2 py-1 shadow-2xl flex gap-2"}
-            >
-              {" "}
-              {rubricMessage}{" "}
-            </div>
-            {!rubric && (
-              <button
-                className={"text-cyan-400 font-bold"}
-                type={"button"}
-                onClick={() => navigate("/rubric-builder")}
-              >
-                Build Rubric
-              </button>
-            )}
-            {rubric && (
-              <button
-                className={"text-green-500 font-bold"}
-                type={"button"}
-                onClick={() => navigate("/rubric-builder")}
-              >
-                Edit Rubric
-              </button>
-            )}</div>
-        </div>
+        {loading && <LoadingDots />}
+        {!activeCourse && <NoCourseSelected />}
+        {activeCourse && !activeAssignment && <NoAssignmentSelected />}
       </div>
     );
   };
@@ -178,7 +122,7 @@ export default function GradingView(): ReactElement {
             </button>
           </p>
         </div>
-        {renderAssignmentData()}
+        <AssignmentData rubric={rubric} />
         <div
           className={
             " grid grid-flow-col-dense auto-rows-fr grid-cols-auto " +
@@ -217,5 +161,5 @@ export default function GradingView(): ReactElement {
     );
   };
 
-  return <MainPageTemplate children={renderContent()}/>;
+  return <MainPageTemplate children={renderContent()} />;
 }
