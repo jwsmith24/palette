@@ -12,8 +12,8 @@ export default function AssignmentData({
   const navigate = useNavigate();
 
   const messageOptions = {
-    missing: "This assignment does not have an associated rubric.",
-    present: `This assignment has an associated rubric.`,
+    missing: "This assignment does not have an associated rubric: ",
+    present: `This assignment has an associated rubric: `,
   };
 
   const [rubricMessage, setRubricMessage] = useState<string>(

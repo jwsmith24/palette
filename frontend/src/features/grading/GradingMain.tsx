@@ -6,12 +6,11 @@ import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import LoadingDots from "../../components/LoadingDots.tsx";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
-import GroupSubmissions from "@features/grading/GroupSubmissions.tsx";
 import MainPageTemplate from "../../components/MainPageTemplate.tsx";
 import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions.ts";
-import AssignmentData from "@features/grading/AssignmentData.tsx";
+import SubmissionsDashboard from "@features/grading/SubmissionsDashboard.tsx";
 
-export default function GradingView(): ReactElement {
+export default function GradingMain(): ReactElement {
   // state
   const [rubric, setRubric] = useState<Rubric>();
   const [submissions, setSubmissions] = useState<GroupedSubmissions>({
@@ -30,9 +29,6 @@ export default function GradingView(): ReactElement {
   // define fetch hooks
   const { fetchData: getRubric } = useFetch(getRubricURL);
   const { fetchData: getSubmissions } = useFetch(fetchSubmissionsURL);
-
-  // layout control
-  const [isExpandedView, setExpandedView] = useState<boolean>(false);
 
   /**
    * Clear state prior to fetch operations.
@@ -87,7 +83,7 @@ export default function GradingView(): ReactElement {
 
   const renderContent = () => {
     if (!loading && activeCourse && activeAssignment) {
-      return renderSubmissionView();
+      return <SubmissionsDashboard submissions={submissions} rubric={rubric} />;
     }
 
     return (
@@ -95,68 +91,6 @@ export default function GradingView(): ReactElement {
         {loading && <LoadingDots />}
         {!activeCourse && <NoCourseSelected />}
         {activeCourse && !activeAssignment && <NoAssignmentSelected />}
-      </div>
-    );
-  };
-
-  const renderSubmissionView = () => {
-    if (!activeAssignment) return;
-    return (
-      <div>
-        <div className={"flex-col gap-2"}>
-          <h1 className={"text-5xl font-bold p-4"}>Submission Dashboard</h1>
-          <p
-            className={
-              "font-bold bg-gray-800 px-3 py-1 rounded-xl w-min text-nowrap ml-4"
-            }
-          >
-            View:{" "}
-            <button
-              className={"font-semibold text-blue-400"}
-              type={"button"}
-              onClick={() => {
-                setExpandedView(!isExpandedView);
-              }}
-            >
-              {isExpandedView ? "Expanded" : "Simple"}
-            </button>
-          </p>
-        </div>
-        <AssignmentData rubric={rubric} />
-        <div
-          className={
-            " grid grid-flow-col-dense auto-rows-fr grid-cols-auto " +
-            " gap-4 px-8 max-w-screen max-h-full m-auto justify-start"
-          }
-        >
-          {Object.entries(submissions).map(([groupId, groupSubmissions]) => {
-            // read group name from first entry
-            const groupName: string =
-              groupSubmissions[0]?.group?.name || "No Group";
-
-            const calculateGradingProgress = () => {
-              if (groupSubmissions.length === 0) return 0; // no submissions to grade
-
-              const gradedSubmissionCount = groupSubmissions.reduce(
-                (count, submission) => {
-                  return submission.graded ? count + 1 : count;
-                },
-                0, // initial value for counter
-              );
-
-              return (gradedSubmissionCount / groupSubmissions.length) * 100;
-            };
-            return (
-              <GroupSubmissions
-                key={groupId}
-                groupName={groupName}
-                progress={calculateGradingProgress()}
-                isExpanded={isExpandedView}
-                submissions={groupSubmissions}
-              />
-            );
-          })}
-        </div>
       </div>
     );
   };

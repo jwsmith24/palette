@@ -36,7 +36,7 @@ import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import LoadingDots from "../../components/LoadingDots.tsx";
 
-export default function RubricBuilder(): ReactElement {
+export default function RubricBuilderMain(): ReactElement {
   /**
    * Rubric Builder State
    */
