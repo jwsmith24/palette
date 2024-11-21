@@ -155,6 +155,10 @@ export default function GradingView(): ReactElement {
         >
           {Object.entries(submissions).map(([groupId, groupSubmissions]) => {
             // read group name from first entry
+            console.log(
+              "front end submission to be rendered: ",
+              groupSubmissions,
+            );
             const groupName: string =
               groupSubmissions[0]?.group?.name || "No Group";
 

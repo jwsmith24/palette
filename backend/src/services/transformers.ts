@@ -84,7 +84,7 @@ const mapToPaletteSubmission = (
       asurite: canvasResponse.user?.login_id,
     },
     group: {
-      id: canvasResponse.group?.id,
+      id: canvasResponse.group?.id || "no-group",
       name: canvasResponse.group?.name,
     },
     comments: transformComments(),
@@ -112,10 +112,9 @@ export const transformSubmissions = (
   };
 
   transformedSubmissions.forEach((submission) => {
-    const groupId = submission.group?.id || "no-group";
-    if (!groupedSubmissions[groupId]) {
-      groupedSubmissions[groupId] = [];
-    }
+    console.log("submission: ", submission);
+    const groupId = submission.group!.id;
+
     groupedSubmissions[groupId].push(submission);
   });
 
