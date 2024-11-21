@@ -34,7 +34,6 @@ export default function GradingView(): ReactElement {
 
   // layout control
   const [isExpandedView, setExpandedView] = useState<boolean>(false);
-  const [test, setTest] = useState<boolean>(true);
 
   /**
    * Clear state prior to fetch operations.
@@ -127,18 +126,6 @@ export default function GradingView(): ReactElement {
             )}
           </p>
         </div>
-        <p className={"mr-32 font-bold bg-gray-800 px-3 py-1 rounded-xl"}>
-          View:{" "}
-          <button
-            className={"font-semibold text-blue-400"}
-            type={"button"}
-            onClick={() => {
-              setExpandedView(!isExpandedView);
-            }}
-          >
-            {isExpandedView ? "Detailed" : "Condensed"}
-          </button>
-        </p>
       </div>
     );
   };
@@ -147,6 +134,25 @@ export default function GradingView(): ReactElement {
     if (!activeAssignment) return;
     return (
       <div>
+        <div className={"flex-col gap-2"}>
+          <h1 className={"text-5xl font-bold p-4"}>Submission Dashboard</h1>
+          <p
+            className={
+              "font-bold bg-gray-800 px-3 py-1 rounded-xl w-min text-nowrap ml-4"
+            }
+          >
+            View:{" "}
+            <button
+              className={"font-semibold text-blue-400"}
+              type={"button"}
+              onClick={() => {
+                setExpandedView(!isExpandedView);
+              }}
+            >
+              {isExpandedView ? "Expanded" : "Simple"}
+            </button>
+          </p>
+        </div>
         {renderAssignmentData()}
         <div
           className={
