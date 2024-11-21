@@ -17,7 +17,7 @@ export default function GradingView(): ReactElement {
   const [submissions, setSubmissions] = useState<GroupedSubmissions>({
     "no-group": [],
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // context providers
   const { activeCourse } = useCourse();
@@ -34,6 +34,7 @@ export default function GradingView(): ReactElement {
 
   // layout control
   const [isExpandedView, setExpandedView] = useState<boolean>(false);
+  const [test, setTest] = useState<boolean>(true);
 
   /**
    * Clear state prior to fetch operations.

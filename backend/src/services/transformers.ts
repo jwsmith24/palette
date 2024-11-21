@@ -1,6 +1,12 @@
-import {CanvasSubmissionResponse} from "palette-types/dist/canvasProtocol/canvasSubmissionResponse";
-import {Assignment, CanvasAssignment, CanvasCourse, Course, Submission,} from "palette-types";
-import {GroupedSubmissions} from "palette-types/dist/types/GroupedSubmissions";
+import { CanvasSubmissionResponse } from "palette-types/dist/canvasProtocol/canvasSubmissionResponse";
+import {
+  Assignment,
+  CanvasAssignment,
+  CanvasCourse,
+  Course,
+  Submission,
+} from "palette-types";
+import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions";
 
 /**
  * Convert canvas course object to palette course object.
@@ -84,11 +90,11 @@ const mapToPaletteSubmission = (
       asurite: canvasResponse.user?.login_id,
     },
     group: {
-      id: canvasResponse.group?.id || "no-group",
+      id: canvasResponse.group?.id,
       name: canvasResponse.group?.name || "No Group",
     },
     comments: transformComments(),
-    rubricAssessment: [],
+    rubricAssessment: [], //todo
     graded: canvasResponse?.graded_at || false,
     gradedBy: canvasResponse.grader_id,
     late: canvasResponse.late || undefined,
@@ -113,7 +119,13 @@ export const transformSubmissions = (
 
   transformedSubmissions.forEach((submission) => {
     console.log("submission: ", submission);
-    const groupId = submission.group!.id;
+
+    const groupId = submission.group?.id || "no-group";
+
+    // initialize group if it doesn't already exist
+    if (!groupedSubmissions[groupId]) {
+      groupedSubmissions[groupId] = [];
+    }
 
     groupedSubmissions[groupId].push(submission);
   });
