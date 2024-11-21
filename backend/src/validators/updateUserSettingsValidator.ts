@@ -6,7 +6,11 @@ export const updateUserSettingsValidator: ValidationChain[] = [
   body("templateCriteria")
     .isArray()
     .withMessage("templateCriteria must be an array"),
-  body("token").isString().withMessage("token must be a string"),
+  body("token")
+    .isString()
+    .withMessage("token must be a string")
+    .matches(/^[a-zA-Z0-9~]+$/)
+    .withMessage("token must be alphanumeric and can include the ~ character"),
   body("preferences").isObject().withMessage("preferences must be an object"),
   body("preferences.darkMode")
     .isBoolean()

@@ -1,4 +1,4 @@
-import { defaultSettings, SettingsAPI } from "../settings";
+import { defaultSettings, obfuscateToken, SettingsAPI } from "../settings";
 import fs from "fs";
 import { Settings } from "palette-types";
 
@@ -75,5 +75,21 @@ describe("updateUserSettings", () => {
       "./settings.json",
       JSON.stringify(newSettings, null, 2),
     );
+  });
+
+  describe("obfuscateToken", () => {
+    const MOCK_TOKEN = "1234567890";
+
+    it("should return an empty string if token is falsy", () => {
+      expect(obfuscateToken("")).toBe("");
+    });
+
+    it("should return a redacted token", () => {
+      expect(obfuscateToken(MOCK_TOKEN)).toBe("*****67890");
+    });
+
+    it("should handle an unexpectedly small token length", () => {
+      expect(obfuscateToken("123")).toBe("***");
+    });
   });
 });

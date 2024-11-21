@@ -13,9 +13,9 @@ import { SettingsAPI } from "../settings.js";
  */
 export const getUserSettings = asyncHandler((req: Request, res: Response) => {
   // Get the settings object
-  const settings: Settings = SettingsAPI.getUserSettings(true);
+  const settings: Settings = SettingsAPI.getUserSettings();
 
-  // Respond with the filtered settings
+  // Send the settings object as a response
   res.json(createSuccessResponse(settings));
 });
 
@@ -25,7 +25,7 @@ export const updateUserSettings = asyncHandler(
     SettingsAPI.updateUserSettings(req.body as Settings);
 
     // Safely retrieve the updated settings
-    const updatedSettings = SettingsAPI.getUserSettings(true);
+    const updatedSettings = SettingsAPI.getUserSettings();
 
     res.json(
       createSuccessResponse(updatedSettings, "Settings updated successfully"),
