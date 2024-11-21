@@ -158,9 +158,17 @@ export default function GradingView(): ReactElement {
             const groupName: string =
               groupSubmissions[0]?.group?.name || "No Group";
 
-            // todo - implement real check
             const calculateGradingProgress = () => {
-              return Math.floor(Math.random() * 100);
+              if (groupSubmissions.length === 0) return 0; // no submissions to grade
+
+              const gradedSubmissionCount = groupSubmissions.reduce(
+                (count, submission) => {
+                  return submission.graded ? count + 1 : count;
+                },
+                0, // initial value for counter
+              );
+
+              return (gradedSubmissionCount / groupSubmissions.length) * 100;
             };
             return (
               <GroupSubmissions
