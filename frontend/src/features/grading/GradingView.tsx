@@ -57,6 +57,7 @@ export default function GradingView(): ReactElement {
   }, [activeCourse, activeAssignment]);
 
   const fetchRubric = async () => {
+    if (!activeAssignment?.rubricId) return; // avoid fetch if assignment doesn't have an associated rubric
     try {
       const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
       console.log(response);
@@ -101,54 +102,59 @@ export default function GradingView(): ReactElement {
     );
   };
 
+  const renderAssignmentData = () => {
+    return (
+      <div className={"flex px-4 min-w-screen justify-between items-center"}>
+        <div className={"grid gap-2 p-4 mt-4 "}>
+          <p className={"font-bold text-3xl"}>{activeAssignment!.name}</p>
+          <p>
+            {rubric ? (
+              rubric.title
+            ) : (
+              <span>
+                {" "}
+                This assignment does not have an associated rubric. Click{" "}
+                <button
+                  className={"text-red-400"}
+                  type={"button"}
+                  onClick={() => navigate("/rubric-builder")}
+                >
+                  here
+                </button>{" "}
+                to make one!
+              </span>
+            )}
+          </p>
+        </div>
+        <p className={"mr-32 font-bold bg-gray-800 px-3 py-1 rounded-xl"}>
+          View:{" "}
+          <button
+            className={"font-semibold text-blue-400"}
+            type={"button"}
+            onClick={() => {
+              setExpandedView(!isExpandedView);
+            }}
+          >
+            {isExpandedView ? "Detailed" : "Condensed"}
+          </button>
+        </p>
+      </div>
+    );
+  };
+
   const renderSubmissionView = () => {
     if (!activeAssignment) return;
     return (
       <div>
-        {/*Assignment and Rubric Info*/}
-        <div className={"flex px-4 justify-between items-center"}>
-          <div className={"grid gap-2 p-4 mt-4 "}>
-            <p className={"font-bold text-3xl"}>{activeAssignment.name}</p>
-            <p>
-              {rubric ? (
-                rubric.title
-              ) : (
-                <span>
-                  {" "}
-                  This assignment does not have an associated rubric. Click{" "}
-                  <button
-                    className={"text-red-400"}
-                    type={"button"}
-                    onClick={() => navigate("/rubric-builder")}
-                  >
-                    here
-                  </button>{" "}
-                  to make one!
-                </span>
-              )}
-            </p>
-          </div>
-          <p className={"mr-32 font-bold bg-gray-800 px-3 py-1 rounded-xl"}>
-            View:{" "}
-            <button
-              className={"font-semibold text-blue-400"}
-              type={"button"}
-              onClick={() => {
-                setExpandedView(!isExpandedView);
-              }}
-            >
-              {isExpandedView ? "Detailed" : "Condensed"}
-            </button>
-          </p>
-        </div>
-
+        {renderAssignmentData()}
         <div
           className={
-            " grid grid-flow-row auto-rows-fr grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3" +
-            " 2xl:grid-cols-4 gap-4 px-8 max-w-screen max-h-full m-auto"
+            " grid grid-flow-col-dense auto-rows-fr grid-cols-auto " +
+            " gap-4 px-8 max-w-screen max-h-full m-auto justify-start"
           }
         >
           {Object.entries(submissions).map(([groupId, groupSubmissions]) => {
+            // read group name from first entry
             const groupName: string =
               groupSubmissions[0]?.group?.name || "No Group";
 

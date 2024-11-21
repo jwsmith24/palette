@@ -1,7 +1,8 @@
 import { Submission } from "palette-types";
 import { useEffect, useState } from "react";
+import StatusIcons from "@features/grading/StatusIcons.tsx";
 
-type SubmissionIconStatus = {
+export type SubmissionIconStatus = {
   gradedOpacity: string;
   missingOpacity: string;
   lateOpacity: string;
@@ -24,9 +25,8 @@ export default function IndividualSubmission({
     commentOpacity: "opacity-20",
   });
 
-  const [attachmentCount, setAttachmentCount] = useState<number>(0);
   const ICON_SIZE = "h-6";
-  const MAX_ID_LENGTH = 10;
+  const MAX_ID_LENGTH = 8; // ASURITE Ids are 8 characters
 
   // set the icons based on submission status: graded | missing | late | comments
   useEffect(() => {
@@ -39,59 +39,30 @@ export default function IndividualSubmission({
     }));
   }, [submission]);
 
-  useEffect(() => {
-    if (!submission || !submission.attachments) return;
-    setAttachmentCount(submission.attachments.length);
-  }, [submission]);
-
   return (
     <div
       className={
-        "border border-gray-200 border-opacity-50 px-4 py-3 rounded-xl flex gap-6 justify-between items-center" +
-        " cursor-pointer hover:border-opacity-100 shadow-2xl"
+        "border border-gray-200 border-opacity-50 px-4 py-3 rounded-xl flex  justify-between items-center" +
+        " cursor-pointer hover:border-opacity-100 shadow-2xl gap-6"
       }
     >
-      <div className={"flex items-center gap-4 text-xl font-semibold"}>
+      <div className={"flex flex-col items-start gap-2 text-xl font-semibold"}>
         <p>
           {submission.user.asurite.length > MAX_ID_LENGTH
             ? submission.user.asurite.slice(0, MAX_ID_LENGTH) + "..."
             : submission.user.asurite}
         </p>
-        <p className={"font-light"}>{submission.user.name}</p>
+        {/*Only display first name on smaller screens*/}
+        <p className={"font-light block lg:hidden"}>
+          {submission.user.name.split(/ /)[0]}
+        </p>
+        <p className={"font-light hidden lg:block "}>{submission.user.name}</p>
       </div>
-
-      <div className={"grid gap-2 items-center"}>
-        <div className={"flex gap-6 bg-gray-900 p-2 rounded-2xl"}>
-          <img
-            src="/check-icon.png"
-            alt="Assignment Graded"
-            className={`${ICON_SIZE} ${iconStatus.gradedOpacity}`}
-            title="Assignment Graded"
-          />
-
-          <img
-            src="/timer-purple.png"
-            alt="Assignment Submitted Late"
-            className={`${ICON_SIZE} ${iconStatus.lateOpacity}`}
-            title="Late"
-          />
-          <img
-            src="/comment-icon.png"
-            alt="Comments Added"
-            className={`${ICON_SIZE} ${iconStatus.commentOpacity}`}
-            title="Comments"
-          />
-          <img
-            src="/close-icon.png"
-            alt="Assignment Submission Missing"
-            className={`${ICON_SIZE} ${iconStatus.missingOpacity}`}
-            title="Missing"
-          />
-        </div>
-        <div className={"flex justify-self-center"}>
-          <button type={"button"}>{`Attachments: ${attachmentCount}`}</button>
-        </div>
-      </div>
+      <StatusIcons
+        iconStatus={iconStatus}
+        iconSize={ICON_SIZE}
+        visibility={"grid gap-1 lg:flex"}
+      />
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function ProgressBar({ progress }: { progress: number }) {
     );
   });
   return (
-    <div className="bg-gray-800 p-2 rounded-2xl items-center grid">
+    <div className="bg-gray-800 p-2 rounded-2xl items-center grid shadow-2xl">
       <div className="relative w-full h-6 bg-gray-900 rounded-2xl overflow-hidden">
         {/* Progress Bar */}
         <div

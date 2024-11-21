@@ -1,134 +1,128 @@
-import { Submission } from "palette-types";
-
-export const dummyGroups = [
-  "Galaxy Explorers",
-  "Nebula Navigators",
-  "Comet Chasers",
-  "Stellar Pioneers",
-  "Asteroid Adventurers",
-  "Cosmic Voyagers",
-  "Lunar Legends",
-  "Orbit Operators",
-  "Supernova Squad",
-  "Solar Seekers",
-  "Planet Patrol",
-  "Starbase Strikers",
-  "Meteor Mavericks",
-  "Black Hole Bandits",
-  "Rocket Rangers",
-  "Astral Alliance",
-];
-
-export const dummySubmissions: Submission[] = [
-  {
-    id: 1,
-    user: {
-      id: 101,
-      name: "Neil Armstrong",
-      asurite: "narmstrong",
-    },
-    group: {
-      id: 201,
-      name: "Apollo 11",
-    },
-    comments: [
-      {
-        id: 1,
-        authorName: "Buzz Aldrin",
-        comment: "Great work on the moon landing analysis!",
+export const dummyGroupedSubmissions = {
+  Apollo: [
+    {
+      id: 1,
+      user: {
+        asurite: "astronaut1",
+        name: "Commander A",
       },
-      {
-        id: 2,
-        authorName: "Michael Collins",
-        comment: "Added some orbital mechanics insights.",
-      },
-    ],
-    rubricAssessment: [],
-    graded: true,
-    gradedBy: 301, // grader ID
-    late: false,
-    missing: false,
-    attachments: [
-      {
-        fileName: "moon_landing_report.pdf",
-        url: "https://example.com/moon_landing_report.pdf",
-      },
-    ],
-  },
-  {
-    id: 2,
-    user: {
-      id: 102,
-      name: "Sally Ride",
-      asurite: "sride",
+      graded: true,
+      missing: true,
+      late: false,
+      comments: false,
+      attachments: null,
     },
-    group: {
-      id: 202,
-      name: "Challenger Crew",
-    },
-    comments: [
-      {
-        id: 3,
-        authorName: "John Glenn",
-        comment: "Added observations from the Mercury missions.",
+    {
+      id: 2,
+      user: {
+        asurite: "astronaut2",
+        name: "Commander B",
       },
-    ],
-    rubricAssessment: [],
-    graded: false,
-    gradedBy: 0, // not graded yet
-    late: true,
-    missing: false,
-    attachments: [
-      {
-        fileName: "challenger_data_analysis.xlsx",
-        url: "https://example.com/challenger_data_analysis.xlsx",
-      },
-    ],
-  },
-  {
-    id: 3,
-    user: {
-      id: 103,
-      name: "Yuri Gagarin",
-      asurite: "ygagarin",
+      graded: true,
+      missing: true,
+      late: false,
+      comments: true,
+      attachments: null,
     },
-    group: undefined, // no group
-    comments: [],
-    rubricAssessment: [],
-    graded: false,
-    gradedBy: 0, // not graded yet
-    late: false,
-    missing: true,
-    attachments: [],
-  },
-  {
-    id: 4,
-    user: {
-      id: 104,
-      name: "Mae Jemison",
-      asurite: "mjemison",
-    },
-    group: {
-      id: 203,
-      name: "Endeavour Crew",
-    },
-    comments: [
-      {
-        id: 4,
-        authorName: "Buzz Aldrin",
-        comment: "Love the focus on sustainable space travel!",
+    {
+      id: 3,
+      user: {
+        asurite: "astronaut3",
+        name: "Commander C",
       },
-    ],
-    rubricAssessment: [],
-    graded: true,
-    gradedBy: 302,
-    late: false,
-    missing: false,
-    attachments: [
-      {
-        fileName: "endeavour_project_plan.docx",
-        url: "https://example.com/endeavour_project_plan.docx",
+      graded: false,
+      missing: false,
+      late: true,
+      comments: true,
+      attachments: ["mission_log3.pdf"],
+    },
+  ],
+  Orion: [
+    {
+      id: 4,
+      user: {
+        asurite: "astronaut4",
+        name: "Commander D",
       },
-    ],
-  },
-];
+      graded: true,
+      missing: false,
+      late: false,
+      comments: true,
+      attachments: ["mission_log4.pdf"],
+    },
+    {
+      id: 5,
+      user: {
+        asurite: "astronaut5",
+        name: "Commander E",
+      },
+      graded: true,
+      missing: true,
+      late: true,
+      comments: true,
+      attachments: ["mission_log5.pdf"],
+    },
+    {
+      id: 6,
+      user: {
+        asurite: "astronaut6",
+        name: "Commander F",
+      },
+      graded: true,
+      missing: false,
+      late: true,
+      comments: false,
+      attachments: ["mission_log6.pdf"],
+    },
+    {
+      id: 7,
+      user: {
+        asurite: "astronaut7",
+        name: "Commander G",
+      },
+      graded: false,
+      missing: false,
+      late: true,
+      comments: true,
+      attachments: null,
+    },
+  ],
+  unassigned: [
+    {
+      id: 8,
+      user: {
+        asurite: "astronaut8",
+        name: "Commander H",
+      },
+      graded: true,
+      missing: true,
+      late: true,
+      comments: true,
+      attachments: null,
+    },
+    {
+      id: 9,
+      user: {
+        asurite: "astronaut9",
+        name: "Commander I",
+      },
+      graded: true,
+      missing: true,
+      late: true,
+      comments: true,
+      attachments: ["mission_log9.pdf"],
+    },
+    {
+      id: 10,
+      user: {
+        asurite: "astronaut10",
+        name: "Commander J",
+      },
+      graded: true,
+      missing: true,
+      late: true,
+      comments: false,
+      attachments: ["mission_log10.pdf"],
+    },
+  ],
+};
