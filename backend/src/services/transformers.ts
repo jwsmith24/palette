@@ -85,7 +85,7 @@ const mapToPaletteSubmission = (
     },
     group: {
       id: canvasResponse.group?.id || "no-group",
-      name: canvasResponse.group?.name,
+      name: canvasResponse.group?.name || "No Group",
     },
     comments: transformComments(),
     rubricAssessment: [],
