@@ -60,7 +60,6 @@ export default function GradingView(): ReactElement {
     if (!activeAssignment?.rubricId) return; // avoid fetch if assignment doesn't have an associated rubric
     try {
       const response = (await getRubric()) as PaletteAPIResponse<Rubric>;
-      console.log(response);
 
       if (response.success) {
         setRubric(response.data);
@@ -76,7 +75,6 @@ export default function GradingView(): ReactElement {
     try {
       const response =
         (await getSubmissions()) as PaletteAPIResponse<GroupedSubmissions>;
-      console.log(response);
 
       if (response.success && response.data) {
         setSubmissions(response.data);
