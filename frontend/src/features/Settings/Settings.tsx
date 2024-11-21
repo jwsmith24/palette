@@ -1,6 +1,12 @@
 import { ReactElement, useEffect, useState } from "react";
 import { Settings } from "palette-types";
-import { Footer, Header, LoadingDots, ModalChoiceDialog } from "@components";
+import {
+  Footer,
+  Header,
+  LoadingDots,
+  ModalChoiceDialog,
+  SaveButton,
+} from "@components";
 import { useFetch } from "@hooks";
 
 export default function SettingsPage(): ReactElement {
@@ -86,11 +92,21 @@ export default function SettingsPage(): ReactElement {
           choices: [{ label: "Close", action: closeModal }],
         });
       } else {
-        setError("Failed to save settings.");
+        setModal({
+          isOpen: true,
+          title: "Error",
+          message: response.error || "Failed to save settings.",
+          choices: [{ label: "Ok", action: closeModal }],
+        });
       }
     } catch (err) {
       console.error(err);
-      setError("An error occurred while saving settings.");
+      setModal({
+        isOpen: true,
+        title: "Error",
+        message: "An error occurred while saving settings.",
+        choices: [{ label: "Ok", action: closeModal }],
+      });
     } finally {
       setLoading(false);
     }
@@ -108,16 +124,10 @@ export default function SettingsPage(): ReactElement {
 
     return (
       <form
-        className="grid gap-6 bg-gray-800 p-12 w-full max-w-4xl mx-auto rounded-lg shadow-lg"
+        className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg"
         onSubmit={(e) => e.preventDefault()}
-        style={{
-          height: "80vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
       >
-        <h1 className="text-3xl font-extrabold text-center mb-6">
+        <h1 className="font-extrabold text-5xl mb-2 text-center">
           User Settings
         </h1>
         {/* User Name */}
@@ -131,7 +141,6 @@ export default function SettingsPage(): ReactElement {
             value={settings.userName}
             onChange={(e) => handleInputChange("userName", e.target.value)}
           />
-          {/* TODO: Don't allow viewing the token, only allow changing it */}
           {/* Token */}
           <label className="block font-bold text-gray-400 mt-4 mb-2">
             Token Input
@@ -173,15 +182,8 @@ export default function SettingsPage(): ReactElement {
             </div>
           </div>
         </div>
-        {/* Save Button */}
-        <button
-          className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-          type="button"
-          onClick={void handleSave}
-        >
-          Save Settings
-        </button>
+
+        <SaveButton onClick={() => void handleSave()} />
       </form>
     );
   };

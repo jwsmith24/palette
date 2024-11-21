@@ -19,6 +19,7 @@ import {
   Header,
   LoadingDots,
   ModalChoiceDialog,
+  SaveButton,
 } from "@components";
 import CSVUpload from "./CSVUpload";
 
@@ -500,14 +501,8 @@ export default function RubricBuilder(): ReactElement {
           >
             Add Criteria
           </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event) => void handleSubmitRubric(event)}
-            type={"button"}
-          >
-            Save Rubric
-          </button>
+
+          <SaveButton onClick={(event) => void handleSubmitRubric(event)} />
         </div>
       </form>
     );
