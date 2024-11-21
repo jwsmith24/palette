@@ -1,4 +1,4 @@
-import { defaultSettings, SettingsAPI } from "../settings";
+import { defaultSettings, obfuscateToken, SettingsAPI } from "../settings";
 import fs from "fs";
 import { Settings } from "palette-types";
 
@@ -13,6 +13,22 @@ const mockSettings: Settings = {
     defaultScale: 3,
   },
 };
+
+describe("obfuscateToken", () => {
+  const MOCK_TOKEN = "1234567890";
+
+  it("should return an empty string if token is falsy", () => {
+    expect(obfuscateToken("")).toBe("");
+  });
+
+  it("should return a redacted token", () => {
+    expect(obfuscateToken(MOCK_TOKEN)).toBe("*****67890");
+  });
+
+  it("should handle an unexpectedly small token length", () => {
+    expect(obfuscateToken("123")).toBe("***");
+  });
+});
 
 describe("getUserSettings", () => {
   it("should create a settings file with default settings first if it does not exist", () => {
@@ -33,7 +49,10 @@ describe("getUserSettings", () => {
 
     const settings = SettingsAPI.getUserSettings();
 
-    expect(settings).toEqual({ ...defaultSettings, token: "REDACTED" });
+    expect(settings).toEqual({
+      ...defaultSettings,
+      token: obfuscateToken(defaultSettings.token),
+    });
   });
 
   it("should return settings with sensitive fields included, if specified", () => {
@@ -46,7 +65,6 @@ describe("getUserSettings", () => {
     expect(settings).toEqual(defaultSettings);
   });
 });
-
 describe("updateUserSettings", () => {
   it("should create a settings file with default settings first if it does not exist", () => {
     // file doesn't exist

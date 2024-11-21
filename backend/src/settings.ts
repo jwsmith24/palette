@@ -38,7 +38,11 @@ export const SettingsAPI = {
 
     // mask out sensitive fields, if requested
     if (!includeSensitiveFields) {
-      return { ...settings, token: "REDACTED" } as Settings;
+      // get the old token
+      return {
+        ...settings,
+        token: obfuscateToken(settings!.token),
+      } as Settings;
     }
 
     return settings as Settings;
@@ -75,4 +79,23 @@ function initializeSettings() {
   } else {
     settings = JSON.parse(fs.readFileSync(SETTINGS_PATH, "utf-8")) as Settings;
   }
+}
+
+/**
+ * Return a new, obfuscated token. Does not modify the original token.
+ * @param {string} token - The token to obfuscate.
+ * @returns {string} - The obfuscated token.
+ */
+export function obfuscateToken(token: string): string {
+  if (!token) {
+    return "";
+  }
+  const charsToDisplay = 5;
+  if (charsToDisplay >= token.length) {
+    // programmer error, but let's handle it gracefully
+    return "*".repeat(token.length);
+  }
+  const visiblePart = token.slice(-charsToDisplay); // last N chars onwards
+  const hiddenPart = "*".repeat(token.length - charsToDisplay);
+  return `${hiddenPart}${visiblePart}`;
 }
