@@ -2,7 +2,7 @@ import express from "express";
 import { validationErrorHandler } from "../middleware/validationErrorHandler.js";
 
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
-import rubricValidator from "../validators/rubricValidator";
+import rubricValidator from "../validators/rubricValidator.js";
 import {
   assignmentParamValidator,
   courseParamValidator,
