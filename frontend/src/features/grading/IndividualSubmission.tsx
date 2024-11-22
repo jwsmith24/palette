@@ -1,6 +1,6 @@
 import { Submission } from "palette-types";
 import { useEffect, useState } from "react";
-import StatusIcons from "@features/grading/StatusIcons.tsx";
+import { StatusIcons } from "@features";
 
 export type SubmissionIconStatus = {
   gradedOpacity: string;
@@ -12,7 +12,7 @@ export type SubmissionIconStatus = {
 /**
  * Component for displaying student submission in the group submissions view.
  */
-export default function IndividualSubmission({
+export function IndividualSubmission({
   submission,
 }: {
   submission: Submission;

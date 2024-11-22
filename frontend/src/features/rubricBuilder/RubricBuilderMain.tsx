@@ -19,9 +19,10 @@ import {
   Header,
   LoadingDots,
   ModalChoiceDialog,
+  NoAssignmentSelected,
+  NoCourseSelected,
   SaveButton,
 } from "@components";
-import CSVUpload from "./CSVUpload";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -35,14 +36,11 @@ import { CSVRow } from "@local_types";
 import { createCriterion, createRating, createRubric } from "@utils";
 
 import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
-import CSVExport from "@features/rubricBuilder/CSVExport";
+import { CSVExport, CSVUpload } from "@features";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCourse } from "../../context";
-import NoCourseSelected from "../../components/NoCourseSelected.tsx";
-import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
+import { useAssignment, useCourse } from "@context";
 
-export default function RubricBuilderMain(): ReactElement {
+export function RubricBuilderMain(): ReactElement {
   /**
    * Rubric Builder State
    */

@@ -1,8 +1,7 @@
-import IndividualSubmission from "@features/grading/IndividualSubmission.tsx";
-import ProgressBar from "@features/grading/ProgressBar.tsx";
 import { Submission } from "palette-types";
+import { IndividualSubmission, ProgressBar } from "@features";
 
-export default function GroupSubmissions({
+export function GroupSubmissions({
   groupName,
   progress,
   isExpanded,

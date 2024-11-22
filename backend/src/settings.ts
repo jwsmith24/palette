@@ -55,7 +55,7 @@ export const SettingsAPI = {
    * pass `{ preferences: { darkMode: false } }`. That way, you don't have to pass the entire settings object
    * every time you want to update a single field.
    *
-   * @param newSettings The subset of the Settings object to update
+   * @param newSettings The subset of the settings object to update
    */
   updateUserSettings(newSettings: Settings): void {
     if (settings === null) {

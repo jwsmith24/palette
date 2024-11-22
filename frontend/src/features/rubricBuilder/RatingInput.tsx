@@ -3,7 +3,7 @@ import { Rating } from "palette-types";
 import { Dialog } from "@components";
 import { motion } from "framer-motion";
 
-export default function RatingInput({
+export function RatingInput({
   ratingIndex,
   rating,
   handleRatingChange,

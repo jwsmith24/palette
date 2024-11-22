@@ -1,10 +1,8 @@
-import AssignmentData from "@features/grading/AssignmentData.tsx";
-import GroupSubmissions from "@features/grading/GroupSubmissions.tsx";
-import { Rubric } from "palette-types";
 import { useState } from "react";
-import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions.ts";
+import { GroupedSubmissions, Rubric } from "palette-types";
+import { AssignmentData, GroupSubmissions } from "@features";
 
-export default function SubmissionsDashboard({
+export function SubmissionsDashboard({
   rubric,
   submissions,
 }: {
