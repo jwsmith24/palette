@@ -14,11 +14,8 @@ import fs from "fs";
 const settingsPath = "./settings.json";
 
 export const TemplateService = {
-  /**
-   * Adds a new template to the datastore.
-   * @param {Request} req - The request object containing the template data.
-   * @returns {Promise<void>} - A Promise that resolves when the template is added.
-   */
+  // POST REQUESTS (Templates Setter/Page Functions)
+
   addTemplate: async (req: Request) => {
     console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
@@ -66,15 +63,77 @@ export const TemplateService = {
     }
   },
 
+  // DELETE REQUESTS (Templates Page Functions)
+  deleteTemplateByKey: async (req: Request) => {
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateKey = req.params.key;
+    if (templateKey) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.key === templateKey
+      );
+      if (templateIndex !== -1) {
+        settings.templates.splice(templateIndex, 1);
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+  },
+
+  deleteAllCriteriaByTitle: async (req: Request) => {
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateTitle = req.params.title;
+    if (templateTitle) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateTitle
+      );
+      if (templateIndex !== -1) {
+        settings.templates[templateIndex].criteria = [];
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+  },
+
+  deleteAllCriteriaByKey: async (req: Request) => {
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateKey = req.params.key;
+    if (templateKey) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.key === templateKey
+      );
+      if (templateIndex !== -1) {
+        settings.templates[templateIndex].criteria = [];
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+  },
+
+  deleteTemplateByTitle: async (req: Request) => {
+    console.log("template data", req.body);
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateTitle = req.params.title;
+    if (templateTitle) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateTitle
+      );
+      if (templateIndex !== -1) {
+        settings.templates.splice(templateIndex, 1);
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+  },
+
+  // GET REQUESTS (Templates API Functions)
+
   getAllTemplates: asyncHandler(async (req: Request, res: Response) => {
-    console.log("getting all templates");
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
     res.json(settings.templates);
   }),
 
   getTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
-    console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
     const templateKey = req.params.key;
@@ -88,13 +147,7 @@ export const TemplateService = {
     }
   }),
 
-  /**
-   * Retrieves the ID of a rubric by its title.
-   * @param {string} title - The title of the rubric.
-   * @returns {Promise<{ id: number } | null>} - An object containing the rubric ID or null if not found.
-   */
   getTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
-    console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
     const templateTitle = req.params.title;
@@ -107,24 +160,5 @@ export const TemplateService = {
         res.json(settings.templates[templateIndex]);
       }
     }
-  }),
-
-  /**
-   * Deletes a rubric from the datastore.
-   * @param {number} id - The ID of the rubric to delete.
-   * @returns {Promise<void>} - A Promise that resolves when the rubric is deleted.
-   */
-
-  deleteTemplate: asyncHandler(async (req: Request, res: Response) => {
-    console.log("template data", req.body);
-  }),
-
-  /**
-   * Deletes all criteria associated with a specific template.
-   * @param {number} rubricId - The ID of the template whose criteria are to be deleted.
-   * @returns {Promise<void>} - A Promise that resolves when all criteria are deleted.
-   */
-  deleteAllCriteria: asyncHandler(async (req: Request, res: Response) => {
-    console.log("template data", req.body);
   }),
 };
