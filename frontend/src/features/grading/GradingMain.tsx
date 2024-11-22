@@ -3,7 +3,7 @@ import { PaletteAPIResponse, Rubric } from "palette-types";
 import { useFetch } from "@hooks";
 import { useCourse } from "src/context/CourseProvider";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import LoadingDots from "../../components/LoadingDots.tsx";
+import { LoadingDots } from "../../components/LoadingDots.tsx";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import MainPageTemplate from "../../components/MainPageTemplate.tsx";
