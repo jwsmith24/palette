@@ -12,18 +12,26 @@ import fs from "fs";
 const settingsPath = "./settings.json";
 
 export const TemplateService = {
+  /**
+   * Adds a new template to the datastore.
+   * @param {Request} req - The request object containing the template data.
+   * @returns {Promise<void>} - A Promise that resolves when the template is added.
+   */
   addTemplate: async (req: Request) => {
     console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
     console.log("settings templates", settings.templates);
     const template = createTemplate();
-    // template.title = (await req.json()).title as string;
-    // template.criteria = (await req.json()).criteria as Criteria[];
-    // template.id = (await req.json()).id as number;
-    // template.key = (await req.json()).key as string;
-    settings.templates.push(template);
-    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+    const templateData = req.body as Template | null;
+    if (templateData) {
+      template.title = templateData.title;
+      template.criteria = templateData.criteria;
+      template.id = templateData.id;
+      template.key = templateData.key;
+      settings.templates.push(template);
+      fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+    }
   },
 
   /**

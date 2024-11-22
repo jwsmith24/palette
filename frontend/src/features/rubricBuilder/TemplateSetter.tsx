@@ -5,7 +5,7 @@ import { Template } from "../../../../palette-types/src/types/Template";
 import { createTemplate } from "../../utils/templateFactory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import templatesJson from "../../../../backend/src/userData/templates.json";
+import templatesJson from "../user/templates.json";
 import { Criteria } from "palette-types";
 import { createCriterion } from "../../utils/rubricFactory";
 import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
@@ -30,6 +30,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     null
   );
   const [userTemplates, setUserTemplates] = useState(templatesJson);
+  const [criterionAdded, setCriterionAdded] = useState(false);
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
@@ -37,7 +38,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     "/templates",
     {
       method: "POST",
-      body: JSON.stringify(template), // use latest template data
+      body: JSON.stringify(template), // use latest rubric data
     }
   );
 
@@ -50,17 +51,21 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   );
 
   useEffect(() => {
-    console.log("template setter");
+    console.log("refresh");
   }, [template]);
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    criterion.template = template.key;
-    setTemplate({
-      ...template,
-      title: event.target.value,
-      criteria: [...template.criteria, criterion],
-    });
-
+    if (criterionAdded) {
+      const newTemplate = { ...template };
+      newTemplate.title = event.target.value;
+      setTemplate(newTemplate);
+    } else {
+      const newTemplate = { ...template };
+      newTemplate.title = event.target.value;
+      newTemplate.criteria.push(criterion);
+      setTemplate(newTemplate);
+      setCriterionAdded(true);
+    }
     // write to the json file here. needs criteria info.
     handleSetTemplateTitle(event);
   };
@@ -80,12 +85,15 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   // send the template up to the criterion input so that it can detect changes and update the
   // criterion within the template.
   const handleSave = () => {
-    console.log("criterion", criterion);
-    console.log("template from frontend", template);
+    handleFinalizeTemplate();
     postTemplate();
-    console.log("after save");
-    // // onTemplateSelected(template);
     closeTemplateCard();
+  };
+
+  const handleFinalizeTemplate = () => {
+    criterion.template = template.key;
+    template.criteria.push(criterion);
+    setCriterionAdded(true); //should trigger a re-render
   };
 
   const handleSelectedExistingTemplate = (
@@ -131,8 +139,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       setTemplateSelected(true);
       console.log("selectedTemplate");
       console.log(template);
-      // onTemplateSelected(template);
-
       setSelectedTemplateTitle(selectedTemplateTitle);
     }
     handleCloseTemplates();
