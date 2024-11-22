@@ -93,9 +93,21 @@ export const TemplateService = {
    * @param {string} title - The title of the rubric.
    * @returns {Promise<{ id: number } | null>} - An object containing the rubric ID or null if not found.
    */
-  getTemplateIdByTitle: async (req: Request) => {
+  getTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
     console.log("template data", req.body);
-  },
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateTitle = req.params.title;
+    if (templateTitle) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateTitle
+      );
+      console.log("templateIndex", templateIndex);
+      if (templateIndex !== -1) {
+        res.json(settings.templates[templateIndex]);
+      }
+    }
+  }),
 
   /**
    * Deletes a rubric from the datastore.
@@ -103,16 +115,16 @@ export const TemplateService = {
    * @returns {Promise<void>} - A Promise that resolves when the rubric is deleted.
    */
 
-  deleteTemplate: async (req: Request) => {
+  deleteTemplate: asyncHandler(async (req: Request, res: Response) => {
     console.log("template data", req.body);
-  },
+  }),
 
   /**
-   * Deletes all criteria associated with a specific rubric.
-   * @param {number} rubricId - The ID of the rubric whose criteria are to be deleted.
+   * Deletes all criteria associated with a specific template.
+   * @param {number} rubricId - The ID of the template whose criteria are to be deleted.
    * @returns {Promise<void>} - A Promise that resolves when all criteria are deleted.
    */
-  deleteAllCriteria: async (req: Request) => {
+  deleteAllCriteria: asyncHandler(async (req: Request, res: Response) => {
     console.log("template data", req.body);
-  },
+  }),
 };
