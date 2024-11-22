@@ -146,32 +146,6 @@
         }
       ],
       "key": "ddecf763-2093-4a3e-bb07-2adbcfed0d37"
-    },
-    {
-      "title": "added from template setter",
-      "criteria": [
-        {
-          "ratings": [
-            {
-              "points": 5,
-              "description": "Full Marks",
-              "longDescription": "",
-              "key": "ed624758-b794-47b1-afb0-418fe1593741"
-            },
-            {
-              "points": 0,
-              "description": "No Marks",
-              "longDescription": "",
-              "key": "0b74919e-f992-4e1f-861f-c69c90e27b48"
-            }
-          ],
-          "description": "new criterion",
-          "longDescription": "",
-          "points": 5,
-          "key": "e521c096-cf4a-4262-8d92-153fdbaf8dc8"
-        }
-      ],
-      "key": "ddecf763-2093-4a3e-bb07-2adbcfed0d37"
     }
   ],
   "token": "new token",

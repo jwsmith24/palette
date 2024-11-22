@@ -5,7 +5,7 @@ import { Template } from "../../../../palette-types/src/types/Template";
 import { createTemplate } from "../../utils/templateFactory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import templatesJson from "../user/templates.json";
+import settingsJson from "../../../../backend/settings.json";
 import { Criteria } from "palette-types";
 import { createCriterion } from "../../utils/rubricFactory";
 import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
@@ -29,7 +29,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
-  const [userTemplates, setUserTemplates] = useState(templatesJson);
+  const [userTemplates, setUserTemplates] = useState(settingsJson.templates);
   const [criterionAdded, setCriterionAdded] = useState(false);
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
@@ -103,7 +103,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 
     // TODO: get the templates from the settings.file instead and delete templates.json file.
     const selectedTemplateTitle = event.currentTarget.textContent;
-    const selectedTemplateJson = templatesJson.find(
+    const selectedTemplateJson = settingsJson.templates.find(
       (tmplt) => tmplt.title === selectedTemplateTitle
     );
 
@@ -116,21 +116,19 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     if (selectedTemplateTitle != null) {
       // if this template exist in the db
       // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
-      if (selectedTemplateJson?.templateCriteria != undefined) {
-        selectedTemplateJson?.templateCriteria.forEach(
-          (existingCriterion: any) => {
-            const copyCriterion = createCriterion();
+      if (selectedTemplateJson?.criteria != undefined) {
+        selectedTemplateJson?.criteria.forEach((existingCriterion: any) => {
+          const copyCriterion = createCriterion();
 
-            copyCriterion.description = existingCriterion.description;
-            copyCriterion.id = existingCriterion.id;
-            copyCriterion.key = existingCriterion.key;
-            copyCriterion.longDescription = existingCriterion.longDescription;
-            copyCriterion.points = existingCriterion.points;
-            copyCriterion.ratings = existingCriterion.ratings;
-            copyCriterion.template = existingCriterion.template;
-            template.criteria.push(copyCriterion);
-          }
-        );
+          copyCriterion.description = existingCriterion.description;
+          copyCriterion.id = existingCriterion.id;
+          copyCriterion.key = existingCriterion.key;
+          copyCriterion.longDescription = existingCriterion.longDescription;
+          copyCriterion.points = existingCriterion.points;
+          copyCriterion.ratings = existingCriterion.ratings;
+          copyCriterion.template = existingCriterion.template;
+          template.criteria.push(copyCriterion);
+        });
       }
 
       const newCriteria = [...template.criteria, criterion];
@@ -178,7 +176,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           open={Boolean(anchorElTemplate)}
           onClose={handleCloseTemplates}
         >
-          {templatesJson.map((t, tKey) => (
+          {settingsJson.templates.map((t, tKey) => (
             <MenuItem key={tKey} onClick={handleSelectedExistingTemplate}>
               {t.title}
             </MenuItem>
