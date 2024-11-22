@@ -9,6 +9,12 @@ export const getAllTemplates = (req: Request, res: Response) => {
   });
 };
 
+export const getTemplateByKey = (req: Request, res: Response) => {
+  TemplateService.getTemplateByKey(req, res, (error: any) => {
+    if (error) console.error(error);
+  });
+};
+
 export const addTemplate = (req: Request) => {
   console.log("template received in template controller");
   TemplateService.addTemplate(req);

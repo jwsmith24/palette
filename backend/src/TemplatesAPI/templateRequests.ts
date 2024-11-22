@@ -73,19 +73,20 @@ export const TemplateService = {
     res.json(settings.templates);
   }),
 
-  /**
-   * Retrieves a rubric by its ID.
-   * @param {number} id - The ID of the rubric to retrieve.
-   * @returns {Promise<Rubric | null>} - The retrieved rubric object or null if not found.
-   */
-
-  getTemplateById: async (req: Request) => {
+  getTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
     console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    settings.templates.push();
-    console.log("settings templates", settings.templates);
-  },
+    const templateKey = req.params.key;
+    if (templateKey) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.key === templateKey
+      );
+      if (templateIndex !== -1) {
+        res.json(settings.templates[templateIndex]);
+      }
+    }
+  }),
 
   /**
    * Retrieves the ID of a rubric by its title.
