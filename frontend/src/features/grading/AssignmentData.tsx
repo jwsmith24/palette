@@ -29,8 +29,8 @@ export default function AssignmentData({
   }, [rubric]);
 
   return (
-    <div className={"flex px-4 min-w-screen justify-between items-center mb-4"}>
-      <div className={"grid gap-3 mt-4 "}>
+    <div className={"flex px-4 min-w-screen justify-between items-center"}>
+      <div className={"grid gap-3"}>
         <p className={"font-bold text-3xl"}>
           <span className={"font-medium"}>Assignment: </span>
           {activeAssignment!.name}

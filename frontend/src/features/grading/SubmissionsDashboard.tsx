@@ -16,26 +16,24 @@ export default function SubmissionsDashboard({
 
   return (
     <div>
-      <div className={"flex-col gap-2"}>
-        <h1 className={"text-5xl font-bold p-4"}>Submission Dashboard</h1>
-        <p
-          className={
-            "font-bold bg-gray-800 px-3 py-1 rounded-xl w-min text-nowrap ml-4"
-          }
-        >
-          View:{" "}
-          <button
-            className={"font-semibold text-blue-400"}
-            type={"button"}
-            onClick={() => {
-              setExpandedView(!isExpandedView);
-            }}
-          >
-            {isExpandedView ? "Expanded" : "Simple"}
-          </button>
-        </p>
-      </div>
+      <h1 className={"text-5xl font-bold p-4"}>Submission Dashboard</h1>
       <AssignmentData rubric={rubric} />
+      <p
+        className={
+          "font-bold bg-gray-800 px-3 py-1 rounded-xl w-min text-nowrap ml-4 my-4"
+        }
+      >
+        View:{" "}
+        <button
+          className={"font-semibold text-blue-400"}
+          type={"button"}
+          onClick={() => {
+            setExpandedView(!isExpandedView);
+          }}
+        >
+          {isExpandedView ? "Expanded" : "Simple"}
+        </button>
+      </p>
       <div
         className={
           " grid grid-flow-col-dense auto-rows-fr grid-cols-auto " +
