@@ -1,4 +1,6 @@
 import { Template, Settings, Criteria } from "palette-types";
+import asyncHandler from "express-async-handler";
+import { Request, Response } from "express";
 import { createTemplate } from "../../../frontend/src/utils/templateFactory.js";
 import fs from "fs";
 
@@ -25,11 +27,20 @@ export const TemplateService = {
     const template = createTemplate();
     const templateData = req.body as Template | null;
     if (templateData) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateData.title
+      );
       template.title = templateData.title;
       template.criteria = templateData.criteria;
       template.id = templateData.id;
       template.key = templateData.key;
-      settings.templates.push(template);
+      if (templateIndex === -1) {
+        // only push if the template doesn't already exist
+        settings.templates.push(template);
+      } else {
+        // update the existing template
+        console.log("Template already exists!");
+      }
       fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
     }
   },
@@ -54,6 +65,13 @@ export const TemplateService = {
       }
     }
   },
+
+  getAllTemplates: asyncHandler(async (req: Request, res: Response) => {
+    console.log("getting all templates");
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    res.json(settings.templates);
+  }),
 
   /**
    * Retrieves a rubric by its ID.

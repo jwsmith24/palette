@@ -7,52 +7,26 @@
         {
           "ratings": [
             {
-              "points": 4,
-              "description": "Long Description 1",
-              "longDescription": "",
-              "key": "4c185147-f51c-4b0d-99bc-ba6901d54ee4"
-            }
-          ],
-          "description": "T1 Criteria Name 1",
-          "longDescription": "",
-          "points": 4,
-          "id": 1,
-          "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723",
-          "template": "Mock Template Name 1"
-        },
-        {
-          "ratings": [
-            {
-              "points": 6,
-              "description": "Long Description 2",
-              "longDescription": "",
-              "key": "b6efaa99-bce9-4768-9c77-89a4736d44f3"
-            }
-          ],
-          "description": "T1 Criteria Name 2",
-          "longDescription": "",
-          "points": 6,
-          "id": 2,
-          "key": "c543378a-6acb-4452-a907-897e0bfe3852",
-          "template": "Mock Template Name 1"
-        },
-        {
-          "ratings": [
-            {
               "points": 5,
               "description": "Full Marks",
               "longDescription": "",
-              "key": "5a00760e-7c1e-4587-9406-e4ca1590bbb6"
+              "key": "d605ee28-4eab-4ef2-ac6e-bcdc7502afa3"
+            },
+            {
+              "points": 0,
+              "description": "No Marks",
+              "longDescription": "",
+              "key": "c5a15988-b7b1-454a-95d4-a04179e812c7"
             }
           ],
-          "description": "new criterion",
+          "description": "newww",
           "longDescription": "",
           "points": 5,
-          "key": "28210f07-87bc-4f0d-b90e-b81b32104389",
-          "template": "0ac260d0-a1e6-4a05-b623-3efd44a0d737"
+          "key": "dbe4c931-5179-454c-b46c-3cfa687472fd",
+          "template": "c2dca0dc-6ee3-4504-8ef9-842d4f985c04"
         }
       ],
-      "key": "0ac260d0-a1e6-4a05-b623-3efd44a0d737"
+      "key": "3574e236-7f5f-431d-b15f-4e530d22ccde"
     },
     {
       "title": "Mock Template Name 2",

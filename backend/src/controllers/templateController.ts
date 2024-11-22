@@ -1,8 +1,13 @@
 import { TemplateService } from "../TemplatesAPI/templateRequests.js";
 import { Template } from "palette-types";
 import { Criteria } from "palette-types";
+import { Request, Response } from "express";
 
-export const getAllTemplates = () => {};
+export const getAllTemplates = (req: Request, res: Response) => {
+  TemplateService.getAllTemplates(req, res, (error: any) => {
+    if (error) console.error(error);
+  });
+};
 
 export const addTemplate = (req: Request) => {
   console.log("template received in template controller");

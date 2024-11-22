@@ -69,6 +69,8 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       setTemplate(newTemplate);
       setCriterionAdded(true);
     }
+    setUpdatingExistingTemplate(false);
+
     // write to the json file here. needs criteria info.
     handleSetTemplateTitle(event);
   };
@@ -136,7 +138,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 
       // const newCriteria = [...template.criteria, criterion];
       // setTemplate({ ...template, criteria: newCriteria });
-
+      console.log("template", template);
       setTemplateSelected(true);
       setSelectedTemplateTitle(selectedTemplateTitle);
       setUpdatingExistingTemplate(true);
