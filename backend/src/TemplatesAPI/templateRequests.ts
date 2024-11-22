@@ -1,4 +1,5 @@
-import { Template, Settings } from "palette-types";
+import { Template, Settings, Criteria } from "palette-types";
+import { createTemplate } from "../../../frontend/src/utils/templateFactory.js";
 import fs from "fs";
 
 /**
@@ -15,8 +16,14 @@ export const TemplateService = {
     console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    settings.templates.push();
     console.log("settings templates", settings.templates);
+    const template = createTemplate();
+    // template.title = (await req.json()).title as string;
+    // template.criteria = (await req.json()).criteria as Criteria[];
+    // template.id = (await req.json()).id as number;
+    // template.key = (await req.json()).key as string;
+    settings.templates.push(template);
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
   },
 
   /**
@@ -24,8 +31,13 @@ export const TemplateService = {
    * @param {number} id - The ID of the rubric to retrieve.
    * @returns {Promise<Rubric | null>} - The retrieved rubric object or null if not found.
    */
-  getTemplateById(id: number): Promise<Template | null> {
-    return Promise.resolve(null);
+
+  getTemplateById: async (req: Request) => {
+    console.log("template data", req.body);
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    settings.templates.push();
+    console.log("settings templates", settings.templates);
   },
 
   /**
@@ -33,8 +45,8 @@ export const TemplateService = {
    * @param {string} title - The title of the rubric.
    * @returns {Promise<{ id: number } | null>} - An object containing the rubric ID or null if not found.
    */
-  getTemplateIdByTitle(title: string): Promise<{ id: number } | null> {
-    return Promise.resolve(null);
+  getTemplateIdByTitle: async (req: Request) => {
+    console.log("template data", req.body);
   },
 
   /**
@@ -43,8 +55,8 @@ export const TemplateService = {
    * @param {Rubric} data - The updated rubric data.
    * @returns {Promise<Rubric | null>} - The updated rubric object or null if update failed.
    */
-  updateTemplate(id: number, data: Template): Promise<Template | null> {
-    return Promise.resolve(null);
+  updateTemplate: async (req: Request) => {
+    console.log("template data", req.body);
   },
 
   /**
@@ -52,8 +64,9 @@ export const TemplateService = {
    * @param {number} id - The ID of the rubric to delete.
    * @returns {Promise<void>} - A Promise that resolves when the rubric is deleted.
    */
-  deleteTemplate(id: number): Promise<void> {
-    return Promise.resolve();
+
+  deleteTemplate: async (req: Request) => {
+    console.log("template data", req.body);
   },
 
   /**
@@ -61,7 +74,7 @@ export const TemplateService = {
    * @param {number} rubricId - The ID of the rubric whose criteria are to be deleted.
    * @returns {Promise<void>} - A Promise that resolves when all criteria are deleted.
    */
-  deleteAllCriteria(rubricId: number): Promise<void> {
-    return Promise.resolve();
+  deleteAllCriteria: async (req: Request) => {
+    console.log("template data", req.body);
   },
 };
