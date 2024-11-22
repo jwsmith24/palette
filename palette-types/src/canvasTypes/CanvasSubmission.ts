@@ -7,9 +7,9 @@ import { CanvasCriterion } from "./CanvasCriterion";
 
 export interface CanvasSubmission {
   id: number; // tracks the submission stored on Canvas
-  comment?: {
+  comments?: {
     text_comment: string; // comment body
-  };
+  }[];
   submission?: {
     group_comment: boolean; // should the comment be sent to the entire group?
   };

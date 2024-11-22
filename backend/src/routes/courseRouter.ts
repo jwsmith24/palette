@@ -2,12 +2,12 @@ import express from "express";
 import { validationErrorHandler } from "../middleware/validationErrorHandler.js";
 
 import { handleDeleteRubric } from "../controllers/rubricControllers/handleDeleteRubric.js";
-import rubricValidator from "../validators/rubricValidator.js";
+import rubricValidator from "../validators/rubricValidator";
 import {
   assignmentParamValidator,
   courseParamValidator,
   idAndCourseParamValidator,
-} from "../validators/baseParamValidators.js";
+} from "../validators/paramValidators";
 
 import {
   getAllCourses,
@@ -32,6 +32,7 @@ courseRouter.get(
   "/:course_id/assignments/:assignment_id/submissions",
   courseParamValidator,
   assignmentParamValidator,
+  validationErrorHandler,
   getSubmissions,
 );
 
