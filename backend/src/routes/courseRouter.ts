@@ -8,6 +8,7 @@ import {
   courseParamValidator,
   idAndCourseParamValidator,
 } from "../validators/baseParamValidators.js";
+
 import {
   getAllCourses,
   getAssignment,
@@ -20,8 +21,19 @@ import {
   getRubric,
   updateRubric,
 } from "../controllers/rubricController.js";
+import { getSubmissions } from "../controllers/submissionController.js";
 
 const courseRouter = express.Router();
+
+/**
+ * Submission Routes
+ */
+courseRouter.get(
+  "/:course_id/assignments/:assignment_id/submissions",
+  courseParamValidator,
+  assignmentParamValidator,
+  getSubmissions,
+);
 
 /**
  * @route POST /courses/:courseID/rubrics

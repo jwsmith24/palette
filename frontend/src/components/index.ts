@@ -10,3 +10,6 @@ export * from "./Navbar";
 export * from "./NotFoundPage";
 export * from "./LoadingDots";
 export * from "./SaveButton.tsx";
+export * from "./NoCourseSelected.tsx";
+export * from "./NoAssignmentSelected.tsx";
+export * from "./MainPageTemplate.tsx";

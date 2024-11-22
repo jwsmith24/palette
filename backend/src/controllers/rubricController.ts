@@ -1,4 +1,3 @@
-import { RubricsAPI } from "../canvasAPI/rubricRequests.js";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
@@ -17,6 +16,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "../utils/paletteResponseFactories.js";
+import { RubricsAPI } from "../services/rubricRequests.js";
 
 /**
  * Handles the GET request to retrieve a rubric by its ID.

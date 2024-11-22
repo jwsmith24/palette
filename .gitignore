@@ -31,3 +31,5 @@ settings.json
 
 # jest reports
 coverage/
+
+*Zone.Identifier

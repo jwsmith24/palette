@@ -9,7 +9,7 @@ import {
 } from "@components";
 import { useFetch } from "@hooks";
 
-export default function SettingsPage(): ReactElement {
+export function SettingsMain(): ReactElement {
   const [settings, setSettings] = useState<Settings | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -88,7 +88,7 @@ export default function SettingsPage(): ReactElement {
         setModal({
           isOpen: true,
           title: "Success",
-          message: "Settings saved successfully!",
+          message: "settings saved successfully!",
           choices: [{ label: "Close", action: closeModal }],
         });
       } else {

@@ -1,6 +1,6 @@
 import { beforeEach, expect, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import CSVUpload from "@features/rubricBuilder/CSVUpload.tsx";
+import { CSVUpload } from "@features";
 
 // Mock papa parse
 vi.mock("papaparse", () => ({

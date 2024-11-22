@@ -2,7 +2,7 @@ import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { randomColor } from "@utils";
 
-export default function Home(): ReactElement {
+export function Home(): ReactElement {
   const [color, setColor] = useState("bg-red-500");
   const navigate = useNavigate();
 

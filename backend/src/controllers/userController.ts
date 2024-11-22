@@ -28,7 +28,7 @@ export const updateUserSettings = asyncHandler(
     const updatedSettings = SettingsAPI.getUserSettings();
 
     res.json(
-      createSuccessResponse(updatedSettings, "Settings updated successfully"),
+      createSuccessResponse(updatedSettings, "settings updated successfully"),
     );
   },
 );
