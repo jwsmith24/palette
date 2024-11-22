@@ -7,9 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import settingsJson from "../../../../backend/settings.json";
 import { Criteria } from "palette-types";
-import { createCriterion } from "../../utils/rubricFactory";
-import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests";
-import { useFetch } from "../../hooks/useFetch";
+import { createCriterion } from "@utils";
+import { useFetch } from "@hooks";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the import card
@@ -36,21 +35,15 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
-  const { response: postTemplateResponse, fetchData: postTemplate } = useFetch(
-    "/templates",
-    {
-      method: "POST",
-      body: JSON.stringify(template), // use latest rubric data
-    }
-  );
+  const { fetchData: postTemplate } = useFetch("/templates/temp", {
+    method: "POST",
+    body: JSON.stringify(template), // use latest rubric data
+  });
 
-  const { response: putTemplateResponse, fetchData: putTemplate } = useFetch(
-    `/templates`,
-    {
-      method: "PUT",
-      body: JSON.stringify(template),
-    }
-  );
+  const { fetchData: putTemplate } = useFetch(`/templates`, {
+    method: "PUT",
+    body: JSON.stringify(template),
+  });
 
   useEffect(() => {
     console.log("refresh");
@@ -62,7 +55,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       newTemplate.title = event.target.value;
       setTemplate(newTemplate);
     } else {
-      console.log("new template");
       const newTemplate = { ...template };
       newTemplate.title = event.target.value;
       newTemplate.criteria.push(criterion);
@@ -136,8 +128,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
         template.title = selectedTemplateTitle;
       }
 
-      // const newCriteria = [...template.criteria, criterion];
-      // setTemplate({ ...template, criteria: newCriteria });
       console.log("template", template);
       setTemplateSelected(true);
       setSelectedTemplateTitle(selectedTemplateTitle);

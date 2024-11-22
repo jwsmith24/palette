@@ -214,9 +214,24 @@ export default function RubricBuilder(): ReactElement {
     });
   };
 
+  const handleUpdateTemplateCriteria = () => {
+    console.log("updating template criteria");
+    console.log(rubric?.criteria);
+    const criteriaOnATemplate: Criteria[] = [];
+    rubric?.criteria.forEach((criterion) => {
+      if (criterion.template !== "") criteriaOnATemplate.push(criterion);
+    });
+    for (const criterion of criteriaOnATemplate) {
+      console.log(criterion);
+    }
+  };
+
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
+    console.log("submitting rubric");
+    handleUpdateTemplateCriteria();
     if (!rubric || !activeCourse || !activeAssignment) return;
+
     setLoading(true);
 
     try {

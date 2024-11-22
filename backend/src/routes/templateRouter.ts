@@ -1,4 +1,5 @@
 import express from "express";
+import { validationErrorHandler } from "../middleware/validationErrorHandler.js";
 
 import {
   getAllTemplates,
@@ -10,6 +11,6 @@ const router = express.Router();
 
 // router.get("/", getAllTemplates);
 router.get("/", getAllTemplates);
-router.post("/", addTemplate);
-router.put("/", updateTemplate);
+router.post("/temp", validationErrorHandler, addTemplate);
+router.put("/", validationErrorHandler, updateTemplate);
 export default router;
