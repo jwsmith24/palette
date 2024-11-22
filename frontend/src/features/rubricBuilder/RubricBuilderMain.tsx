@@ -13,7 +13,14 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
+import {
+  Dialog,
+  Footer,
+  Header,
+  LoadingDots,
+  ModalChoiceDialog,
+  SaveButton,
+} from "@components";
 import CSVUpload from "./CSVUpload";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
@@ -34,7 +41,6 @@ import { useCourse } from "../../context";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
-import LoadingDots from "../../components/LoadingDots.tsx";
 
 export default function RubricBuilderMain(): ReactElement {
   /**
@@ -95,7 +101,6 @@ export default function RubricBuilderMain(): ReactElement {
   /**
    * Updates active assignment with new or updated rubric.
    */
-
   const { fetchData: putRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}/${activeAssignment?.id}`,
     {
@@ -496,14 +501,8 @@ export default function RubricBuilderMain(): ReactElement {
           >
             Add Criteria
           </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event) => void handleSubmitRubric(event)}
-            type={"button"}
-          >
-            Save Rubric
-          </button>
+
+          <SaveButton onClick={(event) => void handleSubmitRubric(event)} />
         </div>
       </form>
     );

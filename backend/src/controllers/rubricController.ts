@@ -7,7 +7,6 @@ import {
   RubricRequestBody,
   UpdateRubricResponse,
 } from "palette-types";
-import config from "../config.js";
 import {
   createAssignmentAssociation,
   toCanvasFormat,
@@ -50,7 +49,7 @@ export const getAllRubrics = asyncHandler(
     const { course_id } = req.params;
     // create the request object for the Canvas API
     const canvasRequest: RubricRequestBody = {
-      course_id: Number(course_id) || Number(config!.TEST_COURSE_ID),
+      course_id: Number(course_id),
     };
 
     // make the request to the Canvas API
