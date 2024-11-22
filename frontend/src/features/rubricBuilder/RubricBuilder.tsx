@@ -14,7 +14,6 @@ import {
 
 import CriteriaInput from "./CriteriaInput";
 import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
-import CSVUpload from "./CSVUpload";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -29,6 +28,7 @@ import { createCriterion, createRating, createRubric } from "@utils";
 
 import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
+import CSVUpload from "@features/rubricBuilder/CSVUpload";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCourse } from "../../context";
 import NoCourseSelected from "../../components/NoCourseSelected.tsx";
@@ -495,22 +495,6 @@ export default function RubricBuilder(): ReactElement {
           message={modal.message}
           choices={modal.choices}
         />
-
-        {/* CSV/XLSX Import Dialog */}
-        {fileInputActive && (
-          <Dialog
-            isOpen={fileInputActive}
-            onClose={() => setFileInputActive(false)}
-            title="Import a CSV Template"
-          >
-            <CSVUpload
-              rubric={rubric}
-              setRubric={setRubric}
-              closeImportCard={() => setFileInputActive(false)}
-            /> 
-          </Dialog>
-        )}
-
 
         {/* Sticky Footer with Gradient */}
         <Footer />
