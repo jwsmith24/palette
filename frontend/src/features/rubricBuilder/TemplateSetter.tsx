@@ -31,6 +31,8 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   );
   const [userTemplates, setUserTemplates] = useState(settingsJson.templates);
   const [criterionAdded, setCriterionAdded] = useState(false);
+  const [updatingExistingTemplate, setUpdatingExistingTemplate] =
+    useState(false);
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
@@ -42,10 +44,10 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     }
   );
 
-  const { response: getTemplateResponse, fetchData: getTemplate } = useFetch(
-    `templates/${template.id}`,
+  const { response: putTemplateResponse, fetchData: putTemplate } = useFetch(
+    `/templates`,
     {
-      method: "GET",
+      method: "PUT",
       body: JSON.stringify(template),
     }
   );
@@ -60,6 +62,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       newTemplate.title = event.target.value;
       setTemplate(newTemplate);
     } else {
+      console.log("new template");
       const newTemplate = { ...template };
       newTemplate.title = event.target.value;
       newTemplate.criteria.push(criterion);
@@ -86,7 +89,12 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   // criterion within the template.
   const handleSave = () => {
     handleFinalizeTemplate();
-    postTemplate();
+    if (updatingExistingTemplate) {
+      console.log("updating existing template");
+      putTemplate();
+    } else {
+      postTemplate();
+    }
     closeTemplateCard();
   };
 
@@ -100,18 +108,12 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     event: React.MouseEvent<HTMLElement>
   ) => {
     event.preventDefault();
+    template.criteria = [];
 
-    // TODO: get the templates from the settings.file instead and delete templates.json file.
     const selectedTemplateTitle = event.currentTarget.textContent;
     const selectedTemplateJson = settingsJson.templates.find(
       (tmplt) => tmplt.title === selectedTemplateTitle
     );
-
-    //set the header info to the current template using the bd template.
-    // template.id = selectedTemplateJson?.id;
-    // template.key = selectedTemplateJson?.key;
-    // template.title = selectedTemplateJson?.title;
-    // template.description = selectedTemplateJson?.description;
 
     if (selectedTemplateTitle != null) {
       // if this template exist in the db
@@ -129,15 +131,16 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           copyCriterion.template = existingCriterion.template;
           template.criteria.push(copyCriterion);
         });
+        template.title = selectedTemplateTitle;
       }
 
-      const newCriteria = [...template.criteria, criterion];
-      setTemplate({ ...template, criteria: newCriteria });
+      // const newCriteria = [...template.criteria, criterion];
+      // setTemplate({ ...template, criteria: newCriteria });
 
       setTemplateSelected(true);
-      console.log("selectedTemplate");
-      console.log(template);
       setSelectedTemplateTitle(selectedTemplateTitle);
+      setUpdatingExistingTemplate(true);
+      handleFinalizeTemplate();
     }
     handleCloseTemplates();
   };

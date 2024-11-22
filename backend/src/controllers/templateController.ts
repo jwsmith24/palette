@@ -8,3 +8,7 @@ export const addTemplate = (req: Request) => {
   console.log("template received in template controller");
   TemplateService.addTemplate(req);
 };
+
+export const updateTemplate = (req: Request) => {
+  TemplateService.updateTemplate(req);
+};

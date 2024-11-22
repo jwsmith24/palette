@@ -34,6 +34,27 @@ export const TemplateService = {
     }
   },
 
+  updateTemplate: async (req: Request) => {
+    console.log("updating template request", req.body);
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateData = req.body as Template | null;
+    if (templateData) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateData.title
+      );
+      console.log("templateIndex", templateIndex);
+      console.log("templateData", templateData);
+      if (templateIndex !== -1) {
+        settings.templates[templateIndex] = templateData;
+
+        console.log("updated templates", settings.templates);
+        console.log("settings", settings);
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+  },
+
   /**
    * Retrieves a rubric by its ID.
    * @param {number} id - The ID of the rubric to retrieve.
@@ -54,16 +75,6 @@ export const TemplateService = {
    * @returns {Promise<{ id: number } | null>} - An object containing the rubric ID or null if not found.
    */
   getTemplateIdByTitle: async (req: Request) => {
-    console.log("template data", req.body);
-  },
-
-  /**
-   * Updates an existing rubric in the datastore.
-   * @param {number} id - The ID of the rubric to update.
-   * @param {Rubric} data - The updated rubric data.
-   * @returns {Promise<Rubric | null>} - The updated rubric object or null if update failed.
-   */
-  updateTemplate: async (req: Request) => {
     console.log("template data", req.body);
   },
 

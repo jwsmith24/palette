@@ -17,8 +17,8 @@
           "longDescription": "",
           "points": 4,
           "id": 1,
-          "template": "Mock Template Name 1",
-          "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723"
+          "key": "7cc08ec6-7150-4326-89fb-05ee0faf8723",
+          "template": "Mock Template Name 1"
         },
         {
           "ratings": [
@@ -33,13 +33,26 @@
           "longDescription": "",
           "points": 6,
           "id": 2,
-          "template": "Mock Template Name 1",
-          "key": "c543378a-6acb-4452-a907-897e0bfe3852"
+          "key": "c543378a-6acb-4452-a907-897e0bfe3852",
+          "template": "Mock Template Name 1"
+        },
+        {
+          "ratings": [
+            {
+              "points": 5,
+              "description": "Full Marks",
+              "longDescription": "",
+              "key": "5a00760e-7c1e-4587-9406-e4ca1590bbb6"
+            }
+          ],
+          "description": "new criterion",
+          "longDescription": "",
+          "points": 5,
+          "key": "28210f07-87bc-4f0d-b90e-b81b32104389",
+          "template": "0ac260d0-a1e6-4a05-b623-3efd44a0d737"
         }
       ],
-      "description": "Enter description",
-      "id": -1,
-      "key": "b54037d7-d0f1-45f9-8763-c7b79ea4047c"
+      "key": "0ac260d0-a1e6-4a05-b623-3efd44a0d737"
     },
     {
       "title": "Mock Template Name 2",
@@ -120,32 +133,6 @@
       "description": "Enter description",
       "id": -1,
       "key": "b54037d7-d0f1-45f9-8763-c7b79ea4047c"
-    },
-    {
-      "title": "added from template setter",
-      "criteria": [
-        {
-          "ratings": [
-            {
-              "points": 5,
-              "description": "Full Marks",
-              "longDescription": "",
-              "key": "ed624758-b794-47b1-afb0-418fe1593741"
-            },
-            {
-              "points": 0,
-              "description": "No Marks",
-              "longDescription": "",
-              "key": "0b74919e-f992-4e1f-861f-c69c90e27b48"
-            }
-          ],
-          "description": "new criterion",
-          "longDescription": "",
-          "points": 5,
-          "key": "e521c096-cf4a-4262-8d92-153fdbaf8dc8"
-        }
-      ],
-      "key": "ddecf763-2093-4a3e-bb07-2adbcfed0d37"
     }
   ],
   "token": "new token",
