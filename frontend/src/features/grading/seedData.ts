@@ -1,6 +1,5 @@
 // Define a mock `Criteria` for rubricAssessment
-import { Criteria, Submission } from "palette-types";
-import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions.ts";
+import { Criteria, GroupedSubmissions, Submission } from "palette-types";
 
 const mockCriteria: Criteria[] = [
   {

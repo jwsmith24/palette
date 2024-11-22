@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function ProgressBar({ progress }: { progress: number }) {
+export function ProgressBar({ progress }: { progress: number }) {
   const [progressBarColor, setProgressBarColor] =
     useState<string>("bg-green-500");
 

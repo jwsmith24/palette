@@ -2,7 +2,7 @@ import { Header } from "./Header.tsx";
 import { Footer } from "./Footer.tsx";
 import { ReactNode } from "react";
 
-export default function MainPageTemplate({
+export function MainPageTemplate({
   children = <div>Give me content!</div>,
 }: {
   children?: ReactNode;

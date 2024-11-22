@@ -1,16 +1,17 @@
 import { ReactElement, useEffect, useState } from "react";
-import { PaletteAPIResponse, Rubric } from "palette-types";
+import { GroupedSubmissions, PaletteAPIResponse, Rubric } from "palette-types";
 import { useFetch } from "@hooks";
-import { useCourse } from "src/context/CourseProvider";
-import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import { LoadingDots } from "../../components/LoadingDots.tsx";
-import NoCourseSelected from "../../components/NoCourseSelected.tsx";
-import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
-import MainPageTemplate from "../../components/MainPageTemplate.tsx";
-import { GroupedSubmissions } from "palette-types/dist/types/GroupedSubmissions.ts";
-import SubmissionsDashboard from "@features/grading/SubmissionsDashboard.tsx";
+import { useAssignment, useCourse } from "@context";
+import {
+  LoadingDots,
+  MainPageTemplate,
+  NoAssignmentSelected,
+  NoCourseSelected,
+} from "@components";
 
-export default function GradingMain(): ReactElement {
+import { SubmissionsDashboard } from "@features";
+
+export function GradingMain(): ReactElement {
   // state
   const [rubric, setRubric] = useState<Rubric>();
   const [submissions, setSubmissions] = useState<GroupedSubmissions>({

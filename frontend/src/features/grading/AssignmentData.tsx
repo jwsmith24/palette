@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Rubric } from "palette-types";
 
-export default function AssignmentData({
-  rubric,
-}: {
-  rubric: Rubric | undefined;
-}) {
+export function AssignmentData({ rubric }: { rubric: Rubric | undefined }) {
   const { activeAssignment } = useAssignment();
   const navigate = useNavigate();
 

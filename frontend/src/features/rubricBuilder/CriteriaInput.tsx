@@ -10,7 +10,7 @@ import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import { Criteria, Rating } from "palette-types";
 import { createRating } from "@utils";
-import RatingInput from "@features/rubricBuilder/RatingInput";
+import { RatingInput } from "@features";
 import { motion } from "framer-motion";
 
 export default function CriteriaInput({

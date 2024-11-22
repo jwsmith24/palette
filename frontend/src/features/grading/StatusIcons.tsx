@@ -1,6 +1,6 @@
-import { SubmissionIconStatus } from "@features/grading/IndividualSubmission.tsx";
+import { SubmissionIconStatus } from "@features";
 
-export default function StatusIcons({
+export function StatusIcons({
   iconStatus,
   iconSize,
   visibility,
