@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { CoursesAPI } from "../canvasAPI/courseRequests.js";
+import { CoursesAPI } from "../APICanvas/courseRequests.js";
 import { Assignment, Course, PaletteAPIResponse } from "palette-types";
 import { Request, Response } from "express";
 
