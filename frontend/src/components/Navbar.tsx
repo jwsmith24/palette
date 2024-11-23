@@ -26,7 +26,7 @@ function Navbar() {
    */
   const navOptions = {
     "/rubrics": "Rubrics",
-    "/clusters": "Templates",
+    "/templates": "Templates",
     "/rubric-builder": "Builder",
     "/grading": "Grading",
   };

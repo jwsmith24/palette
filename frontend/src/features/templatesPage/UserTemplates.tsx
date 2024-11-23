@@ -12,10 +12,8 @@ import {
   useState,
 } from "react";
 
-import CriteriaInput from "./CriteriaInput";
+import CriteriaInput from "../rubricBuilder/CriteriaInput.tsx";
 import { Dialog, Footer, Header, ModalChoiceDialog, PopUp } from "@components";
-import CSVUpload from "./CSVUpload";
-import TemplateUpload from "./TemplateUpload";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -43,7 +41,12 @@ import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import LoadingDots from "../../components/LoadingDots.tsx";
 import { createTemplate } from "src/utils/templateFactory.ts";
-import TemplateSetter from "./TemplateSetter.tsx";
+import TemplateSetter from "../rubricBuilder/TemplateSetter.tsx";
+import settingJson from "../../../../backend/settings.json";
+import TemplateUpload from "../rubricBuilder/TemplateUpload.tsx";
+import CSVUpload from "@features/rubricBuilder/CSVUpload";
+import settingsJson from "../../../../backend/settings.json";
+import TemplateCard from "./TemplateCards";
 
 export default function RubricBuilder(): ReactElement {
   /**
@@ -55,6 +58,8 @@ export default function RubricBuilder(): ReactElement {
   // csv import modal
   const [fileInputActive, setFileInputActive] = useState(false);
   // tracks which criterion card is displaying the detailed view (limited to one at a time)
+  const [activeTemplateIndex, setActiveTemplateIndex] = useState(-1);
+
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
   // result of hook checking if active assignment has an existing rubric
   const [hasExistingRubric, setHasExistingRubric] = useState(false);
@@ -63,11 +68,10 @@ export default function RubricBuilder(): ReactElement {
   // flag to determine if new rubric should be sent via POST or updated via PUT
   const [isNewRubric, setIsNewRubric] = useState(false);
 
-  const [isCanvasBypassed, setIsCanvasBypassed] = useState(false);
-
   const [updatingTemplate, setUpdatingTemplate] = useState<Template | null>(
     null
   );
+  const [userTemplates, setUserTemplates] = useState<Template[]>([]);
 
   const [templateInputActive, setTemplateInputActive] = useState(false);
 
@@ -285,7 +289,7 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
-  const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
+  const handleSumbitTemplate = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
     console.log("submitting rubric");
     handleUpdateAllTemplateCriteria();
@@ -370,7 +374,7 @@ export default function RubricBuilder(): ReactElement {
     if (!rubric) return;
     const newCriteria = [...rubric.criteria, createCriterion()];
     setRubric({ ...rubric, criteria: newCriteria });
-    setActiveCriterionIndex(newCriteria.length - 1);
+    setActiveTemplateIndex(newCriteria.length - 1);
   };
 
   const handleRemoveCriterion = (index: number) => {
@@ -568,11 +572,61 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Effect to load a default rubric if canvas api is bypassed
    */
-  useEffect(() => {
-    if (isCanvasBypassed && !rubric) {
-      setRubric(createRubric());
-    }
-  }, [isCanvasBypassed, rubric]);
+  useEffect(() => {}, [rubric]);
+
+  const handleRemoveTemplate = (index: number) => {
+    if (!rubric) return;
+    const newTemplates = [...userTemplates];
+    newTemplates.splice(index, 1);
+    setUserTemplates(newTemplates);
+  };
+
+  const handleUpdateTemplate = (index: number, template: Template) => {
+    if (!rubric) return;
+    const newTemplates = [...userTemplates];
+    newTemplates[index] = template;
+    setUserTemplates(newTemplates);
+  };
+
+  const renderUserTemplates = () => {
+    const userTemplates = settingsJson.templates;
+
+    if (!userTemplates) return;
+    return (
+      <SortableContext
+        items={userTemplates.map((template) => template.key)}
+        strategy={verticalListSortingStrategy}
+      >
+        <AnimatePresence>
+          {userTemplates.map((template, index) => (
+            <motion.div
+              key={template.key}
+              initial={{
+                opacity: 0,
+                y: 50,
+              }} // Starting state (entry animation)
+              animate={{
+                opacity: 1,
+                y: 0,
+              }} // Animate to this state when in the DOM
+              exit={{ opacity: 0, x: 50 }} // Ending state (exit animation)
+              transition={{ duration: 0.3 }} // Controls the duration of the animations
+              className="my-1"
+            >
+              <TemplateCard
+                index={index}
+                activeTemplateIndex={activeTemplateIndex}
+                template={template as Template}
+                handleTemplateUpdate={handleUpdateTemplate}
+                removeTemplate={handleRemoveTemplate}
+                setActiveTemplateIndex={setActiveTemplateIndex}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </SortableContext>
+    );
+  };
   /**
    * Helper function to wrap the builder JSX.
    */
@@ -585,7 +639,7 @@ export default function RubricBuilder(): ReactElement {
         onSubmit={(event) => event.preventDefault()}
       >
         <h1 className="font-extrabold text-5xl mb-2 text-center">
-          Create a new rubric
+          Edit Template
         </h1>
         <div className="flex justify-between items-center">
           <div className="flex gap-2">
@@ -638,7 +692,7 @@ export default function RubricBuilder(): ReactElement {
           <button
             className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event) => void handleSubmitRubric(event)}
+            onClick={(event) => void handleSumbitTemplate(event)}
             type={"button"}
           >
             Save Rubric
@@ -651,36 +705,13 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Helper function to consolidate conditional rendering in the JSX.
    */
-  const renderContent = () => {
-    if (loading) return <LoadingDots />;
-    if (isCanvasBypassed) return renderRubricBuilderForm();
-    if (!activeCourse) return <NoCourseSelected />;
-    if (!activeAssignment) return <NoAssignmentSelected />;
 
-    return renderRubricBuilderForm();
-  };
-
-  const renderBypassButton = () => {
-    return (
-      <div className={"justify-self-center self-center"}>
-        <button
-          className={"text-2xl font-bold text-red-500"}
-          type={"button"}
-          onClick={() => setIsCanvasBypassed((prev) => !prev)} // Toggle bypass
-        >
-          {isCanvasBypassed ? "Use Canvas API" : "Bypass Canvas API"}
-        </button>
-      </div>
-    );
-  };
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
         {/* Sticky Header with Gradient */}
         <Header />
-        {renderContent()}
-        {!isCanvasBypassed && renderBypassButton()}
-
+        <div className="mt-6 flex flex-col ">{renderUserTemplates()}</div>
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog
           show={modal.isOpen}
@@ -689,14 +720,12 @@ export default function RubricBuilder(): ReactElement {
           message={modal.message}
           choices={modal.choices}
         />
-
         <PopUp
           show={popUp.isOpen}
           onHide={closePopUp}
           title={popUp.title}
           message={popUp.message}
         />
-
         {/* CSV/XLSX Import Dialog */}
         <Dialog
           isOpen={fileInputActive}
@@ -708,7 +737,6 @@ export default function RubricBuilder(): ReactElement {
             closeImportCard={() => setFileInputActive(false)}
           />
         </Dialog>
-
         {/* Template Import Dialog */}
         <Dialog
           isOpen={templateInputActive}
@@ -720,7 +748,6 @@ export default function RubricBuilder(): ReactElement {
             onTemplateSelected={handleImportTemplate}
           />
         </Dialog>
-
         {/* Sticky Footer with Gradient */}
         <Footer />
       </div>

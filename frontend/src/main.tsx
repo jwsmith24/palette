@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RubricBuilder from "@features/rubricBuilder/RubricBuilder";
 import NotFoundPage from "./components/NotFoundPage";
 import UserRubrics from "@features/user/UserRubrics";
-import UserClusters from "@features/user/UserClusters";
+import UserTemplates from "../src/features/templatesPage/UserTemplates.tsx";
 import GradingView from "@features/grading/GradingView.tsx";
 import { CourseProvider } from "./context/CourseProvider";
 import { AssignmentProvider } from "./context/AssignmentProvider.tsx";
@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/" element={<Home />} />
             <Route path="/rubric-builder" element={<RubricBuilder />} />
             <Route path="/rubrics" element={<UserRubrics />} />
-            <Route path="/clusters" element={<UserClusters />} />
+            <Route path="/templates" element={<UserTemplates />} />
             <Route path="/grading" element={<GradingView />} />
             {/*Any route that doesn't match the routes defined above will go to the 404 page*/}
             <Route path={"*"} element={<NotFoundPage />} />

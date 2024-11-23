@@ -42,7 +42,7 @@ const TemplateUpload: React.FC<TemplateUploadProps> = ({
           <li key={tKey} onClick={handleImportTemplate}>
             <button>{t.title}</button>
             <br />
-            <hr />
+            <br />
           </li>
         ))}
       </ul>
