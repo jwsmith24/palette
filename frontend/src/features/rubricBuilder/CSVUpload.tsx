@@ -9,7 +9,6 @@ interface CSVUploadProps {
   closeImportCard: () => void; // Callback to close the import card
 }
 
-
 const CSVUpload: React.FC<CSVUploadProps> = ({
   rubric,
   setRubric,
@@ -46,7 +45,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
       complete: (results) => {
         console.log("Parsed CSV data (Version 1):", results.data);
 
-         // Validate each row to ensure it matches CSVRow type
+        // Validate each row to ensure it matches CSVRow type
         const parsedData = results.data.filter((row): row is CSVRow => {
           return (
             Array.isArray(row) &&
@@ -175,10 +174,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
           className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
           onClick={() => setDropdownOpen((prev) => !prev)}
         >
-          {selectedVersion
-            ? `Version ${selectedVersion}`
-            : "Import CSV"}{" "}
-          ▼
+          {selectedVersion ? `Version ${selectedVersion}` : "Import CSV"} ▼
         </button>
         {dropdownOpen && (
           <div className="absolute z-10 bg-gray-700 text-white mt-2 rounded-lg shadow-lg">
@@ -234,7 +230,5 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     </div>
   );
 };
-
-
 
 export default CSVUpload;
