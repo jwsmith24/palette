@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import Papa from "papaparse";
-import { CSVRow } from "@local_types";
+import React, { useState, useEffect } from "react";
+import { importCsv } from "../../utils/CSVParser"; // Import the utility
 import { Criteria, Rubric } from "palette-types";
-import { createCriterion, createRating } from "@utils";
+import { v4 as uuid } from "uuid";
 
 interface CSVUploadProps {
-  rubric: Rubric | undefined; // Current rubric state
-  setRubric: React.Dispatch<React.SetStateAction<Rubric | undefined>>; // Setter for rubric state
-  closeImportCard: () => void; // Callback to close the import card
+  rubric: Rubric | undefined;
+  setRubric: React.Dispatch<React.SetStateAction<Rubric | undefined>>;
+  closeImportCard: () => void;
 }
 
 export const CSVUpload: React.FC<CSVUploadProps> = ({
@@ -15,242 +14,98 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({
   setRubric,
   closeImportCard,
 }) => {
-  const [selectedVersion, setSelectedVersion] = useState<number | null>(null); // Track selected version
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown visibility
+  const [showVersionModal, setShowVersionModal] = useState(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      alert("No file selected. Please choose a file to import.");
+  const handleFileChange = (file: File, version: "versionOne" | "versionTwo") => {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    if (fileExtension !== "csv") {
+      alert("Unsupported file format. Please upload a CSV file.");
       return;
     }
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-    if (fileExtension === "csv") {
-      if (selectedVersion === 1) {
-        parseCSVVersion1(file);
-      } else if (selectedVersion === 2) {
-        parseCSVVersion2(file);
-      } else {
-        alert("Please select a parsing version before uploading.");
-      }
-    } else {
-      alert("Unsupported file format. Please upload a CSV file.");
-    }
-  };
-
-  // Version 1 Parsing
-  const parseCSVVersion1 = (file: File) => {
-    Papa.parse(file, {
-      header: false, // keeps the output an array to sync with parsing xlsx files
-      complete: (results) => {
-        console.log("Parsed CSV data (Version 1):", results.data);
-
-        // Validate each row to ensure it matches CSVRow type
-        const parsedData = results.data.filter((row): row is CSVRow => {
-          return (
-            Array.isArray(row) &&
-            typeof row[0] === "string" &&
-            row
-              .slice(1)
-              .every(
-                (cell) => typeof cell === "string" || typeof cell === "number",
-              )
-          );
-        });
-
-        updateRubricWithCSVVersion1(parsedData);
-      },
+    importCsv(file, version, (newCriteria) => {
+      updateRubric(newCriteria);
     });
   };
 
-  const updateRubricWithCSVVersion1 = (data: CSVRow[]) => {
-    if (!rubric) return;
-
-    const newCriteria = data
-      .slice(1) // Skip header row
-      .map((row) => {
-        const criterionTitle = row[0]?.trim();
-        if (!criterionTitle) return null;
-
-        const criterion: Criteria = createCriterion(criterionTitle, "", 0, []);
-        for (let i = 1; i < row.length; i += 2) {
-          const points = Number(row[i]);
-          const description = row[i + 1]?.toString();
-          if (description) {
-            criterion.ratings.push(createRating(points, description));
-          }
-        }
-        criterion.updatePoints();
-        return criterion;
-      })
-      .filter(Boolean) as Criteria[];
-
+  const updateRubric = (newCriteria: Criteria[]) => {
     setRubric((prevRubric) =>
       prevRubric
         ? {
             ...prevRubric,
             criteria: [...prevRubric.criteria, ...newCriteria],
+            pointsPossible:
+              prevRubric.pointsPossible +
+              newCriteria.reduce((sum, criterion) => sum + criterion.points, 0),
           }
         : {
-            id: Date.now(), // Replace with a valid ID generator if needed
+            id: parseInt(uuid(), 16),
             title: "Imported Rubric",
-            description: "Generated from CSV",
             criteria: newCriteria,
             pointsPossible: newCriteria.reduce(
               (sum, criterion) => sum + criterion.points,
-              0,
+              0
             ),
-            key: `rubric-${Date.now()}`, // Unique key for the rubric
-          },
+            key: `rubric-${uuid()}`,
+          }
     );
 
     closeImportCard();
   };
 
-  // Version 2 Parsing
-  const parseCSVVersion2 = (file: File) => {
-    Papa.parse(file, {
-      header: false,
-      complete: (results) => {
-        console.log("Parsed CSV data (Version 2):", results.data);
-
-        const parsedData = results.data.filter((row): row is CSVRow => {
-          return Array.isArray(row) && typeof row[0] === "string";
-        });
-
-        updateRubricWithCSVVersion2(parsedData);
-      },
-    });
-  };
-
-  const updateRubricWithCSVVersion2 = (data: CSVRow[]) => {
-    if (!rubric) return;
-
-    const newCriteria = data
-    .slice(1) // Skip header row
-    .map((row) => {
-      // Ensure criterionTitle and longDescription are valid strings
-      const criterionTitle = typeof row[0] === "string" ? row[0].trim() : "";
-      const longDescription =
-        typeof row[1] === "string" ? row[1].trim() : "";
-
-      const maxPoints = parseFloat(row[2]);
-
-      if (!criterionTitle || isNaN(maxPoints)) {
-        console.warn("Invalid row format, skipping:", row);
-        return null;
+  const handleVersionSelection = (version: "versionOne" | "versionTwo") => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".csv";
+    fileInput.onchange = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      const file = target.files?.[0];
+      if (file) {
+        handleFileChange(file, version);
       }
-
-        const criterion: Criteria = createCriterion(
-          criterionTitle,
-          longDescription,
-          maxPoints,
-          [],
-        );
-
-        // Parse ratings (starting from Column D)
-        for (let i = 3; i < row.length; i++) {
-          const ratingText = row[i]?.toString().trim();
-          if (!ratingText) continue;
-
-          const match = ratingText.match(/\(([^)]+)\)$/);
-          const deduction = match ? parseFloat(match[1]) : 0;
-          const points = maxPoints + deduction;
-          const description = ratingText.replace(/\s*\([^)]*\)$/, "");
-
-          if (!isNaN(points) && description) {
-            criterion.ratings.push(createRating(points, description));
-          }
-        }
-
-        return criterion;
-      })
-      .filter(Boolean) as Criteria[];
-
-    setRubric((prevRubric) =>
-      prevRubric
-        ? {
-            ...prevRubric,
-            criteria: [...prevRubric.criteria, ...newCriteria],
-          }
-        : {
-            id: Date.now(),
-            title: "Imported Rubric",
-            description: "Generated from CSV",
-            criteria: newCriteria,
-            pointsPossible: newCriteria.reduce(
-              (sum, criterion) => sum + criterion.points,
-              0,
-            ),
-            key: `rubric-${Date.now()}`,
-          },
-    );
-
-    closeImportCard();
+    };
+    fileInput.click();
+    setShowVersionModal(false);
   };
 
   return (
-    <div className="flex items-center gap-4">
-      {/* Dropdown with button */}
-      <div className="relative">
-        <button
-          className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
-          onClick={() => setDropdownOpen((prev) => !prev)}
-        >
-          {selectedVersion ? `Version ${selectedVersion}` : "Import CSV"} ▼
-        </button>
-        {dropdownOpen && (
-          <div className="absolute z-10 bg-gray-700 text-white mt-2 rounded-lg shadow-lg">
-            <button
-              onClick={() => {
-                setSelectedVersion(1);
-                setDropdownOpen(false);
-              }}
-              className="block px-4 py-2 hover:bg-gray-600 w-full text-left"
-            >
-              Version 1
-            </button>
-            <button
-              onClick={() => {
-                setSelectedVersion(2);
-                setDropdownOpen(false);
-              }}
-              className="block px-4 py-2 hover:bg-gray-600 w-full text-left"
-            >
-              Version 2
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* File Input */}
-      <input
-        type="file"
-        accept=".csv"
-        id="csv-file-upload"
-        className="hidden"
-        onChange={handleFileChange}
-      />
+    <div className="flex flex-col items-center gap-4">
       <button
-        className={`transition-all ease-in-out duration-300 ${
-          selectedVersion
-            ? "bg-green-600 hover:bg-green-700"
-            : "bg-gray-600 cursor-not-allowed"
-        } text-white font-bold rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500`}
-        disabled={!selectedVersion}
-        onClick={() => {
-          const fileInput = document.getElementById(
-            "csv-file-upload",
-          ) as HTMLInputElement;
-          if (fileInput) {
-            fileInput.click();
-          }
-        }}
-        type="button"
+        onClick={() => setShowVersionModal(true)}
+        className="bg-blue-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
-        Select File
+        Import CSV
       </button>
+
+      {showVersionModal && (
+        <div className="fixed inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black bg-opacity-90 flex justify-center items-center z-50">
+          <div className="bg-gray-800 text-white rounded-lg shadow-2xl p-6 w-96">
+            <h2 className="text-2xl font-extrabold mb-4 text-center">
+              Select Import Version
+            </h2>
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => handleVersionSelection("versionOne")}
+                className="bg-green-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                Version 1
+              </button>
+              <button
+                onClick={() => handleVersionSelection("versionTwo")}
+                className="bg-yellow-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              >
+                Version 2
+              </button>
+              <button
+                onClick={() => setShowVersionModal(false)}
+                className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
