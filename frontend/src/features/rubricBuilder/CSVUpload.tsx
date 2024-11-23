@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
-import { CSVRow, Criteria, Rubric } from "@local_types";
+import { CSVRow } from "@local_types";
+import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
 import { createCriterion, createRating } from "@utils";
 
 interface CSVUploadProps {
@@ -9,7 +10,7 @@ interface CSVUploadProps {
   closeImportCard: () => void; // Callback to close the import card
 }
 
-const CSVUpload: React.FC<CSVUploadProps> = ({
+export const CSVUpload: React.FC<CSVUploadProps> = ({
   rubric,
   setRubric,
   closeImportCard,
@@ -83,19 +84,29 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
         criterion.updatePoints();
         return criterion;
       })
-      .filter(Boolean);
+      .filter(Boolean) as Criteria[];
 
-    setRubric((prevRubric) =>
-      prevRubric
-        ? {
-            ...prevRubric,
-            criteria: [...prevRubric.criteria, ...newCriteria],
-          }
-        : createCriterion(),
-    );
-
-    closeImportCard();
-  };
+      setRubric((prevRubric) =>
+        prevRubric
+          ? {
+              ...prevRubric,
+              criteria: [...prevRubric.criteria, ...newCriteria],
+            }
+          : {
+              id: Date.now(), // Replace with a valid ID generator if needed
+              title: "Imported Rubric",
+              description: "Generated from CSV",
+              criteria: newCriteria,
+              pointsPossible: newCriteria.reduce(
+                (sum, criterion) => sum + criterion.points,
+                0
+              ),
+              key: `rubric-${Date.now()}`, // Unique key for the rubric
+            }
+      );
+    
+      closeImportCard();
+    };
 
   // Version 2 Parsing
   const parseCSVVersion2 = (file: File) => {
@@ -152,19 +163,29 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
 
         return criterion;
       })
-      .filter(Boolean);
+      .filter(Boolean) as Criteria[];
 
-    setRubric((prevRubric) =>
-      prevRubric
-        ? {
-            ...prevRubric,
-            criteria: [...prevRubric.criteria, ...newCriteria],
-          }
-        : createCriterion(),
-    );
-
-    closeImportCard();
-  };
+      setRubric((prevRubric) =>
+        prevRubric
+          ? {
+              ...prevRubric,
+              criteria: [...prevRubric.criteria, ...newCriteria],
+            }
+          : {
+              id: Date.now(),
+              title: "Imported Rubric",
+              description: "Generated from CSV",
+              criteria: newCriteria,
+              pointsPossible: newCriteria.reduce(
+                (sum, criterion) => sum + criterion.points,
+                0
+              ),
+              key: `rubric-${Date.now()}`,
+            }
+      );
+    
+      closeImportCard();
+    };
 
   return (
     <div className="flex items-center gap-4">
