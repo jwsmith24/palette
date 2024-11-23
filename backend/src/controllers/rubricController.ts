@@ -1,4 +1,4 @@
-import { RubricsAPI } from "../APICanvas/rubricRequests.js";
+import { RubricsAPI } from "../CanvasAPI/rubricRequests.js";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
