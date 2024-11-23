@@ -14,16 +14,25 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
   setRubric,
   closeImportCard,
 }) => {
-  const [showParsingOptions, setShowParsingOptions] = useState(false); // Modal for parsing versions
+  const [selectedVersion, setSelectedVersion] = useState<number | null>(null); // Track selected version
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown visibility
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, version: number) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-
+    if (!file) {
+      alert("No file selected. Please choose a file to import.");
+      return;
+    }
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
     if (fileExtension === "csv") {
-      version === 1 ? parseCSVVersion1(file) : parseCSVVersion2(file);
+      if (selectedVersion === 1) {
+        parseCSVVersion1(file);
+      } else if (selectedVersion === 2) {
+        parseCSVVersion2(file);
+      } else {
+        alert("Please select a parsing version before uploading.");
+      }
     } else {
       alert("Unsupported file format. Please upload a CSV file.");
     }
@@ -32,11 +41,11 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
   // Version 1 Parsing
   const parseCSVVersion1 = (file: File) => {
     Papa.parse(file, {
-      header: false, // Keeps the output an array
+      header: false, // keeps the output an array to sync with parsing xlsx files
       complete: (results) => {
         console.log("Parsed CSV data (Version 1):", results.data);
 
-        // Filter valid rows
+         // Validate each row to ensure it matches CSVRow type
         const parsedData = results.data.filter((row): row is CSVRow => {
           return (
             Array.isArray(row) &&
@@ -74,7 +83,7 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
         criterion.updatePoints();
         return criterion;
       })
-      .filter(Boolean); // Remove invalid rows
+      .filter(Boolean);
 
     setRubric((prevRubric) =>
       prevRubric
@@ -85,19 +94,18 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
         : createCriterion(),
     );
 
-    closeImportCard(); // Close modal/dialog
+    closeImportCard();
   };
 
   // Version 2 Parsing
   const parseCSVVersion2 = (file: File) => {
     Papa.parse(file, {
-      header: false, // Keeps the output an array
+      header: false,
       complete: (results) => {
         console.log("Parsed CSV data (Version 2):", results.data);
 
-        // Filter valid rows
         const parsedData = results.data.filter((row): row is CSVRow => {
-          return Array.isArray(row) && typeof row[0] === "string"; // Ensure first column (Criteria) exists
+          return Array.isArray(row) && typeof row[0] === "string";
         });
 
         updateRubricWithCSVVersion2(parsedData);
@@ -111,26 +119,31 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     const newCriteria = data
       .slice(1) // Skip header row
       .map((row) => {
-        const criterionTitle = row[0]?.trim(); // Column A: Criteria
-        const longDescription = row[1]?.trim() || ""; // Column B: Long Description (optional)
-        const maxPoints = parseFloat(row[2]); // Column C: Max Points
+        const criterionTitle = row[0]?.trim();
+        const longDescription = row[1]?.trim() || "";
+        const maxPoints = parseFloat(row[2]);
 
         if (!criterionTitle || isNaN(maxPoints)) {
           console.warn("Invalid row format, skipping:", row);
           return null;
         }
 
-        const criterion: Criteria = createCriterion(criterionTitle, longDescription, maxPoints, []);
+        const criterion: Criteria = createCriterion(
+          criterionTitle,
+          longDescription,
+          maxPoints,
+          [],
+        );
 
         // Parse ratings (starting from Column D)
         for (let i = 3; i < row.length; i++) {
           const ratingText = row[i]?.toString().trim();
           if (!ratingText) continue;
 
-          const match = ratingText.match(/\(([^)]+)\)$/); // Extract deduction from parentheses
+          const match = ratingText.match(/\(([^)]+)\)$/);
           const deduction = match ? parseFloat(match[1]) : 0;
           const points = maxPoints + deduction;
-          const description = ratingText.replace(/\s*\([^)]*\)$/, ""); // Remove parentheses from text
+          const description = ratingText.replace(/\s*\([^)]*\)$/, "");
 
           if (!isNaN(points) && description) {
             criterion.ratings.push(createRating(points, description));
@@ -150,79 +163,77 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
         : createCriterion(),
     );
 
-    closeImportCard(); // Close modal/dialog
-  };
-
-  const triggerFileInput = (version: number) => {
-    const fileInput = document.getElementById(`csv-file-upload-version-${version}`) as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
-    }
+    closeImportCard();
   };
 
   return (
-    <div>
-      {/* Import CSV Button */}
-      <button
-        className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
-        onClick={() => setShowParsingOptions(true)}
-        type="button"
-      >
-        Import CSV
-      </button>
-
-      {/* Hidden File Inputs for each version */}
-      <input
-        type="file"
-        accept=".csv"
-        id="csv-file-upload-version-1"
-        className="hidden"
-        onChange={(e) => handleFileChange(e, 1)}
-      />
-      <input
-        type="file"
-        accept=".csv"
-        id="csv-file-upload-version-2"
-        className="hidden"
-        onChange={(e) => handleFileChange(e, 2)}
-      />
-
-      {/* Parsing Options Modal */}
-      {showParsingOptions && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Select Parsing Version</h2>
-            <div className="flex gap-4">
-              <button
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                onClick={() => {
-                  triggerFileInput(1);
-                  setShowParsingOptions(false);
-                }}
-              >
-                Version 1
-              </button>
-              <button
-                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-                onClick={() => {
-                  triggerFileInput(2);
-                  setShowParsingOptions(false);
-                }}
-              >
-                Version 2
-              </button>
-            </div>
+    <div className="flex items-center gap-4">
+      {/* Dropdown with button */}
+      <div className="relative">
+        <button
+          className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+          onClick={() => setDropdownOpen((prev) => !prev)}
+        >
+          {selectedVersion
+            ? `Version ${selectedVersion}`
+            : "Import CSV"}{" "}
+          ▼
+        </button>
+        {dropdownOpen && (
+          <div className="absolute z-10 bg-gray-700 text-white mt-2 rounded-lg shadow-lg">
             <button
-              className="mt-4 text-red-500"
-              onClick={() => setShowParsingOptions(false)}
+              onClick={() => {
+                setSelectedVersion(1);
+                setDropdownOpen(false);
+              }}
+              className="block px-4 py-2 hover:bg-gray-600 w-full text-left"
             >
-              Cancel
+              Version 1
+            </button>
+            <button
+              onClick={() => {
+                setSelectedVersion(2);
+                setDropdownOpen(false);
+              }}
+              className="block px-4 py-2 hover:bg-gray-600 w-full text-left"
+            >
+              Version 2
             </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      {/* File Input */}
+      <input
+        type="file"
+        accept=".csv"
+        id="csv-file-upload"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+      <button
+        className={`transition-all ease-in-out duration-300 ${
+          selectedVersion
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-gray-600 cursor-not-allowed"
+        } text-white font-bold rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500`}
+        disabled={!selectedVersion}
+        onClick={() => {
+          const fileInput = document.getElementById(
+            "csv-file-upload",
+          ) as HTMLInputElement;
+          if (fileInput) {
+            fileInput.click();
+          }
+        }}
+        type="button"
+      >
+        Select File
+      </button>
     </div>
   );
 };
+
+
 
 export default CSVUpload;
