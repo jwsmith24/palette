@@ -107,7 +107,7 @@ export default function CriteriaInput({
   const handleSetTemplateTitle = (event: ChangeEvent<HTMLInputElement>) => {
     const newTitle = event.target.value;
     setTemplateTitle(newTitle);
-    const newCriterion = { ...criterion, template: templateTitle };
+    const newCriterion = { ...criterion, templateTitle: templateTitle };
     handleCriteriaUpdate(index, newCriterion);
   };
 
@@ -167,22 +167,11 @@ export default function CriteriaInput({
       return (
         <TemplateSetter
           closeTemplateCard={handleCloseTemplateSetter}
-          onTemplatesOpen={handleTemplatesOpen}
           handleSetTemplateTitle={handleSetTemplateTitle}
-          onTemplateSelected={getTemplate}
           criterion={criterion}
         />
       );
     }
-  };
-
-  const handleTemplatesOpen = () => {
-    console.log("Templates open");
-  };
-
-  const getTemplate = (data: Template) => {
-    console.log("hello from the parent component");
-    console.log(data);
   };
 
   const handleCloseTemplateSetter = () => {

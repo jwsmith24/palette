@@ -28,6 +28,7 @@ const TemplateUpload: React.FC<TemplateUploadProps> = ({
 
     for (const template of settingsJson.templates) {
       if (template.title === selectedTemplateTitle) {
+        console.log("template", template);
         onTemplateSelected(template as Template);
       }
     }
@@ -41,6 +42,7 @@ const TemplateUpload: React.FC<TemplateUploadProps> = ({
           <li key={tKey} onClick={handleImportTemplate}>
             <button>{t.title}</button>
             <br />
+            <hr />
           </li>
         ))}
       </ul>

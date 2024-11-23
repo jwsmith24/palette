@@ -8,3 +8,4 @@ export * from "./Header";
 export * from "./ModalChoiceDialog";
 export * from "./Navbar";
 export * from "./NotFoundPage";
+export * from "./PopUp";

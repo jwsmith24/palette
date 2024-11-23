@@ -13,7 +13,7 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
+import { Dialog, Footer, Header, ModalChoiceDialog, PopUp } from "@components";
 import CSVUpload from "./CSVUpload";
 import TemplateUpload from "./TemplateUpload";
 
@@ -82,6 +82,17 @@ export default function RubricBuilder(): ReactElement {
     title: "",
     message: "",
     choices: [] as { label: string; action: () => void }[],
+  });
+
+  const closePopUp = useCallback(
+    () => setPopUp((prevPopUp) => ({ ...prevPopUp, isOpen: false })),
+    []
+  );
+
+  const [popUp, setPopUp] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
   });
 
   /**
@@ -238,7 +249,7 @@ export default function RubricBuilder(): ReactElement {
     });
   };
 
-  const handleUpdateTemplateCriteria = async (): Promise<void> => {
+  const handleUpdateAllTemplateCriteria = async (): Promise<void> => {
     console.log("updating template criteria");
     console.log(rubric?.criteria);
     const criteriaOnATemplate: Criteria[] = [];
@@ -277,7 +288,7 @@ export default function RubricBuilder(): ReactElement {
   const handleSubmitRubric = async (event: MouseEvent): Promise<void> => {
     event.preventDefault();
     console.log("submitting rubric");
-    handleUpdateTemplateCriteria();
+    handleUpdateAllTemplateCriteria();
     if (!rubric || !activeCourse || !activeAssignment) return;
 
     setLoading(true);
@@ -463,6 +474,16 @@ export default function RubricBuilder(): ReactElement {
     const currentCriteria = rubric.criteria;
     const newCriteria = template.criteria;
 
+    if (newCriteria.length === 0) {
+      setPopUp({
+        isOpen: true,
+        title: "Oops!",
+        message: `This template has no criteria`,
+      });
+
+      return;
+    }
+
     // Split into unique and duplicate criteria
     const { unique, duplicates } = newCriteria.reduce(
       (acc, newCriterion) => {
@@ -578,7 +599,7 @@ export default function RubricBuilder(): ReactElement {
 
             <CSVExport rubric={rubric} />
             <button
-              className="transition-all ease-in-out duration-300 bg-yellow-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="transition-all ease-in-out duration-300 bg-yellow-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-yellow-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500"
               onClick={handleOpenTemplateImport}
               type={"button"}
             >
@@ -667,6 +688,13 @@ export default function RubricBuilder(): ReactElement {
           title={modal.title}
           message={modal.message}
           choices={modal.choices}
+        />
+
+        <PopUp
+          show={popUp.isOpen}
+          onHide={closePopUp}
+          title={popUp.title}
+          message={popUp.message}
         />
 
         {/* CSV/XLSX Import Dialog */}
