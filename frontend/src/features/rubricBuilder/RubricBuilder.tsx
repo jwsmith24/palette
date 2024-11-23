@@ -26,8 +26,14 @@ import { useFetch } from "@hooks";
 import { CSVRow } from "@local_types";
 
 import { createCriterion, createRating, createRubric } from "@utils";
-
-import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
+import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests.ts";
+import {
+  Criteria,
+  PaletteAPIResponse,
+  Rubric,
+  PaletteAPIRequest,
+  Template,
+} from "palette-types";
 import CSVExport from "@features/rubricBuilder/CSVExport";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCourse } from "../../context";
@@ -35,6 +41,8 @@ import NoCourseSelected from "../../components/NoCourseSelected.tsx";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
 import LoadingDots from "../../components/LoadingDots.tsx";
+import { createTemplate } from "src/utils/templateFactory.ts";
+import TemplateSetter from "./TemplateSetter.tsx";
 
 export default function RubricBuilder(): ReactElement {
   /**
@@ -55,6 +63,10 @@ export default function RubricBuilder(): ReactElement {
   const [isNewRubric, setIsNewRubric] = useState(false);
 
   const [isCanvasBypassed, setIsCanvasBypassed] = useState(false);
+
+  const [updatingTemplate, setUpdatingTemplate] = useState<Template | null>(
+    null
+  );
 
   // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
@@ -110,6 +122,15 @@ export default function RubricBuilder(): ReactElement {
       body: JSON.stringify(rubric),
     }
   );
+
+  /* this is for updating the existing templates with most 
+  recent version of the criteria before saving the rubric
+  in case any criterion are updated after intial template selection
+  */
+  const { fetchData: putTemplate } = useFetch("/templates", {
+    method: "PUT",
+    body: JSON.stringify(updatingTemplate),
+  });
 
   /**
    * Fires when user selects an assignment that doesn't have a rubric id associated with it.
@@ -214,15 +235,39 @@ export default function RubricBuilder(): ReactElement {
     });
   };
 
-  const handleUpdateTemplateCriteria = () => {
+  const handleUpdateTemplateCriteria = async (): Promise<void> => {
     console.log("updating template criteria");
     console.log(rubric?.criteria);
     const criteriaOnATemplate: Criteria[] = [];
     rubric?.criteria.forEach((criterion) => {
       if (criterion.template !== "") criteriaOnATemplate.push(criterion);
     });
+
+    let existingTemplates: Template[] = [];
     for (const criterion of criteriaOnATemplate) {
-      console.log(criterion);
+      const exitingTemplateIndex = existingTemplates.findIndex(
+        (template) => template.key === criterion.template
+      );
+      if (exitingTemplateIndex === -1) {
+        const template = createTemplate();
+        template.key = criterion.template!;
+        template.title = criterion.templateTitle!;
+        template.criteria.push(criterion);
+        existingTemplates.push(template);
+      }
+    }
+    console.log("existing templates");
+    console.log(existingTemplates);
+
+    for (const template of existingTemplates) {
+      setUpdatingTemplate(template);
+      const response = await putTemplate();
+      console.log("response", response);
+      if (response.success) {
+        console.log("template updated successfully");
+      } else {
+        console.error("error updating template", response.error);
+      }
     }
   };
 

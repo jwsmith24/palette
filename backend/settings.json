@@ -1,80 +1,15 @@
 {
-  "userName": "test name",
+  "userName": "User Name",
   "templates": [
     {
       "title": "Mock Template Name 1",
-      "criteria": [
-        {
-          "ratings": [
-            {
-              "points": 5,
-              "description": "Full Marks",
-              "longDescription": "",
-              "key": "d605ee28-4eab-4ef2-ac6e-bcdc7502afa3"
-            },
-            {
-              "points": 0,
-              "description": "No Marks",
-              "longDescription": "",
-              "key": "c5a15988-b7b1-454a-95d4-a04179e812c7"
-            }
-          ],
-          "description": "newww",
-          "longDescription": "",
-          "points": 5,
-          "template": "c2dca0dc-6ee3-4504-8ef9-842d4f985c04",
-          "key": "dbe4c931-5179-454c-b46c-3cfa687472fd"
-        },
-        {
-          "ratings": [
-            {
-              "points": 5,
-              "description": "Full Marks",
-              "longDescription": "",
-              "key": "cfa316b6-f2b9-4f0a-a04a-369b87551ddd"
-            },
-            {
-              "points": 0,
-              "description": "No Marks",
-              "longDescription": "",
-              "key": "5680b099-ad38-4a98-a7e6-754106a28e22"
-            }
-          ],
-          "description": "criterion",
-          "longDescription": "",
-          "points": 5,
-          "template": "0b1beef4-b331-4ab2-9c15-443aba01ad30",
-          "key": "408bbfdc-f652-4137-b43a-6e60ca56dbd7"
-        }
-      ],
-      "key": "7d2b98a3-ad6a-4767-8439-697d5dc324e0"
+      "criteria": [],
+      "key": "37386b4e-dddc-4964-8a44-1a2f5cb592bc"
     },
     {
-      "title": "new",
-      "criteria": [
-        {
-          "ratings": [
-            {
-              "points": 5,
-              "description": "Full Marks",
-              "longDescription": "",
-              "key": "2e9c9a5a-2a49-48c4-9b56-64d64689b0bb"
-            },
-            {
-              "points": 0,
-              "description": "No Marks",
-              "longDescription": "",
-              "key": "3349e267-f1af-4c8a-a6d3-eb2a2056389f"
-            }
-          ],
-          "description": "c1",
-          "longDescription": "",
-          "points": 5,
-          "template": "",
-          "key": "ced6d0aa-5bef-4290-964b-221a32813d67"
-        }
-      ],
-      "key": "e4efee06-16d7-4697-9f23-79427e5ba6eb"
+      "title": "Mock Template Name 2",
+      "criteria": [],
+      "key": "5eb12caa-33cf-4584-a885-de9a6d23a95a"
     }
   ],
   "token": "new token",

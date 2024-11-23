@@ -1,4 +1,10 @@
-import { Template, Settings, Criteria } from "palette-types";
+import {
+  Template,
+  Settings,
+  Criteria,
+  PaletteAPIResponse,
+  Rubric,
+} from "palette-types";
 import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { createTemplate } from "../../../frontend/src/utils/templateFactory.js";
@@ -14,16 +20,12 @@ import fs from "fs";
 const settingsPath = "./settings.json";
 
 export const TemplateService = {
-  /**
-   * Adds a new template to the datastore.
-   * @param {Request} req - The request object containing the template data.
-   * @returns {Promise<void>} - A Promise that resolves when the template is added.
-   */
-  addTemplate: async (req: Request) => {
+  // POST REQUESTS (Templates Setter/Page Functions)
+
+  addTemplate: asyncHandler(async (req: Request, res: Response) => {
     console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    console.log("settings templates", settings.templates);
     const template = createTemplate();
     const templateData = req.body as Template | null;
     if (templateData) {
@@ -37,15 +39,23 @@ export const TemplateService = {
       if (templateIndex === -1) {
         // only push if the template doesn't already exist
         settings.templates.push(template);
+        console.log("settings templates", settings.templates);
       } else {
         // update the existing template
         console.log("Template already exists!");
       }
       fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
     }
-  },
 
-  updateTemplate: async (req: Request) => {
+    const apiResponse: PaletteAPIResponse<unknown> = {
+      success: true,
+      message: "Template created successfully!",
+    };
+
+    res.json(apiResponse);
+  }),
+
+  updateTemplate: asyncHandler(async (req: Request, res: Response) => {
     console.log("updating template request", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
@@ -64,54 +74,141 @@ export const TemplateService = {
         fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
       }
     }
-  },
+
+    const apiResponse: PaletteAPIResponse<unknown> = {
+      success: true,
+      message: "Template updated successfully!",
+    };
+
+    res.json(apiResponse);
+  }),
+
+  // DELETE REQUESTS (Templates Page Functions)
+  deleteTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateKey = req.params.key;
+    if (templateKey) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.key === templateKey
+      );
+      if (templateIndex !== -1) {
+        settings.templates.splice(templateIndex, 1);
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+
+    const apiResponse: PaletteAPIResponse<unknown> = {
+      success: true,
+      message: "Template deleted successfully!",
+    };
+
+    res.json(apiResponse);
+  }),
+
+  deleteAllCriteriaByTitle: asyncHandler(
+    async (req: Request, res: Response) => {
+      const settingsData = fs.readFileSync(settingsPath, "utf8");
+      const settings: Settings = JSON.parse(settingsData) as Settings;
+      const templateTitle = req.params.title;
+      if (templateTitle) {
+        const templateIndex = settings.templates.findIndex(
+          (tmplt) => tmplt.title === templateTitle
+        );
+        if (templateIndex !== -1) {
+          settings.templates[templateIndex].criteria = [];
+          fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        }
+      }
+
+      const apiResponse: PaletteAPIResponse<unknown> = {
+        success: true,
+        message: "Template deleted successfully!",
+      };
+
+      res.json(apiResponse);
+    }
+  ),
+
+  deleteAllCriteriaByKey: asyncHandler(async (req: Request, res: Response) => {
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateKey = req.params.key;
+    if (templateKey) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.key === templateKey
+      );
+      if (templateIndex !== -1) {
+        settings.templates[templateIndex].criteria = [];
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+
+    const apiResponse: PaletteAPIResponse<unknown> = {
+      success: true,
+      message: "Template criteria deleted successfully!",
+    };
+
+    res.json(apiResponse);
+  }),
+
+  deleteTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
+    console.log("template data", req.body);
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateTitle = req.params.title;
+    if (templateTitle) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateTitle
+      );
+      if (templateIndex !== -1) {
+        settings.templates.splice(templateIndex, 1);
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      }
+    }
+
+    const apiResponse: PaletteAPIResponse<unknown> = {
+      success: true,
+      message: "Template deleted successfully!",
+    };
+
+    res.json(apiResponse);
+  }),
+
+  // GET REQUESTS (Templates API Functions)
 
   getAllTemplates: asyncHandler(async (req: Request, res: Response) => {
-    console.log("getting all templates");
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
     res.json(settings.templates);
   }),
 
-  /**
-   * Retrieves a rubric by its ID.
-   * @param {number} id - The ID of the rubric to retrieve.
-   * @returns {Promise<Rubric | null>} - The retrieved rubric object or null if not found.
-   */
-
-  getTemplateById: async (req: Request) => {
-    console.log("template data", req.body);
+  getTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    settings.templates.push();
-    console.log("settings templates", settings.templates);
-  },
+    const templateKey = req.params.key;
+    if (templateKey) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.key === templateKey
+      );
+      if (templateIndex !== -1) {
+        res.json(settings.templates[templateIndex]);
+      }
+    }
+  }),
 
-  /**
-   * Retrieves the ID of a rubric by its title.
-   * @param {string} title - The title of the rubric.
-   * @returns {Promise<{ id: number } | null>} - An object containing the rubric ID or null if not found.
-   */
-  getTemplateIdByTitle: async (req: Request) => {
-    console.log("template data", req.body);
-  },
-
-  /**
-   * Deletes a rubric from the datastore.
-   * @param {number} id - The ID of the rubric to delete.
-   * @returns {Promise<void>} - A Promise that resolves when the rubric is deleted.
-   */
-
-  deleteTemplate: async (req: Request) => {
-    console.log("template data", req.body);
-  },
-
-  /**
-   * Deletes all criteria associated with a specific rubric.
-   * @param {number} rubricId - The ID of the rubric whose criteria are to be deleted.
-   * @returns {Promise<void>} - A Promise that resolves when all criteria are deleted.
-   */
-  deleteAllCriteria: async (req: Request) => {
-    console.log("template data", req.body);
-  },
+  getTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
+    const settingsData = fs.readFileSync(settingsPath, "utf8");
+    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templateTitle = req.params.title;
+    if (templateTitle) {
+      const templateIndex = settings.templates.findIndex(
+        (tmplt) => tmplt.title === templateTitle
+      );
+      console.log("templateIndex", templateIndex);
+      if (templateIndex !== -1) {
+        res.json(settings.templates[templateIndex]);
+      }
+    }
+  }),
 };

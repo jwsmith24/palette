@@ -35,12 +35,12 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   const [templateSelected, setTemplateSelected] = useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
 
-  const { fetchData: postTemplate } = useFetch("/templates/temp", {
+  const { fetchData: postTemplate } = useFetch("/templates", {
     method: "POST",
     body: JSON.stringify(template), // use latest rubric data
   });
 
-  const { fetchData: putTemplate } = useFetch(`/templates`, {
+  const { fetchData: putTemplate } = useFetch("/templates", {
     method: "PUT",
     body: JSON.stringify(template),
   });
@@ -81,19 +81,26 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   // set the template name field of the current criterion and add it to the template.
   // send the template up to the criterion input so that it can detect changes and update the
   // criterion within the template.
-  const handleSave = () => {
+  const handleSave = async () => {
     handleFinalizeTemplate();
     if (updatingExistingTemplate) {
       console.log("updating existing template");
-      putTemplate();
+      const response = await putTemplate();
+      if (response.success) {
+        console.log("template updated");
+      }
     } else {
-      postTemplate();
+      const response = await postTemplate();
+      if (response.success) {
+        console.log("template created");
+      }
     }
     closeTemplateCard();
   };
 
   const handleFinalizeTemplate = () => {
     criterion.template = template.key;
+    criterion.templateTitle = template.title;
     template.criteria.push(criterion);
     setCriterionAdded(true); //should trigger a re-render
   };
