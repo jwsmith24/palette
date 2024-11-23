@@ -13,8 +13,16 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
-import CSVUpload from "./CSVUpload";
+import {
+  Dialog,
+  Footer,
+  Header,
+  LoadingDots,
+  ModalChoiceDialog,
+  NoAssignmentSelected,
+  NoCourseSelected,
+  SaveButton,
+} from "@components";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -28,15 +36,11 @@ import { CSVRow } from "@local_types";
 import { createCriterion, createRating, createRubric } from "@utils";
 
 import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
-import CSVExport from "@features/rubricBuilder/CSVExport";
+import { CSVExport, CSVUpload } from "@features";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCourse } from "../../context";
-import NoCourseSelected from "@features/rubricBuilder/NoCourseSelected.tsx";
-import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import NoAssignmentSelected from "@features/rubricBuilder/NoAssignmentSelected.tsx";
-import LoadingDots from "../../components/LoadingDots.tsx";
+import { useAssignment, useCourse } from "@context";
 
-export default function RubricBuilder(): ReactElement {
+export function RubricBuilderMain(): ReactElement {
   /**
    * Rubric Builder State
    */
@@ -53,6 +57,8 @@ export default function RubricBuilder(): ReactElement {
   const [loading, setLoading] = useState(false);
   // flag to determine if new rubric should be sent via POST or updated via PUT
   const [isNewRubric, setIsNewRubric] = useState(false);
+
+  const [isCanvasBypassed, setIsCanvasBypassed] = useState(false);
 
   // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
@@ -93,7 +99,6 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Updates active assignment with new or updated rubric.
    */
-
   const { fetchData: putRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}/${activeAssignment?.id}`,
     {
@@ -432,10 +437,19 @@ export default function RubricBuilder(): ReactElement {
   };
 
   /**
+   * Effect to load a default rubric if canvas api is bypassed
+   */
+  useEffect(() => {
+    if (isCanvasBypassed && !rubric) {
+      setRubric(createRubric());
+    }
+  }, [isCanvasBypassed, rubric]);
+  /**
    * Helper function to wrap the builder JSX.
    */
   const renderRubricBuilderForm = () => {
-    if (!rubric) return;
+    if (!rubric) return <p>No Active Rubric</p>;
+
     return (
       <form
         className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg"
@@ -485,14 +499,8 @@ export default function RubricBuilder(): ReactElement {
           >
             Add Criteria
           </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event) => void handleSubmitRubric(event)}
-            type={"button"}
-          >
-            Save Rubric
-          </button>
+
+          <SaveButton onClick={(event) => void handleSubmitRubric(event)} />
         </div>
       </form>
     );
@@ -503,10 +511,25 @@ export default function RubricBuilder(): ReactElement {
    */
   const renderContent = () => {
     if (loading) return <LoadingDots />;
+    if (isCanvasBypassed) return renderRubricBuilderForm();
     if (!activeCourse) return <NoCourseSelected />;
     if (!activeAssignment) return <NoAssignmentSelected />;
 
     return renderRubricBuilderForm();
+  };
+
+  const renderBypassButton = () => {
+    return (
+      <div className={"justify-self-center self-center"}>
+        <button
+          className={"text-2xl font-bold text-red-500"}
+          type={"button"}
+          onClick={() => setIsCanvasBypassed((prev) => !prev)} // Toggle bypass
+        >
+          {isCanvasBypassed ? "Use Canvas API" : "Bypass Canvas API"}
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -515,6 +538,7 @@ export default function RubricBuilder(): ReactElement {
         {/* Sticky Header with Gradient */}
         <Header />
         {renderContent()}
+        {!isCanvasBypassed && renderBypassButton()}
 
         {/* ModalChoiceDialog */}
         <ModalChoiceDialog

@@ -7,7 +7,7 @@
 import { MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
-import { useCourse } from "src/context/CourseProvider";
+import { useCourse } from "../context/CourseProvider.tsx";
 
 export default function CourseSelectionMenu({
   onSelect,
@@ -35,7 +35,6 @@ export default function CourseSelectionMenu({
     setLoading(true);
     try {
       const response = (await getCourses()) as PaletteAPIResponse<Course[]>; // Trigger the GET request
-      console.log("response: ", response);
 
       if (response.success) {
         setCourses(response.data!);

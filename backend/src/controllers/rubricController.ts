@@ -1,4 +1,3 @@
-import { RubricsAPI } from "../canvasAPI/rubricRequests.js";
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import {
@@ -8,7 +7,6 @@ import {
   RubricRequestBody,
   UpdateRubricResponse,
 } from "palette-types";
-import config from "../config.js";
 import {
   createAssignmentAssociation,
   toCanvasFormat,
@@ -18,6 +16,7 @@ import {
   createErrorResponse,
   createSuccessResponse,
 } from "../utils/paletteResponseFactories.js";
+import { RubricsAPI } from "../services/rubricRequests.js";
 
 /**
  * Handles the GET request to retrieve a rubric by its ID.
@@ -50,7 +49,7 @@ export const getAllRubrics = asyncHandler(
     const { course_id } = req.params;
     // create the request object for the Canvas API
     const canvasRequest: RubricRequestBody = {
-      course_id: Number(course_id) || Number(config!.TEST_COURSE_ID),
+      course_id: Number(course_id),
     };
 
     // make the request to the Canvas API

@@ -1,4 +1,4 @@
-import { useAssignment } from "../../context/AssignmentProvider.tsx";
+import { useAssignment } from "../context/AssignmentProvider.tsx";
 
 export default function ActiveAssignmentSelection({
   setDialogOpen,

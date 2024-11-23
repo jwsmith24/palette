@@ -2,15 +2,15 @@
  * Component to prompt the user to select an assignment before they're able to build a rubric.
  * @constructor
  */
-import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
-import { Dialog } from "@components";
+import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
+import { Dialog } from "./index.ts";
 import { useState } from "react";
 
-export default function NoAssignmentSelected() {
+export function NoAssignmentSelected() {
   const [assignmentMenuOpen, setAssignmentMenuOpen] = useState(false);
 
   return (
-    <div className="self-center text-5xl font-semibold ">
+    <div className="text-5xl font-semibold self-center justify-self-center">
       <p>
         Select an{" "}
         <button

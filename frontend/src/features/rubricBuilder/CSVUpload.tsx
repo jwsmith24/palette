@@ -7,7 +7,7 @@ interface CSVUploadProps {
   closeImportCard: () => void; // callback to close the import card
 }
 
-const CSVUpload: React.FC<CSVUploadProps> = ({
+export const CSVUpload: React.FC<CSVUploadProps> = ({
   onDataChange,
   closeImportCard,
 }: CSVUploadProps) => {
@@ -69,5 +69,3 @@ const CSVUpload: React.FC<CSVUploadProps> = ({
     </div>
   );
 };
-
-export default CSVUpload;

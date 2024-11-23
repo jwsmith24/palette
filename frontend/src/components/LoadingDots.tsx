@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export default function LoadingDots(): ReactElement {
+export function LoadingDots(): ReactElement {
   return (
     <div className="flex place-self-center space-x-2">
       <div

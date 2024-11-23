@@ -1,8 +1,7 @@
 import { body, ValidationChain } from "express-validator";
 
 /**
- * Validation chain for the request body during rubric creation and update.
- * @type {ValidationChain[]}
+ * Rubric validation for incoming requests from the Palette application.
  */
 const rubricValidator: ValidationChain[] = [
   body("title")

@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import ActiveCourseSelection from "@features/grading/ActiveCourseSelection.tsx";
+import ActiveCourseSelection from "./ActiveCourseSelection.tsx";
 import { Dialog } from "./Dialog.tsx";
-import CourseSelectionMenu from "@features/grading/CourseSelectionMenu.tsx";
-import ActiveAssignmentSelection from "@features/grading/ActiveAssignmentSelection.tsx";
-import AssignmentSelectionMenu from "@features/grading/AssignmentSelectionMenu.tsx";
+import CourseSelectionMenu from "./CourseSelectionMenu.tsx";
+import ActiveAssignmentSelection from "./ActiveAssignmentSelection.tsx";
+import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
 
 function Navbar() {
   const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);
@@ -25,8 +25,6 @@ function Navbar() {
    * page.
    */
   const navOptions = {
-    "/rubrics": "Rubrics",
-    "/clusters": "Templates",
     "/rubric-builder": "Builder",
     "/grading": "Grading",
   };
@@ -65,6 +63,10 @@ function Navbar() {
     navigate("/");
   };
 
+  function handleSettingsClicked() {
+    navigate("/settings");
+  }
+
   return (
     <div className="flex justify-between items-center h-16 mx-4">
       {renderNavButtons()}
@@ -96,7 +98,7 @@ function Navbar() {
         open={Boolean(userAnchor)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
+        <MenuItem onClick={handleSettingsClicked}>Settings</MenuItem>
         <MenuItem onClick={handleLogoutClicked}>Logout</MenuItem>
       </Menu>
       <Dialog
