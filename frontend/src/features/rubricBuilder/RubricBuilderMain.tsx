@@ -411,12 +411,11 @@ export function RubricBuilderMain(): ReactElement {
           Create a new rubric
         </h1>
         <div className="flex justify-between items-center">
-        {/* Import CSV */}
-        <CSVUpload rubric={rubric} setRubric={setRubric} />
+          {/* Import CSV */}
+          <CSVUpload rubric={rubric} setRubric={setRubric} />
 
-        {/* Export CSV */}
-        <CSVExport rubric={rubric} />
-
+          {/* Export CSV */}
+          <CSVExport rubric={rubric} />
 
           <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
             {maxPoints} {maxPoints === 1 ? "Point" : "Points"}
