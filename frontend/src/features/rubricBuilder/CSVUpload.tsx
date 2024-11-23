@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
 import { CSVRow } from "@local_types";
-import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
+import { Criteria, Rubric } from "palette-types";
 import { createCriterion, createRating } from "@utils";
 
 interface CSVUploadProps {

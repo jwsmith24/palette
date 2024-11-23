@@ -15,7 +15,6 @@ import {
 import CriteriaInput from "./CriteriaInput";
 
 import {
-  Dialog,
   Footer,
   Header,
   LoadingDots,
@@ -32,9 +31,8 @@ import {
 } from "@dnd-kit/sortable";
 
 import { useFetch } from "@hooks";
-import { CSVRow } from "@local_types";
 
-import { createCriterion, createRating, createRubric } from "@utils";
+import { createCriterion, createRubric } from "@utils";
 
 import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
 
@@ -49,8 +47,6 @@ export function RubricBuilderMain(): ReactElement {
 
   // active rubric being edited
   const [rubric, setRubric] = useState<Rubric | undefined>(undefined);
-  // csv import modal
-  const [fileInputActive, setFileInputActive] = useState(false);
   // tracks which criterion card is displaying the detailed view (limited to one at a time)
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
   // result of hook checking if active assignment has an existing rubric
