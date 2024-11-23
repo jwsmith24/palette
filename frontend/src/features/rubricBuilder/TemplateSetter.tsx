@@ -12,23 +12,19 @@ import { useFetch } from "@hooks";
 
 interface TemplateSetterProps {
   closeTemplateCard: () => void; // callback to close the template setter card
-  onTemplatesOpen: () => void;
   handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
-  onTemplateSelected: (t: Template) => void;
   criterion: Criteria;
 }
 
 const TemplateSetter: React.FC<TemplateSetterProps> = ({
   closeTemplateCard,
   handleSetTemplateTitle,
-  onTemplateSelected,
   criterion,
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate() || null);
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
     null
   );
-  const [userTemplates, setUserTemplates] = useState(settingsJson.templates);
   const [criterionAdded, setCriterionAdded] = useState(false);
   const [updatingExistingTemplate, setUpdatingExistingTemplate] =
     useState(false);
@@ -47,16 +43,33 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 
   useEffect(() => {
     console.log("refresh");
-  }, [template]);
+  }, [template, criterionAdded, selectedTemplateTitle]);
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (criterionAdded) {
-      const newTemplate = { ...template };
-      newTemplate.title = event.target.value;
-      setTemplate(newTemplate);
+      const updatedTemplate = {
+        ...template,
+        criteria: template.criteria.filter((c) => c.key !== criterion.key),
+      };
+
+      // Add the latest version of the criterion
+      updatedTemplate.title = event.target.value;
+      criterion.templateTitle = updatedTemplate.title;
+      criterion.template = updatedTemplate.key;
+
+      updatedTemplate.criteria.push(criterion);
+      setTemplate(updatedTemplate);
+
+      console.log("updatedTemplate criterion added", updatedTemplate.title);
+      setSelectedTemplateTitle(updatedTemplate.title);
+      setTemplate(updatedTemplate);
     } else {
       const newTemplate = { ...template };
       newTemplate.title = event.target.value;
+      console.log("newTemplateTitle", newTemplate.title);
+      criterion.template = newTemplate.key;
+      criterion.templateTitle = newTemplate.title;
+      setSelectedTemplateTitle(newTemplate.title);
       newTemplate.criteria.push(criterion);
       setTemplate(newTemplate);
       setCriterionAdded(true);
@@ -82,7 +95,6 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   // send the template up to the criterion input so that it can detect changes and update the
   // criterion within the template.
   const handleSave = async () => {
-    handleFinalizeTemplate();
     if (updatingExistingTemplate) {
       console.log("updating existing template");
       const response = await putTemplate();
@@ -90,6 +102,11 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
         console.log("template updated");
       }
     } else {
+      handleFinalizeTemplate();
+
+      criterion.templateTitle = selectedTemplateTitle;
+      setTemplate(template);
+      console.log("creating new template", template);
       const response = await postTemplate();
       if (response.success) {
         console.log("template created");
@@ -99,9 +116,16 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleFinalizeTemplate = () => {
-    criterion.template = template.key;
-    criterion.templateTitle = template.title;
-    template.criteria.push(criterion);
+    console.log("finalizing template");
+    const newCriterion = { ...criterion };
+    newCriterion.template = template.key;
+    newCriterion.templateTitle = criterion.templateTitle;
+    const newTemplate = {
+      ...template,
+      criteria: [...template.criteria, newCriterion],
+    };
+    console.log("newTemplate", newTemplate);
+    setTemplate(newTemplate);
     setCriterionAdded(true); //should trigger a re-render
   };
 
@@ -111,12 +135,16 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     event.preventDefault();
     template.criteria = [];
 
-    const selectedTemplateTitle = event.currentTarget.textContent;
+    const textAreaTemplateTitle = event.currentTarget.textContent;
+    console.log("textAreaTemplateTitle", textAreaTemplateTitle);
+    criterion.templateTitle = textAreaTemplateTitle || "";
+    setSelectedTemplateTitle(textAreaTemplateTitle || "");
+
     const selectedTemplateJson = settingsJson.templates.find(
-      (tmplt) => tmplt.title === selectedTemplateTitle
+      (tmplt) => tmplt.title === textAreaTemplateTitle
     );
 
-    if (selectedTemplateTitle != null) {
+    if (textAreaTemplateTitle != null) {
       // if this template exist in the db
       // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
       if (selectedTemplateJson?.criteria != undefined) {
@@ -132,12 +160,12 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           copyCriterion.template = existingCriterion.template;
           template.criteria.push(copyCriterion);
         });
-        template.title = selectedTemplateTitle;
       }
+
+      template.title = textAreaTemplateTitle;
 
       console.log("template", template);
       setTemplateSelected(true);
-      setSelectedTemplateTitle(selectedTemplateTitle);
       setUpdatingExistingTemplate(true);
       handleFinalizeTemplate();
     }
@@ -149,7 +177,9 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
       <div className={"flex justify-between items-center"}>
         <input
           placeholder={
-            templateSelected ? `${selectedTemplateTitle}` : "New Template Name"
+            criterion.templateTitle === ""
+              ? "Enter Template Name"
+              : `${criterion.templateTitle}`
           }
           onChange={handleTemplateTitleChange}
           className="mt-4 mb-4 border border-gray-600 rounded-lg p-3 text-gray-300 hover:bg-gray-800 transition duration-300 cursor-pointer focus:outline-none"
