@@ -25,8 +25,6 @@ function Navbar() {
    * page.
    */
   const navOptions = {
-    "/rubrics": "Rubrics",
-    "/clusters": "Templates",
     "/rubric-builder": "Builder",
     "/grading": "Grading",
   };
@@ -65,6 +63,10 @@ function Navbar() {
     navigate("/");
   };
 
+  function handleSettingsClicked() {
+    navigate("/settings");
+  }
+
   return (
     <div className="flex justify-between items-center h-16 mx-4">
       {renderNavButtons()}
@@ -96,7 +98,7 @@ function Navbar() {
         open={Boolean(userAnchor)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem onClick={handleCloseUserMenu}>Settings</MenuItem>
+        <MenuItem onClick={handleSettingsClicked}>Settings</MenuItem>
         <MenuItem onClick={handleLogoutClicked}>Logout</MenuItem>
       </Menu>
       <Dialog

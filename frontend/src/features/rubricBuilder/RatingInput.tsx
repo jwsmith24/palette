@@ -3,7 +3,7 @@ import { Rating } from "palette-types";
 import { Dialog } from "@components";
 import { motion } from "framer-motion";
 
-export default function RatingInput({
+export function RatingInput({
   ratingIndex,
   rating,
   handleRatingChange,
@@ -161,7 +161,7 @@ export default function RatingInput({
         />
         <span>Points</span>
       </div>
-      <p className={"text-sm font-medium text-center whitespace-normal"}>
+      <p className={"text-sm font-medium text-left whitespace-normal"}>
         {title ? (
           title
         ) : (

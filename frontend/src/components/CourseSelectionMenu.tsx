@@ -35,7 +35,6 @@ export default function CourseSelectionMenu({
     setLoading(true);
     try {
       const response = (await getCourses()) as PaletteAPIResponse<Course[]>; // Trigger the GET request
-      console.log("response: ", response);
 
       if (response.success) {
         setCourses(response.data!);

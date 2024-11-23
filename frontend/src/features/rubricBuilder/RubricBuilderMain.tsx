@@ -13,7 +13,16 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
+import {
+  Dialog,
+  Footer,
+  Header,
+  LoadingDots,
+  ModalChoiceDialog,
+  NoAssignmentSelected,
+  NoCourseSelected,
+  SaveButton,
+} from "@components";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -27,16 +36,11 @@ import { CSVRow } from "@local_types";
 import { createCriterion, createRating, createRubric } from "@utils";
 
 import { Criteria, PaletteAPIResponse, Rubric } from "palette-types";
-import CSVExport from "@features/rubricBuilder/CSVExport";
-import CSVUpload from "@features/rubricBuilder/CSVUpload";
+import { CSVExport, CSVUpload } from "@features";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCourse } from "../../context";
-import NoCourseSelected from "../../components/NoCourseSelected.tsx";
-import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
-import LoadingDots from "../../components/LoadingDots.tsx";
+import { useAssignment, useCourse } from "@context";
 
-export default function RubricBuilder(): ReactElement {
+export function RubricBuilderMain(): ReactElement {
   /**
    * Rubric Builder State
    */
@@ -95,7 +99,6 @@ export default function RubricBuilder(): ReactElement {
   /**
    * Updates active assignment with new or updated rubric.
    */
-
   const { fetchData: putRubric } = useFetch(
     `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}/${activeAssignment?.id}`,
     {
@@ -318,6 +321,56 @@ export default function RubricBuilder(): ReactElement {
   };
 
   /**
+   * CSV Import and Export Functionality
+   * @param data - parsed csv data
+   */
+
+  // Update state with the new CSV/XLSX data
+  const handleImportFile = (data: CSVRow[]) => {
+    if (!rubric) return;
+
+    const clearedRubric = { ...rubric, criteria: [] };
+    setRubric(clearedRubric);
+
+    const existingCriteriaDescriptions =
+      buildCriteriaDescriptionSet(clearedRubric);
+
+    const newCriteria = data
+      .slice(1)
+      .map((row) => {
+        if (typeof row[0] !== "string" || !row[0].trim()) return null;
+        if (existingCriteriaDescriptions.has(row[0].trim().toLowerCase()))
+          return null;
+
+        const criterion: Criteria = createCriterion(row[0], "", 0, []);
+        for (let i = 1; i < row.length; i += 2) {
+          const points = Number(row[i]);
+          const description = row[i + 1] as string;
+          if (description)
+            criterion.ratings.push(createRating(points, description));
+        }
+        criterion.updatePoints();
+        return criterion;
+      })
+      .filter(Boolean);
+
+    setRubric(
+      (prevRubric) =>
+        ({
+          ...(prevRubric ?? createRubric()),
+          criteria: [...(prevRubric?.criteria ?? []), ...newCriteria],
+        }) as Rubric,
+    );
+  };
+
+  const handleImportFilePress = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!fileInputActive) {
+      setFileInputActive(true);
+    }
+  };
+
+  /**
    * Fires when a drag event ends, resorting the rubric criteria.
    * @param event - drag end event
    */
@@ -406,12 +459,17 @@ export default function RubricBuilder(): ReactElement {
           Create a new rubric
         </h1>
         <div className="flex justify-between items-center">
-        {/* Import CSV */}
-        <CSVUpload rubric={rubric} setRubric={setRubric} />
+          <div className="flex gap-2">
+            <button
+              className="transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              onClick={handleImportFilePress}
+              type={"button"}
+            >
+              Import CSV
+            </button>
 
-        {/* Export CSV */}
-        <CSVExport rubric={rubric} />
-
+            <CSVExport rubric={rubric} />
+          </div>
 
           <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
             {maxPoints} {maxPoints === 1 ? "Point" : "Points"}
@@ -441,14 +499,8 @@ export default function RubricBuilder(): ReactElement {
           >
             Add Criteria
           </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event) => void handleSubmitRubric(event)}
-            type={"button"}
-          >
-            Save Rubric
-          </button>
+
+          <SaveButton onClick={(event) => void handleSubmitRubric(event)} />
         </div>
       </form>
     );
@@ -479,6 +531,7 @@ export default function RubricBuilder(): ReactElement {
       </div>
     );
   };
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">
@@ -495,6 +548,18 @@ export default function RubricBuilder(): ReactElement {
           message={modal.message}
           choices={modal.choices}
         />
+
+        {/* CSV/XLSX Import Dialog */}
+        <Dialog
+          isOpen={fileInputActive}
+          onClose={() => setFileInputActive(false)}
+          title={"Import a CSV Template"}
+        >
+          <CSVUpload
+            onDataChange={(data: CSVRow[]) => handleImportFile(data)}
+            closeImportCard={() => setFileInputActive(false)}
+          />
+        </Dialog>
 
         {/* Sticky Footer with Gradient */}
         <Footer />

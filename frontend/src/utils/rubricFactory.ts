@@ -27,8 +27,8 @@ function populateDefaultCriteria() {
  */
 function populateDefaultRatings() {
   const ratings: Rating[] = [];
-  ratings.push(createRating(5, "Full Marks", ""));
-  ratings.push(createRating(0, "No Marks", ""));
+  ratings.push(createRating(5, "Well done", ""));
+  ratings.push(createRating(0, "Not included", ""));
   return ratings;
 }
 

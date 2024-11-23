@@ -1,3 +1,7 @@
+/**
+ * Parameter validation functions for incoming HTTP requests.
+ */
+
 import { param, ValidationChain } from "express-validator";
 
 export const idParamValidator: ValidationChain[] = [

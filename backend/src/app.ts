@@ -3,12 +3,13 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { StatusCodes } from "http-status-codes";
-import { rubricValidationErrorHandler } from "./middleware/rubricValidationErrorHandler.js";
+import { validationErrorHandler } from "./middleware/validationErrorHandler.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { responseLogger } from "./middleware/responseLogger.js";
 import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
 import { wildcardRouter } from "./routes/wildcardRouter.js";
 import courseRouter from "./routes/courseRouter.js";
+import userRouter from "./routes/userRouter.js";
 
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
@@ -40,10 +41,11 @@ app.get("/health", (_req: Request, res: Response) => {
 
 // API routes
 app.use("/api/courses", courseRouter);
+app.use("/api/user", userRouter);
 app.get("*", wildcardRouter);
 
 // field validation error handling middleware
-app.use(rubricValidationErrorHandler);
+app.use(validationErrorHandler);
 
 // handle all unhandled errors
 app.use(fallbackErrorHandler);

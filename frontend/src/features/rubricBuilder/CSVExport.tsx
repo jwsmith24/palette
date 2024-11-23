@@ -1,12 +1,12 @@
 import Papa from "papaparse";
-import { Rating, Rubric } from "palette-types/src";
+import { Rating, Rubric } from "palette-types";
 import { FC } from "react";
 
 interface CSVExportProps {
   rubric: Rubric;
 }
 
-const CSVExport: FC<CSVExportProps> = ({ rubric }) => {
+export const CSVExport: FC<CSVExportProps> = ({ rubric }) => {
   const handleExportToCSV = () => {
     // Determine the maximum number of ratings across all criteria
     const maxRatings = Math.max(
@@ -66,5 +66,3 @@ const CSVExport: FC<CSVExportProps> = ({ rubric }) => {
     </button>
   );
 };
-
-export default CSVExport;
