@@ -128,16 +128,19 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({
     if (!rubric) return;
 
     const newCriteria = data
-      .slice(1) // Skip header row
-      .map((row) => {
-        const criterionTitle = row[0]?.trim();
-        const longDescription = row[1]?.trim() || "";
-        const maxPoints = parseFloat(row[2]);
+    .slice(1) // Skip header row
+    .map((row) => {
+      // Ensure criterionTitle and longDescription are valid strings
+      const criterionTitle = typeof row[0] === "string" ? row[0].trim() : "";
+      const longDescription =
+        typeof row[1] === "string" ? row[1].trim() : "";
 
-        if (!criterionTitle || isNaN(maxPoints)) {
-          console.warn("Invalid row format, skipping:", row);
-          return null;
-        }
+      const maxPoints = parseFloat(row[2]);
+
+      if (!criterionTitle || isNaN(maxPoints)) {
+        console.warn("Invalid row format, skipping:", row);
+        return null;
+      }
 
         const criterion: Criteria = createCriterion(
           criterionTitle,

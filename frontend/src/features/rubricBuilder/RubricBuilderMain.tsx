@@ -265,16 +265,6 @@ export function RubricBuilderMain(): ReactElement {
     );
   };
 
-  /**
-   * Generates a set of the current criteria descriptions stored within the component state to use for checking
-   * duplicate entries.
-   */
-  const buildCriteriaDescriptionSet = (clearedRubric: Rubric): Set<string> =>
-    new Set(
-      clearedRubric.criteria.map((criterion) =>
-        criterion.description.trim().toLowerCase(),
-      ),
-    );
 
   /**
    * Calculate rubric max points whenever rubric criterion changes. Uses memoization to avoid re-rendering the
