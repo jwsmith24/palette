@@ -44,11 +44,33 @@
           "longDescription": "",
           "points": 5,
           "template": "80ca726b-5b36-451b-b955-9f03696246b3",
-          "templateTitle": "lets goooo!",
+          "templateTitle": "",
           "key": "c6819956-6b8c-45e5-ab0f-1ee94dbb3dda"
+        },
+        {
+          "ratings": [
+            {
+              "points": 5,
+              "description": "Well done",
+              "longDescription": "",
+              "key": "cf09a126-6cc2-4943-91e4-c9723fcbf7c3"
+            },
+            {
+              "points": 0,
+              "description": "Not included",
+              "longDescription": "",
+              "key": "707df702-3b35-4e93-b1bf-ad4073bf2235"
+            }
+          ],
+          "description": "",
+          "longDescription": "",
+          "points": 5,
+          "template": "98a93475-dcf2-412a-86bd-7b59987ddf01",
+          "templateTitle": "lets goooo!",
+          "key": "bcdd246c-4fa9-4f40-90fb-6d41cd34992a"
         }
       ],
-      "key": "80ca726b-5b36-451b-b955-9f03696246b3"
+      "key": "98a93475-dcf2-412a-86bd-7b59987ddf01"
     },
     {
       "title": "tttt",

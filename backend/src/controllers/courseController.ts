@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
-import { CoursesAPI } from "../CanvasAPI/courseRequests.js";
 import { Assignment, Course, PaletteAPIResponse } from "palette-types";
 import { Request, Response } from "express";
+import { CoursesAPI } from "../services/courseRequests.js";
 
 export const getAllCourses = asyncHandler(async (req, res) => {
   const courses = await CoursesAPI.getCourses();

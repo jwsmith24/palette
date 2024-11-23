@@ -15,6 +15,9 @@ dist-ssr
 # env files
 *.env
 
+# sensitive files
+settings.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -28,3 +31,5 @@ dist-ssr
 
 # jest reports
 coverage/
+
+*Zone.Identifier

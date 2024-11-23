@@ -6,7 +6,7 @@ import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
 import { Dialog } from "./index.ts";
 import { useState } from "react";
 
-export default function NoAssignmentSelected() {
+export function NoAssignmentSelected() {
   const [assignmentMenuOpen, setAssignmentMenuOpen] = useState(false);
 
   return (

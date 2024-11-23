@@ -7,7 +7,8 @@ import {
   assignmentParamValidator,
   courseParamValidator,
   idAndCourseParamValidator,
-} from "../validators/baseParamValidators.js";
+} from "../validators/paramValidators.js";
+
 import {
   getAllCourses,
   getAssignment,
@@ -20,8 +21,20 @@ import {
   getRubric,
   updateRubric,
 } from "../controllers/rubricController.js";
+import { getSubmissions } from "../controllers/submissionController.js";
 
 const courseRouter = express.Router();
+
+/**
+ * Submission Routes
+ */
+courseRouter.get(
+  "/:course_id/assignments/:assignment_id/submissions",
+  courseParamValidator,
+  assignmentParamValidator,
+  validationErrorHandler,
+  getSubmissions
+);
 
 /**
  * @route POST /courses/:courseID/rubrics
@@ -33,7 +46,7 @@ courseRouter.post(
   assignmentParamValidator,
   rubricValidator,
   validationErrorHandler,
-  createRubric,
+  createRubric
 );
 
 /**
@@ -44,7 +57,7 @@ courseRouter.get(
   "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
   validationErrorHandler,
-  getRubric,
+  getRubric
 );
 
 /**
@@ -56,7 +69,7 @@ courseRouter.get(
   "/:course_id/rubrics",
   courseParamValidator,
   validationErrorHandler,
-  getAllRubrics,
+  getAllRubrics
 );
 
 /**
@@ -75,7 +88,7 @@ courseRouter.put(
   assignmentParamValidator,
   rubricValidator,
   validationErrorHandler,
-  updateRubric,
+  updateRubric
 );
 
 /**
@@ -86,7 +99,7 @@ courseRouter.delete(
   "/:course_id/rubrics/:rubric_id",
   idAndCourseParamValidator,
   validationErrorHandler,
-  handleDeleteRubric,
+  handleDeleteRubric
 );
 
 /**

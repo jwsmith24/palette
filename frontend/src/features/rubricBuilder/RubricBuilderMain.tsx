@@ -13,9 +13,21 @@ import {
 } from "react";
 
 import CriteriaInput from "./CriteriaInput";
-import { Dialog, Footer, Header, ModalChoiceDialog, PopUp } from "@components";
-import CSVUpload from "./CSVUpload";
 import TemplateUpload from "./TemplateUpload";
+import { createTemplate } from "src/utils/templateFactory.ts";
+import TemplateSetter from "./TemplateSetter.tsx";
+
+import {
+  Dialog,
+  Footer,
+  Header,
+  LoadingDots,
+  ModalChoiceDialog,
+  NoAssignmentSelected,
+  NoCourseSelected,
+  SaveButton,
+  PopUp,
+} from "@components";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -27,25 +39,13 @@ import { useFetch } from "@hooks";
 import { CSVRow } from "@local_types";
 
 import { createCriterion, createRating, createRubric } from "@utils";
-import { TemplateService } from "../../../../backend/src/TemplatesAPI/templateRequests.ts";
-import {
-  Criteria,
-  PaletteAPIResponse,
-  Rubric,
-  PaletteAPIRequest,
-  Template,
-} from "palette-types";
-import CSVExport from "@features/rubricBuilder/CSVExport";
-import { AnimatePresence, motion } from "framer-motion";
-import { useCourse } from "../../context";
-import NoCourseSelected from "../../components/NoCourseSelected.tsx";
-import { useAssignment } from "../../context/AssignmentProvider.tsx";
-import NoAssignmentSelected from "../../components/NoAssignmentSelected.tsx";
-import LoadingDots from "../../components/LoadingDots.tsx";
-import { createTemplate } from "src/utils/templateFactory.ts";
-import TemplateSetter from "./TemplateSetter.tsx";
 
-export default function RubricBuilder(): ReactElement {
+import { Criteria, PaletteAPIResponse, Rubric, Template } from "palette-types";
+import { CSVExport, CSVUpload } from "@features";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAssignment, useCourse } from "@context";
+
+export function RubricBuilderMain(): ReactElement {
   /**
    * Rubric Builder State
    */
@@ -635,14 +635,12 @@ export default function RubricBuilder(): ReactElement {
           >
             Add Criteria
           </button>
-          <button
-            className="transition-all ease-in-out duration-300 bg-green-600 text-white font-bold rounded-lg py-2 px-4
-                     hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
-            onClick={(event) => void handleSubmitRubric(event)}
-            type={"button"}
-          >
-            Save Rubric
-          </button>
+
+          <SaveButton
+            onClick={(event: MouseEvent<HTMLButtonElement>) =>
+              void handleSubmitRubric(event)
+            }
+          />
         </div>
       </form>
     );
@@ -673,6 +671,7 @@ export default function RubricBuilder(): ReactElement {
       </div>
     );
   };
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="min-h-screen justify-between flex flex-col w-screen bg-gradient-to-b from-gray-900 to-gray-700 text-white font-sans">

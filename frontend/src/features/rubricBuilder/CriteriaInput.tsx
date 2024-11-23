@@ -10,8 +10,8 @@ import { useSortable } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
 import { Criteria, Rating, Template } from "palette-types";
 import { createRating } from "@utils";
-import RatingInput from "@features/rubricBuilder/RatingInput";
-import TemplateSetter from "@features/rubricBuilder/TemplateSetter";
+import { RatingInput } from "./RatingInput";
+import TemplateSetter from "./TemplateSetter";
 import { Dialog } from "../../components/Dialog";
 import { motion } from "framer-motion";
 

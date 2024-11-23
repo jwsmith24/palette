@@ -1,8 +1,8 @@
-import Home from "@features/home/Home.tsx";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import { colorOptions, randomColor } from "@utils";
+import { Home } from "@features";
 
 describe("home page view", () => {
   it("should have a header that welcomes the user to the site", () => {
