@@ -3,8 +3,31 @@
   "templates": [
     {
       "title": "Mock Template Name 1",
-      "criteria": [],
-      "key": "37386b4e-dddc-4964-8a44-1a2f5cb592bc"
+      "criteria": [
+        {
+          "ratings": [
+            {
+              "points": 5,
+              "description": "Full Marks",
+              "longDescription": "",
+              "key": "ad6f80c8-cc22-42c4-9755-007351464482"
+            },
+            {
+              "points": 0,
+              "description": "No Marks",
+              "longDescription": "",
+              "key": "9428790b-675c-4127-bc1c-ac6067f35d40"
+            }
+          ],
+          "description": "Test",
+          "longDescription": "",
+          "points": 5,
+          "template": "39bd6bca-5077-4c9a-b34f-bc3d4b093b3b",
+          "templateTitle": "Mock Template Name 1",
+          "key": "26291d99-af5f-4834-bcd7-10b02f6bbf35"
+        }
+      ],
+      "key": "39bd6bca-5077-4c9a-b34f-bc3d4b093b3b"
     },
     {
       "title": "Mock Template Name 2",

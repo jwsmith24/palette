@@ -15,6 +15,7 @@ import {
 import CriteriaInput from "./CriteriaInput";
 import { Dialog, Footer, Header, ModalChoiceDialog } from "@components";
 import CSVUpload from "./CSVUpload";
+import TemplateUpload from "./TemplateUpload";
 
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import {
@@ -67,6 +68,8 @@ export default function RubricBuilder(): ReactElement {
   const [updatingTemplate, setUpdatingTemplate] = useState<Template | null>(
     null
   );
+
+  const [templateInputActive, setTemplateInputActive] = useState(false);
 
   // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
@@ -424,6 +427,13 @@ export default function RubricBuilder(): ReactElement {
     }
   };
 
+  const handleOpenTemplateImport = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (!templateInputActive) {
+      setTemplateInputActive(true);
+    }
+  };
+
   /**
    * Fires when a drag event ends, resorting the rubric criteria.
    * @param event - drag end event
@@ -444,6 +454,22 @@ export default function RubricBuilder(): ReactElement {
 
       setRubric({ ...rubric, criteria: updatedCriteria });
     }
+  };
+
+  const handleImportTemplate = (template: Template) => {
+    console.log("import template");
+    if (!rubric) return;
+
+    const newCriteria = template.criteria;
+
+    setRubric(
+      (prevRubric) =>
+        ({
+          ...(prevRubric ?? createRubric()),
+          criteria: [...(prevRubric?.criteria ?? []), ...newCriteria],
+        }) as Rubric
+    );
+    console.log(template);
   };
 
   /**
@@ -523,6 +549,13 @@ export default function RubricBuilder(): ReactElement {
             </button>
 
             <CSVExport rubric={rubric} />
+            <button
+              className="transition-all ease-in-out duration-300 bg-yellow-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-violet-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              onClick={handleOpenTemplateImport}
+              type={"button"}
+            >
+              Templates
+            </button>
           </div>
 
           <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
@@ -617,6 +650,18 @@ export default function RubricBuilder(): ReactElement {
           <CSVUpload
             onDataChange={(data: CSVRow[]) => handleImportFile(data)}
             closeImportCard={() => setFileInputActive(false)}
+          />
+        </Dialog>
+
+        {/* Template Import Dialog */}
+        <Dialog
+          isOpen={templateInputActive}
+          onClose={() => setTemplateInputActive(false)}
+          title={"Import a Template"}
+        >
+          <TemplateUpload
+            closeImportCard={() => setTemplateInputActive(false)}
+            onTemplateSelected={handleImportTemplate}
           />
         </Dialog>
 

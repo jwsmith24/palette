@@ -11,7 +11,7 @@ import { createCriterion } from "@utils";
 import { useFetch } from "@hooks";
 
 interface TemplateSetterProps {
-  closeTemplateCard: () => void; // callback to close the import card
+  closeTemplateCard: () => void; // callback to close the template setter card
   onTemplatesOpen: () => void;
   handleSetTemplateTitle: (event: ChangeEvent<HTMLInputElement>) => void;
   onTemplateSelected: (t: Template) => void;
