@@ -460,16 +460,44 @@ export default function RubricBuilder(): ReactElement {
     console.log("import template");
     if (!rubric) return;
 
+    const currentCriteria = rubric.criteria;
     const newCriteria = template.criteria;
+
+    // Split into unique and duplicate criteria
+    const { unique, duplicates } = newCriteria.reduce(
+      (acc, newCriterion) => {
+        const isDuplicate = currentCriteria.some(
+          (existingCriterion) =>
+            existingCriterion.key.trim().toLowerCase() ===
+            newCriterion.key.trim().toLowerCase()
+        );
+
+        if (isDuplicate) {
+          acc.duplicates.push(newCriterion);
+        } else {
+          acc.unique.push(newCriterion);
+        }
+
+        return acc;
+      },
+      { unique: [] as Criteria[], duplicates: [] as Criteria[] }
+    );
+
+    // Log information about duplicates if any were found
+    if (duplicates.length > 0) {
+      console.log(
+        `Found ${duplicates.length} duplicate criteria that were skipped:`,
+        duplicates.map((c) => c.description)
+      );
+    }
 
     setRubric(
       (prevRubric) =>
         ({
           ...(prevRubric ?? createRubric()),
-          criteria: [...(prevRubric?.criteria ?? []), ...newCriteria],
+          criteria: [...(prevRubric?.criteria ?? []), ...unique],
         }) as Rubric
     );
-    console.log(template);
   };
 
   /**

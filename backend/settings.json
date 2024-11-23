@@ -23,11 +23,49 @@
           "longDescription": "",
           "points": 5,
           "template": "39bd6bca-5077-4c9a-b34f-bc3d4b093b3b",
-          "templateTitle": "Mock Template Name 1",
+          "templateTitle": "",
           "key": "26291d99-af5f-4834-bcd7-10b02f6bbf35"
+        },
+        {
+          "ratings": [
+            {
+              "points": 1,
+              "description": "Full Marks",
+              "longDescription": "",
+              "key": "f8fedfda-66af-402c-a880-dc1a7bf1fc61"
+            }
+          ],
+          "description": "new cr",
+          "longDescription": "",
+          "points": 1,
+          "template": "940559af-0991-49ee-8315-27b08a3f5d69",
+          "templateTitle": "",
+          "key": "b5db9b13-79dc-46ad-946c-d4490c9bb0c0"
+        },
+        {
+          "ratings": [
+            {
+              "points": 5,
+              "description": "Full Marks",
+              "longDescription": "",
+              "key": "690e6e8c-6a78-4d82-aa26-0ff104e5959c"
+            },
+            {
+              "points": 0,
+              "description": "No Marks",
+              "longDescription": "",
+              "key": "6c4d1664-8ec5-4a17-a4fd-144cedc31bb9"
+            }
+          ],
+          "description": "testingggg",
+          "longDescription": "",
+          "points": 5,
+          "template": "9fa2d9b4-1884-4f71-a0d3-20edf8c30bb8",
+          "templateTitle": "Mock Template Name 1",
+          "key": "00396233-a5ba-479c-82b3-ad893e09d4b9"
         }
       ],
-      "key": "39bd6bca-5077-4c9a-b34f-bc3d4b093b3b"
+      "key": "9fa2d9b4-1884-4f71-a0d3-20edf8c30bb8"
     },
     {
       "title": "Mock Template Name 2",
