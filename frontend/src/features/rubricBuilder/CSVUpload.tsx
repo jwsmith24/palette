@@ -6,13 +6,9 @@ import { v4 as uuid } from "uuid";
 interface CSVUploadProps {
   rubric: Rubric | undefined;
   setRubric: React.Dispatch<React.SetStateAction<Rubric | undefined>>;
-  closeImportCard: () => void;
 }
 
-export const CSVUpload: React.FC<CSVUploadProps> = ({
-  setRubric,
-  closeImportCard,
-}) => {
+export const CSVUpload: React.FC<CSVUploadProps> = ({ setRubric }) => {
   const [showVersionModal, setShowVersionModal] = useState(false);
 
   const handleFileChange = (
@@ -51,8 +47,6 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({
             key: `rubric-${uuid()}`,
           },
     );
-
-    closeImportCard();
   };
 
   const handleVersionSelection = (version: "versionOne" | "versionTwo") => {
