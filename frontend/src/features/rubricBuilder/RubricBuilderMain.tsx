@@ -265,7 +265,6 @@ export function RubricBuilderMain(): ReactElement {
     );
   };
 
-
   /**
    * Calculate rubric max points whenever rubric criterion changes. Uses memoization to avoid re-rendering the
    * function everytime, improving performance.
