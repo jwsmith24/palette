@@ -1,5 +1,4 @@
 import {
-  ChangeEvent,
   MouseEvent as ReactMouseEvent,
   ReactElement,
   useEffect,
@@ -13,15 +12,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"; // Import useSortable
 import { CSS } from "@dnd-kit/utilities"; // Import CSS utilities
-import { Criteria, Rating, Template } from "palette-types";
-import { createCriterion, createRating } from "@utils";
+import { Criteria, Template } from "palette-types";
+import { createCriterion } from "@utils";
 import { createTemplate } from "../../utils/templateFactory.ts";
-import RatingInput from "@features/rubricBuilder/RatingInput";
-import TemplateSetter from "@features/rubricBuilder/TemplateSetter";
-import { Dialog } from "../../components/Dialog";
 import { AnimatePresence, motion } from "framer-motion";
-import CSVExport from "@features/rubricBuilder/CSVExport";
-import CSVUpload from "@features/rubricBuilder/CSVUpload";
 
 export default function TemplateCard({
   index,
@@ -39,14 +33,11 @@ export default function TemplateCard({
   setActiveTemplateIndex: (index: number) => void;
 }): ReactElement {
   const [maxPoints, setMaxPoints] = useState<number>(0); // Initialize state for max points
-  const [templateSetterActive, setTemplateSetterActive] = useState(false); // file input display is open or not
-  const [templateTitle, setTemplateTitle] = useState(template.title || "");
   // tracks which criterion card is displaying the detailed view (limited to one at a time)
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
   const [currentTemplate, setCurrentTemplate] = useState<Template>(
-    createTemplate() || null
+    createTemplate() || null,
   );
-  const [fileInputActive, setFileInputActive] = useState(false);
 
   /**
    * Whenever ratings change, recalculate criterion's max points
@@ -60,33 +51,12 @@ export default function TemplateCard({
   }, [currentTemplate]);
 
   /**
-   * useEffect hook to ghost the add ratings button when 4 ratings are rendered.
-   *
-   * Related button styles and state.
-   */
-  const addButtonActiveStyle =
-    "transition-all ease-in-out duration-300 bg-violet-600 text-white font-bold rounded-lg px-4" +
-    " py-2 justify-self-end hover:bg-violet-700 focus:ring-2 focus:ring-violet-500 focus:outline-none";
-
-  const addButtonInactiveStyle =
-    "transition-all ease-in-out duration-300 bg-violet-200 text-violet-600 font-bold rounded-lg px-4" +
-    " py-2 justify-self-end hover:bg-violet-300 focus:ring-2 focus:ring-violet-500 focus:outline-none opacity-50 cursor-not-allowed";
-
-  /**
    * Criteria change functionality.
    */
 
-  const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newTitle = event.target.value;
-    setTemplateTitle(newTitle);
-
-    const newTemplate = { ...template, title: newTitle };
-    handleTemplateUpdate(index, newTemplate);
-  };
-
   const handleRemoveTemplateButton = (
     event: ReactMouseEvent,
-    index: number
+    index: number,
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -95,19 +65,6 @@ export default function TemplateCard({
 
   const handleExpandTemplate = () => {
     setActiveTemplateIndex(index);
-  };
-
-  const handleTemplateSetterPress = (
-    event: ReactMouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-    if (!templateSetterActive) {
-      setTemplateSetterActive(true);
-    }
-  };
-
-  const handleCloseTemplateSetter = () => {
-    setTemplateSetterActive(false); // hides the template setter
   };
 
   // update rubric state with new list of criteria
@@ -185,13 +142,6 @@ export default function TemplateCard({
     );
   };
 
-  const handleImportFilePress = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    if (!fileInputActive) {
-      setFileInputActive(true);
-    }
-  };
-
   const renderCondensedView = () => {
     return (
       <div
@@ -204,12 +154,12 @@ export default function TemplateCard({
         onDoubleClick={handleExpandTemplate}
       >
         <div className="text-gray-300">
-          <strong>{templateTitle}</strong> - Max Points: {maxPoints}
+          <strong>{template.title}</strong> - Max Points: {maxPoints}
         </div>
         <div className={"flex gap-3"}>
           <button
             onPointerDown={(
-              event: ReactMouseEvent // Change to onPointerDown
+              event: ReactMouseEvent, // Change to onPointerDown
             ) => handleRemoveTemplateButton(event, index)}
             type={"button"}
             className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
@@ -235,7 +185,7 @@ export default function TemplateCard({
         onSubmit={(event) => event.preventDefault()}
       >
         <h1 className="font-extrabold text-5xl mb-2 text-center">
-          {templateTitle}
+          {template.title}
         </h1>
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">

@@ -61,7 +61,7 @@ export const getAllRubrics = asyncHandler(
     };
 
     res.json(apiResponse);
-  }
+  },
 );
 
 export const createRubric = asyncHandler(
@@ -86,7 +86,7 @@ export const createRubric = asyncHandler(
     };
 
     res.json(apiResponse);
-  }
+  },
 );
 
 export const updateRubric = asyncHandler(
@@ -111,16 +111,16 @@ export const updateRubric = asyncHandler(
     if (isRubricObjectHash(canvasResponse)) {
       paletteResponse = createSuccessResponse(
         canvasResponse.rubric,
-        "Rubric updated successfully!"
+        "Rubric updated successfully!",
       );
     } else {
       paletteResponse = createErrorResponse(
         `Rubric update failed: ${
           canvasResponse.errors[0].message || "Unknown error"
-        }`
+        }`,
       );
     }
 
     res.json(paletteResponse);
-  }
+  },
 );

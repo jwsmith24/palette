@@ -21,7 +21,7 @@ userRouter.put(
   "/settings",
   updateUserSettingsValidator,
   validationErrorHandler,
-  updateUserSettings
+  updateUserSettings,
 );
 
 export default userRouter;

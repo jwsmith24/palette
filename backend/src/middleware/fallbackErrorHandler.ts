@@ -15,11 +15,11 @@ export const fallbackErrorHandler = (
   _req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   console.error(`Uncaught error: ${err.message} `);
   const paletteResponse = createErrorResponse(
-    err.message || "An unexpected error occurred"
+    err.message || "An unexpected error occurred",
   );
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(paletteResponse);
 };

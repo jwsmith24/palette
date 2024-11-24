@@ -37,7 +37,7 @@ describe("RubricCriterion", () => {
         "Detailed description",
         15,
         mockRatings,
-        123
+        123,
       );
 
       expect(criterion.description).toBe("Criterion Title");
@@ -77,7 +77,7 @@ describe("RubricCriterion", () => {
         "Criterion with Ratings",
         "Long Description",
         0,
-        ratings
+        ratings,
       );
 
       // Call updatePoints to update the points based on the ratings

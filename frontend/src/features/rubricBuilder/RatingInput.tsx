@@ -20,7 +20,7 @@ export function RatingInput({
   const [points, setPoints] = useState<number>(rating.points);
   const [title, setTitle] = useState<string>(rating.description);
   const [description, setDescription] = useState<string>(
-    rating.longDescription
+    rating.longDescription,
   );
 
   /**
@@ -29,7 +29,7 @@ export function RatingInput({
   // temp state used for form entries, only updating the actual rating state on a save
   const [tempTitle, setTempTitle] = useState<string>(rating.description);
   const [tempDescription, setTempDescription] = useState<string>(
-    rating.longDescription
+    rating.longDescription,
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -87,7 +87,7 @@ export function RatingInput({
    * @param event
    */
   const handleRemoveRatingPress = (
-    event: React.MouseEvent<HTMLButtonElement>
+    event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
     handleRemoveRating(ratingIndex); // trigger removal

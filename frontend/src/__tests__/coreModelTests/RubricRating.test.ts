@@ -27,7 +27,7 @@ describe("RubricRating", () => {
         10,
         "Test Rating",
         "Detailed description",
-        123
+        123,
       );
 
       expect(rating.points).toBe(10);

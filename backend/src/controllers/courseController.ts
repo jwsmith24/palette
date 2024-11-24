@@ -25,14 +25,14 @@ export const getAssignments = asyncHandler(
     };
 
     res.json(apiResponse);
-  }
+  },
 );
 
 export const getAssignment = asyncHandler(
   async (req: Request, res: Response) => {
     const assignment = await CoursesAPI.getAssignment(
       req.params.course_id,
-      req.params.assignment_id
+      req.params.assignment_id,
     );
     const apiResponse: PaletteAPIResponse<Assignment> = {
       data: assignment,
@@ -40,5 +40,5 @@ export const getAssignment = asyncHandler(
       message: `Assignment: ${assignment.name}`,
     };
     res.json(apiResponse);
-  }
+  },
 );

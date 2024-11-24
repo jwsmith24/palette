@@ -28,7 +28,7 @@ function isCanvasAPIError(obj: unknown): obj is CanvasAPIError {
  * @returns True if the object is a CanvasAPIErrorResponse, false otherwise.
  */
 export function isCanvasAPIErrorResponse(
-  obj: unknown
+  obj: unknown,
 ): obj is CanvasAPIErrorResponse {
   return (
     typeof obj === "object" &&

@@ -24,7 +24,7 @@ export default function GradingView(): ReactElement {
    * The active Assignment is already stored in context.
    */
   const { fetchData: getRubric } = useFetch(
-    `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`
+    `/courses/${activeCourse?.id}/rubrics/${activeAssignment?.rubricId}`,
   );
 
   const resetState = () => {

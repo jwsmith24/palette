@@ -28,6 +28,6 @@ export function Dialog({ isOpen, onClose, title, children }: DialogProps) {
         </button>
       </div>
     </div>,
-    document.getElementById("dialog-root") as HTMLElement // use the dialog portal root!
+    document.getElementById("dialog-root") as HTMLElement, // use the dialog portal root!
   );
 }

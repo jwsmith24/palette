@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 export function createTemplate(
   title: string = "",
   criteria: Criteria[] = [],
-  id?: number
+  id?: number,
 ): Template {
   return {
     title,

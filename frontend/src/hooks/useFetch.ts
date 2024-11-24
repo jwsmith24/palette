@@ -19,7 +19,7 @@ const DEFAULT_REQUEST = {
 
 export function useFetch<T>(
   endpoint: string, // url path to target endpoint
-  options: Partial<PaletteAPIRequest> = {} // use defaults if nothing is provided
+  options: Partial<PaletteAPIRequest> = {}, // use defaults if nothing is provided
 ) {
   const [response, setResponse] = useState<PaletteAPIResponse<T>>({
     success: false,

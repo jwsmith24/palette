@@ -15,11 +15,11 @@ if (config.error) {
   if (!fs.existsSync(".env")) {
     fs.writeFileSync(".env", defaultEnv.trim());
     console.log(
-      "Local .env file not found.. Created new one with default values."
+      "Local .env file not found.. Created new one with default values.",
     );
   } else {
     console.log(
-      "Failed to load local .env file but it exists. Check the file and try again."
+      "Failed to load local .env file but it exists. Check the file and try again.",
     );
   }
 }

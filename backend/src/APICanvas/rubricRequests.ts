@@ -19,14 +19,14 @@ export const RubricsAPI = {
    * @returns A promise that resolves to the created rubric response.
    */
   async createRubric(
-    request: RubricRequestBody
+    request: RubricRequestBody,
   ): Promise<CreateRubricResponse> {
     return fetchAPI<CreateRubricResponse>(
       `/courses/${request.course_id}/rubrics`,
       {
         method: "POST",
         body: JSON.stringify(request.data),
-      }
+      },
     );
   },
 
@@ -38,8 +38,8 @@ export const RubricsAPI = {
   async getRubric(request: RubricRequestBody): Promise<Rubric> {
     return toPaletteFormat(
       await fetchAPI<CanvasRubric>(
-        `/courses/${request.course_id}/rubrics/${request.rubric_id}`
-      )
+        `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
+      ),
     );
   },
 
@@ -49,14 +49,14 @@ export const RubricsAPI = {
    * @returns A promise that resolves to the updated rubric response.
    */
   async updateRubric(
-    request: RubricRequestBody
+    request: RubricRequestBody,
   ): Promise<UpdateRubricResponse> {
     return fetchAPI<UpdateRubricResponse>(
       `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
       {
         method: "PUT",
         body: JSON.stringify(request.data),
-      }
+      },
     );
   },
 
@@ -66,13 +66,13 @@ export const RubricsAPI = {
    * @returns A promise that resolves to the deleted rubric response.
    */
   async deleteRubric(
-    request: RubricRequestBody
+    request: RubricRequestBody,
   ): Promise<DeleteRubricResponse> {
     return fetchAPI<DeleteRubricResponse>(
       `/courses/${request.course_id}/rubrics/${request.rubric_id}`,
       {
         method: "DELETE",
-      }
+      },
     );
   },
 
@@ -83,13 +83,13 @@ export const RubricsAPI = {
    */
   async getAllRubrics(request: RubricRequestBody): Promise<Rubric[]> {
     const canvasRubrics: CanvasRubric[] = await fetchAPI<CanvasRubric[]>(
-      `/courses/${request.course_id}/rubrics?per_page=100`
+      `/courses/${request.course_id}/rubrics?per_page=100`,
     );
 
     // Check if the response is an array
     if (!Array.isArray(canvasRubrics)) {
       throw new Error(
-        "Unexpected response format: Expected an array of rubrics."
+        "Unexpected response format: Expected an array of rubrics.",
       );
     }
 

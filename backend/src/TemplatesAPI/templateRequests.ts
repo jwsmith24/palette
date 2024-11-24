@@ -1,22 +1,9 @@
-import {
-  Template,
-  Settings,
-  Criteria,
-  PaletteAPIResponse,
-  Rubric,
-} from "palette-types";
+import { Template, Settings, PaletteAPIResponse } from "palette-types";
 import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { createTemplate } from "../../../frontend/src/utils/templateFactory.js";
 import fs from "fs";
 
-/**
- * This file contains the interface for the RubricService class.
- * The RubricService class is responsible for handling all the business logic for rubrics.
- * This includes creating, updating, deleting, and retrieving rubrics from the datastore.
- */
-
-// Construct an absolute path
 const settingsPath = "./settings.json";
 
 export const TemplateService = {
@@ -27,10 +14,10 @@ export const TemplateService = {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
     const template = createTemplate();
-    const templateData = req.body as Template | null;
+    const templateData = (await req.body) as Template | null;
     if (templateData) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateData.title
+        (tmplt) => tmplt.title === templateData.title,
       );
       template.title = templateData.title;
       template.criteria = templateData.criteria;
@@ -59,10 +46,10 @@ export const TemplateService = {
     console.log("updating template request", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    const templateData = req.body as Template | null;
+    const templateData = (await req.body) as Template | null;
     if (templateData) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateData.title
+        (tmplt) => tmplt.title === templateData.title,
       );
       console.log("templateIndex", templateIndex);
       console.log("templateData", templateData);
@@ -87,10 +74,11 @@ export const TemplateService = {
   deleteTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    const templateKey = req.params.key;
+    const templateData = (await req.body) as Template | null;
+    const templateKey = templateData?.key;
     if (templateKey) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.key === templateKey
+        (tmplt) => tmplt.key === templateKey,
       );
       if (templateIndex !== -1) {
         settings.templates.splice(templateIndex, 1);
@@ -110,10 +98,11 @@ export const TemplateService = {
     async (req: Request, res: Response) => {
       const settingsData = fs.readFileSync(settingsPath, "utf8");
       const settings: Settings = JSON.parse(settingsData) as Settings;
-      const templateTitle = req.params.title;
+      const templateData = (await req.body) as Template | null;
+      const templateTitle = templateData?.title;
       if (templateTitle) {
         const templateIndex = settings.templates.findIndex(
-          (tmplt) => tmplt.title === templateTitle
+          (tmplt) => tmplt.title === templateTitle,
         );
         if (templateIndex !== -1) {
           settings.templates[templateIndex].criteria = [];
@@ -127,16 +116,17 @@ export const TemplateService = {
       };
 
       res.json(apiResponse);
-    }
+    },
   ),
 
   deleteAllCriteriaByKey: asyncHandler(async (req: Request, res: Response) => {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    const templateKey = req.params.key;
+    const templateData = (await req.body) as Template | null;
+    const templateKey = templateData?.key;
     if (templateKey) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.key === templateKey
+        (tmplt) => tmplt.key === templateKey,
       );
       if (templateIndex !== -1) {
         settings.templates[templateIndex].criteria = [];
@@ -156,10 +146,11 @@ export const TemplateService = {
     console.log("template data", req.body);
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    const templateTitle = req.params.title;
+    const templateData = (await req.body) as Template | null;
+    const templateTitle = templateData?.title;
     if (templateTitle) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateTitle
+        (tmplt) => tmplt.title === templateTitle,
       );
       if (templateIndex !== -1) {
         settings.templates.splice(templateIndex, 1);
@@ -180,16 +171,20 @@ export const TemplateService = {
   getAllTemplates: asyncHandler(async (req: Request, res: Response) => {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    res.json(settings.templates);
+    const request = (await req.body) as JSON;
+    if (request !== null) {
+      res.json(settings.templates);
+    }
   }),
 
   getTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    const templateKey = req.params.key;
+    const templateData = (await req.body) as Template | null;
+    const templateKey = templateData?.key;
     if (templateKey) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.key === templateKey
+        (tmplt) => tmplt.key === templateKey,
       );
       if (templateIndex !== -1) {
         res.json(settings.templates[templateIndex]);
@@ -200,10 +195,11 @@ export const TemplateService = {
   getTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
     const settingsData = fs.readFileSync(settingsPath, "utf8");
     const settings: Settings = JSON.parse(settingsData) as Settings;
-    const templateTitle = req.params.title;
+    const templateData = (await req.body) as Template | null;
+    const templateTitle = templateData?.title;
     if (templateTitle) {
       const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateTitle
+        (tmplt) => tmplt.title === templateTitle,
       );
       console.log("templateIndex", templateIndex);
       if (templateIndex !== -1) {
