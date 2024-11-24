@@ -44,7 +44,7 @@ export const parseVersionTwo = (data: string[][], callback: ParseCallback) => {
         criterionTitle,
         longDescription,
         maxPoints,
-        []
+        [],
       );
 
       for (let i = 3; i < row.length; i++) {
@@ -72,7 +72,7 @@ export const parseVersionTwo = (data: string[][], callback: ParseCallback) => {
 export const importCsv = (
   file: File,
   version: "versionOne" | "versionTwo",
-  callback: ParseCallback
+  callback: ParseCallback,
 ) => {
   Papa.parse(file, {
     header: false,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { importCsv } from "../../utils/CSVParser"; // Import the utility
 import { Criteria, Rubric } from "palette-types";
 import { v4 as uuid } from "uuid";
@@ -10,13 +10,15 @@ interface CSVUploadProps {
 }
 
 export const CSVUpload: React.FC<CSVUploadProps> = ({
-  rubric,
   setRubric,
   closeImportCard,
 }) => {
   const [showVersionModal, setShowVersionModal] = useState(false);
 
-  const handleFileChange = (file: File, version: "versionOne" | "versionTwo") => {
+  const handleFileChange = (
+    file: File,
+    version: "versionOne" | "versionTwo",
+  ) => {
     const fileExtension = file.name.split(".").pop()?.toLowerCase();
     if (fileExtension !== "csv") {
       alert("Unsupported file format. Please upload a CSV file.");
@@ -44,10 +46,10 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({
             criteria: newCriteria,
             pointsPossible: newCriteria.reduce(
               (sum, criterion) => sum + criterion.points,
-              0
+              0,
             ),
             key: `rubric-${uuid()}`,
-          }
+          },
     );
 
     closeImportCard();

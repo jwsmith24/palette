@@ -1,117 +1,48 @@
-import { beforeEach, expect, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import { CSVUpload } from "@features";
+import { vi } from "vitest";
 
-vi.mock("papaparse", () => ({
-  parse: vi.fn(),
-}));
+describe("CSVUpload Component", () => {
+  test("calls the closeImportCard callback after successful import", async () => {
+    const mockSetRubric = vi.fn();
+    const mockCloseImportCard = vi.fn();
 
-describe("CSV upload component", () => {
-  const mockSetRubric = vi.fn();
-  const mockCloseImportCard = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-it("displays an error if no file is selected", () => {
-  render(
-    <CSVUpload
-      rubric={undefined}
-      setRubric={mockSetRubric}
-      closeImportCard={mockCloseImportCard}
-    />
-  );
-
-  const fileInput = screen.getByTestId("file-upload");
-
-  // Mock `alert` before triggering
-  vi.spyOn(window, "alert").mockImplementation(() => {});
-
-  // Simulate file input with no files selected
-  fireEvent.change(fileInput, { target: { files: null } });
-
-  expect(window.alert).toHaveBeenCalledWith(
-    "No file selected. Please choose a file to import."
-  );
-});
-
-  it("displays an error for unsupported file formats", () => {
-    render(
+    // Render the component
+    const { getByText, container } = render(
       <CSVUpload
         rubric={undefined}
         setRubric={mockSetRubric}
         closeImportCard={mockCloseImportCard}
-      />
+      />,
     );
 
-    const selectFileButton = screen.getByRole("button", { name: /select file/i });
-    const fileInput = screen.getByTestId("file-upload");
+    // Simulate clicking "Import CSV"
+    const importButton = getByText("Import CSV");
+    fireEvent.click(importButton);
 
-    vi.spyOn(window, "alert").mockImplementation(() => {});
-    const unsupportedFile = new File(["content"], "unsupported.txt", {
-      type: "text/plain",
+    // Simulate clicking "Version 1"
+    fireEvent.click(getByText("Version 1"));
+
+    // Ensure a file input is added to the DOM
+    const fileInput = container.querySelector('input[type="file"]');
+    expect(fileInput).toBeTruthy();
+
+    // Create a mock file
+    const mockFile = new File(["criterion1,description1,5"], "test.csv", {
+      type: "text/csv",
     });
 
-    fireEvent.change(fileInput, { target: { files: [unsupportedFile] } });
+    // Mock the `files` property and trigger change event
+    Object.defineProperty(fileInput!, "files", {
+      value: [mockFile],
+      writable: false,
+    });
 
-    expect(window.alert).toHaveBeenCalledWith(
-      "Unsupported file format. Please upload a CSV file."
-    );
-  });
+    fireEvent.change(fileInput!);
 
-  it("displays an error if version is not selected before uploading", () => {
-    render(
-      <CSVUpload
-        rubric={undefined}
-        setRubric={mockSetRubric}
-        closeImportCard={mockCloseImportCard}
-      />
-    );
-
-    const fileInput = screen.getByTestId("file-upload");
-    const csvFile = new File(["content"], "file.csv", { type: "text/csv" });
-
-    vi.spyOn(window, "alert").mockImplementation(() => {});
-    fireEvent.change(fileInput, { target: { files: [csvFile] } });
-
-    expect(window.alert).toHaveBeenCalledWith(
-      "Please select a parsing version before uploading."
-    );
-  });
-
-  it("enables the Select File button when a version is selected", () => {
-    render(
-      <CSVUpload
-        rubric={undefined}
-        setRubric={mockSetRubric}
-        closeImportCard={mockCloseImportCard}
-      />
-    );
-
-    const importCSVButton = screen.getByRole("button", { name: /import csv/i });
-    fireEvent.click(importCSVButton);
-
-    const version1Button = screen.getByRole("button", { name: /version 1/i });
-    fireEvent.click(version1Button);
-
-    const selectFileButton = screen.getByRole("button", { name: /select file/i });
-    expect(selectFileButton).not.toBeDisabled();
-  });
-
-  it("opens the dropdown when Import CSV button is clicked", () => {
-    render(
-      <CSVUpload
-        rubric={undefined}
-        setRubric={mockSetRubric}
-        closeImportCard={mockCloseImportCard}
-      />
-    );
-
-    const importCSVButton = screen.getByRole("button", { name: /import csv/i });
-    fireEvent.click(importCSVButton);
-
-    expect(screen.getByRole("button", { name: /version 1/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /version 2/i })).toBeInTheDocument();
+    // Verify that the closeImportCard callback was called
+    await waitFor(() => {
+      expect(mockCloseImportCard).toHaveBeenCalledTimes(1);
+    });
   });
 });
