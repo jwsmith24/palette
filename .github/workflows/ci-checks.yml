@@ -43,7 +43,7 @@ jobs:
 
         # Check that the code runs in Node (will catch missing .js file extensions)
       - name: Validate Node
-        run: node backend/dist/backend/src/app.js
+        run: node backend/src/validateNode.js
 
       - name: Run ESLint
         run: npm run lint
