@@ -8,7 +8,7 @@ import { requestLogger } from "./middleware/requestLogger.js";
 import { responseLogger } from "./middleware/responseLogger.js";
 import { fallbackErrorHandler } from "./middleware/fallbackErrorHandler.js";
 import { wildcardRouter } from "./routes/wildcardRouter.js";
-import courseRouter from "./routes/courseRouter.js";
+import courseRouter from "./routes/courseRouter";
 import userRouter from "./routes/userRouter.js";
 
 // Get the directory name
