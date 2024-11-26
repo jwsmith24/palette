@@ -23,7 +23,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate() || null);
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null
+    null,
   );
   const [criterionAdded, setCriterionAdded] = useState(false);
   const [updatingExistingTemplate, setUpdatingExistingTemplate] =
@@ -129,7 +129,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleSelectedExistingTemplate = (
-    event: React.MouseEvent<HTMLElement>
+    event: React.MouseEvent<HTMLElement>,
   ) => {
     event.preventDefault();
     template.criteria = [];
@@ -140,23 +140,24 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     setSelectedTemplateTitle(textAreaTemplateTitle || "");
 
     const selectedTemplateJson = settingsJson.templates.find(
-      (tmplt) => tmplt.title === textAreaTemplateTitle
+      (tmplt) => tmplt.title === textAreaTemplateTitle,
     );
 
     if (textAreaTemplateTitle != null) {
       // if this template exist in the db
       // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
       if (selectedTemplateJson?.criteria != undefined) {
-        selectedTemplateJson?.criteria.forEach((existingCriterion: any) => {
+        selectedTemplateJson?.criteria.forEach((existingCriterion) => {
           const copyCriterion = createCriterion();
 
+          copyCriterion.ratings = existingCriterion.ratings;
           copyCriterion.description = existingCriterion.description;
-          copyCriterion.id = existingCriterion.id;
-          copyCriterion.key = existingCriterion.key;
           copyCriterion.longDescription = existingCriterion.longDescription;
           copyCriterion.points = existingCriterion.points;
-          copyCriterion.ratings = existingCriterion.ratings;
           copyCriterion.template = existingCriterion.template;
+          copyCriterion.templateTitle = existingCriterion.templateTitle;
+          copyCriterion.key = existingCriterion.key;
+
           template.criteria.push(copyCriterion);
         });
       }
