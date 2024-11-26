@@ -136,7 +136,7 @@ export function RubricBuilderMain(): ReactElement {
     },
   );
 
-  /* this is for updating the existing templates with most 
+  /* this is for updating the existing templates with most
   recent version of the criteria before saving the rubric
   in case any criterion are updated after intial template selection
   */
@@ -638,9 +638,8 @@ export function RubricBuilderMain(): ReactElement {
           </button>
 
           <SaveButton
-            onClick={(event: MouseEvent<HTMLButtonElement>) =>
-              void handleSubmitRubric(event)
-            }
+            title={"Rubric"}
+            onClick={(event) => void handleSubmitRubric(event)}
           />
         </div>
       </form>

@@ -183,7 +183,7 @@ export function SettingsMain(): ReactElement {
           </div>
         </div>
 
-        <SaveButton onClick={() => void handleSave()} />
+        <SaveButton title={"Settings"} onClick={() => void handleSave()} />
       </form>
     );
   };
