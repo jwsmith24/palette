@@ -23,7 +23,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate() || null);
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null,
+    null
   );
   const [criterionAdded, setCriterionAdded] = useState(false);
   const [updatingExistingTemplate, setUpdatingExistingTemplate] =
@@ -129,7 +129,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleSelectedExistingTemplate = (
-    event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLElement>
   ) => {
     event.preventDefault();
     template.criteria = [];
@@ -140,7 +140,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     setSelectedTemplateTitle(textAreaTemplateTitle || "");
 
     const selectedTemplateJson = settingsJson.templates.find(
-      (tmplt) => tmplt.title === textAreaTemplateTitle,
+      (tmplt) => tmplt.title === textAreaTemplateTitle
     );
 
     if (textAreaTemplateTitle != null) {
@@ -214,7 +214,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
         </Menu>
 
         <button
-          onClick={handleSave}
+          onClick={() => void handleSave()}
           className="h-10 mt-4 bg-green-600 text-white font-bold rounded-lg py-2 px-4 transition duration-300 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           Save
