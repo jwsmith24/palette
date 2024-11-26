@@ -39,7 +39,7 @@ jobs:
 
       # Ensure the project builds
       - name: Build project
-        run: npm run build
+        run: npm run build:all
 
         # Check that the code runs in Node (will catch missing .js file extensions)
       - name: Validate Node
@@ -102,7 +102,7 @@ jobs:
 
       # Ensure the project builds
       - name: Build project
-        run: npm run build
+        run: npm run build:all
 
       - name: Test Suites
         run: npm run test
