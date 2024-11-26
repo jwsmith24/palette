@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 
 type SaveButtonProps = {
   /**
@@ -8,6 +8,10 @@ type SaveButtonProps = {
   onClick:
     | ((event: React.MouseEvent<HTMLButtonElement>) => void)
     | (() => void);
+  /**
+   * The title of the item being saved (e.g., rubric, settings, etc.).
+   */
+  title: string;
 };
 
 /**
@@ -16,7 +20,11 @@ type SaveButtonProps = {
  * @param {SaveButtonProps} props - The properties for the SaveButton component.
  * @returns {ReactElement} The rendered SaveButton component.
  */
-export const SaveButton: React.FC<SaveButtonProps> = ({ onClick }) => {
+export const SaveButton: React.FC<SaveButtonProps> = ({
+  onClick,
+  title,
+}: SaveButtonProps): ReactElement => {
+  const DEFAULT_TITLE = "Save";
   /**
    * Handles the button click event and calls the provided `onClick` function.
    *
@@ -37,8 +45,9 @@ export const SaveButton: React.FC<SaveButtonProps> = ({ onClick }) => {
                      hover:bg-green-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
       onClick={handleClick}
       type={"button"}
+      title={title}
     >
-      Save Rubric
+      {title ? `Save ${title}` : DEFAULT_TITLE}
     </button>
   );
 };
