@@ -1,6 +1,6 @@
 /**
- * Generic selector widget that tracks the active context for course, assignment, etc. and triggers the dialog for
- * user updates.
+ * Core functionality and styles for context selection buttons. Intended use is for specialized components to wrap
+ * this base and implement their unique data fetching/handling.
  */
 import { ReactElement } from "react";
 import { Assignment, Course } from "palette-types";
