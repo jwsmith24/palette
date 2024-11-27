@@ -1,8 +1,8 @@
-import { useCourse } from "../../context/CourseProvider.tsx";
+import { useCourse } from "@context";
 import { ReactElement } from "react";
 import { ActiveSelectionButton } from "@components";
 
-export default function ActiveCourseSelection({
+export function ActiveCourseSelection({
   setDialogOpen,
 }: {
   setDialogOpen: (open: boolean) => void;

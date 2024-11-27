@@ -5,7 +5,7 @@ import { useCourse } from "@context";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import { LoadingDots } from "@components";
 
-export default function AssignmentSelectionMenu({
+export function AssignmentSelectionMenu({
   onSelect,
 }: {
   onSelect: (open: boolean) => void;

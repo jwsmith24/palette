@@ -2,7 +2,7 @@ import { useAssignment } from "@context";
 import { ReactElement } from "react";
 import { ActiveSelectionButton } from "@components";
 
-export default function ActiveAssignmentSelection({
+export function ActiveAssignmentSelection({
   setDialogOpen,
 }: {
   setDialogOpen: (open: boolean) => void;

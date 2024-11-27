@@ -3,11 +3,13 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import ActiveCourseSelection from "../contextSelectors/ActiveCourseSelection.tsx";
-import { Dialog } from "../modals/Dialog.tsx";
-import CourseSelectionMenu from "../contextSelectors/CourseSelectionMenu.tsx";
-import ActiveAssignmentSelection from "../contextSelectors/ActiveAssignmentSelection.tsx";
-import AssignmentSelectionMenu from "../contextSelectors/AssignmentSelectionMenu.tsx";
+import {
+  ActiveAssignmentSelection,
+  ActiveCourseSelection,
+  AssignmentSelectionMenu,
+  CourseSelectionMenu,
+  Dialog,
+} from "@components";
 
 function Navbar() {
   const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);

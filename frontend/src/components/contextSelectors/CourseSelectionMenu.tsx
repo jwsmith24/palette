@@ -9,7 +9,7 @@ import { useFetch } from "@hooks";
 import { Course, PaletteAPIResponse } from "palette-types";
 import { useCourse } from "../../context/CourseProvider.tsx";
 
-export default function CourseSelectionMenu({
+export function CourseSelectionMenu({
   onSelect,
 }: {
   onSelect: (open: boolean) => void;
