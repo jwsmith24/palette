@@ -1,24 +1,21 @@
 import { useAssignment } from "@context";
+import { ReactElement } from "react";
+import { ActiveSelectionWidget } from "@components";
 
 export default function ActiveAssignmentSelection({
   setDialogOpen,
 }: {
   setDialogOpen: (open: boolean) => void;
-}) {
-  const activeAssignmentStyle =
-    "font-bold text-green-400 hover:opacity-80 cursor-pointer";
-
+}): ReactElement {
+  // Assignment Context
   const { activeAssignment } = useAssignment();
 
   return (
-    <div className="flex items-center gap-2 ring-2 ring-black rounded-full p-2 relative">
-      <p>Active Assignment:</p>
-      <button
-        className={activeAssignmentStyle}
-        onClick={() => setDialogOpen(true)}
-      >
-        {activeAssignment ? activeAssignment.name : "Select Assignment"}
-      </button>
-    </div>
+    <ActiveSelectionWidget
+      setDialogOpen={setDialogOpen}
+      activeContext={activeAssignment}
+      label={activeAssignment?.name || "Assignment"}
+      buttonStyle="font-bold text-green-400 hover:opacity-80 cursor-pointer"
+    />
   );
 }
