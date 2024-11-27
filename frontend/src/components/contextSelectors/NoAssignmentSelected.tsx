@@ -3,7 +3,7 @@
  * @constructor
  */
 import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
-import { Dialog } from "./index.ts";
+import { Dialog } from "@components";
 import { useState } from "react";
 
 export function NoAssignmentSelected() {

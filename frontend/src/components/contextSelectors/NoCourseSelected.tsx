@@ -3,7 +3,7 @@
  * @constructor
  */
 import { useState } from "react";
-import { Dialog } from "./index.ts";
+import { Dialog } from "@components";
 import CourseSelectionMenu from "./CourseSelectionMenu.tsx";
 
 export function NoCourseSelected() {

@@ -1,4 +1,4 @@
-import { useCourse } from "../context/CourseProvider.tsx";
+import { useCourse } from "../../context/CourseProvider.tsx";
 import { ReactElement } from "react";
 import { ActiveSelectionWidget } from "@components";
 
