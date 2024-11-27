@@ -68,19 +68,19 @@ function Navbar() {
   }
 
   return (
-    <div className="flex justify-between items-center h-16 mx-4">
+    <div className="flex items-center h-16 mx-4 justify-between">
       {renderNavButtons()}
 
-      <div className={"flex gap-20"}>
+      <div className={"hidden gap-20 md:flex"}>
         <ActiveCourseSelection setDialogOpen={setCourseDialogOpen} />
         <ActiveAssignmentSelection setDialogOpen={setAssignmentDialogOpen} />
-        <button
-          className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
-          onClick={handleOpenUserMenu}
-        >
-          P
-        </button>
       </div>
+      <button
+        className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
+        onClick={handleOpenUserMenu}
+      >
+        P
+      </button>
 
       <Menu
         sx={{ mt: "45px" }}

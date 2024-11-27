@@ -1,4 +1,4 @@
-import {PaletteAPIErrorData} from "./PaletteAPIErrorData";
+import { PaletteAPIErrorData } from "./PaletteAPIErrorData";
 
 /**
  * Used by the useFetch React hook embedded within components that need to make fetch requests to the backend.

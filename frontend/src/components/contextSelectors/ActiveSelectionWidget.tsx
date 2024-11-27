@@ -21,13 +21,10 @@ export function ActiveSelectionWidget({
   return (
     <div
       className={
-        "flex items-center gap-2 ring-2 ring-gray-400 ring-opacity-100 rounded-full p-2 relative"
+        "flex items-center gap-2 ring-2 ring-gray-400 ring-opacity-30 rounded-full p-2 relative"
       }
       role={"group"}
     >
-      <p className={"text-gray-700"} aria-label={"active selection widget"}>
-        {label}
-      </p>
       <button
         className={buttonStyle}
         onClick={() => setDialogOpen(true)}
