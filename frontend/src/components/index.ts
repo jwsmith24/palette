@@ -13,4 +13,4 @@ export * from "./buttons/SaveButton.tsx";
 export * from "./contextSelectors/NoCourseSelected.tsx";
 export * from "./contextSelectors/NoAssignmentSelected.tsx";
 export * from "./layout/MainPageTemplate.tsx";
-export * from "./contextSelectors/ActiveSelectionWidget.tsx";
+export * from "./contextSelectors/ActiveSelectionButton.tsx";

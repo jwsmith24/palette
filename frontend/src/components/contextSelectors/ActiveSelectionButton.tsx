@@ -7,7 +7,7 @@ import { Assignment, Course } from "palette-types";
 
 type ActiveContext = Assignment | Course;
 
-export function ActiveSelectionWidget({
+export function ActiveSelectionButton({
   setDialogOpen,
   activeContext,
   label,
@@ -19,19 +19,12 @@ export function ActiveSelectionWidget({
   setDialogOpen: (open: boolean) => void;
 }): ReactElement {
   return (
-    <div
-      className={
-        "flex items-center gap-2 ring-2 ring-gray-400 ring-opacity-30 rounded-full p-2 relative"
-      }
-      role={"group"}
+    <button
+      className={`bg-gray-500 text-center rounded-full px-3 py-1 font-bold hover:bg-gray-600 cursor-pointer transition duration-300 transform hover:scale-105 ${buttonStyle} `}
+      onClick={() => setDialogOpen(true)}
+      aria-label={"open selection modal"}
     >
-      <button
-        className={buttonStyle}
-        onClick={() => setDialogOpen(true)}
-        aria-label={"open selection modal"}
-      >
-        {activeContext ? activeContext.name : `Select ${label}`}
-      </button>
-    </div>
+      {activeContext ? activeContext.name : `Select ${label}`}
+    </button>
   );
 }

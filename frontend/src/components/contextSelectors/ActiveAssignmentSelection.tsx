@@ -1,6 +1,6 @@
 import { useAssignment } from "@context";
 import { ReactElement } from "react";
-import { ActiveSelectionWidget } from "@components";
+import { ActiveSelectionButton } from "@components";
 
 export default function ActiveAssignmentSelection({
   setDialogOpen,
@@ -11,11 +11,11 @@ export default function ActiveAssignmentSelection({
   const { activeAssignment } = useAssignment();
 
   return (
-    <ActiveSelectionWidget
+    <ActiveSelectionButton
       setDialogOpen={setDialogOpen}
       activeContext={activeAssignment}
       label={activeAssignment?.name || "Assignment"}
-      buttonStyle="font-bold text-green-400 hover:opacity-80 cursor-pointer"
+      buttonStyle="font-bold text-green-400"
     />
   );
 }

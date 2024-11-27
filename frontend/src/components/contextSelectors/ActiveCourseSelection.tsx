@@ -1,6 +1,6 @@
 import { useCourse } from "../../context/CourseProvider.tsx";
 import { ReactElement } from "react";
-import { ActiveSelectionWidget } from "@components";
+import { ActiveSelectionButton } from "@components";
 
 export default function ActiveCourseSelection({
   setDialogOpen,
@@ -11,11 +11,11 @@ export default function ActiveCourseSelection({
   const { activeCourse } = useCourse();
 
   return (
-    <ActiveSelectionWidget
+    <ActiveSelectionButton
       setDialogOpen={setDialogOpen}
       activeContext={activeCourse}
       label={activeCourse?.name || "Course"}
-      buttonStyle="font-bold text-orange-400 hover:opacity-80 cursor-pointer"
+      buttonStyle={"text-orange-400"}
     />
   );
 }
