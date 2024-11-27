@@ -433,7 +433,10 @@ export function RubricBuilderMain(): ReactElement {
             Add Criteria
           </button>
 
-          <SaveButton onClick={(event) => void handleSubmitRubric(event)} />
+          <SaveButton
+            title={"Rubric"}
+            onClick={(event) => void handleSubmitRubric(event)}
+          />
         </div>
       </form>
     );
