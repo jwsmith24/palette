@@ -12,4 +12,4 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
       - NODE_ENV=development
-    command: sh -c "npm run dev"
+    command: sh -c "npm run clean && npm run dev"
