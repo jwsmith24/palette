@@ -2,8 +2,8 @@
  * Component to prompt the user to select an assignment before they're able to build a rubric.
  * @constructor
  */
-import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
-import { Dialog } from "./index.ts";
+
+import { AssignmentSelectionMenu, Dialog } from "@components";
 import { useState } from "react";
 
 export function NoAssignmentSelected() {

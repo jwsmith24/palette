@@ -25,7 +25,7 @@ export default function CriteriaInput({
   activeCriterionIndex: number;
   criterion: Criteria;
   handleCriteriaUpdate: (index: number, criterion: Criteria) => void;
-  removeCriterion: (index: number) => void;
+  removeCriterion: (index: number, criterion: Criteria) => void;
   setActiveCriterionIndex: (index: number) => void;
 }): ReactElement {
   const [ratings, setRatings] = useState<Rating[]>(criterion.ratings);
@@ -87,7 +87,7 @@ export default function CriteriaInput({
   ) => {
     event.preventDefault();
     event.stopPropagation();
-    removeCriterion(index);
+    removeCriterion(index, criterion);
   };
 
   // Update criterion when ratings change.
@@ -102,7 +102,6 @@ export default function CriteriaInput({
 
   // Update criterion when a rating is removed
   const handleRemoveRating = (ratingIndex: number) => {
-    console.log(`removing rating at ${ratingIndex}`);
     const updatedRatings = ratings.filter((_, i) => i !== ratingIndex);
     setRatings(updatedRatings);
     criterion.ratings = updatedRatings;
