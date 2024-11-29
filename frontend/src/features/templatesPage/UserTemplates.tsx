@@ -38,7 +38,7 @@ export default function RubricBuilder(): ReactElement {
   // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
     () => setModal((prevModal) => ({ ...prevModal, isOpen: false })),
-    []
+    [],
   );
   // object containing related modal state
   const [modal, setModal] = useState({
@@ -50,7 +50,7 @@ export default function RubricBuilder(): ReactElement {
 
   const closePopUp = useCallback(
     () => setPopUp((prevPopUp) => ({ ...prevPopUp, isOpen: false })),
-    []
+    [],
   );
 
   const [popUp, setPopUp] = useState({
@@ -102,10 +102,10 @@ export default function RubricBuilder(): ReactElement {
     if (!rubric) return;
     if (event.over) {
       const oldIndex = rubric.criteria.findIndex(
-        (criterion) => criterion.key === event.active.id
+        (criterion) => criterion.key === event.active.id,
       );
       const newIndex = rubric.criteria.findIndex(
-        (criterion) => criterion.key === event.over!.id // assert not null for type safety
+        (criterion) => criterion.key === event.over!.id, // assert not null for type safety
       );
 
       const updatedCriteria = [...rubric.criteria];
@@ -139,7 +139,7 @@ export default function RubricBuilder(): ReactElement {
         const isDuplicate = currentCriteria.some(
           (existingCriterion) =>
             existingCriterion.key.trim().toLowerCase() ===
-            newCriterion.key.trim().toLowerCase()
+            newCriterion.key.trim().toLowerCase(),
         );
 
         if (isDuplicate) {
@@ -150,14 +150,14 @@ export default function RubricBuilder(): ReactElement {
 
         return acc;
       },
-      { unique: [] as Criteria[], duplicates: [] as Criteria[] }
+      { unique: [] as Criteria[], duplicates: [] as Criteria[] },
     );
 
     // Log information about duplicates if any were found
     if (duplicates.length > 0) {
       console.log(
         `Found ${duplicates.length} duplicate criteria that were skipped:`,
-        duplicates.map((c) => c.description)
+        duplicates.map((c) => c.description),
       );
     }
 
@@ -166,7 +166,7 @@ export default function RubricBuilder(): ReactElement {
         ({
           ...(prevRubric ?? createRubric()),
           criteria: [...(prevRubric?.criteria ?? []), ...unique],
-        }) as Rubric
+        }) as Rubric,
     );
   };
 
