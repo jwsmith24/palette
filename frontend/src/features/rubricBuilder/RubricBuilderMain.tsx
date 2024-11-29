@@ -149,7 +149,6 @@ export function RubricBuilderMain(): ReactElement {
    * Fires when user selects an assignment that doesn't have a rubric id associated with it.
    */
   const handleNewRubric = () => {
-    console.log("Active assignment doesn't have a rubric");
     const newRubric = createRubric();
     setRubric(newRubric);
 
@@ -183,9 +182,6 @@ export function RubricBuilderMain(): ReactElement {
     setLoading(true);
 
     const checkRubricExists = async () => {
-      console.log("checking existence:");
-      console.log(activeAssignment);
-
       if (!activeAssignment.rubricId) {
         handleNewRubric();
         return;
@@ -194,7 +190,6 @@ export function RubricBuilderMain(): ReactElement {
       const response = await getRubric();
 
       if (!response) {
-        console.log("response is not good");
         setLoading(false);
         return;
       }
@@ -365,7 +360,10 @@ export function RubricBuilderMain(): ReactElement {
     );
   }, [rubric?.criteria]);
 
-  // update rubric state with new list of criteria
+  /**
+   * Callback function to trigger the creation of a new criterion on the rubric.
+   * @param event user clicks "add criteria"
+   */
   const handleAddCriteria = (event: MouseEvent) => {
     event.preventDefault();
     if (!rubric) return;
@@ -374,14 +372,42 @@ export function RubricBuilderMain(): ReactElement {
     setActiveCriterionIndex(newCriteria.length - 1);
   };
 
-  const handleRemoveCriterion = (index: number) => {
-    if (!rubric) return;
-    const newCriteria = [...rubric.criteria];
-    newCriteria.splice(index, 1); // remove the target criterion from the array
-    setRubric({ ...rubric, criteria: newCriteria });
+  /**
+   * Callback function to remove a target criterion from the rubric. Triggers confirmation modal to avoid any
+   * accidental data loss.
+   * @param index of the target criterion within the rubric
+   * @param criterion target criterion object, used for modal details.
+   */
+  const handleRemoveCriterion = (index: number, criterion: Criteria) => {
+    if (!rubric) return; // do nothing if there is no active rubric
+
+    const deleteCriterion = () => {
+      const newCriteria = [...rubric.criteria];
+      newCriteria.splice(index, 1);
+      setRubric({ ...rubric, criteria: newCriteria });
+    };
+
+    setModal({
+      isOpen: true,
+      title: "Confirm Criterion Removal",
+      message: `Are you sure you want to remove ${criterion.description}? This action is (currently) not reversible.`,
+      choices: [
+        {
+          label: "Destroy it!",
+          action: () => {
+            deleteCriterion();
+            closeModal();
+          },
+        },
+      ],
+    });
   };
 
-  // update criterion at given index
+  /**
+   * Callback function to update a target criterion with new changes within the rubric.
+   * @param index target criterion index to update
+   * @param criterion updated criterion object
+   */
   const handleUpdateCriterion = (index: number, criterion: Criteria) => {
     if (!rubric) return;
     const newCriteria = [...rubric.criteria];
