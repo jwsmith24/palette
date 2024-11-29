@@ -13,4 +13,4 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/palette-db
       - NODE_ENV=development
-    command: sh -c "npm run dev && echo 'Application started successfully, access it at https://localhost:5173'"
+    command: sh -c "npm run dev"
