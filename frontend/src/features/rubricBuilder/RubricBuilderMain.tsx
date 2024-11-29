@@ -469,7 +469,7 @@ export function RubricBuilderMain(): ReactElement {
   };
 
   const handleImportTemplate = (template: Template) => {
-    console.log("import template");
+    console.log("import template in rubric builder main");
     if (!rubric) return;
 
     const currentCriteria = rubric.criteria;

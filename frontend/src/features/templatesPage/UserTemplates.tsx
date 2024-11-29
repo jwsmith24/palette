@@ -18,8 +18,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCourse } from "../../context";
 import { useAssignment } from "../../context/AssignmentProvider.tsx";
 import TemplateUpload from "../rubricBuilder/TemplateUpload.tsx";
-import settingsJson from "../../../../backend/settings.json";
 import TemplateCard from "./TemplateCards";
+import { useFetch } from "@hooks";
 
 export default function RubricBuilder(): ReactElement {
   /**
@@ -32,14 +32,13 @@ export default function RubricBuilder(): ReactElement {
   // tracks which criterion card is displaying the detailed view (limited to one at a time)
   const [activeTemplateIndex, setActiveTemplateIndex] = useState(-1);
 
-  const [userTemplates, setUserTemplates] = useState<Template[]>([]);
-
   const [templateInputActive, setTemplateInputActive] = useState(false);
+  const [templates, setTemplates] = useState<Template[]>([]);
 
   // declared before, so it's initialized for the modal initial state. memoized for performance
   const closeModal = useCallback(
     () => setModal((prevModal) => ({ ...prevModal, isOpen: false })),
-    [],
+    []
   );
   // object containing related modal state
   const [modal, setModal] = useState({
@@ -51,7 +50,7 @@ export default function RubricBuilder(): ReactElement {
 
   const closePopUp = useCallback(
     () => setPopUp((prevPopUp) => ({ ...prevPopUp, isOpen: false })),
-    [],
+    []
   );
 
   const [popUp, setPopUp] = useState({
@@ -60,21 +59,30 @@ export default function RubricBuilder(): ReactElement {
     message: "",
   });
 
+  const { fetchData: getAllTemplates } = useFetch("/templates", {
+    method: "GET",
+  });
+
   /**
    * Active Course and Assignment State (Context)
    */
   const { activeCourse } = useCourse();
   const { activeAssignment } = useAssignment();
 
-  useEffect(() => {
-    if (!activeCourse || !activeAssignment) return;
-  });
-
   /**
    * Effect hook to see if the active assignment has an existing rubric. Apply loading status while waiting to
    * determine which view to render.
    */
   useEffect(() => {
+    (async () => {
+      const response = await getAllTemplates();
+      if (response.success) {
+        setTemplates(response.data as Template[]);
+      }
+    })().catch((error) => {
+      console.error("Failed to fetch templates:", error);
+    });
+
     if (!activeCourse) {
       console.warn("Select a course before trying to fetch rubric");
       return;
@@ -94,10 +102,10 @@ export default function RubricBuilder(): ReactElement {
     if (!rubric) return;
     if (event.over) {
       const oldIndex = rubric.criteria.findIndex(
-        (criterion) => criterion.key === event.active.id,
+        (criterion) => criterion.key === event.active.id
       );
       const newIndex = rubric.criteria.findIndex(
-        (criterion) => criterion.key === event.over!.id, // assert not null for type safety
+        (criterion) => criterion.key === event.over!.id // assert not null for type safety
       );
 
       const updatedCriteria = [...rubric.criteria];
@@ -131,7 +139,7 @@ export default function RubricBuilder(): ReactElement {
         const isDuplicate = currentCriteria.some(
           (existingCriterion) =>
             existingCriterion.key.trim().toLowerCase() ===
-            newCriterion.key.trim().toLowerCase(),
+            newCriterion.key.trim().toLowerCase()
         );
 
         if (isDuplicate) {
@@ -142,14 +150,14 @@ export default function RubricBuilder(): ReactElement {
 
         return acc;
       },
-      { unique: [] as Criteria[], duplicates: [] as Criteria[] },
+      { unique: [] as Criteria[], duplicates: [] as Criteria[] }
     );
 
     // Log information about duplicates if any were found
     if (duplicates.length > 0) {
       console.log(
         `Found ${duplicates.length} duplicate criteria that were skipped:`,
-        duplicates.map((c) => c.description),
+        duplicates.map((c) => c.description)
       );
     }
 
@@ -158,7 +166,7 @@ export default function RubricBuilder(): ReactElement {
         ({
           ...(prevRubric ?? createRubric()),
           criteria: [...(prevRubric?.criteria ?? []), ...unique],
-        }) as Rubric,
+        }) as Rubric
     );
   };
 
@@ -169,29 +177,27 @@ export default function RubricBuilder(): ReactElement {
 
   const handleRemoveTemplate = (index: number) => {
     if (!rubric) return;
-    const newTemplates = [...userTemplates];
+    const newTemplates = [...templates];
     newTemplates.splice(index, 1);
-    setUserTemplates(newTemplates);
+    setTemplates(newTemplates);
   };
 
   const handleUpdateTemplate = (index: number, template: Template) => {
     if (!rubric) return;
-    const newTemplates = [...userTemplates];
+    const newTemplates = [...templates];
     newTemplates[index] = template;
-    setUserTemplates(newTemplates);
+    setTemplates(newTemplates);
   };
 
   const renderUserTemplates = () => {
-    const userTemplates = settingsJson.templates;
-
-    if (!userTemplates) return;
+    if (!templates) return;
     return (
       <SortableContext
-        items={userTemplates.map((template) => template.key)}
+        items={templates.map((template) => template.key)}
         strategy={verticalListSortingStrategy}
       >
         <AnimatePresence>
-          {userTemplates.map((template, index) => (
+          {templates.map((template, index) => (
             <motion.div
               key={template.key}
               initial={{
@@ -209,7 +215,7 @@ export default function RubricBuilder(): ReactElement {
               <TemplateCard
                 index={index}
                 activeTemplateIndex={activeTemplateIndex}
-                template={template as Template}
+                template={template}
                 handleTemplateUpdate={handleUpdateTemplate}
                 removeTemplate={handleRemoveTemplate}
                 setActiveTemplateIndex={setActiveTemplateIndex}

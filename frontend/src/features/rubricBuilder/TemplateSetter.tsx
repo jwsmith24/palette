@@ -5,9 +5,7 @@ import { Template } from "../../../../palette-types/src/types/Template";
 import { createTemplate } from "../../utils/templateFactory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { SettingsAPI } from "../../../../backend/src/settings.ts";
-import { Criteria, Settings } from "palette-types";
-import { createCriterion } from "@utils";
+import { Criteria } from "palette-types";
 import { useFetch } from "@hooks";
 
 interface TemplateSetterProps {
@@ -22,16 +20,14 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   criterion,
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate() || null);
+  const [templates, setTemplates] = useState<Template[]>([]);
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null
+    null,
   );
   const [criterionAdded, setCriterionAdded] = useState(false);
   const [updatingExistingTemplate, setUpdatingExistingTemplate] =
     useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
-  const [settingsJson, setSettingsJson] = useState<Settings>(
-    SettingsAPI.getUserSettings(true)
-  );
 
   const { fetchData: postTemplate } = useFetch("/templates", {
     method: "POST",
@@ -43,8 +39,20 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     body: JSON.stringify(template),
   });
 
+  const { fetchData: getAllTemplates } = useFetch("/templates", {
+    method: "GET",
+  });
+
   useEffect(() => {
-    console.log("refresh");
+    console.log("useEffect");
+    (async () => {
+      const response = await getAllTemplates();
+      if (response.success) {
+        setTemplates(response.data as Template[]);
+      }
+    })().catch((error) => {
+      console.error("Failed to fetch templates:", error);
+    });
   }, [template, criterionAdded, selectedTemplateTitle]);
 
   const handleTemplateTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -132,47 +140,32 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleSelectedExistingTemplate = (
-    event: React.MouseEvent<HTMLElement>
+    event: React.MouseEvent<HTMLElement>,
   ) => {
     event.preventDefault();
-    template.criteria = [];
 
     const textAreaTemplateTitle = event.currentTarget.textContent;
     console.log("textAreaTemplateTitle", textAreaTemplateTitle);
     criterion.templateTitle = textAreaTemplateTitle || "";
     setSelectedTemplateTitle(textAreaTemplateTitle || "");
-
-    const settings = SettingsAPI.getUserSettings(true);
-    setSettingsJson(settings);
-
-    const selectedTemplateJson = settings.templates.find(
-      (tmplt) => tmplt.title === textAreaTemplateTitle
-    );
+    console.log("selectedTemplateTitle", selectedTemplateTitle);
 
     if (textAreaTemplateTitle != null) {
-      // if this template exist in the db
-      // check if there is criteria in the db for this template. create criterion objects out of all of them and add them to the current template.
-      if (selectedTemplateJson?.criteria != undefined) {
-        selectedTemplateJson?.criteria.forEach((existingCriterion) => {
-          const copyCriterion = createCriterion();
+      // if this template exist in the database, set the template to the existing template
+      console.log("all templates", templates);
+      for (const existingTemplate of templates) {
+        if (existingTemplate.title === textAreaTemplateTitle) {
+          setTemplate(existingTemplate);
+          template.title = textAreaTemplateTitle;
+          template.criteria = existingTemplate.criteria;
+          console.log("template", template);
 
-          copyCriterion.ratings = existingCriterion.ratings;
-          copyCriterion.description = existingCriterion.description;
-          copyCriterion.longDescription = existingCriterion.longDescription;
-          copyCriterion.points = existingCriterion.points;
-          copyCriterion.template = existingCriterion.template;
-          copyCriterion.templateTitle = existingCriterion.templateTitle;
-          copyCriterion.key = existingCriterion.key;
+          setUpdatingExistingTemplate(true);
+          handleFinalizeTemplate();
 
-          template.criteria.push(copyCriterion);
-        });
+          break;
+        }
       }
-
-      template.title = textAreaTemplateTitle;
-
-      console.log("template", template);
-      setUpdatingExistingTemplate(true);
-      handleFinalizeTemplate();
     }
     handleCloseTemplates();
   };
@@ -213,7 +206,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
           open={Boolean(anchorElTemplate)}
           onClose={handleCloseTemplates}
         >
-          {settingsJson.templates.map((t, tKey) => (
+          {templates.map((t, tKey) => (
             <MenuItem key={tKey} onClick={handleSelectedExistingTemplate}>
               {t.title}
             </MenuItem>
