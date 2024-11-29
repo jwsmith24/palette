@@ -1,23 +1,42 @@
-import { Template, Settings, PaletteAPIResponse } from "palette-types";
+import { Template, PaletteAPIResponse } from "palette-types";
 import asyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { createTemplate } from "../../../frontend/src/utils/templateFactory.js";
 import fs from "fs";
 
-const settingsPath = "./settings.json";
+const templatesPath = "./templates.json";
+let templates: Template[] | null = null;
+const defaultTemplates: Template[] = [];
 
 export const TemplateService = {
   // POST REQUESTS (Templates Setter/Page Functions)
 
+  initializeTemplates: () => {
+    if (!fs.existsSync(templatesPath)) {
+      fs.writeFileSync(
+        templatesPath,
+        JSON.stringify(defaultTemplates, null, 2)
+      );
+      templates = defaultTemplates;
+    } else {
+      templates = JSON.parse(
+        fs.readFileSync(templatesPath, "utf-8")
+      ) as Template[];
+    }
+  },
+
   addTemplate: asyncHandler(async (req: Request, res: Response) => {
+    if (templates === null) {
+      TemplateService.initializeTemplates();
+    }
     console.log("template data", req.body);
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const template = createTemplate();
     const templateData = (await req.body) as Template | null;
     if (templateData) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateData.title,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.title === templateData.title
       );
       template.title = templateData.title;
       template.criteria = templateData.criteria;
@@ -25,13 +44,13 @@ export const TemplateService = {
       template.key = templateData.key;
       if (templateIndex === -1) {
         // only push if the template doesn't already exist
-        settings.templates.push(template);
-        console.log("settings templates", settings.templates);
+        localTemplates.push(template);
+        console.log("templates.json templates", localTemplates);
       } else {
         // update the existing template
         console.log("Template already exists!");
       }
-      fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+      fs.writeFileSync(templatesPath, JSON.stringify(localTemplates, null, 2));
     }
 
     const apiResponse: PaletteAPIResponse<unknown> = {
@@ -43,22 +62,28 @@ export const TemplateService = {
   }),
 
   updateTemplate: asyncHandler(async (req: Request, res: Response) => {
+    if (templates === null) {
+      TemplateService.initializeTemplates();
+    }
     console.log("updating template request", req.body);
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const templateData = (await req.body) as Template | null;
     if (templateData) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateData.title,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.title === templateData.title
       );
       console.log("templateIndex", templateIndex);
       console.log("templateData", templateData);
       if (templateIndex !== -1) {
-        settings.templates[templateIndex] = templateData;
+        localTemplates[templateIndex] = templateData;
 
-        console.log("updated templates", settings.templates);
-        console.log("settings", settings);
-        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        console.log("updated templates", localTemplates);
+        console.log("templates", templates);
+        fs.writeFileSync(
+          templatesPath,
+          JSON.stringify(localTemplates, null, 2)
+        );
       }
     }
 
@@ -72,17 +97,20 @@ export const TemplateService = {
 
   // DELETE REQUESTS (Templates Page Functions)
   deleteTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const templateData = (await req.body) as Template | null;
     const templateKey = templateData?.key;
     if (templateKey) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.key === templateKey,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.key === templateKey
       );
       if (templateIndex !== -1) {
-        settings.templates.splice(templateIndex, 1);
-        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        localTemplates.splice(templateIndex, 1);
+        fs.writeFileSync(
+          templatesPath,
+          JSON.stringify(localTemplates, null, 2)
+        );
       }
     }
 
@@ -96,17 +124,20 @@ export const TemplateService = {
 
   deleteAllCriteriaByTitle: asyncHandler(
     async (req: Request, res: Response) => {
-      const settingsData = fs.readFileSync(settingsPath, "utf8");
-      const settings: Settings = JSON.parse(settingsData) as Settings;
+      const templatesData = fs.readFileSync(templatesPath, "utf8");
+      const localTemplates = JSON.parse(templatesData) as Template[];
       const templateData = (await req.body) as Template | null;
       const templateTitle = templateData?.title;
       if (templateTitle) {
-        const templateIndex = settings.templates.findIndex(
-          (tmplt) => tmplt.title === templateTitle,
+        const templateIndex = localTemplates.findIndex(
+          (tmplt: Template) => tmplt.title === templateTitle
         );
         if (templateIndex !== -1) {
-          settings.templates[templateIndex].criteria = [];
-          fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+          localTemplates[templateIndex].criteria = [];
+          fs.writeFileSync(
+            templatesPath,
+            JSON.stringify(localTemplates, null, 2)
+          );
         }
       }
 
@@ -116,21 +147,24 @@ export const TemplateService = {
       };
 
       res.json(apiResponse);
-    },
+    }
   ),
 
   deleteAllCriteriaByKey: asyncHandler(async (req: Request, res: Response) => {
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const templateData = (await req.body) as Template | null;
     const templateKey = templateData?.key;
     if (templateKey) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.key === templateKey,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.key === templateKey
       );
       if (templateIndex !== -1) {
-        settings.templates[templateIndex].criteria = [];
-        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        localTemplates[templateIndex].criteria = [];
+        fs.writeFileSync(
+          templatesPath,
+          JSON.stringify(localTemplates, null, 2)
+        );
       }
     }
 
@@ -144,17 +178,20 @@ export const TemplateService = {
 
   deleteTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
     console.log("template data", req.body);
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const templateData = (await req.body) as Template | null;
     const templateTitle = templateData?.title;
     if (templateTitle) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateTitle,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.title === templateTitle
       );
       if (templateIndex !== -1) {
-        settings.templates.splice(templateIndex, 1);
-        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        localTemplates.splice(templateIndex, 1);
+        fs.writeFileSync(
+          templatesPath,
+          JSON.stringify(localTemplates, null, 2)
+        );
       }
     }
 
@@ -169,41 +206,60 @@ export const TemplateService = {
   // GET REQUESTS (Templates API Functions)
 
   getAllTemplates: asyncHandler(async (req: Request, res: Response) => {
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    if (templates === null) {
+      TemplateService.initializeTemplates();
+    }
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const request = (await req.body) as JSON;
     if (request !== null) {
-      res.json(settings.templates);
+      const apiResponse: PaletteAPIResponse<Template[]> = {
+        success: true,
+        message: "Templates fetched successfully!",
+        data: localTemplates,
+      };
+      res.json(apiResponse);
     }
   }),
 
   getTemplateByKey: asyncHandler(async (req: Request, res: Response) => {
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    if (templates === null) {
+      TemplateService.initializeTemplates();
+    }
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const templateData = (await req.body) as Template | null;
     const templateKey = templateData?.key;
     if (templateKey) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.key === templateKey,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.key === templateKey
       );
       if (templateIndex !== -1) {
-        res.json(settings.templates[templateIndex]);
+        res.json(localTemplates[templateIndex]);
       }
     }
   }),
 
   getTemplateByTitle: asyncHandler(async (req: Request, res: Response) => {
-    const settingsData = fs.readFileSync(settingsPath, "utf8");
-    const settings: Settings = JSON.parse(settingsData) as Settings;
+    if (templates === null) {
+      TemplateService.initializeTemplates();
+    }
+    const templatesData = fs.readFileSync(templatesPath, "utf8");
+    const localTemplates = JSON.parse(templatesData) as Template[];
     const templateData = (await req.body) as Template | null;
     const templateTitle = templateData?.title;
     if (templateTitle) {
-      const templateIndex = settings.templates.findIndex(
-        (tmplt) => tmplt.title === templateTitle,
+      const templateIndex = localTemplates.findIndex(
+        (tmplt: Template) => tmplt.title === templateTitle
       );
-      console.log("templateIndex", templateIndex);
+      console.log("templateIndex in getTemplateByTitle", templateIndex);
       if (templateIndex !== -1) {
-        res.json(settings.templates[templateIndex]);
+        const apiResponse: PaletteAPIResponse<Template> = {
+          success: true,
+          message: "Template fetched successfully!",
+          data: localTemplates[templateIndex],
+        };
+        res.json(apiResponse);
       }
     }
   }),

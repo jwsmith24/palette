@@ -5,8 +5,8 @@ import { Template } from "../../../../palette-types/src/types/Template";
 import { createTemplate } from "../../utils/templateFactory";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import settingsJson from "../../../../backend/settings.json";
-import { Criteria } from "palette-types";
+import { SettingsAPI } from "../../../../backend/src/settings.ts";
+import { Criteria, Settings } from "palette-types";
 import { createCriterion } from "@utils";
 import { useFetch } from "@hooks";
 
@@ -23,12 +23,15 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
 }: TemplateSetterProps) => {
   const [template, setTemplate] = useState<Template>(createTemplate() || null);
   const [anchorElTemplate, setAnchorElTemplate] = useState<null | HTMLElement>(
-    null,
+    null
   );
   const [criterionAdded, setCriterionAdded] = useState(false);
   const [updatingExistingTemplate, setUpdatingExistingTemplate] =
     useState(false);
   const [selectedTemplateTitle, setSelectedTemplateTitle] = useState("");
+  const [settingsJson, setSettingsJson] = useState<Settings>(
+    SettingsAPI.getUserSettings(true)
+  );
 
   const { fetchData: postTemplate } = useFetch("/templates", {
     method: "POST",
@@ -129,7 +132,7 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
   };
 
   const handleSelectedExistingTemplate = (
-    event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLElement>
   ) => {
     event.preventDefault();
     template.criteria = [];
@@ -139,8 +142,11 @@ const TemplateSetter: React.FC<TemplateSetterProps> = ({
     criterion.templateTitle = textAreaTemplateTitle || "";
     setSelectedTemplateTitle(textAreaTemplateTitle || "");
 
-    const selectedTemplateJson = settingsJson.templates.find(
-      (tmplt) => tmplt.title === textAreaTemplateTitle,
+    const settings = SettingsAPI.getUserSettings(true);
+    setSettingsJson(settings);
+
+    const selectedTemplateJson = settings.templates.find(
+      (tmplt) => tmplt.title === textAreaTemplateTitle
     );
 
     if (textAreaTemplateTitle != null) {
