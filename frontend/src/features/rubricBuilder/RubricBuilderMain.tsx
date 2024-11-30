@@ -46,7 +46,7 @@ export function RubricBuilderMain(): ReactElement {
    */
   const getInitialRubric = () => {
     const rubric = localStorage.getItem("rubric");
-    return rubric ? JSON.parse(rubric) : createRubric();
+    return rubric ? (JSON.parse(rubric) as Rubric) : createRubric();
   };
   /**
    * Rubric Builder State
