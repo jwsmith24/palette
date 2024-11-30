@@ -55,11 +55,17 @@ export const parseVersionOne = (
       if (!criterionTitle || isNaN(maxPoints)) return null;
 
       const criterion: Criteria = createCriterion(criterionTitle, "", maxPoints, []);
-      for (let i = 2; i < row.length; i += 2) {
+      let hasValidRating = false;
+      for (let i = 1; i < row.length; i += 2) {
         const points = Number(row[i]) || 0;
         const description = row[i + 1]?.trim() || "";
-        criterion.ratings.push(createRating(points, description));
+        if (points !== 0 || description) {
+            hasValidRating = true;
+            criterion.ratings.push(createRating(points, description));
+          }
       }
+      // Skip if there are no valid ratings or descriptions
+      if (!hasValidRating) return null;
 
       criterion.updatePoints();
       return criterion;
