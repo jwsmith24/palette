@@ -3,11 +3,13 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import ActiveCourseSelection from "./ActiveCourseSelection.tsx";
-import { Dialog } from "./Dialog.tsx";
-import CourseSelectionMenu from "./CourseSelectionMenu.tsx";
-import ActiveAssignmentSelection from "./ActiveAssignmentSelection.tsx";
-import AssignmentSelectionMenu from "./AssignmentSelectionMenu.tsx";
+import {
+  ActiveAssignmentSelection,
+  ActiveCourseSelection,
+  AssignmentSelectionMenu,
+  CourseSelectionMenu,
+  Dialog,
+} from "@components";
 
 function Navbar() {
   const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);
@@ -68,14 +70,16 @@ function Navbar() {
   }
 
   return (
-    <div className="flex justify-between items-center h-16 mx-4">
+    <div className="flex items-center h-16 mx-4 justify-between">
       {renderNavButtons()}
 
-      <div className={"flex gap-20"}>
-        <ActiveCourseSelection setDialogOpen={setCourseDialogOpen} />
-        <ActiveAssignmentSelection setDialogOpen={setAssignmentDialogOpen} />
+      <div className={"flex items-center gap-10"}>
+        <div className={"hidden md:flex justify-around gap-4"}>
+          <ActiveCourseSelection setDialogOpen={setCourseDialogOpen} />
+          <ActiveAssignmentSelection setDialogOpen={setAssignmentDialogOpen} />
+        </div>
         <button
-          className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:opacity-80 transition duration-300 transform hover:scale-105`}
+          className={`self-center px-5 py-1 h-12 bg-gray-500 text-white rounded-full font-semibold hover:bg-gray-600 transition duration-300 transform hover:scale-105`}
           onClick={handleOpenUserMenu}
         >
           P

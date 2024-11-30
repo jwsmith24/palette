@@ -9,11 +9,14 @@ import "./index.css";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import NotFoundPage from "./components/NotFoundPage";
-
-import { CourseProvider } from "./context/CourseProvider";
-import { AssignmentProvider } from "./context/AssignmentProvider.tsx";
-import { GradingMain, Home, RubricBuilderMain, SettingsMain } from "@features";
+import {
+  GradingMain,
+  Home,
+  NotFoundPage,
+  RubricBuilderMain,
+  SettingsMain,
+} from "@features";
+import { AssignmentProvider, CourseProvider } from "@context"; // Defined a "root" div in index.html that we pull in here and then call the React render method.
 
 // Defined a "root" div in index.html that we pull in here and then call the React render method.
 createRoot(document.getElementById("root")!).render(

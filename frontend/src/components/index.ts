@@ -2,14 +2,20 @@
  * Barrel file for components.
  */
 
-export * from "./Dialog";
-export * from "./Footer";
-export * from "./Header";
-export * from "./ModalChoiceDialog";
-export * from "./Navbar";
-export * from "./NotFoundPage";
+export * from "./modals/Dialog.tsx";
+export * from "./layout/Footer.tsx";
+export * from "./layout/Header.tsx";
+export * from "./modals/ModalChoiceDialog.tsx";
+export * from "./modals/Dialog.tsx";
+export * from "./layout/Navbar.tsx";
+export * from "../features/errorPages/NotFoundPage.tsx";
 export * from "./LoadingDots";
-export * from "./SaveButton.tsx";
-export * from "./NoCourseSelected.tsx";
-export * from "./NoAssignmentSelected.tsx";
-export * from "./MainPageTemplate.tsx";
+export * from "./buttons/SaveButton.tsx";
+export * from "./contextSelectors/NoCourseSelected.tsx";
+export * from "./contextSelectors/NoAssignmentSelected.tsx";
+export * from "./layout/MainPageTemplate.tsx";
+export * from "./contextSelectors/ActiveSelectionButton.tsx";
+export * from "./contextSelectors/ActiveAssignmentSelection.tsx";
+export * from "./contextSelectors/ActiveCourseSelection.tsx";
+export * from "./contextSelectors/CourseSelectionMenu.tsx";
+export * from "./contextSelectors/AssignmentSelectionMenu.tsx";
