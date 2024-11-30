@@ -2,116 +2,120 @@ import Papa from "papaparse";
 import { Criteria } from "palette-types";
 import { createCriterion, createRating } from "@utils";
 
+export const VERSION_ONE = 1;
+export const VERSION_TWO = 2;
+
 // Define a type for the callback function
 type ParseCallback = (parsedData: Criteria[]) => void;
 type ErrorCallback = (errorMessage: string) => void;
 
+const parseRowData = (
+    data: string[][],
+    rowProcessor: (row: string[]) => Criteria | null,
+    onSuccess: ParseCallback,
+    onError: ErrorCallback,
+  ) => {
+    try {
+      if (!data || data.length < 2) {
+        throw new Error("The file is empty or missing required data.");
+      }
+  
+      const newCriteria = data
+        .slice(1) // Skip header row
+        .map(rowProcessor)
+        .filter(Boolean) as Criteria[]; // Explicitly assert the type
+  
+      if (!newCriteria.length) {
+        throw new Error("No valid criteria found in the file.");
+      }
+  
+      onSuccess(newCriteria); 
+    } catch (error) {
+      onError(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred while parsing the file.",
+      );
+    }
+  };
+  
+
 // Parsing logic for Version 1
 export const parseVersionOne = (
   data: string[][],
-  callback: ParseCallback,
+  onSuccess: ParseCallback,
   onError: ErrorCallback,
 ) => {
-  try {
-    if (!data || data.length < 2) {
-      throw new Error("The file is empty or missing required data.");
-    }
+  parseRowData(
+    data,
+    (row) => {
+      const criterionTitle = row[0]?.trim();
+      const maxPoints = row[1] ? parseFloat(row[1]) : NaN;
 
-    const newCriteria = data
-      .slice(1) // Skip header row
-      .map((row) => {
-        const criterionTitle = row[0]?.trim();
-        const maxPoints = row[1] ? parseFloat(row[1]) : NaN; // Expecting MaxPoints in column 2
-        if (isNaN(maxPoints)) {
-          throw new Error(`Invalid File Format.`);
-        }
-        const criterion: Criteria = createCriterion(criterionTitle, "", 0, []);
+      if (!criterionTitle || isNaN(maxPoints)) return null;
 
-        // Ratings are processed in pairs (points, description)
-        for (let i = 1; i < row.length; i += 2) {
-          const points = row[i] ? Number(row[i]) : 0; // Default to 0 if empty
-          const description = row[i + 1]?.toString() || ""; // Default to empty string
-          if (!isNaN(points)) {
-            criterion.ratings.push(createRating(points, description));
-          }
-        }
+      const criterion: Criteria = createCriterion(criterionTitle, "", maxPoints, []);
+      for (let i = 2; i < row.length; i += 2) {
+        const points = Number(row[i]) || 0;
+        const description = row[i + 1]?.trim() || "";
+        criterion.ratings.push(createRating(points, description));
+      }
 
-        criterion.updatePoints();
-        return criterion;
-      })
-      .filter(Boolean);
-
-    if (!newCriteria.length) {
-      throw new Error("No valid criteria were found in the file.");
-    }
-
-    callback(newCriteria);
-  } catch (error) {
-    onError(
-      error instanceof Error
-        ? error.message
-        : "An unknown error occurred in Version 1 parsing.",
-    );
-  }
+      criterion.updatePoints();
+      return criterion;
+    },
+    onSuccess,
+    onError,
+  );
 };
 
 // Parsing logic for Version 2
 export const parseVersionTwo = (
   data: string[][],
-  callback: ParseCallback,
+  onSuccess : ParseCallback,
   onError: ErrorCallback,
 ) => {
-  try {
-    const newCriteria = data
-      .slice(1) // Skip header row
-      .map((row) => {
-        const criterionTitle = row[0]?.trim() || "";
-        const longDescription = row[1]?.trim() || "";
-        const maxPoints = parseFloat(row[2]);
-
-        if (!criterionTitle || isNaN(maxPoints)) {
-          throw new Error("Invalid structure in Version 2.");
-        }
-
-        const criterion: Criteria = createCriterion(
-          criterionTitle,
-          longDescription,
-          maxPoints,
-          [],
-        );
-
-        for (let i = 3; i < row.length; i++) {
-          const ratingText = row[i]?.toString().trim();
-          if (!ratingText) continue;
-
-          const match = ratingText.match(/\(([^)]+)\)$/);
-          const deduction = match ? parseFloat(match[1]) : 0;
-          const points = maxPoints + deduction;
-          const description = ratingText.replace(/\s*\([^)]*\)$/, "");
-
-          if (!isNaN(points) && description) {
-            criterion.ratings.push(createRating(points, description));
+    parseRowData(
+        data,
+        (row) => {
+          const criterionTitle = row[0]?.trim();
+          const longDescription = row[1]?.trim();
+          const maxPoints = parseFloat(row[2]);
+    
+          if (!criterionTitle || isNaN(maxPoints)) return null;
+    
+          const criterion: Criteria = createCriterion(
+            criterionTitle,
+            longDescription || "",
+            maxPoints,
+            [],
+          );
+    
+          for (let i = 3; i < row.length; i++) {
+            const ratingText = row[i]?.trim();
+            if (!ratingText) continue;
+    
+            const match = ratingText.match(/\(([^)]+)\)$/);
+            const deduction = match ? parseFloat(match[1]) : 0;
+            const points = maxPoints + deduction;
+            const description = ratingText.replace(/\s*\([^)]*\)$/, "");
+    
+            if (!isNaN(points)) {
+              criterion.ratings.push(createRating(points, description));
+            }
           }
-        }
-
-        return criterion;
-      })
-      .filter(Boolean);
-
-    callback(newCriteria);
-  } catch (error) {
-    onError(
-      error instanceof Error
-        ? error.message
-        : "An unknown error occurred in Version 2 parsing.",
-    );
-  }
-};
+    
+          return criterion;
+        },
+        onSuccess,
+        onError,
+      );
+    };
 
 // Main utility to handle CSV parsing
 export const importCsv = (
   file: File,
-  version: "versionOne" | "versionTwo",
+  version: number,
   onSuccess: ParseCallback,
   onError: ErrorCallback,
 ) => {
@@ -127,9 +131,9 @@ export const importCsv = (
         return;
       }
 
-      if (version === "versionOne") {
+      if (version === VERSION_ONE) {
         parseVersionOne(parsedData, onSuccess, onError);
-      } else if (version === "versionTwo") {
+      } else if (version === VERSION_TWO) {
         parseVersionTwo(parsedData, onSuccess, onError);
       } else {
         onError("Unsupported version for CSV parsing.");
