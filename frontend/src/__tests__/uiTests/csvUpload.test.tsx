@@ -3,11 +3,28 @@ import { vi } from "vitest";
 import { CSVUpload } from "@features";
 import { Criteria } from "palette-types";
 
-// Mock the Dialog component
+// Define types for mock functions
+interface MockFile {
+  name: string;
+}
+
+type OnSuccess = (criteria: Criteria[]) => void;
+type OnError = (message: string) => void;
+
 vi.mock("@components", () => ({
-  Dialog: ({ isOpen, onClose, title, children }: any) =>
+  Dialog: ({
+    isOpen,
+    onClose,
+    title,
+    children,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    children: React.ReactNode;
+  }) =>
     isOpen ? (
-      <div data-testid="dialog">
+      <div data-testid="dialog" id="modal-root">
         <h1>{title}</h1>
         {children}
         <button onClick={onClose}>Close</button>
@@ -17,7 +34,7 @@ vi.mock("@components", () => ({
 
 // Mock the importCsv utility
 vi.mock("@utils", () => ({
-  importCsv: vi.fn((file, onSuccess, onError) => {
+  importCsv: vi.fn((file: MockFile, onSuccess: OnSuccess, onError: OnError) => {
     if (file.name === "invalid.csv") {
       onError("Invalid file format.");
     } else {
@@ -79,7 +96,7 @@ describe("CSVUpload Component", () => {
     expect(versionModal).toBeInTheDocument();
   });
 
-  it("calls handleFileChange and updates the rubric correctly for a valid CSV file", async () => {
+  it("calls handleFileChange and updates the rubric correctly for a valid CSV file", () => {
     render(<CSVUpload rubric={undefined} setRubric={mockSetRubric} />);
     const importButton = screen.getByText(/Import CSV/i);
     fireEvent.click(importButton);
@@ -101,7 +118,7 @@ describe("CSVUpload Component", () => {
     fireEvent.change(fileInput, { target: { files: [mockFile] } });
   });
 
-  it("shows an alert when an unsupported file format is uploaded", async () => {
+  it("shows an alert when an unsupported file format is uploaded", () => {
     render(<CSVUpload rubric={undefined} setRubric={mockSetRubric} />);
 
     // Click the import button
