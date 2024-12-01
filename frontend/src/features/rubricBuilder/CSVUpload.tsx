@@ -121,37 +121,31 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({ setRubric }) => {
           </button>
         </div>
       </Dialog>
-      {errorMessage && (
-        <Dialog
-          isOpen={!!errorMessage}
-          onClose={closeErrorDialog}
-          title="Error"
+      <Dialog isOpen={!!errorMessage} onClose={closeErrorDialog} title="Error">
+        <p>{errorMessage}</p>
+        <button
+          onClick={closeErrorDialog}
+          className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 mt-4 transition duration-300 hover:bg-red-700 focus:outline-none"
         >
-          <p>{errorMessage}</p>
-          <button
-            onClick={closeErrorDialog}
-            className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 mt-4 transition duration-300 hover:bg-red-700 focus:outline-none"
-          >
-            OK
-          </button>
-        </Dialog>
-      )}
-      {errorMessage && (
-        <Dialog
-          isOpen={!!errorMessage}
-          onClose={closeErrorDialog}
-          title="Import Notice"
+          OK
+        </button>
+      </Dialog>
+
+      <Dialog
+        isOpen={!!errorMessage}
+        onClose={closeErrorDialog}
+        title="Import Notice"
+      >
+        <p className="whitespace-pre-wrap">{errorMessage}</p>{" "}
+        {/* Preserve formatting */}
+        <button
+          onClick={closeErrorDialog}
+          className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 mt-4 transition duration-300 hover:bg-red-700 focus:outline-none"
         >
-          <p className="whitespace-pre-wrap">{errorMessage}</p>{" "}
-          {/* Preserve formatting */}
-          <button
-            onClick={closeErrorDialog}
-            className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 mt-4 transition duration-300 hover:bg-red-700 focus:outline-none"
-          >
-            OK
-          </button>
-        </Dialog>
-      )}
+          OK
+        </button>
+      </Dialog>
+
       <input
         ref={fileInputRef}
         type="file"

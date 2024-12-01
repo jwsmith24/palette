@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
-import { CSVUpload } from "@features"; 
+import { CSVUpload } from "@features";
 import { Criteria } from "palette-types";
 
 // Mock the Dialog component
