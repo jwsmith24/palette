@@ -26,12 +26,7 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({ setRubric }) => {
       return;
     }
 
-    importCsv(
-      file,
-      selectedVersion,
-      handleImportSuccess,
-      handleImportError,
-    );
+    importCsv(file, selectedVersion, handleImportSuccess, handleImportError);
   };
 
   const triggerFile = (version: number) => {
@@ -40,42 +35,47 @@ export const CSVUpload: React.FC<CSVUploadProps> = ({ setRubric }) => {
     setShowVersionModal(false);
   };
 
-/**
- * Generates a set of the current criteria descriptions stored within the component state
- * to use for checking duplicate entries.
- */
-const buildCriteriaDescriptionSet = (rubric: Rubric | undefined): Set<string> =>
-  new Set(
-    (rubric?.criteria || []).map((criterion) =>
-      criterion.description.trim().toLowerCase(),
-    ),
-  );
+  /**
+   * Generates a set of the current criteria descriptions stored within the component state
+   * to use for checking duplicate entries.
+   */
+  const buildCriteriaDescriptionSet = (
+    rubric: Rubric | undefined,
+  ): Set<string> =>
+    new Set(
+      (rubric?.criteria || []).map((criterion) =>
+        criterion.description.trim().toLowerCase(),
+      ),
+    );
 
   const handleImportSuccess = (newCriteria: Criteria[]) => {
     setRubric((prevRubric) => {
       const existingDescriptions = buildCriteriaDescriptionSet(prevRubric);
-   
+
       const hasDuplicates = newCriteria.some((criterion) =>
         existingDescriptions.has(criterion.description.trim().toLowerCase()),
       );
-    const uniqueCriteria = newCriteria.filter(
-      (criterion) =>
-        !existingDescriptions.has(criterion.description.trim().toLowerCase()),
-    );
-
-    if (hasDuplicates) {
-      setErrorMessage(
-        "Some criteria were not imported because they already exist in the rubric.",
+      const uniqueCriteria = newCriteria.filter(
+        (criterion) =>
+          !existingDescriptions.has(criterion.description.trim().toLowerCase()),
       );
-    }
-  
+
+      if (hasDuplicates) {
+        setErrorMessage(
+          "Some criteria were not imported because they already exist in the rubric.",
+        );
+      }
+
       return prevRubric
         ? {
             ...prevRubric,
             criteria: [...prevRubric.criteria, ...uniqueCriteria],
             pointsPossible:
               prevRubric.pointsPossible +
-              uniqueCriteria.reduce((sum, criterion) => sum + criterion.points, 0),
+              uniqueCriteria.reduce(
+                (sum, criterion) => sum + criterion.points,
+                0,
+              ),
           }
         : {
             title: "Imported Rubric",
@@ -84,10 +84,10 @@ const buildCriteriaDescriptionSet = (rubric: Rubric | undefined): Set<string> =>
               (sum, criterion) => sum + criterion.points,
               0,
             ),
-            key: "placeholder-key", // Placeholder 
+            key: "placeholder-key", // Placeholder
           };
-        });
-      };
+    });
+  };
 
   const handleImportError = (error: string) => {
     setErrorMessage(error);
@@ -137,28 +137,32 @@ const buildCriteriaDescriptionSet = (rubric: Rubric | undefined): Set<string> =>
         </Dialog>
       )}
       {errorMessage && (
-      <Dialog
-        isOpen={!!errorMessage}
-        onClose={closeErrorDialog}
-        title="Import Notice"
-      >
-        <p className="whitespace-pre-wrap">{errorMessage}</p> {/* Preserve formatting */}
-        <button
-          onClick={closeErrorDialog}
-          className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 mt-4 transition duration-300 hover:bg-red-700 focus:outline-none"
+        <Dialog
+          isOpen={!!errorMessage}
+          onClose={closeErrorDialog}
+          title="Import Notice"
         >
-          OK
-        </button>
-      </Dialog>
-    )}
-        <input
+          <p className="whitespace-pre-wrap">{errorMessage}</p>{" "}
+          {/* Preserve formatting */}
+          <button
+            onClick={closeErrorDialog}
+            className="bg-red-600 text-white font-bold rounded-lg py-2 px-4 mt-4 transition duration-300 hover:bg-red-700 focus:outline-none"
+          >
+            OK
+          </button>
+        </Dialog>
+      )}
+      <input
         ref={fileInputRef}
         type="file"
         accept=".csv"
+        id="file-input"
         onChange={handleFileChange}
         className="hidden"
       />
-
+      <label htmlFor="file-input" aria-label="file-input">
+        <button className="hidden">Upload File</button>
+      </label>
     </div>
   );
 };

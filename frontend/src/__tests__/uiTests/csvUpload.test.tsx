@@ -1,24 +1,51 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
-import { CSVUpload } from "@features"; // Adjust path if needed
+import { CSVUpload } from "@features"; 
+import { Criteria } from "palette-types";
+
+// Mock the Dialog component
+vi.mock("@components", () => ({
+  Dialog: ({ isOpen, onClose, title, children }: any) =>
+    isOpen ? (
+      <div data-testid="dialog">
+        <h1>{title}</h1>
+        {children}
+        <button onClick={onClose}>Close</button>
+      </div>
+    ) : null,
+}));
 
 // Mock the importCsv utility
-vi.mock("../../utils/CSVParser", () => ({
-  importCsv: vi.fn(
-    (
-      file,
-      version,
-      callback: (
-        criteria: Array<{ id: number; title: string; points: number }>,
-      ) => void,
-    ) => {
-      const mockCriteria = [
-        { id: 1, title: "Criterion 1", points: 10 },
-        { id: 2, title: "Criterion 2", points: 5 },
+vi.mock("@utils", () => ({
+  importCsv: vi.fn((file, onSuccess, onError) => {
+    if (file.name === "invalid.csv") {
+      onError("Invalid file format.");
+    } else {
+      const mockCriteria: Criteria[] = [
+        {
+          id: 1,
+          description: "Criterion 1",
+          longDescription: "Detailed description 1",
+          points: 10,
+          ratings: [],
+          key: "1",
+          updatePoints: vi.fn(),
+        },
+        {
+          id: 2,
+          description: "Criterion 2",
+          longDescription: "Detailed description 2",
+          points: 5,
+          ratings: [],
+          key: "2",
+          updatePoints: vi.fn(),
+        },
       ];
-      callback(mockCriteria);
-    },
-  ),
+      onSuccess(mockCriteria);
+    }
+  }),
+  VERSION_ONE: 1,
+  VERSION_TWO: 2,
 }));
 
 describe("CSVUpload Component", () => {
@@ -26,6 +53,15 @@ describe("CSVUpload Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    const modalRoot = document.createElement("div");
+    modalRoot.id = "modal-root";
+    document.body.appendChild(modalRoot);
+  });
+
+  afterEach(() => {
+    const modalRoot = document.getElementById("modal-root");
+    if (modalRoot) document.body.removeChild(modalRoot);
   });
 
   it("renders the import button", () => {
@@ -43,7 +79,7 @@ describe("CSVUpload Component", () => {
     expect(versionModal).toBeInTheDocument();
   });
 
-  it("calls handleFileChange and updates the rubric correctly for a valid CSV file", () => {
+  it("calls handleFileChange and updates the rubric correctly for a valid CSV file", async () => {
     render(<CSVUpload rubric={undefined} setRubric={mockSetRubric} />);
     const importButton = screen.getByText(/Import CSV/i);
     fireEvent.click(importButton);
@@ -53,11 +89,7 @@ describe("CSVUpload Component", () => {
     fireEvent.click(versionOneButton);
 
     // Simulate dynamically creating the file input
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".csv";
-    document.body.appendChild(fileInput);
-
+    const fileInput = screen.getByLabelText("file-input");
     // Simulate the file input change event
     const mockFile = new File(
       ["Criterion 1,10\nCriterion 2,5"],
@@ -67,37 +99,26 @@ describe("CSVUpload Component", () => {
       },
     );
     fireEvent.change(fileInput, { target: { files: [mockFile] } });
-
-    // Clean up dynamically added input
-    document.body.removeChild(fileInput);
   });
 
-  it("shows an alert when an unsupported file format is uploaded", () => {
+  it("shows an alert when an unsupported file format is uploaded", async () => {
     render(<CSVUpload rubric={undefined} setRubric={mockSetRubric} />);
+
+    // Click the import button
     const importButton = screen.getByText(/Import CSV/i);
     fireEvent.click(importButton);
 
-    // Simulate selecting "Version 1"
+    // Click the version selection
     const versionOneButton = screen.getByText(/Version 1/i);
     fireEvent.click(versionOneButton);
 
-    // Mock the alert function
-    const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
+    // Find the file input element
+    const fileInput = screen.getByLabelText("file-input");
 
-    // Simulate dynamically creating the file input
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".csv";
-    document.body.appendChild(fileInput);
-
-    // Simulate the file input change event with an unsupported file
+    // Simulate an unsupported file format upload
     const mockFile = new File(["dummy content"], "example.txt", {
       type: "text/plain",
     });
     fireEvent.change(fileInput, { target: { files: [mockFile] } });
-
-    // Clean up
-    alertMock.mockRestore();
-    document.body.removeChild(fileInput);
   });
 });

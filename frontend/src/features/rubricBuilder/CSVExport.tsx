@@ -57,12 +57,14 @@ export const CSVExport: FC<CSVExportProps> = ({ rubric }) => {
   };
 
   return (
-    <button
-      className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      onClick={handleExportToCSV}
-      type={"button"}
-    >
-      Export to CSV
-    </button>
+    <div className="flex flex-col items-center gap-4">
+      <button
+        className="transition-all ease-in-out duration-300 bg-blue-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onClick={handleExportToCSV}
+        type={"button"}
+      >
+        Export to CSV
+      </button>
+    </div>
   );
 };
