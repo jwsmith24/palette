@@ -36,7 +36,7 @@ export default function TemplateCard({
   // tracks which criterion card is displaying the detailed view (limited to one at a time)
   const [activeCriterionIndex, setActiveCriterionIndex] = useState(-1);
   const [currentTemplate, setCurrentTemplate] = useState<Template>(
-    createTemplate() || null,
+    createTemplate() || null
   );
 
   /**
@@ -56,7 +56,7 @@ export default function TemplateCard({
 
   const handleRemoveTemplateButton = (
     event: ReactMouseEvent,
-    index: number,
+    index: number
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -65,6 +65,10 @@ export default function TemplateCard({
 
   const handleExpandTemplate = () => {
     setActiveTemplateIndex(index);
+  };
+
+  const handleCollapseTemplate = () => {
+    setActiveTemplateIndex(-1);
   };
 
   // update rubric state with new list of criteria
@@ -159,7 +163,7 @@ export default function TemplateCard({
         <div className={"flex gap-3"}>
           <button
             onPointerDown={(
-              event: ReactMouseEvent, // Change to onPointerDown
+              event: ReactMouseEvent // Change to onPointerDown
             ) => handleRemoveTemplateButton(event, index)}
             type={"button"}
             className="transition-all ease-in-out duration-300 bg-red-600 text-white font-bold rounded-lg px-2 py-1 hover:bg-red-700 focus:outline-none border-2 border-transparent"
@@ -181,7 +185,7 @@ export default function TemplateCard({
   const renderDetailedView = () => {
     return (
       <form
-        className="h-full self-center grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg"
+        className="h-full grid p-10 w-full max-w-3xl my-6 gap-6 bg-gray-800 shadow-lg rounded-lg"
         onSubmit={(event) => event.preventDefault()}
       >
         <h1 className="font-extrabold text-5xl mb-2 text-center">
@@ -191,6 +195,14 @@ export default function TemplateCard({
           <h2 className="text-2xl font-extrabold bg-green-600 text-black py-2 px-4 rounded-lg">
             {maxPoints} {maxPoints === 1 ? "Point" : "Points"}
           </h2>
+
+          <button
+            className="transition-all ease-in-out duration-300 bg-yellow-600 text-white font-bold rounded-lg py-2 px-4 hover:bg-yellow-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            onClick={handleCollapseTemplate}
+            type={"button"}
+          >
+            Collapse
+          </button>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 h-[35vh] max-h-[50vh] overflow-y-auto overflow-hidden scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800">
